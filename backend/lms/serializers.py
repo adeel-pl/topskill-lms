@@ -1,0 +1,455 @@
+from rest_framework import serializers
+from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
+from .models import (
+    Course, Batch, Enrollment, Payment, Attendance, BatchSession,
+    Lecture, CourseSection, Quiz, QuizAttempt, Assignment, AssignmentSubmission,
+    Review, Wishlist, Category, Tag, Notification, Certificate, LectureProgress,
+    Forum, Post, Reply, Resource, Note, Cart, CartItem
+)
+
+
+class UserSerializer(serializers.ModelSerializer):
+    """User serializer"""
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'is_staff', 'date_joined']
+        read_only_fields = ['id', 'is_staff', 'date_joined']
+
+
+class UserRegistrationSerializer(serializers.ModelSerializer):
+    """User registration serializer"""
+    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    password2 = serializers.CharField(write_only=True, required=True, label='Confirm Password')
+    
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password', 'password2', 'first_name', 'last_name']
+    
+    def validate(self, attrs):
+        if attrs['password'] != attrs['password2']:
+            raise serializers.ValidationError({"password": "Password fields didn't match."})
+        return attrs
+    
+    def create(self, validated_data):
+        validated_data.pop('password2')
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data.get('email', ''),
+            password=validated_data['password'],
+            first_name=validated_data.get('first_name', ''),
+            last_name=validated_data.get('last_name', ''),
+        )
+        return user
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    """Category serializer"""
+    class Meta:
+        model = Category
+        fields = ['id', 'name', 'slug', 'description', 'parent']
+
+
+class TagSerializer(serializers.ModelSerializer):
+    """Tag serializer"""
+    class Meta:
+        model = Tag
+        fields = ['id', 'name', 'slug']
+
+
+class CourseSectionSerializer(serializers.ModelSerializer):
+    """Course section serializer"""
+    class Meta:
+        model = CourseSection
+        fields = ['id', 'title', 'order']
+
+
+class LectureSerializer(serializers.ModelSerializer):
+    """Lecture serializer"""
+    class Meta:
+        model = Lecture
+        fields = ['id', 'title', 'description', 'order', 'content_url', 'youtube_video_id', 
+                  'duration_minutes', 'is_preview']
+
+
+class CourseSectionDetailSerializer(serializers.ModelSerializer):
+    """Course section with lectures"""
+    lectures = LectureSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = CourseSection
+        fields = ['id', 'title', 'order', 'lectures']
+
+
+class BatchSerializer(serializers.ModelSerializer):
+    """Batch serializer"""
+    enrolled_count = serializers.SerializerMethodField()
+    available_slots = serializers.SerializerMethodField()
+    instructor_name = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Batch
+        fields = ['id', 'name', 'capacity', 'start_date', 'end_date', 'instructor', 
+                  'instructor_name', 'enrolled_count', 'available_slots', 'created_at']
+    
+    def get_enrolled_count(self, obj):
+        return obj.get_enrolled_count()
+    
+    def get_available_slots(self, obj):
+        return obj.get_available_slots()
+    
+    def get_instructor_name(self, obj):
+        return obj.instructor.get_full_name() if obj.instructor else None
+
+
+class BatchSessionSerializer(serializers.ModelSerializer):
+    """Batch session serializer"""
+    class Meta:
+        model = BatchSession
+        fields = ['id', 'title', 'start_datetime', 'end_datetime', 'location', 'created_at']
+
+
+class CourseListSerializer(serializers.ModelSerializer):
+    """Course list serializer (minimal data)"""
+    instructor_name = serializers.SerializerMethodField()
+    enrolled_count = serializers.SerializerMethodField()
+    average_rating = serializers.SerializerMethodField()
+    categories = CategorySerializer(many=True, read_only=True)
+    tags = TagSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = Course
+        fields = ['id', 'title', 'slug', 'description', 'modality', 'price', 
+                  'max_batch_size', 'thumbnail', 'instructor_name', 'enrolled_count',
+                  'average_rating', 'categories', 'tags', 'is_active', 'created_at']
+    
+    def get_instructor_name(self, obj):
+        return obj.instructor.get_full_name() if obj.instructor else None
+    
+    def get_enrolled_count(self, obj):
+        return obj.get_enrolled_count()
+    
+    def get_average_rating(self, obj):
+        reviews = obj.reviews.all()
+        if reviews:
+            return sum(r.rating for r in reviews) / len(reviews)
+        return None
+
+
+class CourseDetailSerializer(serializers.ModelSerializer):
+    """Course detail serializer with full data"""
+    sections = CourseSectionDetailSerializer(many=True, read_only=True)
+    batches = BatchSerializer(many=True, read_only=True)
+    instructor_name = serializers.SerializerMethodField()
+    enrolled_count = serializers.SerializerMethodField()
+    average_rating = serializers.SerializerMethodField()
+    categories = CategorySerializer(many=True, read_only=True)
+    tags = TagSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = Course
+        fields = ['id', 'title', 'slug', 'description', 'modality', 'price', 
+                  'max_batch_size', 'thumbnail', 'instructor', 'instructor_name',
+                  'enrolled_count', 'average_rating', 'categories', 'tags',
+                  'sections', 'batches', 'is_active', 'created_at', 'updated_at']
+    
+    def get_instructor_name(self, obj):
+        return obj.instructor.get_full_name() if obj.instructor else None
+    
+    def get_enrolled_count(self, obj):
+        return obj.get_enrolled_count()
+    
+    def get_average_rating(self, obj):
+        reviews = obj.reviews.all()
+        if reviews:
+            return sum(r.rating for r in reviews) / len(reviews)
+        return None
+
+
+class EnrollmentSerializer(serializers.ModelSerializer):
+    """Enrollment serializer"""
+    course = CourseListSerializer(read_only=True)
+    batch = BatchSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
+    
+    class Meta:
+        model = Enrollment
+        fields = ['id', 'user', 'course', 'batch', 'status', 'progress_percent', 
+                  'certificate_url', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class EnrollmentCreateSerializer(serializers.ModelSerializer):
+    """Serializer for creating enrollments"""
+    class Meta:
+        model = Enrollment
+        fields = ['course', 'batch']
+    
+    def create(self, validated_data):
+        user = self.context['request'].user
+        course = validated_data['course']
+        batch = validated_data.get('batch')
+        
+        enrollment = Enrollment.objects.create(
+            user=user,
+            course=course,
+            batch=batch,
+            status='pending'
+        )
+        
+        # Auto-assign to batch if needed
+        if not batch and course.modality in ['physical', 'hybrid']:
+            enrollment.assign_to_batch()
+        
+        return enrollment
+
+
+class PaymentSerializer(serializers.ModelSerializer):
+    """Payment serializer"""
+    course = CourseListSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
+    
+    class Meta:
+        model = Payment
+        fields = ['id', 'user', 'course', 'amount', 'status', 'payfast_payment_id',
+                  'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class PaymentCreateSerializer(serializers.ModelSerializer):
+    """Serializer for creating payments"""
+    class Meta:
+        model = Payment
+        fields = ['course', 'amount']
+    
+    def validate(self, data):
+        course = data['course']
+        if 'amount' not in data or data['amount'] != course.price:
+            data['amount'] = course.price
+        return data
+
+
+class AttendanceSerializer(serializers.ModelSerializer):
+    """Attendance serializer"""
+    enrollment = EnrollmentSerializer(read_only=True)
+    session = BatchSessionSerializer(read_only=True)
+    student_name = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Attendance
+        fields = ['id', 'enrollment', 'session', 'student_name', 'present', 'note', 
+                  'created_at', 'updated_at']
+    
+    def get_student_name(self, obj):
+        return obj.enrollment.user.get_full_name() or obj.enrollment.user.username
+
+
+class AttendanceCreateSerializer(serializers.ModelSerializer):
+    """Serializer for creating attendance records"""
+    class Meta:
+        model = Attendance
+        fields = ['enrollment', 'session', 'present', 'note']
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    """Review serializer"""
+    user = UserSerializer(read_only=True)
+    course = CourseListSerializer(read_only=True)
+    
+    class Meta:
+        model = Review
+        fields = ['id', 'user', 'course', 'rating', 'comment', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'user', 'created_at', 'updated_at']
+
+
+class ReviewCreateSerializer(serializers.ModelSerializer):
+    """Serializer for creating reviews"""
+    class Meta:
+        model = Review
+        fields = ['course', 'rating', 'comment']
+    
+    def create(self, validated_data):
+        user = self.context['request'].user
+        return Review.objects.create(user=user, **validated_data)
+
+
+class QuizSerializer(serializers.ModelSerializer):
+    """Quiz serializer"""
+    class Meta:
+        model = Quiz
+        fields = ['id', 'title', 'description', 'passing_score', 'time_limit_minutes',
+                  'max_attempts', 'is_active', 'order']
+
+
+class QuizAttemptSerializer(serializers.ModelSerializer):
+    """Quiz attempt serializer"""
+    quiz = QuizSerializer(read_only=True)
+    
+    class Meta:
+        model = QuizAttempt
+        fields = ['id', 'quiz', 'score', 'passed', 'started_at', 'completed_at', 'answers']
+
+
+class AssignmentSerializer(serializers.ModelSerializer):
+    """Assignment serializer"""
+    class Meta:
+        model = Assignment
+        fields = ['id', 'title', 'description', 'due_date', 'max_score', 'is_active', 'order']
+
+
+class AssignmentSubmissionSerializer(serializers.ModelSerializer):
+    """Assignment submission serializer"""
+    assignment = AssignmentSerializer(read_only=True)
+    
+    class Meta:
+        model = AssignmentSubmission
+        fields = ['id', 'assignment', 'submission_text', 'submission_file', 'status',
+                  'score', 'feedback', 'submitted_at', 'graded_at']
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    """Notification serializer"""
+    related_course = CourseListSerializer(read_only=True)
+    
+    class Meta:
+        model = Notification
+        fields = ['id', 'notification_type', 'title', 'message', 'is_read', 'read_at',
+                  'related_course', 'metadata', 'created_at']
+        read_only_fields = ['id', 'created_at']
+
+
+class CertificateSerializer(serializers.ModelSerializer):
+    """Certificate serializer"""
+    enrollment = EnrollmentSerializer(read_only=True)
+    
+    class Meta:
+        model = Certificate
+        fields = ['id', 'enrollment', 'certificate_number', 'issued_at', 'pdf_file']
+
+
+class LectureProgressSerializer(serializers.ModelSerializer):
+    """Lecture progress serializer"""
+    lecture = LectureSerializer(read_only=True)
+    
+    class Meta:
+        model = LectureProgress
+        fields = ['id', 'lecture', 'completed', 'completed_at', 'score']
+
+
+class WishlistSerializer(serializers.ModelSerializer):
+    """Wishlist serializer"""
+    course = CourseListSerializer(read_only=True)
+    
+    class Meta:
+        model = Wishlist
+        fields = ['id', 'course', 'created_at']
+
+
+class WishlistCreateSerializer(serializers.ModelSerializer):
+    """Serializer for creating wishlist items"""
+    class Meta:
+        model = Wishlist
+        fields = ['course']
+    
+    def create(self, validated_data):
+        user = self.context['request'].user
+        return Wishlist.objects.get_or_create(user=user, **validated_data)[0]
+
+
+# ==================== CART SERIALIZERS ====================
+
+class CartItemSerializer(serializers.ModelSerializer):
+    """Cart item serializer"""
+    course = CourseListSerializer(read_only=True)
+    
+    class Meta:
+        model = CartItem
+        fields = ['id', 'course', 'created_at']
+
+
+class CartSerializer(serializers.ModelSerializer):
+    """Cart serializer"""
+    items = CartItemSerializer(many=True, read_only=True)
+    total = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Cart
+        fields = ['id', 'items', 'total', 'created_at', 'updated_at']
+    
+    def get_total(self, obj):
+        return obj.get_total()
+
+
+class CartItemCreateSerializer(serializers.ModelSerializer):
+    """Serializer for adding items to cart"""
+    class Meta:
+        model = CartItem
+        fields = ['course']
+
+
+# ==================== COURSE PLAYER SERIALIZERS (Udemy-like) ====================
+
+class LectureWithProgressSerializer(serializers.ModelSerializer):
+    """Lecture serializer with progress information"""
+    progress = serializers.SerializerMethodField()
+    is_completed = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Lecture
+        fields = ['id', 'title', 'description', 'order', 'content_url', 'youtube_video_id',
+                  'duration_minutes', 'is_preview', 'video_type', 'progress', 'is_completed']
+    
+    def get_progress(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            enrollment = self.context.get('enrollment')
+            if enrollment:
+                progress = LectureProgress.objects.filter(
+                    enrollment=enrollment,
+                    lecture=obj
+                ).first()
+                if progress:
+                    return {
+                        'completed': progress.completed,
+                        'watch_time_seconds': progress.watch_time_seconds,
+                        'last_position': progress.last_position,
+                    }
+        return None
+    
+    def get_is_completed(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            enrollment = self.context.get('enrollment')
+            if enrollment:
+                progress = LectureProgress.objects.filter(
+                    enrollment=enrollment,
+                    lecture=obj,
+                    completed=True
+                ).exists()
+                return progress
+        return False
+
+
+class CourseSectionPlayerSerializer(serializers.ModelSerializer):
+    """Course section with lectures for player"""
+    lectures = LectureWithProgressSerializer(many=True, read_only=True)
+    completed_lectures = serializers.SerializerMethodField()
+    total_lectures = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = CourseSection
+        fields = ['id', 'title', 'order', 'is_preview', 'lectures', 'completed_lectures', 'total_lectures']
+    
+    def get_completed_lectures(self, obj):
+        enrollment = self.context.get('enrollment')
+        if enrollment:
+            return LectureProgress.objects.filter(
+                enrollment=enrollment,
+                lecture__section=obj,
+                completed=True
+            ).count()
+        return 0
+    
+    def get_total_lectures(self, obj):
+        return obj.lectures.count()
+

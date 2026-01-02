@@ -1,0 +1,60 @@
+version: '3.8'
+
+# Use: docker compose up (newer) or docker-compose up (older)
+
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: topskill_lms
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"  # Changed to avoid conflict with existing PostgreSQL
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    command: python manage.py migrate && python manage.py seed_data && python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend:/app
+      - backend_static:/app/staticfiles
+      - backend_media:/app/media
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/topskill_lms
+      - PAYFAST_MERCHANT_ID=${PAYFAST_MERCHANT_ID:-}
+      - PAYFAST_MERCHANT_KEY=${PAYFAST_MERCHANT_KEY:-}
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  backend_static:
+  backend_media:
+
