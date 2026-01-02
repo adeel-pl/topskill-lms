@@ -1,0 +1,74 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+/media
+/staticfiles
+
+# Node
+node_modules/
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.local
+.env*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+.dockerignore
+
+# Git
+.git/
+.gitignore
+
+# Frontend build
+frontend/.next/
+frontend/node_modules/
+frontend/out/
+frontend/build/
+
+# Backend
+backend/__pycache__/
+backend/*.pyc
+backend/db.sqlite3
+backend/.venv/
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+

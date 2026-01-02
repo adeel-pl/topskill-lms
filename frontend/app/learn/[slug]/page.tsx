@@ -1,0 +1,409 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { playerAPI, coursesAPI } from '@/lib/api';
+import ReactPlayer from 'react-player';
+import PureLogicsNavbar from '@/app/components/PureLogicsNavbar';
+import { FiPlay, FiCheck, FiClock, FiBook, FiMessageSquare, FiChevronRight, FiChevronLeft, FiBell, FiStar } from 'react-icons/fi';
+
+interface Lecture {
+  id: number;
+  title: string;
+  description: string;
+  youtube_video_id: string;
+  content_url: string;
+  duration_minutes: number;
+  is_preview: boolean;
+  progress?: {
+    completed: boolean;
+    watch_time_seconds: number;
+    last_position: number;
+  };
+  is_completed: boolean;
+  navigation?: {
+    prev_lecture_id?: number;
+    next_lecture_id?: number;
+  };
+}
+
+interface Section {
+  id: number;
+  title: string;
+  order: number;
+  lectures: Lecture[];
+  completed_lectures: number;
+  total_lectures: number;
+}
+
+type TabType = 'overview' | 'reviews' | 'notes' | 'questions' | 'announcements';
+
+export default function CoursePlayerPage() {
+  const params = useParams();
+  const router = useRouter();
+  const [course, setCourse] = useState<any>(null);
+  const [sections, setSections] = useState<Section[]>([]);
+  const [selectedLecture, setSelectedLecture] = useState<Lecture | null>(null);
+  const [watchPosition, setWatchPosition] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<TabType>('overview');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  useEffect(() => {
+    loadCourseContent();
+  }, [params.slug]);
+
+  const loadCourseContent = async () => {
+    try {
+      const coursesRes = await coursesAPI.getBySlug(params.slug as string);
+      const courseData = coursesRes.data.results?.[0] || coursesRes.data[0];
+      
+      if (!courseData) {
+        router.push('/courses');
+        return;
+      }
+
+      const contentRes = await playerAPI.getContent(courseData.id);
+      const { sections: sectionsData, course: courseInfo } = contentRes.data;
+
+      setCourse(courseInfo);
+      setSections(sectionsData);
+
+      if (sectionsData.length > 0 && sectionsData[0].lectures.length > 0) {
+        const firstLecture = sectionsData[0].lectures[0];
+        selectLecture(courseData.id, firstLecture.id);
+      }
+
+      setLoading(false);
+    } catch (error) {
+      console.error('Error loading course:', error);
+      setLoading(false);
+    }
+  };
+
+  const selectLecture = async (courseId: number, lectureId: number) => {
+    try {
+      const lectureRes = await playerAPI.getLecture(courseId, lectureId);
+      const lectureData = lectureRes.data;
+      
+      setSelectedLecture(lectureData);
+      setWatchPosition(lectureData.progress?.last_position || 0);
+      setActiveTab('overview');
+    } catch (error) {
+      console.error('Error loading lecture:', error);
+    }
+  };
+
+  const handleProgress = async (progress: any) => {
+    if (!selectedLecture || !course) return;
+
+    const watchTime = Math.floor(progress.playedSeconds);
+    const position = Math.floor(progress.playedSeconds);
+
+    if (watchTime % 10 === 0) {
+      try {
+        await playerAPI.updateProgress(course.id, selectedLecture.id, {
+          watch_time_seconds: watchTime,
+          last_position: position,
+          completed: progress.played >= 0.9,
+        });
+      } catch (error) {
+        console.error('Error updating progress:', error);
+      }
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-gray-200 border-t-[#66CC33] rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-[#000F2C]">Loading course...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!course || !selectedLecture) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <div className="text-[#000F2C]">Course not found</div>
+      </div>
+    );
+  }
+
+  const totalLectures = sections.reduce((acc, s) => acc + s.total_lectures, 0);
+
+  return (
+    <div className="flex flex-col h-screen bg-white">
+      <PureLogicsNavbar />
+      
+      <div className="flex flex-1 overflow-hidden" style={{ height: 'calc(100vh - 64px)' }}>
+        {/* Left Sidebar - Course Content */}
+        <div className={`${sidebarOpen ? 'w-80' : 'w-0'} bg-[#000F2C] overflow-y-auto border-r border-[#1a2a4a] transition-all duration-300 flex-shrink-0`}>
+          <div className="p-4 sticky top-0 bg-[#000F2C] border-b border-[#1a2a4a] z-10">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-base font-bold text-white">{course.title}</h2>
+              <button
+                onClick={() => setSidebarOpen(false)}
+                className="text-white hover:text-[#66CC33] lg:hidden"
+              >
+                ×
+              </button>
+            </div>
+            <div className="text-xs text-[#66CC33]">{totalLectures} lectures</div>
+          </div>
+
+          <div className="p-2">
+            {sections.map((section) => (
+              <div key={section.id} className="mb-2">
+                <div className="px-3 py-2 font-semibold text-xs bg-[#1a2a4a] rounded-sm text-white">
+                  {section.title}
+                  <span className="ml-2 text-[#66CC33]">
+                    {section.completed_lectures}/{section.total_lectures}
+                  </span>
+                </div>
+                <div className="mt-1">
+                  {section.lectures.map((lecture) => (
+                    <button
+                      key={lecture.id}
+                      onClick={() => selectLecture(course.id, lecture.id)}
+                      className={`w-full text-left px-4 py-2.5 text-sm hover:bg-[#1a2a4a] rounded-sm flex items-center justify-between ${
+                        selectedLecture.id === lecture.id ? 'bg-[#1a2a4a] border-l-2 border-[#66CC33]' : 'text-[#E5E7EB]'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        {lecture.is_completed ? (
+                          <FiCheck className="text-[#66CC33] flex-shrink-0" />
+                        ) : (
+                          <FiPlay className="text-[#66CC33] flex-shrink-0 text-xs" />
+                        )}
+                        <span className="truncate text-sm">{lecture.title}</span>
+                        {lecture.is_preview && (
+                          <span className="text-xs text-[#66CC33] ml-1">Preview</span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                        <FiClock className="text-[#66CC33] text-xs" />
+                        <span className="text-xs text-[#E5E7EB]">
+                          {lecture.duration_minutes}m
+                        </span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Toggle Sidebar Button (when closed) */}
+        {!sidebarOpen && (
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-[#000F2C] text-white p-2 rounded-r-sm z-20"
+          >
+            <FiChevronRight />
+          </button>
+        )}
+
+        {/* Right Panel - Video Player and Content */}
+        <div className="flex-1 flex flex-col bg-white">
+          {/* Video Player */}
+          <div className="bg-black aspect-video relative">
+            {selectedLecture.youtube_video_id ? (
+              <ReactPlayer
+                url={`https://www.youtube.com/watch?v=${selectedLecture.youtube_video_id}`}
+                width="100%"
+                height="100%"
+                controls
+                playing
+                onProgress={handleProgress}
+                config={{
+                  youtube: {
+                    playerVars: {
+                      start: Math.floor(watchPosition),
+                    },
+                  },
+                }}
+              />
+            ) : selectedLecture.content_url ? (
+              <ReactPlayer
+                url={selectedLecture.content_url}
+                width="100%"
+                height="100%"
+                controls
+                playing
+                onProgress={handleProgress}
+              />
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-gray-400">No video available</div>
+              </div>
+            )}
+          </div>
+
+          {/* Lecture Info and Tabs */}
+          <div className="flex-1 overflow-y-auto bg-white">
+            <div className="max-w-4xl mx-auto p-6">
+              <h1 className="text-2xl font-bold mb-4 text-[#000F2C]">{selectedLecture.title}</h1>
+              
+              {/* Tabs */}
+              <div className="border-b border-gray-200 mb-6">
+                <div className="flex gap-6">
+                  <button
+                    onClick={() => setActiveTab('overview')}
+                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${
+                      activeTab === 'overview'
+                        ? 'border-[#66CC33] text-[#000F2C]'
+                        : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
+                    }`}
+                  >
+                    Overview
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('reviews')}
+                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${
+                      activeTab === 'reviews'
+                        ? 'border-[#66CC33] text-[#000F2C]'
+                        : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
+                    }`}
+                  >
+                    Reviews
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('announcements')}
+                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${
+                      activeTab === 'announcements'
+                        ? 'border-[#66CC33] text-[#000F2C]'
+                        : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
+                    }`}
+                  >
+                    <FiBell className="inline mr-1" />
+                    Announcements
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('notes')}
+                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${
+                      activeTab === 'notes'
+                        ? 'border-[#66CC33] text-[#000F2C]'
+                        : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
+                    }`}
+                  >
+                    <FiBook className="inline mr-1" />
+                    Notes
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('questions')}
+                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${
+                      activeTab === 'questions'
+                        ? 'border-[#66CC33] text-[#000F2C]'
+                        : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
+                    }`}
+                  >
+                    <FiMessageSquare className="inline mr-1" />
+                    Q&A
+                  </button>
+                </div>
+              </div>
+
+              {/* Tab Content */}
+              <div className="min-h-[400px]">
+                {activeTab === 'overview' && (
+                  <div>
+                    {selectedLecture.description && (
+                      <div className="mb-6">
+                        <h3 className="text-lg font-semibold mb-3 text-[#000F2C]">About this lecture</h3>
+                        <p className="text-[#6a6f73] whitespace-pre-wrap leading-relaxed">
+                          {selectedLecture.description}
+                        </p>
+                      </div>
+                    )}
+                    
+                    {/* Navigation Buttons */}
+                    {selectedLecture.navigation && (
+                      <div className="flex gap-4 mt-8 pt-6 border-t border-gray-200">
+                        {selectedLecture.navigation.prev_lecture_id && (
+                          <button
+                            onClick={() => {
+                              const prevSection = sections.find(s => 
+                                s.lectures.some(l => l.id === selectedLecture.navigation?.prev_lecture_id)
+                              );
+                              const prevLecture = prevSection?.lectures.find(
+                                l => l.id === selectedLecture.navigation?.prev_lecture_id
+                              );
+                              if (prevLecture) {
+                                selectLecture(course.id, prevLecture.id);
+                              }
+                            }}
+                            className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-sm hover:bg-gray-50 transition-colors text-[#000F2C]"
+                          >
+                            <FiChevronLeft />
+                            Previous
+                          </button>
+                        )}
+                        {selectedLecture.navigation.next_lecture_id && (
+                          <button
+                            onClick={() => {
+                              const nextSection = sections.find(s => 
+                                s.lectures.some(l => l.id === selectedLecture.navigation?.next_lecture_id)
+                              );
+                              const nextLecture = nextSection?.lectures.find(
+                                l => l.id === selectedLecture.navigation?.next_lecture_id
+                              );
+                              if (nextLecture) {
+                                selectLecture(course.id, nextLecture.id);
+                              }
+                            }}
+                            className="flex items-center gap-2 px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] text-[#000F2C] rounded-sm font-semibold transition-colors ml-auto"
+                          >
+                            Next
+                            <FiChevronRight />
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {activeTab === 'reviews' && (
+                  <div className="text-center py-12">
+                    <FiStar className="text-4xl text-gray-300 mx-auto mb-4" />
+                    <p className="text-[#6a6f73]">No reviews yet for this lecture</p>
+                  </div>
+                )}
+
+                {activeTab === 'announcements' && (
+                  <div className="text-center py-12">
+                    <FiBell className="text-4xl text-gray-300 mx-auto mb-4" />
+                    <p className="text-[#6a6f73]">No announcements for this lecture</p>
+                  </div>
+                )}
+
+                {activeTab === 'notes' && (
+                  <div className="text-center py-12">
+                    <FiBook className="text-4xl text-gray-300 mx-auto mb-4" />
+                    <p className="text-[#6a6f73] mb-4">No notes yet</p>
+                    <button className="bg-[#66CC33] hover:bg-[#4da826] text-[#000F2C] px-4 py-2 rounded-sm font-semibold">
+                      Add Note
+                    </button>
+                  </div>
+                )}
+
+                {activeTab === 'questions' && (
+                  <div className="text-center py-12">
+                    <FiMessageSquare className="text-4xl text-gray-300 mx-auto mb-4" />
+                    <p className="text-[#6a6f73] mb-4">No questions yet</p>
+                    <button className="bg-[#66CC33] hover:bg-[#4da826] text-[#000F2C] px-4 py-2 rounded-sm font-semibold">
+                      Ask a Question
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
