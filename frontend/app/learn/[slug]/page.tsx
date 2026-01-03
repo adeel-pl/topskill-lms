@@ -76,26 +76,41 @@ export default function CoursePlayerPage() {
         return;
       }
 
-      const contentRes = await playerAPI.getContent(courseData.id);
-      const { sections: sectionsData, course: courseInfo } = contentRes.data;
+      try {
+        const contentRes = await playerAPI.getContent(courseData.id);
+        const { sections: sectionsData, course: courseInfo, enrollment } = contentRes.data;
 
-      setCourse(courseInfo);
-      setSections(sectionsData);
+        // Check if user is enrolled
+        if (!enrollment || !enrollment.id) {
+          console.error('Not enrolled in this course');
+          router.push(`/courses/${params.slug}`);
+          return;
+        }
 
-      if (sectionsData.length > 0 && sectionsData[0].lectures.length > 0) {
-        const firstLecture = sectionsData[0].lectures[0];
-        selectLecture(courseData.id, firstLecture.id);
-      } else {
+        setCourse(courseInfo);
+        setSections(sectionsData);
+
+        if (sectionsData.length > 0 && sectionsData[0].lectures.length > 0) {
+          const firstLecture = sectionsData[0].lectures[0];
+          selectLecture(courseData.id, firstLecture.id);
+        } else {
+          setLoading(false);
+        }
+
+        setLoading(false);
+      } catch (contentError: any) {
+        console.error('Error loading course content:', contentError);
+        if (contentError.response?.status === 403) {
+          // Not enrolled - redirect to course page
+          router.push(`/courses/${params.slug}`);
+        } else {
+          router.push('/courses');
+        }
         setLoading(false);
       }
-
-      setLoading(false);
     } catch (error: any) {
       console.error('Error loading course:', error);
-      if (error.response?.status === 403 || error.response?.status === 404) {
-        // Not enrolled or course not found
-        router.push('/courses');
-      }
+      router.push('/courses');
       setLoading(false);
     }
   };

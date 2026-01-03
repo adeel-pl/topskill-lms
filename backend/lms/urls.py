@@ -8,7 +8,9 @@ from rest_framework.permissions import IsAuthenticated
 from .views import (
     CourseViewSet, BatchViewSet, EnrollmentViewSet, PaymentViewSet,
     AttendanceViewSet, ReviewViewSet, WishlistViewSet, NotificationViewSet,
-    CategoryViewSet, TagViewSet
+    CategoryViewSet, TagViewSet, CourseSectionViewSet, LectureViewSet,
+    QuizViewSet, QuizAttemptViewSet, AssignmentViewSet, AssignmentSubmissionViewSet,
+    LectureProgressViewSet, ResourceViewSet, NoteViewSet
 )
 from .auth_views import register, login, logout, profile, update_profile
 from .cart_views import CartViewSet
@@ -27,6 +29,15 @@ router.register(r'notifications', NotificationViewSet, basename='notification')
 router.register(r'categories', CategoryViewSet, basename='category')
 router.register(r'tags', TagViewSet, basename='tag')
 router.register(r'cart', CartViewSet, basename='cart')
+router.register(r'sections', CourseSectionViewSet, basename='section')
+router.register(r'lectures', LectureViewSet, basename='lecture')
+router.register(r'quizzes', QuizViewSet, basename='quiz')
+router.register(r'quiz-attempts', QuizAttemptViewSet, basename='quiz-attempt')
+router.register(r'assignments', AssignmentViewSet, basename='assignment')
+router.register(r'assignment-submissions', AssignmentSubmissionViewSet, basename='assignment-submission')
+router.register(r'lecture-progress', LectureProgressViewSet, basename='lecture-progress')
+router.register(r'resources', ResourceViewSet, basename='resource')
+router.register(r'notes', NoteViewSet, basename='note')
 # Course player routes are registered separately below
 
 @api_view(['POST'])

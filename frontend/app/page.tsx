@@ -35,11 +35,31 @@ export default function HomePage() {
 
   const loadCourses = async () => {
     try {
-      const response = await coursesAPI.getAll({ limit: 8 });
-      setCourses(response.data.results || response.data.slice(0, 8));
+      console.log('Loading courses...');
+      const response = await coursesAPI.getAll();
+      console.log('API Response:', response);
+      console.log('Response data:', response.data);
+      
+      // Handle paginated response
+      let coursesData = [];
+      if (response.data) {
+        if (response.data.results && Array.isArray(response.data.results)) {
+          coursesData = response.data.results;
+        } else if (Array.isArray(response.data)) {
+          coursesData = response.data;
+        }
+      }
+      
+      console.log('Courses data:', coursesData);
+      // Limit to 8 for homepage
+      setCourses(coursesData.slice(0, 8));
       setLoading(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading courses:', error);
+      console.error('Error message:', error?.message);
+      console.error('Error response:', error?.response);
+      // Set empty array on error so it shows "No courses available"
+      setCourses([]);
       setLoading(false);
     }
   };

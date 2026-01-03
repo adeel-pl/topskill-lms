@@ -21,7 +21,7 @@ services:
 
   backend:
     build: ./backend
-    command: sh -c "python manage.py migrate && python manage.py seed_data && python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "python manage.py migrate && python manage.py seed_data || true && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./backend:/app
       - backend_static:/app/staticfiles
@@ -34,10 +34,17 @@ services:
       - PAYFAST_MERCHANT_ID=${PAYFAST_MERCHANT_ID:-}
       - PAYFAST_MERCHANT_KEY=${PAYFAST_MERCHANT_KEY:-}
       - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - PYTHONUNBUFFERED=1
     depends_on:
       db:
         condition: service_healthy
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/api/')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
 
   frontend:
     build: ./frontend
@@ -49,9 +56,15 @@ services:
       - "3000:3000"
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:8000/api
+      - NODE_ENV=development
     depends_on:
       - backend
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 volumes:
   postgres_data:

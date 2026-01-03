@@ -1,6 +1,9 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* PureLogics Modern Design System - WCAG AA Compliant */
+/* Force CSS to load with higher specificity */
 :root {
   /* Primary Colors - High Contrast */
   --purelogics-dark: #0A0E27;
@@ -163,16 +166,17 @@ html {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
-/* Premium Card Styles */
-.card {
-  background: var(--bg-card);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: 1rem;
-  border: 1px solid var(--border-primary);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
-  position: relative;
+/* Premium Card Styles - Higher Specificity */
+.card,
+.card-purelogics {
+  background: var(--bg-card) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-radius: 1rem !important;
+  border: 1px solid var(--border-primary) !important;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  overflow: hidden !important;
+  position: relative !important;
 }
 
 .card::before {
@@ -193,31 +197,34 @@ html {
   opacity: 1;
 }
 
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(16, 185, 129, 0.15);
-  border-color: var(--border-accent);
+.card:hover,
+.card-purelogics:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 20px 40px rgba(16, 185, 129, 0.15) !important;
+  border-color: var(--border-accent) !important;
 }
 
-/* Premium Button Styles */
-button, .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  font-weight: 600;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  border-radius: 0.75rem;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
-  white-space: nowrap;
-  position: relative;
-  overflow: hidden;
-  font-family: inherit;
+/* Premium Button Styles - Higher Specificity */
+button:not([class*="tailwind"]):not([class*="tw-"]),
+.btn:not([class*="tailwind"]):not([class*="tw-"]),
+.btn-purelogics {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  line-height: 1.25rem !important;
+  border-radius: 0.75rem !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  position: relative !important;
+  overflow: hidden !important;
+  font-family: inherit !important;
 }
 
 button::before, .btn::before {
@@ -238,20 +245,24 @@ button:disabled, .btn:disabled {
   cursor: not-allowed;
 }
 
-/* Primary Button - Premium */
-.btn-primary, button[class*="bg-green"] {
-  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-  background-size: 200% 200%;
-  color: #FFFFFF;
-  font-weight: 700;
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-  animation: gradient-shift 3s ease infinite;
+/* Primary Button - Premium - Higher Specificity */
+.btn-primary,
+button[class*="bg-green"]:not([class*="tailwind"]),
+.btn-primary-purelogics {
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+  background-size: 200% 200% !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
+  animation: gradient-shift 3s ease infinite !important;
 }
 
-.btn-primary:hover:not(:disabled), button[class*="bg-green"]:hover:not(:disabled) {
-  background: linear-gradient(135deg, #059669 0%, #10B981 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
+.btn-primary:hover:not(:disabled),
+button[class*="bg-green"]:hover:not(:disabled):not([class*="tailwind"]),
+.btn-primary-purelogics:hover:not(:disabled) {
+  background: linear-gradient(135deg, #059669 0%, #10B981 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5) !important;
 }
 
 /* Secondary Button - Premium */
@@ -532,4 +543,39 @@ a:hover {
 
 .gradient-overlay-purple {
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
+}
+
+/* Force CSS to load with highest priority */
+@layer base {
+  /* Ensure our custom styles override Tailwind */
+  body {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+  }
+}
+
+/* Additional utility classes with high specificity */
+[class*="purelogics-"] {
+  /* PureLogics specific classes */
+}
+
+/* Override any conflicting styles */
+.bg-purelogics-primary {
+  background-color: var(--bg-primary) !important;
+}
+
+.bg-purelogics-secondary {
+  background-color: var(--bg-secondary) !important;
+}
+
+.text-purelogics-primary {
+  color: var(--text-primary) !important;
+}
+
+.text-purelogics-green {
+  color: var(--purelogics-green) !important;
+}
+
+.border-purelogics-primary {
+  border-color: var(--border-primary) !important;
 }

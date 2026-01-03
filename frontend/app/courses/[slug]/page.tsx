@@ -58,7 +58,7 @@ export default function CourseDetailPage() {
         // Fallback to course data if overview fails
         setOverview({
           stats: {
-            total_sections: courseData.sections?.length || 0,
+            total_sections: courseData.total_sections || courseData.sections?.length || 0,
             total_lectures: courseData.total_lectures || 0,
             total_duration_hours: courseData.total_duration_hours || 0,
           },
@@ -301,7 +301,7 @@ export default function CourseDetailPage() {
                 <div className="flex items-center gap-4 md:gap-6 lg:gap-8 flex-wrap">
                   <div className="flex items-center gap-3 bg-[#0F172A]/50 backdrop-blur-sm border border-[#334155] rounded-xl px-5 md:px-6 py-4 md:py-5 hover:border-[#10B981]/50 transition-colors flex-1 min-w-[140px]">
                     <span className="text-3xl md:text-4xl font-black text-white">
-                      {overview?.stats?.total_sections ?? course?.sections?.length ?? 0}
+                      {overview?.stats?.total_sections ?? course?.total_sections ?? course?.sections?.length ?? 0}
                     </span>
                     <span className="text-sm md:text-base text-[#9CA3AF] font-medium ml-2">sections</span>
                   </div>

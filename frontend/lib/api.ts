@@ -3,6 +3,11 @@ import Cookies from 'js-cookie';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
+// Log API URL for debugging
+if (typeof window !== 'undefined') {
+  console.log('API Base URL:', API_BASE_URL);
+}
+
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {

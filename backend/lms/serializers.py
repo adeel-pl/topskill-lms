@@ -114,14 +114,18 @@ class CourseListSerializer(serializers.ModelSerializer):
     instructor_name = serializers.SerializerMethodField()
     enrolled_count = serializers.SerializerMethodField()
     average_rating = serializers.SerializerMethodField()
+    total_sections = serializers.SerializerMethodField()
+    total_lectures = serializers.SerializerMethodField()
+    total_duration_hours = serializers.SerializerMethodField()
     categories = CategorySerializer(many=True, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     
     class Meta:
         model = Course
-        fields = ['id', 'title', 'slug', 'description', 'modality', 'price', 
+        fields = ['id', 'title', 'slug', 'description', 'short_description', 'modality', 'price', 
                   'max_batch_size', 'thumbnail', 'instructor_name', 'enrolled_count',
-                  'average_rating', 'categories', 'tags', 'is_active', 'created_at']
+                  'average_rating', 'total_sections', 'total_lectures', 'total_duration_hours',
+                  'categories', 'tags', 'is_active', 'created_at']
     
     def get_instructor_name(self, obj):
         return obj.instructor.get_full_name() if obj.instructor else None
@@ -134,6 +138,20 @@ class CourseListSerializer(serializers.ModelSerializer):
         if reviews:
             return sum(r.rating for r in reviews) / len(reviews)
         return None
+    
+    def get_total_sections(self, obj):
+        return obj.sections.count()
+    
+    def get_total_lectures(self, obj):
+        from .models import Lecture
+        return Lecture.objects.filter(section__course=obj).count()
+    
+    def get_total_duration_hours(self, obj):
+        from .models import Lecture
+        total_minutes = sum(
+            Lecture.objects.filter(section__course=obj).values_list('duration_minutes', flat=True) or [0]
+        )
+        return round(total_minutes / 60, 2) if total_minutes > 0 else 0
 
 
 class CourseDetailSerializer(serializers.ModelSerializer):
@@ -143,15 +161,18 @@ class CourseDetailSerializer(serializers.ModelSerializer):
     instructor_name = serializers.SerializerMethodField()
     enrolled_count = serializers.SerializerMethodField()
     average_rating = serializers.SerializerMethodField()
+    total_sections = serializers.SerializerMethodField()
+    total_lectures = serializers.SerializerMethodField()
+    total_duration_hours = serializers.SerializerMethodField()
     categories = CategorySerializer(many=True, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     
     class Meta:
         model = Course
-        fields = ['id', 'title', 'slug', 'description', 'modality', 'price', 
+        fields = ['id', 'title', 'slug', 'description', 'short_description', 'modality', 'price', 
                   'max_batch_size', 'thumbnail', 'instructor', 'instructor_name',
-                  'enrolled_count', 'average_rating', 'categories', 'tags',
-                  'sections', 'batches', 'is_active', 'created_at', 'updated_at']
+                  'enrolled_count', 'average_rating', 'total_sections', 'total_lectures', 'total_duration_hours',
+                  'categories', 'tags', 'sections', 'batches', 'is_active', 'created_at', 'updated_at']
     
     def get_instructor_name(self, obj):
         return obj.instructor.get_full_name() if obj.instructor else None
@@ -164,6 +185,20 @@ class CourseDetailSerializer(serializers.ModelSerializer):
         if reviews:
             return sum(r.rating for r in reviews) / len(reviews)
         return None
+    
+    def get_total_sections(self, obj):
+        return obj.sections.count()
+    
+    def get_total_lectures(self, obj):
+        from .models import Lecture
+        return Lecture.objects.filter(section__course=obj).count()
+    
+    def get_total_duration_hours(self, obj):
+        from .models import Lecture
+        total_minutes = sum(
+            Lecture.objects.filter(section__course=obj).values_list('duration_minutes', flat=True) or [0]
+        )
+        return round(total_minutes / 60, 2) if total_minutes > 0 else 0
 
 
 class EnrollmentSerializer(serializers.ModelSerializer):
@@ -452,4 +487,29 @@ class CourseSectionPlayerSerializer(serializers.ModelSerializer):
     
     def get_total_lectures(self, obj):
         return obj.lectures.count()
+
+
+# ==================== RESOURCE & NOTE SERIALIZERS ====================
+
+class ResourceSerializer(serializers.ModelSerializer):
+    """Resource serializer"""
+    class Meta:
+        model = Resource
+        fields = ['id', 'title', 'description', 'resource_type', 'file', 'external_url',
+                  'is_active', 'order', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class NoteSerializer(serializers.ModelSerializer):
+    """Note serializer"""
+    lecture_title = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Note
+        fields = ['id', 'enrollment', 'lecture', 'lecture_title', 'content', 'is_public',
+                  'timestamp', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def get_lecture_title(self, obj):
+        return obj.lecture.title if obj.lecture else None
 

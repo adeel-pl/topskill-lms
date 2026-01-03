@@ -9,7 +9,8 @@ from django.utils import timezone
 from .models import (
     Course, Batch, Enrollment, Payment, Attendance, BatchSession,
     Quiz, QuizAttempt, Assignment, AssignmentSubmission, Review, Wishlist,
-    Notification, Certificate, LectureProgress, Category, Tag
+    Notification, Certificate, LectureProgress, Category, Tag,
+    CourseSection, Lecture, Question, QuestionOption, Resource, Note
 )
 from .serializers import (
     CourseListSerializer, CourseDetailSerializer, BatchSerializer,
@@ -18,7 +19,8 @@ from .serializers import (
     ReviewSerializer, ReviewCreateSerializer, QuizSerializer, QuizAttemptSerializer,
     AssignmentSerializer, AssignmentSubmissionSerializer, NotificationSerializer,
     CertificateSerializer, LectureProgressSerializer, WishlistSerializer,
-    WishlistCreateSerializer, UserSerializer, CategorySerializer, TagSerializer
+    WishlistCreateSerializer, UserSerializer, CategorySerializer, TagSerializer,
+    CourseSectionSerializer, CourseSectionDetailSerializer, LectureSerializer
 )
 from .services import PayFastService, GroqAIService
 from .permissions import IsInstructorOrReadOnly, IsStudentOrReadOnly
@@ -458,4 +460,288 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = [permissions.AllowAny]
+
+
+# ==================== COURSE CONTENT CRUD ====================
+
+class CourseSectionViewSet(viewsets.ModelViewSet):
+    """ViewSet for course sections"""
+    serializer_class = CourseSectionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        queryset = CourseSection.objects.all().select_related('course')
+        
+        # Filter by course
+        course_id = self.request.query_params.get('course')
+        if course_id:
+            queryset = queryset.filter(course_id=course_id)
+        
+        # Staff can see all, instructors can see their courses
+        if not self.request.user.is_staff:
+            queryset = queryset.filter(course__instructor=self.request.user)
+        
+        return queryset.order_by('order')
+    
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return CourseSectionDetailSerializer
+        return CourseSectionSerializer
+
+
+class LectureViewSet(viewsets.ModelViewSet):
+    """ViewSet for lectures"""
+    serializer_class = LectureSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        queryset = Lecture.objects.all().select_related('section', 'section__course')
+        
+        # Filter by section
+        section_id = self.request.query_params.get('section')
+        if section_id:
+            queryset = queryset.filter(section_id=section_id)
+        
+        # Filter by course
+        course_id = self.request.query_params.get('course')
+        if course_id:
+            queryset = queryset.filter(section__course_id=course_id)
+        
+        # Staff can see all, instructors can see their courses
+        if not self.request.user.is_staff:
+            queryset = queryset.filter(section__course__instructor=self.request.user)
+        
+        return queryset.order_by('section__order', 'order')
+
+
+class QuizViewSet(viewsets.ModelViewSet):
+    """ViewSet for quizzes"""
+    serializer_class = QuizSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    
+    def get_queryset(self):
+        queryset = Quiz.objects.filter(is_active=True).select_related('course')
+        
+        # Filter by course
+        course_id = self.request.query_params.get('course')
+        if course_id:
+            queryset = queryset.filter(course_id=course_id)
+        
+        return queryset.order_by('order')
+    
+    def perform_create(self, serializer):
+        course = serializer.validated_data['course']
+        # Only instructors or staff can create quizzes
+        if not self.request.user.is_staff and course.instructor != self.request.user:
+            raise permissions.PermissionDenied("Only course instructors can create quizzes")
+        serializer.save()
+
+
+class QuizAttemptViewSet(viewsets.ModelViewSet):
+    """ViewSet for quiz attempts"""
+    serializer_class = QuizAttemptSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        user = self.request.user
+        
+        # Students see only their attempts
+        if not user.is_staff:
+            return QuizAttempt.objects.filter(
+                enrollment__user=user
+            ).select_related('enrollment', 'quiz')
+        
+        # Staff can see all attempts
+        queryset = QuizAttempt.objects.all().select_related('enrollment', 'quiz')
+        
+        # Filter by quiz
+        quiz_id = self.request.query_params.get('quiz')
+        if quiz_id:
+            queryset = queryset.filter(quiz_id=quiz_id)
+        
+        # Filter by enrollment
+        enrollment_id = self.request.query_params.get('enrollment')
+        if enrollment_id:
+            queryset = queryset.filter(enrollment_id=enrollment_id)
+        
+        return queryset
+    
+    def perform_create(self, serializer):
+        enrollment = serializer.validated_data['enrollment']
+        # Only the enrolled user can create attempts
+        if enrollment.user != self.request.user and not self.request.user.is_staff:
+            raise permissions.PermissionDenied("You can only create attempts for your own enrollments")
+        serializer.save()
+
+
+class AssignmentViewSet(viewsets.ModelViewSet):
+    """ViewSet for assignments"""
+    serializer_class = AssignmentSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    
+    def get_queryset(self):
+        queryset = Assignment.objects.filter(is_active=True).select_related('course')
+        
+        # Filter by course
+        course_id = self.request.query_params.get('course')
+        if course_id:
+            queryset = queryset.filter(course_id=course_id)
+        
+        return queryset.order_by('order')
+    
+    def perform_create(self, serializer):
+        course = serializer.validated_data['course']
+        # Only instructors or staff can create assignments
+        if not self.request.user.is_staff and course.instructor != self.request.user:
+            raise permissions.PermissionDenied("Only course instructors can create assignments")
+        serializer.save()
+
+
+class AssignmentSubmissionViewSet(viewsets.ModelViewSet):
+    """ViewSet for assignment submissions"""
+    serializer_class = AssignmentSubmissionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        user = self.request.user
+        
+        # Students see only their submissions
+        if not user.is_staff:
+            return AssignmentSubmission.objects.filter(
+                enrollment__user=user
+            ).select_related('enrollment', 'assignment')
+        
+        # Staff can see all submissions
+        queryset = AssignmentSubmission.objects.all().select_related('enrollment', 'assignment')
+        
+        # Filter by assignment
+        assignment_id = self.request.query_params.get('assignment')
+        if assignment_id:
+            queryset = queryset.filter(assignment_id=assignment_id)
+        
+        # Filter by enrollment
+        enrollment_id = self.request.query_params.get('enrollment')
+        if enrollment_id:
+            queryset = queryset.filter(enrollment_id=enrollment_id)
+        
+        return queryset
+    
+    def perform_create(self, serializer):
+        enrollment = serializer.validated_data['enrollment']
+        # Only the enrolled user can create submissions
+        if enrollment.user != self.request.user and not self.request.user.is_staff:
+            raise permissions.PermissionDenied("You can only submit assignments for your own enrollments")
+        serializer.save()
+
+
+class LectureProgressViewSet(viewsets.ModelViewSet):
+    """ViewSet for lecture progress"""
+    serializer_class = LectureProgressSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        user = self.request.user
+        
+        # Students see only their progress
+        if not user.is_staff:
+            return LectureProgress.objects.filter(
+                enrollment__user=user
+            ).select_related('enrollment', 'lecture')
+        
+        # Staff can see all progress
+        queryset = LectureProgress.objects.all().select_related('enrollment', 'lecture')
+        
+        # Filter by enrollment
+        enrollment_id = self.request.query_params.get('enrollment')
+        if enrollment_id:
+            queryset = queryset.filter(enrollment_id=enrollment_id)
+        
+        # Filter by lecture
+        lecture_id = self.request.query_params.get('lecture')
+        if lecture_id:
+            queryset = queryset.filter(lecture_id=lecture_id)
+        
+        return queryset
+    
+    def perform_create(self, serializer):
+        enrollment = serializer.validated_data['enrollment']
+        # Only the enrolled user can create progress
+        if enrollment.user != self.request.user and not self.request.user.is_staff:
+            raise permissions.PermissionDenied("You can only track progress for your own enrollments")
+        serializer.save()
+        
+        # Update enrollment progress
+        enrollment.update_progress()
+
+
+class ResourceViewSet(viewsets.ModelViewSet):
+    """ViewSet for course resources"""
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    
+    def get_queryset(self):
+        from .serializers import ResourceSerializer
+        self.serializer_class = ResourceSerializer
+        
+        queryset = Resource.objects.filter(is_active=True).select_related('course')
+        
+        # Filter by course
+        course_id = self.request.query_params.get('course')
+        if course_id:
+            queryset = queryset.filter(course_id=course_id)
+        
+        return queryset.order_by('order')
+    
+    def get_serializer_class(self):
+        from .serializers import ResourceSerializer
+        return ResourceSerializer
+    
+    def perform_create(self, serializer):
+        course = serializer.validated_data['course']
+        # Only instructors or staff can create resources
+        if not self.request.user.is_staff and course.instructor != self.request.user:
+            raise permissions.PermissionDenied("Only course instructors can create resources")
+        serializer.save()
+
+
+class NoteViewSet(viewsets.ModelViewSet):
+    """ViewSet for student notes"""
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        from .serializers import NoteSerializer
+        self.serializer_class = NoteSerializer
+        
+        user = self.request.user
+        
+        # Students see only their notes
+        if not user.is_staff:
+            return Note.objects.filter(
+                enrollment__user=user
+            ).select_related('enrollment', 'lecture')
+        
+        # Staff can see all notes
+        queryset = Note.objects.all().select_related('enrollment', 'lecture')
+        
+        # Filter by enrollment
+        enrollment_id = self.request.query_params.get('enrollment')
+        if enrollment_id:
+            queryset = queryset.filter(enrollment_id=enrollment_id)
+        
+        # Filter by lecture
+        lecture_id = self.request.query_params.get('lecture')
+        if lecture_id:
+            queryset = queryset.filter(lecture_id=lecture_id)
+        
+        return queryset.order_by('-updated_at')
+    
+    def get_serializer_class(self):
+        from .serializers import NoteSerializer
+        return NoteSerializer
+    
+    def perform_create(self, serializer):
+        enrollment = serializer.validated_data['enrollment']
+        # Only the enrolled user can create notes
+        if enrollment.user != self.request.user and not self.request.user.is_staff:
+            raise permissions.PermissionDenied("You can only create notes for your own enrollments")
+        serializer.save()
 

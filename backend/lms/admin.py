@@ -3,7 +3,8 @@ from .models import (
     Course, Batch, Enrollment, Payment, Attendance, BatchSession,
     Lecture, CourseSection, Quiz, QuizAttempt, Assignment, AssignmentSubmission,
     Review, Wishlist, Category, Tag, Notification, Certificate, LectureProgress,
-    Forum, Post, Reply, Resource, Note, Prerequisite
+    Forum, Post, Reply, Resource, Note, Prerequisite, Question, QuestionOption,
+    Cart, CartItem
 )
 
 
@@ -148,4 +149,72 @@ class ResourceAdmin(admin.ModelAdmin):
     list_display = ['title', 'course', 'resource_type', 'is_active', 'order']
     list_filter = ['resource_type', 'is_active', 'course']
     ordering = ['course', 'order']
+
+
+@admin.register(Note)
+class NoteAdmin(admin.ModelAdmin):
+    list_display = ['enrollment', 'lecture', 'is_public', 'timestamp', 'created_at']
+    list_filter = ['is_public', 'created_at']
+    search_fields = ['enrollment__user__username', 'lecture__title']
+    readonly_fields = ['created_at', 'updated_at']
+
+
+@admin.register(Forum)
+class ForumAdmin(admin.ModelAdmin):
+    list_display = ['course', 'is_active', 'created_at']
+    list_filter = ['is_active', 'created_at']
+    search_fields = ['course__title']
+
+
+@admin.register(Post)
+class PostAdmin(admin.ModelAdmin):
+    list_display = ['title', 'forum', 'user', 'post_type', 'is_pinned', 'is_locked', 'created_at']
+    list_filter = ['post_type', 'is_pinned', 'is_locked', 'created_at']
+    search_fields = ['title', 'content', 'user__username']
+    readonly_fields = ['created_at', 'updated_at']
+
+
+@admin.register(Reply)
+class ReplyAdmin(admin.ModelAdmin):
+    list_display = ['post', 'user', 'is_answer', 'created_at']
+    list_filter = ['is_answer', 'created_at']
+    search_fields = ['content', 'user__username', 'post__title']
+    readonly_fields = ['created_at', 'updated_at']
+
+
+@admin.register(Prerequisite)
+class PrerequisiteAdmin(admin.ModelAdmin):
+    list_display = ['course', 'required_course', 'created_at']
+    list_filter = ['created_at']
+    search_fields = ['course__title', 'required_course__title']
+
+
+@admin.register(Question)
+class QuestionAdmin(admin.ModelAdmin):
+    list_display = ['quiz', 'question_text', 'question_type', 'points', 'order']
+    list_filter = ['question_type', 'quiz']
+    ordering = ['quiz', 'order']
+    search_fields = ['question_text']
+
+
+@admin.register(QuestionOption)
+class QuestionOptionAdmin(admin.ModelAdmin):
+    list_display = ['question', 'option_text', 'is_correct', 'order']
+    list_filter = ['is_correct', 'question__quiz']
+    ordering = ['question', 'order']
+    search_fields = ['option_text']
+
+
+@admin.register(Cart)
+class CartAdmin(admin.ModelAdmin):
+    list_display = ['user', 'created_at', 'updated_at']
+    search_fields = ['user__username']
+    readonly_fields = ['created_at', 'updated_at']
+
+
+@admin.register(CartItem)
+class CartItemAdmin(admin.ModelAdmin):
+    list_display = ['cart', 'course', 'created_at']
+    list_filter = ['created_at']
+    search_fields = ['cart__user__username', 'course__title']
 

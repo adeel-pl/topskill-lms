@@ -4,6 +4,7 @@ from lms.models import (
     Course, CourseSection, Lecture, Category, Tag, 
     Batch, Enrollment, Review, Quiz, Assignment
 )
+from .video_ids import get_video_id_for_course
 
 
 class Command(BaseCommand):
@@ -37,6 +38,22 @@ class Command(BaseCommand):
         tag6, _ = Tag.objects.get_or_create(name='Docker', slug='docker')
         tag7, _ = Tag.objects.get_or_create(name='Kubernetes', slug='kubernetes')
         tag8, _ = Tag.objects.get_or_create(name='TensorFlow', slug='tensorflow')
+
+        # Create admin user
+        admin_user, _ = User.objects.get_or_create(
+            username='admin',
+            defaults={
+                'email': 'admin@topskill.com',
+                'first_name': 'Admin',
+                'last_name': 'User',
+                'is_staff': True,
+                'is_superuser': True,
+            }
+        )
+        admin_user.set_password('admin123')
+        admin_user.is_staff = True
+        admin_user.is_superuser = True
+        admin_user.save()
 
         # Create instructor
         instructor, _ = User.objects.get_or_create(
@@ -109,21 +126,32 @@ class Command(BaseCommand):
         # Create sections and lectures for all initial courses
         for course in [course1, course2, course3]:
             if course:
+                section_titles = [
+                    'Introduction and Setup',
+                    'Core Concepts',
+                    'Advanced Topics'
+                ]
                 for section_num in range(1, 4):
                     section, _ = CourseSection.objects.get_or_create(
                         course=course,
-                        title=f'Section {section_num}',
+                        title=section_titles[section_num - 1],
                         defaults={'order': section_num}
                     )
+                    lecture_titles = [
+                        ['Getting Started', 'Basic Concepts', 'First Steps'],
+                        ['Intermediate Topics', 'Working with Data', 'Best Practices'],
+                        ['Advanced Features', 'Real-world Examples', 'Project Building']
+                    ]
                     for lecture_num in range(1, 4):
+                        video_id = get_video_id_for_course(course.title, lecture_num, section_num)
                         Lecture.objects.get_or_create(
                             section=section,
-                            title=f'Lecture {lecture_num}.{section_num}',
+                            title=lecture_titles[section_num - 1][lecture_num - 1],
                             defaults={
                                 'order': lecture_num,
-                                'description': f'Content for lecture {lecture_num}.{section_num}',
-                                'youtube_video_id': 'dQw4w9WgXcQ',
-                                'duration_minutes': 10 + (lecture_num * 5),
+                                'description': f'Learn {lecture_titles[section_num - 1][lecture_num - 1].lower()} in {course.title}. This lecture covers essential concepts and practical examples.',
+                                'youtube_video_id': video_id,
+                                'duration_minutes': 10 + (lecture_num * 5) + (section_num * 2),
                                 'is_preview': True if section_num == 1 and lecture_num == 1 else False,
                             }
                         )
@@ -402,21 +430,32 @@ class Command(BaseCommand):
             
             # Create sections and lectures (always, if course has no sections)
             if course.sections.count() == 0:
+                section_titles = [
+                    'Introduction and Setup',
+                    'Core Concepts',
+                    'Advanced Topics'
+                ]
                 for section_num in range(1, 4):
                     section, _ = CourseSection.objects.get_or_create(
                         course=course,
-                        title=f'Section {section_num}',
+                        title=section_titles[section_num - 1],
                         defaults={'order': section_num}
                     )
+                    lecture_titles = [
+                        ['Getting Started', 'Basic Concepts', 'First Steps'],
+                        ['Intermediate Topics', 'Working with Data', 'Best Practices'],
+                        ['Advanced Features', 'Real-world Examples', 'Project Building']
+                    ]
                     for lecture_num in range(1, 4):
+                        video_id = get_video_id_for_course(course.title, lecture_num, section_num)
                         Lecture.objects.get_or_create(
                             section=section,
-                            title=f'Lecture {lecture_num}.{section_num}',
+                            title=lecture_titles[section_num - 1][lecture_num - 1],
                             defaults={
                                 'order': lecture_num,
-                                'description': f'Content for lecture {lecture_num}.{section_num}',
-                                'youtube_video_id': 'dQw4w9WgXcQ',
-                                'duration_minutes': 10 + (lecture_num * 5),
+                                'description': f'Learn {lecture_titles[section_num - 1][lecture_num - 1].lower()} in {course.title}. This lecture covers essential concepts and practical examples.',
+                                'youtube_video_id': video_id,
+                                'duration_minutes': 10 + (lecture_num * 5) + (section_num * 2),
                                 'is_preview': True if section_num == 1 and lecture_num == 1 else False,
                             }
                         )
@@ -457,10 +496,29 @@ class Command(BaseCommand):
         self.stdout.write(f'  - {Lecture.objects.count()} lectures')
         self.stdout.write(f'  - {Category.objects.count()} categories')
         self.stdout.write(f'  - {User.objects.count()} users')
-        self.stdout.write('\nTest Accounts:')
-        self.stdout.write('  - Admin: admin/admin123')
-        self.stdout.write('  - Instructor: instructor/instructor123')
-        self.stdout.write('  - Student: student/student123')
+        self.stdout.write('\n' + '='*50)
+        self.stdout.write(self.style.SUCCESS('USER CREDENTIALS:'))
+        self.stdout.write('='*50)
+        self.stdout.write('\n🔐 ADMIN USER (Full Access):')
+        self.stdout.write('   Username: admin')
+        self.stdout.write('   Password: admin123')
+        self.stdout.write('   Email: admin@topskill.com')
+        self.stdout.write('   Access: Django Admin + Frontend Admin Panel')
+        self.stdout.write('\n👨‍🏫 INSTRUCTOR USER:')
+        self.stdout.write('   Username: instructor')
+        self.stdout.write('   Password: instructor123')
+        self.stdout.write('   Email: instructor@topskill.com')
+        self.stdout.write('   Access: Can create and manage courses')
+        self.stdout.write('\n👨‍🎓 STUDENT USER:')
+        self.stdout.write('   Username: student')
+        self.stdout.write('   Password: student123')
+        self.stdout.write('   Email: student@topskill.com')
+        self.stdout.write('   Access: Can enroll in courses and track progress')
+        self.stdout.write('\n' + '='*50)
+        self.stdout.write('\n💡 TIP: Use these credentials to login at:')
+        self.stdout.write('   Frontend: http://localhost:3000/login')
+        self.stdout.write('   Django Admin: http://localhost:8000/admin')
+        self.stdout.write('='*50)
 
 
 

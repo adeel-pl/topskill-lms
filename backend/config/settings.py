@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-i9jicptv$@*=m44f05n-!y&w64=hfzwwo&dqf49=pb!g6ydwxx
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']  # Allow all hosts for Docker
 
 
 # Application definition
@@ -185,10 +185,22 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://localhost:3001",
+    "http://0.0.0.0:3000",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = DEBUG  # Only in development
+CORS_ALLOW_ALL_ORIGINS = True  # Allow all in development for Docker
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 # ==================== Media Files ====================
 
