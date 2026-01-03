@@ -15,8 +15,17 @@ module.exports = {
         secondary: '#7c3aed',
         accent: '#06b6d4',
       },
+      maxWidth: {
+        'container': '1400px',
+        'container-xl': '1600px',
+        'container-2xl': '1800px',
+      },
+      spacing: {
+        '50': '50px',
+      },
     },
   },
   plugins: [],
 };
+
 

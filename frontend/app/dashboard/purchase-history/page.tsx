@@ -1,53 +1,284 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
-import { FiShoppingBag, FiBookOpen } from 'react-icons/fi';
+import { enrollmentsAPI, cartAPI } from '@/lib/api';
+import { BookOpen, ShoppingCart, Play, Clock, TrendingUp } from 'lucide-react';
+import { motion } from 'framer-motion';
+import DashboardLayout from '@/app/components/DashboardLayout';
+
+interface Enrollment {
+  id: number;
+  course: {
+    id: number;
+    title: string;
+    slug: string;
+    thumbnail?: string;
+    price: number;
+  };
+  status: string;
+  progress_percent: number;
+  created_at: string;
+}
+
+interface CartItem {
+  id: number;
+  course: {
+    id: number;
+    title: string;
+    slug: string;
+    thumbnail?: string;
+    price: number;
+  };
+}
 
 export default function PurchaseHistoryPage() {
   const router = useRouter();
   const { isAuthenticated, isLoading } = useAuthStore();
+  const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const requestIdRef = useRef(0);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       router.push('/login');
+      return;
+    }
+    
+    if (isAuthenticated) {
+      loadData();
     }
   }, [isAuthenticated, isLoading]);
 
-  if (isLoading) {
+  const loadData = async () => {
+    const currentRequestId = ++requestIdRef.current;
+    try {
+      // Load enrollments
+      const enrollmentsRes = await enrollmentsAPI.getAll();
+      const enrollmentsData = enrollmentsRes.data.results || enrollmentsRes.data || [];
+      
+      // Load cart items
+      let cartData: CartItem[] = [];
+      try {
+        const cartRes = await cartAPI.get();
+        cartData = cartRes.data.items || [];
+      } catch (error) {
+        console.error('Error loading cart:', error);
+      }
+
+      // Only update state if this is still the latest request (prevents race conditions)
+      if (currentRequestId === requestIdRef.current) {
+        setEnrollments(enrollmentsData);
+        setCartItems(cartData);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error('Error loading data:', error);
+      // Only update state if this is still the latest request
+      if (currentRequestId === requestIdRef.current) {
+        setLoading(false);
+      }
+    }
+  };
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price);
+  };
+
+  if (isLoading || loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-gray-200 border-t-[#66CC33] rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+      <DashboardLayout>
+        <div className="min-h-screen bg-[#0F172A] flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-[#334155] border-t-[#10B981] rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-[#9CA3AF]">Loading...</p>
+          </div>
         </div>
-      </div>
+      </DashboardLayout>
     );
   }
 
   return (
-    <div className="p-8 bg-white">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#000F2C] mb-1">Purchase history</h1>
-        <p className="text-[#6a6f73] text-sm">View all your course purchases and transactions</p>
-      </div>
-
-      <div className="text-center py-20 bg-gray-50 rounded-sm border border-gray-200">
-        <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-lg flex items-center justify-center">
-          <FiShoppingBag className="text-3xl text-gray-400" />
+    <DashboardLayout>
+      <div className="max-w-container xl:max-w-container-xl 2xl:max-w-container-2xl mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-10 md:py-12">
+        <div className="mb-8 md:mb-12">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black mb-2 text-white">
+            Purchase History
+          </h1>
+          <p className="text-[#9CA3AF] text-base md:text-lg">View all your enrolled courses and cart items</p>
         </div>
-        <h2 className="text-2xl font-bold mb-2 text-[#000F2C]">No purchases yet</h2>
-        <p className="text-[#6a6f73] mb-6">Your purchase history will appear here once you enroll in courses</p>
-        <Link
-          href="/courses"
-          className="bg-[#66CC33] hover:bg-[#4da826] text-[#000F2C] px-6 py-3 rounded-sm font-semibold inline-block transition-all duration-200 flex items-center gap-2 mx-auto w-fit"
-        >
-          <FiBookOpen />
-          Browse Courses
-        </Link>
+
+        {/* Enrolled Courses */}
+        <div className="mb-12">
+          <div className="flex items-center gap-3 mb-6">
+            <BookOpen className="w-6 h-6 text-[#10B981]" />
+            <h2 className="text-2xl md:text-3xl font-black text-white">Enrolled Courses ({enrollments.length})</h2>
+          </div>
+
+          {enrollments.length === 0 ? (
+            <div className="bg-[#1E293B] border border-[#334155] rounded-2xl p-12 text-center">
+              <p className="text-[#9CA3AF] mb-4">No enrolled courses yet</p>
+              <Link
+                href="/courses"
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-[#10B981] to-[#059669] text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
+              >
+                Browse Courses
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {enrollments.map((enrollment, index) => (
+                <motion.div
+                  key={enrollment.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  className="bg-[#1E293B] border border-[#334155] rounded-2xl overflow-hidden hover:border-[#10B981]/50 transition-all hover:shadow-xl hover:shadow-[#10B981]/20"
+                >
+                  <Link href={`/learn/${enrollment.course.slug}`}>
+                    <div className="relative aspect-video bg-gradient-to-br from-[#10B981] via-[#3B82F6] to-[#8B5CF6]">
+                      {enrollment.course.thumbnail ? (
+                        <img
+                          src={enrollment.course.thumbnail}
+                          alt={enrollment.course.title}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <span className="text-white text-4xl font-black">
+                            {enrollment.course.title.charAt(0)}
+                          </span>
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                  </Link>
+                  
+                  <div className="p-6">
+                    <Link href={`/learn/${enrollment.course.slug}`}>
+                      <h3 className="text-xl font-bold text-white mb-3 hover:text-[#10B981] transition-colors line-clamp-2">
+                        {enrollment.course.title}
+                      </h3>
+                    </Link>
+                    
+                    {/* Progress Bar */}
+                    <div className="mb-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm text-[#9CA3AF] font-medium">Progress</span>
+                        <span className="text-sm font-bold text-[#10B981]">
+                          {Math.round(enrollment.progress_percent || 0)}%
+                        </span>
+                      </div>
+                      <div className="w-full bg-[#0F172A] rounded-full h-2.5 overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${enrollment.progress_percent || 0}%` }}
+                          transition={{ duration: 0.5, delay: index * 0.1 }}
+                          className="h-full bg-gradient-to-r from-[#10B981] to-[#059669] rounded-full"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-sm text-[#9CA3AF]">
+                        <Clock className="w-4 h-4" />
+                        <span>Enrolled</span>
+                      </div>
+                      <Link
+                        href={`/learn/${enrollment.course.slug}`}
+                        className="flex items-center gap-2 bg-gradient-to-r from-[#10B981] to-[#059669] text-white px-4 py-2 rounded-lg font-bold text-sm hover:scale-105 transition-all"
+                      >
+                        <Play className="w-4 h-4" />
+                        Continue
+                      </Link>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Cart Items */}
+        <div>
+          <div className="flex items-center gap-3 mb-6">
+            <ShoppingCart className="w-6 h-6 text-[#3B82F6]" />
+            <h2 className="text-2xl md:text-3xl font-black text-white">Cart Items ({cartItems.length})</h2>
+          </div>
+
+          {cartItems.length === 0 ? (
+            <div className="bg-[#1E293B] border border-[#334155] rounded-2xl p-12 text-center">
+              <p className="text-[#9CA3AF] mb-4">Your cart is empty</p>
+              <Link
+                href="/courses"
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-[#10B981] to-[#059669] text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
+              >
+                Browse Courses
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {cartItems.map((item, index) => (
+                <motion.div
+                  key={item.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  className="bg-[#1E293B] border border-[#334155] rounded-2xl overflow-hidden hover:border-[#3B82F6]/50 transition-all hover:shadow-xl hover:shadow-[#3B82F6]/20"
+                >
+                  <Link href={`/courses/${item.course.slug}`}>
+                    <div className="relative aspect-video bg-gradient-to-br from-[#3B82F6] via-[#8B5CF6] to-[#EC4899]">
+                      {item.course.thumbnail ? (
+                        <img
+                          src={item.course.thumbnail}
+                          alt={item.course.title}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <span className="text-white text-4xl font-black">
+                            {item.course.title.charAt(0)}
+                          </span>
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                  </Link>
+                  
+                  <div className="p-6">
+                    <Link href={`/courses/${item.course.slug}`}>
+                      <h3 className="text-xl font-bold text-white mb-3 hover:text-[#3B82F6] transition-colors line-clamp-2">
+                        {item.course.title}
+                      </h3>
+                    </Link>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="text-2xl font-black text-white">
+                        {formatPrice(item.course.price)}
+                      </div>
+                      <Link
+                        href="/cart"
+                        className="flex items-center gap-2 bg-[#3B82F6] text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-[#2563EB] transition-all"
+                      >
+                        <ShoppingCart className="w-4 h-4" />
+                        View Cart
+                      </Link>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 }

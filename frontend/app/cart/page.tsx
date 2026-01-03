@@ -6,7 +6,7 @@ import { cartAPI } from '@/lib/api';
 import { useAuthStore } from '@/lib/store';
 import { useRouter } from 'next/navigation';
 import PureLogicsNavbar from '@/app/components/PureLogicsNavbar';
-import { FiTrash2, FiShoppingCart } from 'react-icons/fi';
+import { FiTrash2, FiShoppingCart, FiArrowRight } from 'react-icons/fi';
 
 export default function CartPage() {
   const router = useRouter();
@@ -28,7 +28,6 @@ export default function CartPage() {
   const loadCart = async () => {
     try {
       const response = await cartAPI.get();
-      // Handle both list and single object response
       const cartData = Array.isArray(response.data) ? response.data[0] : response.data;
       setCart(cartData);
       setLoading(false);
@@ -60,13 +59,11 @@ export default function CartPage() {
       console.log('Checkout response:', response);
       
       if (response.data && response.data.payment_url) {
-        // Redirect to payment gateway
         window.location.href = response.data.payment_url;
       } else if (response.data && response.data.enrolled) {
-        // Direct enrollment (development mode - no payment gateway configured)
         alert(`Successfully enrolled in ${response.data.enrollments_count} course(s)!`);
         router.push('/dashboard/my-courses');
-        loadCart(); // Refresh cart
+        loadCart();
       } else {
         alert('Payment URL not available. Please try enrolling directly from the course page.');
         setCheckingOut(false);
@@ -81,10 +78,10 @@ export default function CartPage() {
 
   if (loading || isLoading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#0F172A] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-gray-200 border-t-[#66CC33] rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading cart...</p>
+          <div className="w-16 h-16 border-4 border-[#334155] border-t-[#10B981] rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-[#9CA3AF]">Loading cart...</p>
         </div>
       </div>
     );
@@ -93,46 +90,68 @@ export default function CartPage() {
   const itemCount = cart?.items?.length || 0;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#0F172A] text-white pt-16 md:pt-20">
       <PureLogicsNavbar />
 
-      <div className="max-w-[1344px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-3xl font-bold mb-2 text-[#000F2C]">Shopping Cart</h1>
-        <p className="text-[#6a6f73] mb-8 text-sm">{itemCount} {itemCount === 1 ? 'Course' : 'Courses'} in Cart</p>
+      {/* Subtle Background Pattern */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-40 right-20 w-96 h-96 bg-[#10B981] opacity-[0.05] rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-40 left-20 w-80 h-80 bg-[#3B82F6] opacity-[0.05] rounded-full blur-3xl animate-pulse delay-1000"></div>
+      </div>
+
+      <div className="max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-10 md:py-12 relative z-10">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-2 md:mb-3 text-white">
+          Shopping Cart
+        </h1>
+        <p className="text-[#9CA3AF] text-sm md:text-base lg:text-lg mb-6 md:mb-8 lg:mb-12">{itemCount} {itemCount === 1 ? 'Course' : 'Courses'} in Cart</p>
 
         {!cart || !cart.items || cart.items.length === 0 ? (
-          <div className="text-center py-20 bg-white border border-gray-200 rounded-sm">
-            <div className="w-24 h-24 mx-auto mb-4 flex items-center justify-center">
-              <FiShoppingCart className="text-6xl text-gray-300" />
+          <div className="text-center py-16 md:py-20">
+            <div className="bg-[#1E293B] border border-[#334155] rounded-2xl p-10 md:p-12 lg:p-16 max-w-md mx-auto">
+              <div className="w-20 md:w-24 h-20 md:h-24 bg-[#10B981]/20 rounded-full flex items-center justify-center mx-auto mb-5 md:mb-6">
+                <FiShoppingCart className="text-4xl md:text-5xl text-[#10B981]" />
+              </div>
+              <h2 className="text-2xl md:text-3xl font-black mb-3 md:mb-4 text-white">Your cart is empty</h2>
+              <p className="text-[#9CA3AF] mb-5 md:mb-6 lg:mb-8 text-sm md:text-base">Keep shopping to find a course!</p>
+              <Link
+                href="/courses"
+                className="inline-block bg-gradient-to-r from-[#10B981] to-[#059669] text-white px-7 md:px-8 py-3.5 md:py-4 rounded-xl font-black transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#10B981]/50 text-sm md:text-base"
+              >
+                Keep shopping
+              </Link>
             </div>
-            <h2 className="text-2xl font-bold mb-2 text-[#000F2C]">Your cart is empty. Keep shopping to find a course!</h2>
-            <Link
-              href="/courses"
-              className="inline-block mt-6 bg-[#66CC33] hover:bg-[#4da826] text-[#000F2C] px-6 py-3 rounded-sm font-bold transition-colors"
-            >
-              Keep shopping
-            </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-4">
-              {cart.items.map((item: any) => (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 md:gap-6 lg:gap-8">
+            <div className="lg:col-span-2 space-y-4 md:space-y-5 lg:space-y-6">
+              {cart.items.map((item: any, idx: number) => (
                 <div
                   key={item.id}
-                  className="bg-white border border-gray-200 rounded-sm p-6 flex items-start gap-4"
+                  className="bg-[#1E293B] border border-[#334155] rounded-2xl p-4 md:p-5 lg:p-6 hover:bg-[#334155] hover:border-[#10B981] transition-all duration-500 hover:scale-[1.02] hover:-translate-y-1"
+                  style={{ animationDelay: `${idx * 100}ms` }}
                 >
-                  <div className="w-32 h-20 bg-gradient-to-br from-[#66CC33] to-[#4da826] rounded-sm flex-shrink-0"></div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-bold mb-1 text-[#000F2C]">{item.course?.title || 'Course'}</h3>
-                    <p className="text-sm text-[#6a6f73] mb-3 line-clamp-2">{item.course?.description || ''}</p>
-                    <div className="flex items-center justify-between">
-                      <div className="text-xl font-bold text-[#000F2C]">${item.course?.price || 0}</div>
-                      <button
-                        onClick={() => removeItem(item.course?.id)}
-                        className="text-[#6a6f73] hover:text-red-500 transition-colors"
-                      >
-                        <FiTrash2 className="text-lg" />
-                      </button>
+                  <div className="flex items-start gap-4 md:gap-5 lg:gap-6">
+                    <div className="w-24 md:w-28 lg:w-32 h-20 md:h-24 lg:h-28 rounded-xl bg-gradient-to-br from-[#10B981] to-[#8B5CF6] overflow-hidden flex-shrink-0">
+                      {item.course?.thumbnail ? (
+                        <img src={item.course.thumbnail} alt={item.course.title} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <span className="text-white text-xl md:text-2xl font-black">{item.course?.title?.charAt(0) || 'C'}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-base md:text-lg lg:text-xl font-black text-white mb-1.5 md:mb-2">{item.course?.title || 'Course'}</h3>
+                      <p className="text-xs md:text-sm text-[#9CA3AF] mb-3 md:mb-4 line-clamp-2">{item.course?.description || ''}</p>
+                      <div className="flex items-center justify-between">
+                        <div className="text-lg md:text-xl lg:text-2xl font-black text-[#10B981]">${item.course?.price || 0}</div>
+                        <button
+                          onClick={() => removeItem(item.course?.id)}
+                          className="text-[#9CA3AF] hover:text-[#EF4444] p-2 md:p-2.5 rounded-xl hover:bg-[#EF4444]/10 transition-all duration-300"
+                        >
+                          <FiTrash2 className="text-lg md:text-xl" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -140,19 +159,29 @@ export default function CartPage() {
             </div>
 
             <div className="lg:col-span-1">
-              <div className="bg-white border-2 border-gray-300 rounded-sm p-6 sticky top-24">
-                <h2 className="text-xl font-bold mb-4 text-[#000F2C]">Total:</h2>
-                <div className="text-3xl font-bold mb-6 text-[#000F2C]">${cart.total || 0}</div>
+              <div className="sticky top-20 md:top-24 bg-[#1E293B] border-2 border-[#334155] rounded-2xl p-5 md:p-6 lg:p-8 shadow-2xl hover:bg-[#334155] hover:border-[#10B981] transition-all duration-500">
+                <h2 className="text-xl md:text-2xl font-black mb-4 md:mb-5 lg:mb-6 text-white">Total</h2>
+                <div className="text-3xl md:text-4xl lg:text-5xl font-black mb-5 md:mb-6 lg:mb-8 text-[#10B981]">${cart.total || 0}</div>
                 <button
                   onClick={handleCheckout}
                   disabled={checkingOut || itemCount === 0}
-                  className="w-full bg-[#66CC33] hover:bg-[#4da826] text-[#000F2C] py-3.5 rounded-sm font-bold text-base transition-colors mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#10B981] text-white py-3.5 md:py-4 lg:py-5 rounded-xl font-black text-base md:text-lg transition-all duration-300 mb-3 md:mb-4 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 hover:shadow-2xl hover:shadow-[#10B981]/50 flex items-center justify-center gap-2"
                 >
-                  {checkingOut ? 'Processing...' : 'Checkout'}
+                  {checkingOut ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      Checkout
+                      <FiArrowRight className="text-lg md:text-xl" />
+                    </>
+                  )}
                 </button>
                 <Link
                   href="/courses"
-                  className="block text-center text-[#000F2C] hover:text-[#66CC33] font-semibold text-sm transition-colors"
+                  className="block text-center text-[#D1D5DB] hover:text-[#10B981] font-bold text-xs md:text-sm transition-colors py-2.5 md:py-3 rounded-xl hover:bg-[#1E293B]"
                 >
                   Continue Shopping
                 </Link>

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/store';
 import PureLogicsNavbar from '@/app/components/PureLogicsNavbar';
-import { FiLock, FiUser } from 'react-icons/fi';
+import { FiLock, FiUser, FiMail, FiArrowRight } from 'react-icons/fi';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -30,41 +30,71 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#000F2C] text-white">
+    <div className="min-h-screen bg-[#0F172A] text-white pt-16 md:pt-20">
       <PureLogicsNavbar />
 
-      <div className="flex items-center justify-center min-h-[calc(100vh-64px)] px-6 py-12">
-        <div className="max-w-md w-full">
-          <div className="text-center mb-8">
-            <div className="flex justify-center gap-2 mb-6">
-              <div className="w-12 h-12 bg-[#66CC33] rounded-sm flex items-center justify-center">
-                <div className="w-6 h-6 bg-[#4da826] rounded-sm"></div>
-              </div>
-              <div className="w-12 h-12 bg-[#66CC33] rounded-sm flex items-center justify-center">
-                <div className="w-6 h-6 bg-[#4da826] rounded-sm"></div>
+      {/* Enhanced Background Pattern */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-20 left-10 w-96 h-96 bg-[#10B981] opacity-[0.08] rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-80 h-80 bg-[#3B82F6] opacity-[0.06] rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#10B981] opacity-[0.03] rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4 sm:px-6 py-12 md:py-16 relative z-10">
+        <div className="max-w-[500px] xl:max-w-[600px] 2xl:max-w-[700px] mx-auto w-full px-4 sm:px-6">
+          {/* Enhanced Header */}
+          <div className="text-center mb-12">
+            <div className="inline-block mb-8">
+              <div className="relative">
+                <div className="w-20 h-20 bg-gradient-to-br from-[#10B981] to-[#059669] rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-[#10B981]/50 transform hover:scale-110 transition-transform duration-300">
+                  <div className="w-10 h-10 bg-[#0F172A] rounded-xl"></div>
+                </div>
+                <div className="absolute inset-0 bg-[#10B981] rounded-3xl opacity-20 blur-2xl animate-pulse"></div>
               </div>
             </div>
-            <h2 className="text-3xl font-bold mb-2">Log in to continue your learning journey</h2>
+            <h2 className="text-5xl md:text-6xl font-black mb-4 text-white leading-tight">
+              Welcome Back
+            </h2>
+            <p className="text-[#D1D5DB] text-lg md:text-xl">Log in to continue your learning journey</p>
           </div>
 
-          <div className="bg-white rounded-sm p-8">
+          {/* Premium Form Card */}
+          <div className="bg-[#1E293B]/90 backdrop-blur-xl border border-[#334155] rounded-3xl p-8 md:p-10 shadow-2xl hover:border-[#10B981]/50 transition-all duration-500">
             <form className="space-y-6" onSubmit={handleSubmit}>
               {error && (
-                <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-sm text-sm">
+                <div className="bg-gradient-to-r from-[#EF4444]/20 to-[#DC2626]/20 border border-[#EF4444]/50 text-[#FCA5A5] px-6 py-4 rounded-xl text-sm font-medium backdrop-blur-sm">
                   {error}
                 </div>
               )}
 
               <div>
-                <label className="block text-sm font-semibold text-[#000F2C] mb-2">Email</label>
-                <div className="relative">
+                <label className="block text-sm font-bold text-white mb-3">Email or Username</label>
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#10B981]/0 to-[#10B981]/0 rounded-xl group-focus-within:from-[#10B981]/10 group-focus-within:to-[#10B981]/5 transition-all duration-300"></div>
+                  <FiMail className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#10B981] transition-colors z-10" />
                   <input
                     type="text"
                     required
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-sm text-[#000F2C] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#66CC33] focus:border-[#66CC33]"
-                    placeholder="Email"
+                    className="relative w-full pl-14 pr-5 py-4 bg-[#0F172A] border-2 border-[#334155] rounded-xl text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#10B981]/50 focus:border-[#10B981] transition-all hover:bg-[#1E293B] hover:border-[#475569]"
+                    placeholder="Enter your email or username"
                     value={formData.username}
                     onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-white mb-3">Password</label>
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#10B981]/0 to-[#10B981]/0 rounded-xl group-focus-within:from-[#10B981]/10 group-focus-within:to-[#10B981]/5 transition-all duration-300"></div>
+                  <FiLock className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#10B981] transition-colors z-10" />
+                  <input
+                    type="password"
+                    required
+                    className="relative w-full pl-14 pr-5 py-4 bg-[#0F172A] border-2 border-[#334155] rounded-xl text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#10B981]/50 focus:border-[#10B981] transition-all hover:bg-[#1E293B] hover:border-[#475569]"
+                    placeholder="Enter your password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   />
                 </div>
               </div>
@@ -72,37 +102,51 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#66CC33] hover:bg-[#4da826] text-[#000F2C] py-3.5 rounded-sm font-bold text-base transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#10B981] text-white py-4 md:py-5 rounded-xl font-black text-base md:text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-2xl hover:shadow-[#10B981]/50 flex items-center justify-center gap-2 group"
               >
-                {loading ? 'Signing in...' : 'Continue'}
+                {loading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Signing in...
+                  </>
+                ) : (
+                  <>
+                    Continue
+                    <FiArrowRight className="text-xl group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
               </button>
             </form>
 
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <p className="text-center text-sm text-[#6a6f73] mb-4">Other log in options</p>
-              <div className="flex gap-3 justify-center">
-                <button className="w-12 h-12 border-2 border-gray-300 rounded-sm flex items-center justify-center hover:border-[#66CC33] transition-colors">
-                  <span className="text-lg font-bold text-[#000F2C]">G</span>
-                </button>
-                <button className="w-12 h-12 border-2 border-gray-300 rounded-sm flex items-center justify-center hover:border-[#66CC33] transition-colors">
-                  <span className="text-lg font-bold text-[#000F2C]">f</span>
-                </button>
-                <button className="w-12 h-12 border-2 border-gray-300 rounded-sm flex items-center justify-center hover:border-[#66CC33] transition-colors">
-                  <svg className="w-6 h-6 text-[#000F2C]" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M15.6 10c0 .576-.373 1.066-.895 1.237L12.5 12.5l.5 2.5-2.5-.5-1.263 2.205c-.171.522-.661.895-1.237.895-.576 0-1.066-.373-1.237-.895L5.5 14.5l-2.5.5.5-2.5-1.263-2.205C2.373 11.066 2 10.576 2 10s.373-1.066.895-1.237L4.158 6.558 3.658 4.058l2.5.5 1.263-2.205C7.592 1.831 8.082 1.458 8.658 1.458c.576 0 1.066.373 1.237.895L11.158 4.558l2.5-.5-.5 2.5 1.263 2.205c.522.171.895.661.895 1.237z"/>
-                  </svg>
-                </button>
+            {/* Enhanced Social Login */}
+            <div className="mt-8 pt-8 border-t border-[#334155]">
+              <p className="text-center text-sm text-[#9CA3AF] mb-6 font-medium">Or continue with</p>
+              <div className="flex gap-4 justify-center">
+                {[
+                  { label: 'Google', icon: 'G', color: 'hover:bg-[#4285F4]/20 hover:border-[#4285F4]' },
+                  { label: 'Facebook', icon: 'f', color: 'hover:bg-[#1877F2]/20 hover:border-[#1877F2]' },
+                  { label: 'Microsoft', icon: 'M', color: 'hover:bg-[#00A4EF]/20 hover:border-[#00A4EF]' },
+                ].map((social, idx) => (
+                  <button
+                    key={idx}
+                    className={`w-14 h-14 border-2 border-[#334155] rounded-xl flex items-center justify-center ${social.color} transition-all duration-300 hover:scale-110 text-white font-bold text-lg backdrop-blur-sm`}
+                    title={social.label}
+                  >
+                    {social.icon}
+                  </button>
+                ))}
               </div>
             </div>
 
-            <div className="mt-6 text-center space-y-2">
-              <p className="text-sm text-[#6a6f73]">
+            {/* Enhanced Footer Links */}
+            <div className="mt-8 text-center space-y-4">
+              <p className="text-sm text-[#9CA3AF]">
                 Don't have an account?{' '}
-                <Link href="/register" className="text-[#66CC33] hover:text-[#4da826] font-semibold">
+                <Link href="/register" className="text-[#10B981] hover:text-[#34D399] font-bold transition-colors hover:underline">
                   Sign up
                 </Link>
               </p>
-              <Link href="/login" className="block text-sm text-[#66CC33] hover:text-[#4da826] font-semibold">
+              <Link href="/login" className="block text-sm text-[#10B981] hover:text-[#34D399] font-semibold transition-colors hover:underline">
                 Log in with your organization
               </Link>
             </div>

@@ -39,6 +39,12 @@ class CourseViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
         
+        # Filter by slug (for dynamic course pages)
+        slug = self.request.query_params.get('slug')
+        if slug:
+            queryset = queryset.filter(slug=slug)
+            return queryset  # Return early for slug filter
+        
         # Filter by modality
         modality = self.request.query_params.get('modality')
         if modality:

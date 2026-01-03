@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/store';
 import PureLogicsNavbar from '@/app/components/PureLogicsNavbar';
-import { FiUser, FiMail, FiLock } from 'react-icons/fi';
+import { FiUser, FiMail, FiLock, FiArrowRight } from 'react-icons/fi';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -48,47 +48,59 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#000F2C] text-white">
+    <div className="min-h-screen bg-[#0F172A] text-white pt-16 md:pt-20">
       <PureLogicsNavbar />
 
-      <div className="flex items-center justify-center min-h-[calc(100vh-64px)] px-6 py-12">
-        <div className="max-w-md w-full">
-          <div className="text-center mb-8">
-            <div className="flex justify-center gap-2 mb-6">
-              <div className="w-12 h-12 bg-[#66CC33] rounded-sm flex items-center justify-center">
-                <div className="w-6 h-6 bg-[#4da826] rounded-sm"></div>
-              </div>
-              <div className="w-12 h-12 bg-[#66CC33] rounded-sm flex items-center justify-center">
-                <div className="w-6 h-6 bg-[#4da826] rounded-sm"></div>
+      {/* Enhanced Background Pattern */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-20 left-10 w-96 h-96 bg-[#10B981] opacity-[0.08] rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-80 h-80 bg-[#3B82F6] opacity-[0.06] rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#10B981] opacity-[0.03] rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4 sm:px-6 py-12 md:py-16 relative z-10">
+        <div className="max-w-[500px] xl:max-w-[600px] 2xl:max-w-[700px] mx-auto w-full px-4 sm:px-6">
+          {/* Enhanced Header */}
+          <div className="text-center mb-12">
+            <div className="inline-block mb-8">
+              <div className="relative">
+                <div className="w-20 h-20 bg-gradient-to-br from-[#10B981] to-[#059669] rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-[#10B981]/50 transform hover:scale-110 transition-transform duration-300">
+                  <div className="w-10 h-10 bg-[#0F172A] rounded-xl"></div>
+                </div>
+                <div className="absolute inset-0 bg-[#10B981] rounded-3xl opacity-20 blur-2xl animate-pulse"></div>
               </div>
             </div>
-            <h2 className="text-3xl font-bold mb-2">Sign up and start learning</h2>
+            <h2 className="text-5xl md:text-6xl font-black mb-4 text-white leading-tight">
+              Start Learning Today
+            </h2>
+            <p className="text-[#D1D5DB] text-lg md:text-xl">Sign up and unlock unlimited learning</p>
           </div>
 
-          <div className="bg-white rounded-sm p-8">
-            <form className="space-y-5" onSubmit={handleSubmit}>
+          {/* Premium Form Card */}
+          <div className="bg-[#1E293B]/90 backdrop-blur-xl border border-[#334155] rounded-3xl p-8 md:p-10 shadow-2xl hover:border-[#10B981]/50 transition-all duration-500">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               {error && (
-                <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-sm text-sm">
+                <div className="bg-gradient-to-r from-[#EF4444]/20 to-[#DC2626]/20 border border-[#EF4444]/50 text-[#FCA5A5] px-6 py-4 rounded-xl text-sm font-medium backdrop-blur-sm">
                   {error}
                 </div>
               )}
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-[#000F2C] mb-2">First Name</label>
+                  <label className="block text-sm font-bold text-white mb-2">First Name</label>
                   <input
                     type="text"
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-sm text-[#000F2C] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#66CC33] focus:border-[#66CC33]"
+                    className="w-full px-5 py-4 bg-[#0F172A] border-2 border-[#334155] rounded-xl text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#10B981]/50 focus:border-[#10B981] transition-all hover:bg-[#1E293B] hover:border-[#475569]"
                     placeholder="John"
                     value={formData.first_name}
                     onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-[#000F2C] mb-2">Last Name</label>
+                  <label className="block text-sm font-bold text-white mb-2">Last Name</label>
                   <input
                     type="text"
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-sm text-[#000F2C] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#66CC33] focus:border-[#66CC33]"
+                    className="w-full px-5 py-4 bg-[#0F172A] border-2 border-[#334155] rounded-xl text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#10B981]/50 focus:border-[#10B981] transition-all hover:bg-[#1E293B] hover:border-[#475569]"
                     placeholder="Doe"
                     value={formData.last_name}
                     onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
@@ -97,13 +109,14 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-[#000F2C] mb-2">Username</label>
-                <div className="relative">
-                  <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <label className="block text-sm font-bold text-white mb-3">Username</label>
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#10B981]/0 to-[#10B981]/0 rounded-xl group-focus-within:from-[#10B981]/10 group-focus-within:to-[#10B981]/5 transition-all duration-300"></div>
+                  <FiUser className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#10B981] transition-colors z-10" />
                   <input
                     type="text"
                     required
-                    className="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-sm text-[#000F2C] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#66CC33] focus:border-[#66CC33]"
+                    className="relative w-full pl-14 pr-5 py-4 bg-[#0F172A] border-2 border-[#334155] rounded-xl text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#10B981]/50 focus:border-[#10B981] transition-all hover:bg-[#1E293B] hover:border-[#475569]"
                     placeholder="johndoe"
                     value={formData.username}
                     onChange={(e) => setFormData({ ...formData, username: e.target.value })}
@@ -112,13 +125,14 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-[#000F2C] mb-2">Email</label>
-                <div className="relative">
-                  <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <label className="block text-sm font-bold text-white mb-3">Email</label>
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#10B981]/0 to-[#10B981]/0 rounded-xl group-focus-within:from-[#10B981]/10 group-focus-within:to-[#10B981]/5 transition-all duration-300"></div>
+                  <FiMail className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#10B981] transition-colors z-10" />
                   <input
                     type="email"
                     required
-                    className="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-sm text-[#000F2C] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#66CC33] focus:border-[#66CC33]"
+                    className="relative w-full pl-14 pr-5 py-4 bg-[#0F172A] border-2 border-[#334155] rounded-xl text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#10B981]/50 focus:border-[#10B981] transition-all hover:bg-[#1E293B] hover:border-[#475569]"
                     placeholder="john@example.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -127,13 +141,14 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-[#000F2C] mb-2">Password</label>
-                <div className="relative">
-                  <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <label className="block text-sm font-bold text-white mb-3">Password</label>
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#10B981]/0 to-[#10B981]/0 rounded-xl group-focus-within:from-[#10B981]/10 group-focus-within:to-[#10B981]/5 transition-all duration-300"></div>
+                  <FiLock className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#10B981] transition-colors z-10" />
                   <input
                     type="password"
                     required
-                    className="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-sm text-[#000F2C] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#66CC33] focus:border-[#66CC33]"
+                    className="relative w-full pl-14 pr-5 py-4 bg-[#0F172A] border-2 border-[#334155] rounded-xl text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#10B981]/50 focus:border-[#10B981] transition-all hover:bg-[#1E293B] hover:border-[#475569]"
                     placeholder="At least 8 characters"
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -142,13 +157,14 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-[#000F2C] mb-2">Confirm Password</label>
-                <div className="relative">
-                  <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <label className="block text-sm font-bold text-white mb-3">Confirm Password</label>
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#10B981]/0 to-[#10B981]/0 rounded-xl group-focus-within:from-[#10B981]/10 group-focus-within:to-[#10B981]/5 transition-all duration-300"></div>
+                  <FiLock className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#10B981] transition-colors z-10" />
                   <input
                     type="password"
                     required
-                    className="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-sm text-[#000F2C] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#66CC33] focus:border-[#66CC33]"
+                    className="relative w-full pl-14 pr-5 py-4 bg-[#0F172A] border-2 border-[#334155] rounded-xl text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#10B981]/50 focus:border-[#10B981] transition-all hover:bg-[#1E293B] hover:border-[#475569]"
                     placeholder="Confirm your password"
                     value={formData.password2}
                     onChange={(e) => setFormData({ ...formData, password2: e.target.value })}
@@ -159,15 +175,26 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#66CC33] hover:bg-[#4da826] text-[#000F2C] py-3.5 rounded-sm font-bold text-base transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#10B981] text-white py-4 md:py-5 rounded-xl font-black text-base md:text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-2xl hover:shadow-[#10B981]/50 flex items-center justify-center gap-2 group"
               >
-                {loading ? 'Creating account...' : 'Sign up'}
+                {loading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Creating account...
+                  </>
+                ) : (
+                  <>
+                    Sign up
+                    <FiArrowRight className="text-xl group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
               </button>
             </form>
 
-            <div className="mt-6 text-center">
-              <span className="text-sm text-[#6a6f73]">Already have an account? </span>
-              <Link href="/login" className="text-[#66CC33] hover:text-[#4da826] font-semibold">
+            {/* Enhanced Footer Link */}
+            <div className="mt-8 text-center">
+              <span className="text-sm text-[#9CA3AF]">Already have an account? </span>
+              <Link href="/login" className="text-[#10B981] hover:text-[#34D399] font-bold transition-colors hover:underline">
                 Log in
               </Link>
             </div>

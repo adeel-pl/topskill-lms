@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { playerAPI, coursesAPI } from '@/lib/api';
-import ReactPlayer from 'react-player';
 import PureLogicsNavbar from '@/app/components/PureLogicsNavbar';
+import VideoPlayer from '@/app/components/VideoPlayer';
 import { FiPlay, FiCheck, FiClock, FiBook, FiMessageSquare, FiChevronRight, FiChevronLeft, FiBell, FiStar } from 'react-icons/fi';
 
 interface Lecture {
@@ -56,9 +56,22 @@ export default function CoursePlayerPage() {
   const loadCourseContent = async () => {
     try {
       const coursesRes = await coursesAPI.getBySlug(params.slug as string);
-      const courseData = coursesRes.data.results?.[0] || coursesRes.data[0];
+      
+      // Handle different API response formats - same logic as course detail page
+      let courseData = null;
+      if (coursesRes.data.results && coursesRes.data.results.length > 0) {
+        // If results array exists, find exact slug match
+        courseData = coursesRes.data.results.find((c: any) => c.slug === params.slug);
+      } else if (Array.isArray(coursesRes.data)) {
+        // If data is directly an array
+        courseData = coursesRes.data.find((c: any) => c.slug === params.slug);
+      } else if (coursesRes.data.slug === params.slug) {
+        // If data is a single course object
+        courseData = coursesRes.data;
+      }
       
       if (!courseData) {
+        console.error('Course not found for slug:', params.slug);
         router.push('/courses');
         return;
       }
@@ -72,11 +85,17 @@ export default function CoursePlayerPage() {
       if (sectionsData.length > 0 && sectionsData[0].lectures.length > 0) {
         const firstLecture = sectionsData[0].lectures[0];
         selectLecture(courseData.id, firstLecture.id);
+      } else {
+        setLoading(false);
       }
 
       setLoading(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading course:', error);
+      if (error.response?.status === 403 || error.response?.status === 404) {
+        // Not enrolled or course not found
+        router.push('/courses');
+      }
       setLoading(false);
     }
   };
@@ -115,19 +134,59 @@ export default function CoursePlayerPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-white">
+      <div className="flex items-center justify-center min-h-screen bg-[#0F172A]">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-gray-200 border-t-[#66CC33] rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-[#000F2C]">Loading course...</p>
+          <div className="w-16 h-16 border-4 border-[#334155] border-t-[#10B981] rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-[#9CA3AF]">Loading course...</p>
         </div>
       </div>
     );
   }
 
-  if (!course || !selectedLecture) {
+  if (!course) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-white">
-        <div className="text-[#000F2C]">Course not found</div>
+      <div className="flex items-center justify-center min-h-screen bg-[#0F172A]">
+        <div className="text-center">
+          <h2 className="text-3xl font-black mb-4 text-white">Course not found</h2>
+          <p className="text-[#9CA3AF] mb-6">The course you're looking for doesn't exist or you're not enrolled.</p>
+          <button
+            onClick={() => router.push('/courses')}
+            className="bg-gradient-to-r from-[#10B981] to-[#059669] text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
+          >
+            Browse Courses
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!selectedLecture && sections.length > 0 && sections[0].lectures.length > 0) {
+    // Auto-select first lecture if none selected
+    const firstLecture = sections[0].lectures[0];
+    selectLecture(course.id, firstLecture.id);
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#0F172A]">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-[#334155] border-t-[#10B981] rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-[#9CA3AF]">Loading lecture...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!selectedLecture) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#0F172A]">
+        <div className="text-center">
+          <h2 className="text-3xl font-black mb-4 text-white">No lectures available</h2>
+          <p className="text-[#9CA3AF] mb-6">This course doesn't have any lectures yet.</p>
+          <button
+            onClick={() => router.push('/courses')}
+            className="bg-gradient-to-r from-[#10B981] to-[#059669] text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
+          >
+            Browse Courses
+          </button>
+        </div>
       </div>
     );
   }
@@ -212,7 +271,7 @@ export default function CoursePlayerPage() {
           {/* Video Player */}
           <div className="bg-black aspect-video relative">
             {selectedLecture.youtube_video_id ? (
-              <ReactPlayer
+              <VideoPlayer
                 url={`https://www.youtube.com/watch?v=${selectedLecture.youtube_video_id}`}
                 width="100%"
                 height="100%"
@@ -228,7 +287,7 @@ export default function CoursePlayerPage() {
                 }}
               />
             ) : selectedLecture.content_url ? (
-              <ReactPlayer
+              <VideoPlayer
                 url={selectedLecture.content_url}
                 width="100%"
                 height="100%"
@@ -245,7 +304,7 @@ export default function CoursePlayerPage() {
 
           {/* Lecture Info and Tabs */}
           <div className="flex-1 overflow-y-auto bg-white">
-            <div className="max-w-4xl mx-auto p-6">
+            <div className="max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-6">
               <h1 className="text-2xl font-bold mb-4 text-[#000F2C]">{selectedLecture.title}</h1>
               
               {/* Tabs */}

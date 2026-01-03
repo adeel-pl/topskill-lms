@@ -18,35 +18,39 @@ export default function CertificationsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#0F172A] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-gray-200 border-t-[#66CC33] rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <div className="w-16 h-16 border-4 border-[#334155] border-t-[#10B981] rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-[#9CA3AF]">Loading...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-8 bg-white">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#000F2C] mb-1">Certifications</h1>
-        <p className="text-[#6a6f73] text-sm">Your earned certificates and achievements</p>
+    <div className="px-4 sm:px-6 lg:px-8 py-8 md:py-12 text-white">
+      <div className="mb-8 md:mb-12">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-black mb-2 text-white">
+          Certifications
+        </h1>
+        <p className="text-[#9CA3AF] text-base md:text-lg">Your earned certificates and achievements</p>
       </div>
 
-      <div className="text-center py-20 bg-gray-50 rounded-sm border border-gray-200">
-        <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-lg flex items-center justify-center">
-          <FiAward className="text-3xl text-gray-400" />
+      <div className="text-center py-16 md:py-20">
+        <div className="bg-[#1E293B] border border-[#334155] rounded-2xl p-12 md:p-16 max-w-md mx-auto">
+          <div className="w-20 md:w-24 h-20 md:h-24 bg-[#F59E0B]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <FiAward className="text-4xl md:text-5xl text-[#F59E0B]" />
+          </div>
+          <h2 className="text-2xl md:text-3xl font-black mb-4 text-white">No certificates yet</h2>
+          <p className="text-[#9CA3AF] mb-6 md:mb-8">Complete courses to earn certificates and showcase your achievements!</p>
+          <Link
+            href="/courses"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-[#10B981] to-[#059669] text-white px-8 py-4 rounded-xl font-black transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#10B981]/50"
+          >
+            <FiBookOpen />
+            Browse Courses
+          </Link>
         </div>
-        <h2 className="text-2xl font-bold mb-2 text-[#000F2C]">No certificates yet</h2>
-        <p className="text-[#6a6f73] mb-6">Complete courses to earn certificates and showcase your achievements!</p>
-        <Link
-          href="/courses"
-          className="bg-[#66CC33] hover:bg-[#4da826] text-[#000F2C] px-6 py-3 rounded-sm font-semibold inline-block transition-all duration-200 flex items-center gap-2 mx-auto w-fit"
-        >
-          <FiBookOpen />
-          Browse Courses
-        </Link>
       </div>
     </div>
   );

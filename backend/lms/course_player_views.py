@@ -308,9 +308,9 @@ class CoursePlayerViewSet(viewsets.ViewSet):
             'posts': posts_data
         })
     
-    @action(detail=True, methods=['get'], url_path='overview')
+    @action(detail=True, methods=['get'], url_path='overview', permission_classes=[permissions.AllowAny])
     def get_overview(self, request, pk=None):
-        """Get course overview (like Udemy course page)"""
+        """Get course overview (like Udemy course page) - Public access"""
         try:
             course = Course.objects.get(id=pk, is_active=True)
         except Course.DoesNotExist:
@@ -319,16 +319,31 @@ class CoursePlayerViewSet(viewsets.ViewSet):
                 status=status.HTTP_404_NOT_FOUND
             )
         
-        enrollment = Enrollment.objects.filter(
-            user=request.user,
-            course=course
-        ).first()
+        enrollment = None
+        if request.user.is_authenticated:
+            enrollment = Enrollment.objects.filter(
+                user=request.user,
+                course=course
+            ).first()
         
         # Get course stats
         total_lectures = Lecture.objects.filter(section__course=course).count()
         total_duration = sum(
-            Lecture.objects.filter(section__course=course).values_list('duration_minutes', flat=True)
+            Lecture.objects.filter(section__course=course).values_list('duration_minutes', flat=True) or [0]
         )
+        total_sections = course.sections.count()
+        # Get quizzes and assignments (they have course FK)
+        total_quizzes = course.quizzes.filter(is_active=True).count()
+        total_assignments = course.assignments.filter(is_active=True).count()
+        
+        # Generate learning objectives based on course features
+        learning_objectives = []
+        if total_sections > 0:
+            learning_objectives.append('Complete course content')
+        if total_quizzes > 0 or total_assignments > 0:
+            learning_objectives.append('Quizzes and assignments')
+        learning_objectives.append('Certificate of completion')
+        learning_objectives.append('Lifetime access')
         
         return Response({
             'course': {
@@ -350,11 +365,12 @@ class CoursePlayerViewSet(viewsets.ViewSet):
             },
             'stats': {
                 'total_lectures': total_lectures,
-                'total_duration_hours': round(total_duration / 60, 2),
-                'total_sections': course.sections.count(),
-                'total_quizzes': course.quizzes.filter(is_active=True).count(),
-                'total_assignments': course.assignments.filter(is_active=True).count(),
+                'total_duration_hours': round(total_duration / 60, 2) if total_duration > 0 else 0,
+                'total_sections': total_sections,
+                'total_quizzes': total_quizzes,
+                'total_assignments': total_assignments,
             },
+            'learning_objectives': learning_objectives,
             'enrollment': {
                 'enrolled': enrollment is not None,
                 'status': enrollment.status if enrollment else None,

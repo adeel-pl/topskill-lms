@@ -18,35 +18,39 @@ export default function ArchivedPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-white flex items-center justify-center">
+            <div className="min-h-screen bg-[#0F172A] flex items-center justify-center">
                 <div className="text-center">
-                    <div className="w-12 h-12 border-4 border-gray-200 border-t-[#66CC33] rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-gray-600">Loading...</p>
+                    <div className="w-16 h-16 border-4 border-[#334155] border-t-[#10B981] rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-[#9CA3AF]">Loading...</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="p-8 bg-white">
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-[#000F2C] mb-1">Archived</h1>
-                <p className="text-[#6a6f73] text-sm">View your archived courses</p>
+        <div className="px-4 sm:px-6 lg:px-8 py-8 md:py-12 text-white">
+            <div className="mb-8 md:mb-12">
+                <h1 className="text-4xl sm:text-5xl md:text-6xl font-black mb-2 text-white">
+                    Archived
+                </h1>
+                <p className="text-[#9CA3AF] text-base md:text-lg">View your archived courses</p>
             </div>
 
-            <div className="text-center py-20 bg-gray-50 rounded-sm border border-gray-200">
-                <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <FiArchive className="text-3xl text-gray-400" />
+            <div className="text-center py-16 md:py-20">
+                <div className="bg-[#1E293B] border border-[#334155] rounded-2xl p-12 md:p-16 max-w-md mx-auto">
+                    <div className="w-20 md:w-24 h-20 md:h-24 bg-[#6B7280]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <FiArchive className="text-4xl md:text-5xl text-[#9CA3AF]" />
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-black mb-4 text-white">No archived courses</h2>
+                    <p className="text-[#9CA3AF] mb-6 md:mb-8">Archived courses will appear here when you archive them</p>
+                    <Link
+                        href="/dashboard/my-courses"
+                        className="inline-flex items-center gap-2 bg-gradient-to-r from-[#10B981] to-[#059669] text-white px-8 py-4 rounded-xl font-black transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#10B981]/50"
+                    >
+                        <FiBookOpen />
+                        View My Courses
+                    </Link>
                 </div>
-                <h2 className="text-2xl font-bold mb-2 text-[#000F2C]">No archived courses</h2>
-                <p className="text-[#6a6f73] mb-6">Archived courses will appear here when you archive them</p>
-                <Link
-                    href="/dashboard/my-courses"
-                    className="bg-[#66CC33] hover:bg-[#4da826] text-[#000F2C] px-6 py-3 rounded-sm font-semibold inline-block transition-all duration-200 flex items-center gap-2 mx-auto w-fit"
-                >
-                    <FiBookOpen />
-                    View My Courses
-                </Link>
             </div>
         </div>
     );

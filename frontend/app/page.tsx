@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { coursesAPI } from '@/lib/api';
 import PureLogicsNavbar from '@/app/components/PureLogicsNavbar';
 import CourseCard from '@/app/components/CourseCard';
-import { FiArrowRight } from 'react-icons/fi';
+import { ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface Course {
   id: number;
@@ -34,8 +35,8 @@ export default function HomePage() {
 
   const loadCourses = async () => {
     try {
-      const response = await coursesAPI.getAll({ limit: 6 });
-      setCourses(response.data.results || response.data.slice(0, 6));
+      const response = await coursesAPI.getAll({ limit: 8 });
+      setCourses(response.data.results || response.data.slice(0, 8));
       setLoading(false);
     } catch (error) {
       console.error('Error loading courses:', error);
@@ -44,79 +45,256 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#000F2C] text-white">
+    <div className="min-h-screen w-full bg-[#0F172A] text-white">
       <PureLogicsNavbar />
 
-      {/* Hero Section */}
-      <section className="bg-[#000F2C] py-20 border-b border-[#1a2a4a]">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">Learn Without Limits</h1>
-          <p className="text-xl text-[#E5E7EB] mb-8 max-w-2xl mx-auto">
-            Start, switch, or advance your career with thousands of courses from world-class instructors
-          </p>
-          <Link
-            href="/courses"
-            className="inline-flex items-center gap-2 bg-[#66CC33] hover:bg-[#4da826] text-[#000F2C] px-8 py-4 rounded-sm font-bold text-lg transition-colors"
+      {/* Hero Section - Premium Design */}
+      <section className="relative pt-32 pb-24 overflow-hidden mb-50">
+        {/* Animated Background */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <motion.div
+            className="absolute top-0 right-0 w-96 h-96 bg-[#10B981] opacity-10 rounded-full blur-3xl"
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.1, 0.15, 0.1],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+          <motion.div
+            className="absolute bottom-0 left-0 w-96 h-96 bg-[#3B82F6] opacity-10 rounded-full blur-3xl"
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.1, 0.15, 0.1],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1,
+            }}
+          />
+        </div>
+
+        <div className="max-w-container xl:max-w-container-xl 2xl:max-w-container-2xl mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 relative z-10">
+          <div className="text-center">
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white mb-6 leading-tight"
+            >
+              Learn Without
+              <br />
+              <span className="bg-gradient-to-r from-[#10B981] via-[#3B82F6] to-[#8B5CF6] bg-clip-text text-transparent">
+                Limits
+              </span>
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-xl md:text-2xl text-[#D1D5DB] max-w-4xl mx-auto mb-10 leading-relaxed"
+            >
+              Master in-demand skills with world-class instructors. 
+              <span className="text-[#10B981] font-semibold"> Start your learning journey today.</span>
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            >
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  href="/courses"
+                  className="group px-8 py-4 bg-gradient-to-r from-[#10B981] to-[#059669] text-white font-bold text-lg rounded-xl shadow-lg shadow-[#10B981]/30 hover:shadow-[#10B981]/50 transition-all duration-300 flex items-center gap-2"
+                >
+                  Explore Courses
+                  <ArrowRight className="group-hover:translate-x-1 transition-transform w-5 h-5" />
+                </Link>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  href="/dashboard/my-courses"
+                  className="px-8 py-4 bg-[#1E293B] border-2 border-[#334155] text-white font-semibold text-lg rounded-xl hover:bg-[#334155] hover:border-[#10B981] transition-all duration-300"
+                >
+                  My Learning
+                </Link>
+              </motion.div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Courses Section - Premium Grid */}
+      <section className="py-20 mb-50">
+        <div className="max-w-container xl:max-w-container-xl 2xl:max-w-container-2xl mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
           >
-            Explore Courses
-            <FiArrowRight />
-          </Link>
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
+              Featured Courses
+            </h2>
+            <p className="text-xl text-[#9CA3AF] max-w-3xl mx-auto mb-8">
+              Handpicked courses to accelerate your career
+            </p>
+          </motion.div>
+          {loading ? (
+            <div className="text-center py-20">
+              <div className="w-16 h-16 border-4 border-[#334155] border-t-[#10B981] rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-[#9CA3AF] text-lg">Loading courses...</p>
+            </div>
+          ) : courses.length === 0 ? (
+            <div className="text-center py-20 text-[#9CA3AF] text-lg">No courses available</div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 md:gap-8 lg:gap-10">
+              {courses.map((course, index) => (
+                <div key={course.id} className="w-full">
+                  <CourseCard course={course} index={index} />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Featured Courses */}
-      <section className="max-w-7xl mx-auto px-4 py-12">
-        <h2 className="text-3xl font-bold mb-8">Featured Courses</h2>
-        {loading ? (
-          <div className="text-center py-12">
-            <div className="w-12 h-12 border-4 border-[#1a2a4a] border-t-[#66CC33] rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-[#E5E7EB]">Loading courses...</p>
-          </div>
-        ) : courses.length === 0 ? (
-          <div className="text-center py-12 text-[#E5E7EB]">No courses available</div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {courses.map((course) => (
-              <CourseCard key={course.id} course={course} />
-            ))}
-          </div>
-        )}
+      {/* CTA Section - Premium Design */}
+      <section className="py-24 bg-gradient-to-br from-[#1E293B] to-[#0F172A] relative overflow-hidden mb-50">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#10B981]/5 via-transparent to-[#3B82F6]/5"></div>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 text-center relative z-10"
+        >
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6">
+            Ready to Start Learning?
+          </h2>
+          <p className="text-xl md:text-2xl text-[#D1D5DB] mb-10">
+            Join thousands of students already learning with us
+          </p>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Link
+              href="/courses"
+              className="inline-block px-10 py-5 bg-gradient-to-r from-[#10B981] to-[#059669] text-white font-bold text-lg rounded-xl transition-all duration-300 shadow-xl shadow-[#10B981]/30 hover:shadow-[#10B981]/50"
+            >
+              Browse All Courses
+            </Link>
+          </motion.div>
+        </motion.div>
       </section>
 
-      {/* Features Section */}
-      <section className="bg-white py-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div>
-              <div className="w-16 h-16 bg-[#66CC33] rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-[#000F2C]" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
-                </svg>
+      {/* Footer - Premium Layout */}
+      <footer className="border-t border-[#334155] bg-[#0F172A] py-16 mt-50">
+        <div className="max-w-container xl:max-w-container-xl 2xl:max-w-container-2xl mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-12">
+            {/* Brand */}
+            <div className="sm:col-span-2 md:col-span-1">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-br from-[#10B981] to-[#059669] rounded-xl flex items-center justify-center shadow-lg shadow-[#10B981]/30">
+                  <div className="w-6 h-6 bg-[#0F172A] rounded-lg"></div>
+                </div>
+                <span className="text-2xl font-black text-white">
+                  Pure<span className="text-[#10B981]">Logics</span>
+                </span>
               </div>
-              <h3 className="text-xl font-bold text-[#000F2C] mb-2">Learn in-demand skills</h3>
-              <p className="text-[#6a6f73]">With over 250,000 video courses</p>
+              <p className="text-[#9CA3AF] leading-relaxed mb-4 pr-4">
+                Learn without limits. Transform your career with world-class courses.
+              </p>
             </div>
-            <div>
-              <div className="w-16 h-16 bg-[#66CC33] rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-[#000F2C]" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-[#000F2C] mb-2">Expert instructors</h3>
-              <p className="text-[#6a6f73]">Choose courses taught by real-world experts</p>
+
+            {/* Quick Links */}
+            <div className="px-2">
+              <h3 className="text-white font-bold mb-6 text-sm uppercase tracking-wider">Quick Links</h3>
+              <ul className="space-y-4">
+                <li>
+                  <Link href="/courses" className="text-[#9CA3AF] hover:text-[#10B981] transition-colors">
+                    Browse Courses
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/instructors" className="text-[#9CA3AF] hover:text-[#10B981] transition-colors">
+                    Instructors
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/dashboard/my-courses" className="text-[#9CA3AF] hover:text-[#10B981] transition-colors">
+                    My Learning
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/cart" className="text-[#9CA3AF] hover:text-[#10B981] transition-colors">
+                    Cart
+                  </Link>
+                </li>
+              </ul>
             </div>
-            <div>
-              <div className="w-16 h-16 bg-[#66CC33] rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-[#000F2C]" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-[#000F2C] mb-2">Learn at your own pace</h3>
-              <p className="text-[#6a6f73]">With lifetime access on mobile and desktop</p>
+
+            {/* Support */}
+            <div className="px-2">
+              <h3 className="text-white font-bold mb-6 text-sm uppercase tracking-wider">Support</h3>
+              <ul className="space-y-4">
+                <li>
+                  <Link href="/dashboard/account" className="text-[#9CA3AF] hover:text-[#10B981] transition-colors">
+                    Account Settings
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/dashboard/certifications" className="text-[#9CA3AF] hover:text-[#10B981] transition-colors">
+                    Certifications
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/dashboard/purchase-history" className="text-[#9CA3AF] hover:text-[#10B981] transition-colors">
+                    Purchase History
+                  </Link>
+                </li>
+                <li>
+                  <a href="#" className="text-[#9CA3AF] hover:text-[#10B981] transition-colors">
+                    Help Center
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Contact */}
+            <div className="px-2">
+              <h3 className="text-white font-bold mb-6 text-sm uppercase tracking-wider">Contact</h3>
+              <ul className="space-y-4">
+                <li className="text-[#9CA3AF]">support@purelogics.com</li>
+                <li className="text-[#9CA3AF]">+1 (555) 123-4567</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="pt-8 border-t border-[#334155] flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-[#9CA3AF] text-center md:text-left">
+              © {new Date().getFullYear()} PureLogics. All rights reserved.
+            </p>
+            <div className="flex gap-6 flex-wrap justify-center">
+              <Link href="#" className="text-[#9CA3AF] hover:text-[#10B981] transition-colors">
+                Privacy Policy
+              </Link>
+              <Link href="#" className="text-[#9CA3AF] hover:text-[#10B981] transition-colors">
+                Terms of Service
+              </Link>
+              <Link href="#" className="text-[#9CA3AF] hover:text-[#10B981] transition-colors">
+                Cookie Policy
+              </Link>
             </div>
           </div>
         </div>
-      </section>
+      </footer>
     </div>
   );
 }
