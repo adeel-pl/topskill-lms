@@ -6,10 +6,12 @@ import { useRouter } from 'next/navigation';
 import { wishlistAPI } from '@/lib/api';
 import { useAuthStore } from '@/lib/store';
 import { FiHeart, FiBookOpen, FiTrash2 } from 'react-icons/fi';
+import { useToast } from '@/app/contexts/ToastContext';
 
 export default function WishlistPage() {
   const router = useRouter();
   const { isAuthenticated, isLoading } = useAuthStore();
+  const { showError, showSuccess } = useToast();
   const [wishlist, setWishlist] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -38,9 +40,10 @@ export default function WishlistPage() {
   const removeFromWishlist = async (id: number) => {
     try {
       await wishlistAPI.remove(id);
+      showSuccess('Removed from wishlist');
       loadWishlist();
     } catch (error) {
-      alert('Failed to remove from wishlist');
+      showError('Failed to remove from wishlist');
     }
   };
 

@@ -5,12 +5,13 @@ from django.utils import timezone
 from django.db.models import Q
 from .models import (
     Course, Enrollment, Lecture, CourseSection, LectureProgress,
-    Quiz, QuizAttempt, Assignment, AssignmentSubmission, Note, Forum, Post, Reply, Question, QuestionOption
+    Quiz, QuizAttempt, Assignment, AssignmentSubmission, Note, Forum, Post, Reply, Question, QuestionOption,
+    QandA, Announcement
 )
 from .serializers import (
     CourseSectionPlayerSerializer, LectureWithProgressSerializer,
     QuizSerializer, QuizAttemptSerializer, AssignmentSerializer,
-    AssignmentSubmissionSerializer
+    AssignmentSubmissionSerializer, QandASerializer, AnnouncementSerializer
 )
 
 
@@ -73,6 +74,14 @@ class CoursePlayerViewSet(viewsets.ViewSet):
         assignments = Assignment.objects.filter(course=course, is_active=True).order_by('order')
         assignments_data = AssignmentSerializer(assignments, many=True).data
         
+        # Get Q&A (FAQ)
+        qandas = QandA.objects.filter(course=course, is_active=True).order_by('order', 'created_at')
+        qandas_data = QandASerializer(qandas, many=True).data
+        
+        # Get announcements
+        announcements = Announcement.objects.filter(course=course, is_active=True).order_by('-is_pinned', '-created_at')
+        announcements_data = AnnouncementSerializer(announcements, many=True).data
+        
         return Response({
             'course': {
                 'id': course.id,
@@ -82,6 +91,8 @@ class CoursePlayerViewSet(viewsets.ViewSet):
             'sections': sections_data,
             'quizzes': quizzes_data,
             'assignments': assignments_data,
+            'qandas': qandas_data,
+            'announcements': announcements_data,
             'enrollment': {
                 'id': enrollment.id if enrollment else None,
                 'progress_percent': enrollment.progress_percent if enrollment else 0,

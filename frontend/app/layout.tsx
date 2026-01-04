@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import AuthProvider from "./components/AuthProvider";
+import { ToastProvider } from "./contexts/ToastContext";
 import { Plus_Jakarta_Sans } from "next/font/google";
 
 const font = Plus_Jakarta_Sans({
@@ -22,7 +23,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={`${font.variable} w-full overflow-x-hidden`}>
       <body className="antialiased w-full overflow-x-hidden font-sans" suppressHydrationWarning>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <ToastProvider>{children}</ToastProvider>
+        </AuthProvider>
       </body>
     </html>
   );

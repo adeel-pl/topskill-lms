@@ -6,11 +6,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from .views import (
-    CourseViewSet, BatchViewSet, EnrollmentViewSet, PaymentViewSet,
-    AttendanceViewSet, ReviewViewSet, WishlistViewSet, NotificationViewSet,
-    CategoryViewSet, TagViewSet, CourseSectionViewSet, LectureViewSet,
-    QuizViewSet, QuizAttemptViewSet, AssignmentViewSet, AssignmentSubmissionViewSet,
-    LectureProgressViewSet, ResourceViewSet, NoteViewSet
+    CourseViewSet, BatchViewSet, BatchSessionViewSet, SessionRegistrationViewSet,
+    EnrollmentViewSet, PaymentViewSet, AttendanceViewSet, ReviewViewSet, 
+    WishlistViewSet, NotificationViewSet, CategoryViewSet, TagViewSet, 
+    CourseSectionViewSet, LectureViewSet, QuizViewSet, QuizAttemptViewSet, 
+    AssignmentViewSet, AssignmentSubmissionViewSet, LectureProgressViewSet, 
+    ResourceViewSet, NoteViewSet, QandAViewSet, AnnouncementViewSet
 )
 from .auth_views import register, login, logout, profile, update_profile
 from .cart_views import CartViewSet
@@ -20,6 +21,8 @@ from .services import GroqAIService
 router = DefaultRouter()
 router.register(r'courses', CourseViewSet, basename='course')
 router.register(r'batches', BatchViewSet, basename='batch')
+router.register(r'batch-sessions', BatchSessionViewSet, basename='batch-session')
+router.register(r'session-registrations', SessionRegistrationViewSet, basename='session-registration')
 router.register(r'enrollments', EnrollmentViewSet, basename='enrollment')
 router.register(r'payments', PaymentViewSet, basename='payment')
 router.register(r'attendance', AttendanceViewSet, basename='attendance')
@@ -38,6 +41,8 @@ router.register(r'assignment-submissions', AssignmentSubmissionViewSet, basename
 router.register(r'lecture-progress', LectureProgressViewSet, basename='lecture-progress')
 router.register(r'resources', ResourceViewSet, basename='resource')
 router.register(r'notes', NoteViewSet, basename='note')
+router.register(r'qandas', QandAViewSet, basename='qanda')
+router.register(r'announcements', AnnouncementViewSet, basename='announcement')
 # Course player routes are registered separately below
 
 @api_view(['POST'])
@@ -70,6 +75,7 @@ urlpatterns = [
     path('courses/<int:pk>/player/content/', CoursePlayerViewSet.as_view({'get': 'get_course_content'}), name='course-player-content'),
     path('courses/<int:pk>/player/lecture/<int:lecture_id>/', CoursePlayerViewSet.as_view({'get': 'get_lecture'}), name='course-player-lecture'),
     path('courses/<int:pk>/player/lecture/<int:lecture_id>/progress/', CoursePlayerViewSet.as_view({'post': 'update_lecture_progress'}), name='course-player-progress'),
+    path('courses/<int:pk>/player/lecture/<int:lecture_id>/complete/', CoursePlayerViewSet.as_view({'post': 'mark_lecture_complete'}), name='course-player-complete'),
     path('courses/<int:pk>/player/lecture/<int:lecture_id>/note/', CoursePlayerViewSet.as_view({'post': 'add_note'}), name='course-player-note'),
     path('courses/<int:pk>/player/forum/', CoursePlayerViewSet.as_view({'get': 'get_forum'}), name='course-player-forum'),
     path('courses/<int:pk>/player/overview/', CoursePlayerViewSet.as_view({'get': 'get_overview'}), name='course-player-overview'),

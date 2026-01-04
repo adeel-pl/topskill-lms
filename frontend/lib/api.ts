@@ -180,6 +180,37 @@ export const notificationsAPI = {
   markAllRead: () => api.post('/notifications/mark_all_read/'),
 };
 
+// Batch and Session APIs
+export const batchesAPI = {
+  getAll: (params?: any) => api.get('/batches/', { params }),
+  getById: (id: number) => api.get(`/batches/${id}/`),
+  getSessions: (batchId: number) => api.get(`/batches/${batchId}/sessions/`),
+  autoScheduleSessions: (batchId: number, data: { session_date: string; session_duration_hours?: number; time_slots?: string[] }) =>
+    api.post(`/batches/${batchId}/auto_schedule_sessions/`, data),
+};
+
+export const batchSessionsAPI = {
+  getAll: (params?: any) => api.get('/batch-sessions/', { params }),
+  getById: (id: number) => api.get(`/batch-sessions/${id}/`),
+  register: (sessionId: number, enrollmentId: number) =>
+    api.post(`/batch-sessions/${sessionId}/register/`, { enrollment_id: enrollmentId }),
+  getRegistrations: (sessionId: number) => api.get(`/batch-sessions/${sessionId}/registrations/`),
+};
+
+export const sessionRegistrationsAPI = {
+  getAll: (params?: any) => api.get('/session-registrations/', { params }),
+  getById: (id: number) => api.get(`/session-registrations/${id}/`),
+  cancel: (id: number) => api.delete(`/session-registrations/${id}/`),
+};
+
+// Reviews API
+export const reviewsAPI = {
+  getAll: (courseId: number, params?: any) => api.get(`/reviews/`, { params: { course: courseId, ...params } }),
+  create: (courseId: number, data: { rating: number; comment: string }) => api.post('/reviews/', { course: courseId, ...data }),
+  update: (id: number, data: { rating?: number; comment?: string }) => api.put(`/reviews/${id}/`, data),
+  delete: (id: number) => api.delete(`/reviews/${id}/`),
+};
+
 export default api;
 
 

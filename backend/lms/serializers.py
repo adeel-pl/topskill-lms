@@ -2,10 +2,10 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from .models import (
-    Course, Batch, Enrollment, Payment, Attendance, BatchSession,
+    Course, Batch, Enrollment, Payment, Attendance, BatchSession, SessionRegistration,
     Lecture, CourseSection, Quiz, QuizAttempt, Assignment, AssignmentSubmission,
     Review, Wishlist, Category, Tag, Notification, Certificate, LectureProgress,
-    Forum, Post, Reply, Resource, Note, Cart, CartItem
+    Forum, Post, Reply, Resource, Note, Cart, CartItem, QandA, Announcement
 )
 
 
@@ -104,9 +104,31 @@ class BatchSerializer(serializers.ModelSerializer):
 
 class BatchSessionSerializer(serializers.ModelSerializer):
     """Batch session serializer"""
+    registered_count = serializers.IntegerField(read_only=True)
+    is_full = serializers.BooleanField(read_only=True)
+    batch_name = serializers.CharField(source='batch.name', read_only=True)
+    course_title = serializers.CharField(source='batch.course.title', read_only=True)
+    
     class Meta:
         model = BatchSession
-        fields = ['id', 'title', 'start_datetime', 'end_datetime', 'location', 'created_at']
+        fields = ['id', 'title', 'batch', 'batch_name', 'course_title', 'session_number', 
+                  'start_datetime', 'end_datetime', 'location', 'description', 
+                  'registered_count', 'is_full', 'is_active', 'created_at']
+
+
+class SessionRegistrationSerializer(serializers.ModelSerializer):
+    """Session registration serializer"""
+    enrollment_user = serializers.CharField(source='enrollment.user.username', read_only=True)
+    enrollment_user_email = serializers.EmailField(source='enrollment.user.email', read_only=True)
+    session_title = serializers.CharField(source='session.title', read_only=True)
+    session_start = serializers.DateTimeField(source='session.start_datetime', read_only=True)
+    
+    class Meta:
+        model = SessionRegistration
+        fields = ['id', 'enrollment', 'enrollment_user', 'enrollment_user_email',
+                  'session', 'session_title', 'session_start', 'status', 
+                  'registered_at', 'created_at']
+        read_only_fields = ['registered_at']
 
 
 class CourseListSerializer(serializers.ModelSerializer):
@@ -498,6 +520,25 @@ class ResourceSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'description', 'resource_type', 'file', 'external_url',
                   'is_active', 'order', 'created_at', 'updated_at']
         read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class QandASerializer(serializers.ModelSerializer):
+    """Q&A serializer"""
+    class Meta:
+        model = QandA
+        fields = ['id', 'course', 'question', 'answer', 'order', 'is_active', 'views_count', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'views_count', 'created_at', 'updated_at']
+
+
+class AnnouncementSerializer(serializers.ModelSerializer):
+    """Announcement serializer"""
+    created_by_name = serializers.CharField(source='created_by.get_full_name', read_only=True)
+    created_by_username = serializers.CharField(source='created_by.username', read_only=True)
+    
+    class Meta:
+        model = Announcement
+        fields = ['id', 'course', 'title', 'content', 'is_pinned', 'is_active', 'created_by', 'created_by_name', 'created_by_username', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_by', 'created_at', 'updated_at']
 
 
 class NoteSerializer(serializers.ModelSerializer):

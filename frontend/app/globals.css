@@ -2,6 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Toast Animations */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes shrink {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s ease-out;
+}
+
+.animate-shrink {
+  animation: shrink linear forwards;
+}
+
 /* PureLogics Modern Design System - WCAG AA Compliant */
 /* Force CSS to load with higher specificity */
 :root {

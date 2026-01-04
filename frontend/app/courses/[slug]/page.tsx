@@ -8,11 +8,13 @@ import { useAuthStore } from '@/lib/store';
 import PureLogicsNavbar from '@/app/components/PureLogicsNavbar';
 import { Star, Users, Clock, Check, ShoppingCart, Play, User } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useToast } from '@/app/contexts/ToastContext';
 
 export default function CourseDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { isAuthenticated } = useAuthStore();
+  const { showSuccess, showError, showInfo } = useToast();
   const [course, setCourse] = useState<any>(null);
   const [overview, setOverview] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -91,9 +93,12 @@ export default function CourseDetailPage() {
     setEnrolling(true);
     try {
       await coursesAPI.enroll(course.id);
-      router.push(`/learn/${course.slug}`);
+      showSuccess('Successfully enrolled! Redirecting to course...');
+      setTimeout(() => {
+        router.push(`/learn/${course.slug}`);
+      }, 1500);
     } catch (error: any) {
-      alert(error.response?.data?.error || 'Enrollment failed');
+      showError(error.response?.data?.error || 'Enrollment failed');
     } finally {
       setEnrolling(false);
     }
@@ -107,13 +112,19 @@ export default function CourseDetailPage() {
 
     try {
       await cartAPI.addItem(course.id);
-      router.push('/cart');
+      showSuccess('Course added to cart!');
+      setTimeout(() => {
+        router.push('/cart');
+      }, 1000);
     } catch (error: any) {
       const errorMsg = error.response?.data?.error || 'Failed to add to cart';
       if (errorMsg.includes('already in cart')) {
-        router.push('/cart');
+        showInfo('Course is already in your cart');
+        setTimeout(() => {
+          router.push('/cart');
+        }, 1000);
       } else {
-        alert(errorMsg);
+        showError(errorMsg);
       }
     }
   };

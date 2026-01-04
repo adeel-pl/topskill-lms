@@ -7,10 +7,10 @@ from django.contrib.auth import authenticate
 from django.db.models import Q, Count, Avg
 from django.utils import timezone
 from .models import (
-    Course, Batch, Enrollment, Payment, Attendance, BatchSession,
+    Course, Batch, Enrollment, Payment, Attendance, BatchSession, SessionRegistration,
     Quiz, QuizAttempt, Assignment, AssignmentSubmission, Review, Wishlist,
     Notification, Certificate, LectureProgress, Category, Tag,
-    CourseSection, Lecture, Question, QuestionOption, Resource, Note
+    CourseSection, Lecture, Question, QuestionOption, Resource, Note, QandA, Announcement
 )
 from .serializers import (
     CourseListSerializer, CourseDetailSerializer, BatchSerializer,
@@ -20,7 +20,8 @@ from .serializers import (
     AssignmentSerializer, AssignmentSubmissionSerializer, NotificationSerializer,
     CertificateSerializer, LectureProgressSerializer, WishlistSerializer,
     WishlistCreateSerializer, UserSerializer, CategorySerializer, TagSerializer,
-    CourseSectionSerializer, CourseSectionDetailSerializer, LectureSerializer
+    CourseSectionSerializer, CourseSectionDetailSerializer, LectureSerializer,
+    BatchSessionSerializer, SessionRegistrationSerializer, QandASerializer, AnnouncementSerializer
 )
 from .services import PayFastService, GroqAIService
 from .permissions import IsInstructorOrReadOnly, IsStudentOrReadOnly
@@ -194,6 +195,51 @@ class BatchViewSet(viewsets.ModelViewSet):
         
         serializer = AttendanceSerializer(attendance_records, many=True)
         return Response(serializer.data)
+    
+    @action(detail=True, methods=['post'])
+    def auto_schedule_sessions(self, request, pk=None):
+        """Auto-schedule sessions for a batch"""
+        from datetime import date, timedelta
+        import json
+        
+        batch = self.get_object()
+        
+        # Only instructors or staff can schedule sessions
+        if not request.user.is_staff and batch.instructor != request.user:
+            return Response(
+                {'error': 'Permission denied'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        session_date_str = request.data.get('session_date')
+        session_duration = request.data.get('session_duration_hours', 2)
+        time_slots = request.data.get('time_slots', None)
+        
+        if not session_date_str:
+            return Response(
+                {'error': 'session_date is required (YYYY-MM-DD format)'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            session_date = date.fromisoformat(session_date_str)
+        except ValueError:
+            return Response(
+                {'error': 'Invalid date format. Use YYYY-MM-DD'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        sessions = batch.auto_schedule_sessions(
+            session_date=session_date,
+            session_duration_hours=session_duration,
+            time_slots=time_slots
+        )
+        
+        serializer = BatchSessionSerializer(sessions, many=True)
+        return Response({
+            'message': f'Created {len(sessions)} sessions',
+            'sessions': serializer.data
+        }, status=status.HTTP_201_CREATED)
 
 
 class EnrollmentViewSet(viewsets.ModelViewSet):
@@ -319,6 +365,129 @@ class PaymentViewSet(viewsets.ModelViewSet):
         if result['success']:
             return Response({'status': 'ok'}, status=status.HTTP_200_OK)
         return Response({'error': result['error']}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class BatchSessionViewSet(viewsets.ReadOnlyModelViewSet):
+    """ViewSet for batch sessions"""
+    queryset = BatchSession.objects.all().select_related('batch', 'batch__course')
+    serializer_class = BatchSessionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        
+        # Filter by batch
+        batch_id = self.request.query_params.get('batch')
+        if batch_id:
+            queryset = queryset.filter(batch_id=batch_id)
+        
+        # Filter by course
+        course_id = self.request.query_params.get('course')
+        if course_id:
+            queryset = queryset.filter(batch__course_id=course_id)
+        
+        # Filter by date range
+        start_date = self.request.query_params.get('start_date')
+        end_date = self.request.query_params.get('end_date')
+        if start_date:
+            queryset = queryset.filter(start_datetime__date__gte=start_date)
+        if end_date:
+            queryset = queryset.filter(start_datetime__date__lte=end_date)
+        
+        return queryset.order_by('start_datetime', 'session_number')
+    
+    @action(detail=True, methods=['post'])
+    def register(self, request, pk=None):
+        """Register student for a session"""
+        session = self.get_object()
+        enrollment_id = request.data.get('enrollment_id')
+        
+        if not enrollment_id:
+            return Response(
+                {'error': 'enrollment_id is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            enrollment = Enrollment.objects.get(id=enrollment_id, user=request.user)
+        except Enrollment.DoesNotExist:
+            return Response(
+                {'error': 'Enrollment not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        # Check if session is full
+        if session.is_full():
+            return Response(
+                {'error': 'Session is full'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Check if already registered
+        registration, created = SessionRegistration.objects.get_or_create(
+            enrollment=enrollment,
+            session=session,
+            defaults={'status': 'registered'}
+        )
+        
+        if not created:
+            return Response(
+                {'error': 'Already registered for this session'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        serializer = SessionRegistrationSerializer(registration)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    @action(detail=True, methods=['get'])
+    def registrations(self, request, pk=None):
+        """Get all registrations for a session"""
+        session = self.get_object()
+        
+        # Only instructors or staff can view registrations
+        if not request.user.is_staff and session.batch.instructor != request.user:
+            return Response(
+                {'error': 'Permission denied'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        registrations = session.session_registrations.all().select_related('enrollment__user')
+        serializer = SessionRegistrationSerializer(registrations, many=True)
+        return Response(serializer.data)
+
+
+class SessionRegistrationViewSet(viewsets.ModelViewSet):
+    """ViewSet for session registrations"""
+    serializer_class = SessionRegistrationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        user = self.request.user
+        
+        # Students see only their registrations
+        if not user.is_staff:
+            return SessionRegistration.objects.filter(
+                enrollment__user=user
+            ).select_related('enrollment', 'session', 'session__batch')
+        
+        # Staff can see all registrations
+        return SessionRegistration.objects.all().select_related('enrollment', 'session', 'session__batch')
+    
+    def destroy(self, request, *args, **kwargs):
+        """Cancel registration"""
+        registration = self.get_object()
+        
+        # Only the student or staff can cancel
+        if not request.user.is_staff and registration.enrollment.user != request.user:
+            return Response(
+                {'error': 'Permission denied'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        registration.status = 'cancelled'
+        registration.save()
+        
+        return Response({'message': 'Registration cancelled'}, status=status.HTTP_200_OK)
 
 
 class AttendanceViewSet(viewsets.ModelViewSet):
@@ -744,4 +913,44 @@ class NoteViewSet(viewsets.ModelViewSet):
         if enrollment.user != self.request.user and not self.request.user.is_staff:
             raise permissions.PermissionDenied("You can only create notes for your own enrollments")
         serializer.save()
+
+
+class QandAViewSet(viewsets.ReadOnlyModelViewSet):
+    """ViewSet for Q&A (FAQ)"""
+    serializer_class = QandASerializer
+    permission_classes = [permissions.AllowAny]
+    
+    def get_queryset(self):
+        queryset = QandA.objects.filter(is_active=True)
+        
+        # Filter by course
+        course_id = self.request.query_params.get('course')
+        if course_id:
+            queryset = queryset.filter(course_id=course_id)
+        
+        return queryset.order_by('order', 'created_at')
+    
+    @action(detail=True, methods=['post'])
+    def increment_views(self, request, pk=None):
+        """Increment view count for a Q&A"""
+        qanda = self.get_object()
+        qanda.views_count += 1
+        qanda.save()
+        return Response({'views_count': qanda.views_count})
+
+
+class AnnouncementViewSet(viewsets.ReadOnlyModelViewSet):
+    """ViewSet for announcements"""
+    serializer_class = AnnouncementSerializer
+    permission_classes = [permissions.AllowAny]
+    
+    def get_queryset(self):
+        queryset = Announcement.objects.filter(is_active=True)
+        
+        # Filter by course
+        course_id = self.request.query_params.get('course')
+        if course_id:
+            queryset = queryset.filter(course_id=course_id)
+        
+        return queryset.order_by('-is_pinned', '-created_at')
 

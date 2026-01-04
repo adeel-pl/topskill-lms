@@ -8,6 +8,7 @@ import { FiUser, FiSave, FiMail, FiLock } from 'react-icons/fi';
 export default function AccountPage() {
   const router = useRouter();
   const { isAuthenticated, isLoading, user } = useAuthStore();
+  const { showSuccess } = useToast();
   const [formData, setFormData] = useState({
     email: user?.email || '',
     first_name: user?.first_name || '',
@@ -33,7 +34,7 @@ export default function AccountPage() {
     setSaving(true);
     setTimeout(() => {
       setSaving(false);
-      alert('Changes saved successfully!');
+      showSuccess('Changes saved successfully!');
     }, 1000);
   };
 

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { getApiBase } from "@/lib/api";
 import { fetchWithAuth } from "@/lib/auth";
 import PureLogicsNavbar from "@/app/components/PureLogicsNavbar";
+import { useToast } from "@/app/contexts/ToastContext";
 
 interface Question {
   id: number;
@@ -28,6 +29,7 @@ interface Quiz {
 
 export default function QuizPage() {
   const router = useRouter();
+  const { showError, showWarning } = useToast();
   const params = useParams();
   const courseSlug = params?.courseId as string;
   const quizId = params?.quizId as string;
@@ -97,7 +99,7 @@ export default function QuizPage() {
       );
 
       if (!enrollment) {
-        alert("You must be enrolled in this course to take the quiz.");
+        showWarning("You must be enrolled in this course to take the quiz.");
         return;
       }
 
@@ -137,7 +139,7 @@ export default function QuizPage() {
       setSubmitted(true);
     } catch (error) {
       console.error("Failed to submit quiz:", error);
-      alert("Failed to submit quiz. Please try again.");
+      showError("Failed to submit quiz. Please try again.");
     }
   };
 

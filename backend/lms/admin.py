@@ -2,11 +2,11 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
 from .models import (
-    Course, Batch, Enrollment, Payment, Attendance, BatchSession,
+    Course, Batch, Enrollment, Payment, Attendance, BatchSession, SessionRegistration,
     Lecture, CourseSection, Quiz, QuizAttempt, Assignment, AssignmentSubmission,
     Review, Wishlist, Category, Tag, Notification, Certificate, LectureProgress,
     Forum, Post, Reply, Resource, Note, Prerequisite, Question, QuestionOption,
-    Cart, CartItem
+    Cart, CartItem, QandA, Announcement
 )
 
 
@@ -42,6 +42,24 @@ class CourseSectionInline(admin.StackedInline):
     verbose_name = 'Section'
     verbose_name_plural = 'Course Sections'
     show_change_link = True
+
+
+class QandAInline(admin.TabularInline):
+    """Inline editor for Q&A within courses"""
+    model = QandA
+    extra = 2
+    fields = ('question', 'answer', 'order', 'is_active')
+    verbose_name = 'Q&A'
+    verbose_name_plural = 'Q&As'
+
+
+class AnnouncementInline(admin.TabularInline):
+    """Inline editor for announcements within courses"""
+    model = Announcement
+    extra = 1
+    fields = ('title', 'content', 'is_pinned', 'is_active')
+    verbose_name = 'Announcement'
+    verbose_name_plural = 'Announcements'
 
 
 @admin.register(Course)
@@ -85,7 +103,7 @@ class CourseAdmin(admin.ModelAdmin):
         }),
     )
     
-    inlines = [CourseSectionInline]
+    inlines = [CourseSectionInline, QandAInline, AnnouncementInline]
     
     def total_duration_display(self, obj):
         """Display total duration in hours"""
@@ -256,18 +274,137 @@ class LectureAdmin(admin.ModelAdmin):
         course.save()
 
 
+class SessionRegistrationInline(admin.TabularInline):
+    """Inline editor for session registrations"""
+    model = SessionRegistration
+    extra = 0
+    fields = ('enrollment', 'status', 'registered_at')
+    readonly_fields = ('registered_at',)
+    verbose_name = 'Registration'
+    verbose_name_plural = 'Registrations'
+
+
+class BatchSessionInline(admin.TabularInline):
+    """Inline editor for sessions within batches"""
+    model = BatchSession
+    extra = 1
+    fields = ('title', 'session_number', 'start_datetime', 'end_datetime', 'location', 'is_active')
+    verbose_name = 'Session'
+    verbose_name_plural = 'Sessions'
+    classes = ('collapse',)
+
+
 @admin.register(Batch)
 class BatchAdmin(admin.ModelAdmin):
-    list_display = ['name', 'course', 'instructor', 'capacity', 'start_date', 'end_date']
-    list_filter = ['course', 'instructor', 'start_date']
+    list_display = ['name', 'course', 'instructor', 'capacity', 'enrolled_count', 'available_slots', 'start_date', 'end_date', 'is_active']
+    list_filter = ['course', 'instructor', 'start_date', 'is_active']
     search_fields = ['name', 'course__title']
+    readonly_fields = ['enrolled_count', 'available_slots', 'created_at', 'updated_at']
+    inlines = [BatchSessionInline]
+    
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('course', 'name', 'instructor', 'capacity', 'is_active'),
+        }),
+        ('Schedule', {
+            'fields': ('start_date', 'end_date'),
+            'description': 'Set the overall batch start and end dates. Individual sessions can be scheduled separately.'
+        }),
+        ('Statistics', {
+            'fields': ('enrolled_count', 'available_slots'),
+            'classes': ('collapse',),
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def enrolled_count(self, obj):
+        """Display enrolled student count"""
+        return obj.get_enrolled_count()
+    enrolled_count.short_description = 'Enrolled Students'
+    
+    def available_slots(self, obj):
+        """Display available slots"""
+        return obj.get_available_slots()
+    available_slots.short_description = 'Available Slots'
+    
+    actions = ['auto_schedule_sessions_today', 'auto_schedule_sessions_tomorrow']
+    
+    def auto_schedule_sessions_today(self, request, queryset):
+        """Action to auto-schedule sessions for today"""
+        from django.utils import timezone
+        from datetime import date
+        
+        for batch in queryset:
+            sessions = batch.auto_schedule_sessions(session_date=date.today())
+            self.message_user(request, f"Created {len(sessions)} sessions for {batch.name} today.")
+    auto_schedule_sessions_today.short_description = "Auto-schedule sessions for today"
+    
+    def auto_schedule_sessions_tomorrow(self, request, queryset):
+        """Action to auto-schedule sessions for tomorrow"""
+        from django.utils import timezone
+        from datetime import date, timedelta
+        
+        for batch in queryset:
+            sessions = batch.auto_schedule_sessions(session_date=date.today() + timedelta(days=1))
+            self.message_user(request, f"Created {len(sessions)} sessions for {batch.name} tomorrow.")
+    auto_schedule_sessions_tomorrow.short_description = "Auto-schedule sessions for tomorrow"
 
 
 @admin.register(BatchSession)
 class BatchSessionAdmin(admin.ModelAdmin):
-    list_display = ['title', 'batch', 'start_datetime', 'end_datetime', 'location']
-    list_filter = ['batch', 'start_datetime']
+    list_display = ['title', 'batch', 'session_number', 'start_datetime', 'end_datetime', 'registered_count', 'location', 'is_active']
+    list_filter = ['batch', 'start_datetime', 'is_active']
     date_hierarchy = 'start_datetime'
+    search_fields = ['title', 'batch__name', 'batch__course__title']
+    readonly_fields = ['registered_count', 'created_at', 'updated_at']
+    inlines = [SessionRegistrationInline]
+    
+    fieldsets = (
+        ('Session Information', {
+            'fields': ('batch', 'title', 'session_number', 'is_active'),
+        }),
+        ('Schedule', {
+            'fields': ('start_datetime', 'end_datetime', 'location'),
+        }),
+        ('Description', {
+            'fields': ('description',),
+            'classes': ('collapse',),
+        }),
+        ('Statistics', {
+            'fields': ('registered_count',),
+            'classes': ('collapse',),
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def registered_count(self, obj):
+        """Display registered student count"""
+        return obj.get_registered_count()
+    registered_count.short_description = 'Registered Students'
+
+
+@admin.register(SessionRegistration)
+class SessionRegistrationAdmin(admin.ModelAdmin):
+    list_display = ['enrollment', 'session', 'status', 'registered_at']
+    list_filter = ['status', 'session__batch', 'registered_at']
+    search_fields = ['enrollment__user__username', 'session__title', 'session__batch__name']
+    readonly_fields = ['registered_at', 'created_at', 'updated_at']
+    
+    fieldsets = (
+        ('Registration Information', {
+            'fields': ('enrollment', 'session', 'status'),
+        }),
+        ('Timestamps', {
+            'fields': ('registered_at', 'created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
 
 
 @admin.register(Enrollment)
@@ -288,9 +425,35 @@ class PaymentAdmin(admin.ModelAdmin):
 
 @admin.register(Attendance)
 class AttendanceAdmin(admin.ModelAdmin):
-    list_display = ['enrollment', 'session', 'present', 'created_at']
+    list_display = ['enrollment', 'session', 'present', 'checked_in_at', 'created_at']
     list_filter = ['present', 'session__batch', 'created_at']
     search_fields = ['enrollment__user__username', 'session__title']
+    readonly_fields = ['created_at', 'updated_at']
+    
+    fieldsets = (
+        ('Attendance Information', {
+            'fields': ('enrollment', 'session', 'present', 'checked_in_at', 'note'),
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    actions = ['mark_present', 'mark_absent']
+    
+    def mark_present(self, request, queryset):
+        """Action to mark selected attendance as present"""
+        from django.utils import timezone
+        updated = queryset.update(present=True, checked_in_at=timezone.now())
+        self.message_user(request, f"Marked {updated} attendance records as present.")
+    mark_present.short_description = "Mark as present"
+    
+    def mark_absent(self, request, queryset):
+        """Action to mark selected attendance as absent"""
+        updated = queryset.update(present=False)
+        self.message_user(request, f"Marked {updated} attendance records as absent.")
+    mark_absent.short_description = "Mark as absent"
 
 
 @admin.register(Review)
@@ -428,4 +591,67 @@ class CartItemAdmin(admin.ModelAdmin):
     list_display = ['cart', 'course', 'created_at']
     list_filter = ['created_at']
     search_fields = ['cart__user__username', 'course__title']
+
+
+@admin.register(QandA)
+class QandAAdmin(admin.ModelAdmin):
+    list_display = ['course', 'question_preview', 'order', 'is_active', 'views_count', 'created_at']
+    list_filter = ['course', 'is_active', 'created_at']
+    search_fields = ['question', 'answer', 'course__title']
+    list_editable = ['order', 'is_active']
+    fieldsets = (
+        ('Course Information', {
+            'fields': ('course',)
+        }),
+        ('Q&A Content', {
+            'fields': ('question', 'answer', 'order', 'is_active')
+        }),
+        ('Statistics', {
+            'fields': ('views_count',),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def question_preview(self, obj):
+        return obj.question[:80] + '...' if len(obj.question) > 80 else obj.question
+    question_preview.short_description = 'Question'
+
+
+class QandAInline(admin.TabularInline):
+    """Inline editor for Q&A within courses"""
+    model = QandA
+    extra = 2
+    fields = ('question', 'answer', 'order', 'is_active')
+    verbose_name = 'Q&A'
+    verbose_name_plural = 'Q&As'
+
+
+@admin.register(Announcement)
+class AnnouncementAdmin(admin.ModelAdmin):
+    list_display = ['course', 'title', 'is_pinned', 'is_active', 'created_by', 'created_at']
+    list_filter = ['course', 'is_pinned', 'is_active', 'created_at']
+    search_fields = ['title', 'content', 'course__title']
+    list_editable = ['is_pinned', 'is_active']
+    fieldsets = (
+        ('Course Information', {
+            'fields': ('course', 'created_by')
+        }),
+        ('Announcement Content', {
+            'fields': ('title', 'content', 'is_pinned', 'is_active')
+        }),
+    )
+    
+    def save_model(self, request, obj, form, change):
+        if not change:  # Only set created_by on creation
+            obj.created_by = request.user
+        super().save_model(request, obj, form, change)
+
+
+class AnnouncementInline(admin.TabularInline):
+    """Inline editor for announcements within courses"""
+    model = Announcement
+    extra = 1
+    fields = ('title', 'content', 'is_pinned', 'is_active')
+    verbose_name = 'Announcement'
+    verbose_name_plural = 'Announcements'
 

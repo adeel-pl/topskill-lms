@@ -7,10 +7,12 @@ import { useAuthStore } from '@/lib/store';
 import { useRouter } from 'next/navigation';
 import PureLogicsNavbar from '@/app/components/PureLogicsNavbar';
 import { FiTrash2, FiShoppingCart, FiArrowRight } from 'react-icons/fi';
+import { useToast } from '@/app/contexts/ToastContext';
 
 export default function CartPage() {
   const router = useRouter();
   const { isAuthenticated, isLoading } = useAuthStore();
+  const { showSuccess, showError, showWarning } = useToast();
   const [cart, setCart] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [checkingOut, setCheckingOut] = useState(false);
@@ -41,15 +43,16 @@ export default function CartPage() {
   const removeItem = async (courseId: number) => {
     try {
       await cartAPI.removeItem(courseId);
+      showSuccess('Item removed from cart');
       loadCart();
     } catch (error) {
-      alert('Failed to remove item');
+      showError('Failed to remove item');
     }
   };
 
   const handleCheckout = async () => {
     if (!cart || !cart.items || cart.items.length === 0) {
-      alert('Your cart is empty');
+      showWarning('Your cart is empty');
       return;
     }
 
@@ -61,17 +64,19 @@ export default function CartPage() {
       if (response.data && response.data.payment_url) {
         window.location.href = response.data.payment_url;
       } else if (response.data && response.data.enrolled) {
-        alert(`Successfully enrolled in ${response.data.enrollments_count} course(s)!`);
-        router.push('/dashboard/my-courses');
+        showSuccess(`Successfully enrolled in ${response.data.enrollments_count} course(s)!`);
+        setTimeout(() => {
+          router.push('/dashboard/my-courses');
+        }, 1500);
         loadCart();
       } else {
-        alert('Payment URL not available. Please try enrolling directly from the course page.');
+        showWarning('Payment URL not available. Please try enrolling directly from the course page.');
         setCheckingOut(false);
       }
     } catch (error: any) {
       console.error('Checkout error:', error);
       const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message || 'Checkout failed. Please try again.';
-      alert(errorMessage);
+      showError(errorMessage);
       setCheckingOut(false);
     }
   };

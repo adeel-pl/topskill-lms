@@ -229,19 +229,153 @@ class Batch(TimeStampedModel):
     def get_available_slots(self):
         """Get remaining available slots"""
         return max(0, self.capacity - self.get_enrolled_count())
+    
+    def auto_schedule_sessions(self, session_date, session_duration_hours=2, time_slots=None):
+        """
+        Automatically create sessions for a given date when enrollment exceeds capacity.
+        
+        Args:
+            session_date: Date for the sessions
+            session_duration_hours: Duration of each session in hours (default 2)
+            time_slots: Optional list of time slots like ['14:00', '16:00', '18:00']
+                       If None, will auto-generate based on enrollment
+        
+        Returns:
+            List of created BatchSession objects
+        """
+        from django.utils import timezone
+        from datetime import datetime, timedelta
+        import math
+        
+        enrolled_count = self.get_enrolled_count()
+        if enrolled_count == 0:
+            return []
+        
+        # Calculate how many sessions needed
+        sessions_needed = math.ceil(enrolled_count / self.capacity)
+        
+        # Generate time slots if not provided
+        if not time_slots:
+            # Default: Start at 2pm, create slots every 2 hours
+            start_hour = 14  # 2pm
+            time_slots = []
+            for i in range(sessions_needed):
+                hour = start_hour + (i * session_duration_hours)
+                if hour >= 24:
+                    hour = hour % 24
+                time_slots.append(f"{hour:02d}:00")
+        
+        created_sessions = []
+        session_num = 1
+        
+        # Get existing sessions for this date to avoid duplicates
+        existing_sessions = self.sessions.filter(
+            start_datetime__date=session_date
+        ).count()
+        
+        if existing_sessions > 0:
+            # Sessions already exist for this date
+            return self.sessions.filter(start_datetime__date=session_date)
+        
+        for time_slot in time_slots[:sessions_needed]:
+            # Parse time slot
+            hour, minute = map(int, time_slot.split(':'))
+            
+            # Create datetime objects
+            start_datetime = timezone.make_aware(
+                datetime.combine(session_date, datetime.min.time().replace(hour=hour, minute=minute))
+            )
+            end_datetime = start_datetime + timedelta(hours=session_duration_hours)
+            
+            # Create session
+            session = BatchSession.objects.create(
+                batch=self,
+                title=f"Session {session_num} - {session_date.strftime('%B %d, %Y')}",
+                start_datetime=start_datetime,
+                end_datetime=end_datetime,
+                location=self.course.instructor.profile.location if hasattr(self.course.instructor, 'profile') else '',
+                session_number=session_num,
+                is_active=True
+            )
+            
+            created_sessions.append(session)
+            session_num += 1
+        
+        # Auto-assign students to sessions
+        self.auto_assign_students_to_sessions(created_sessions)
+        
+        return created_sessions
+    
+    def auto_assign_students_to_sessions(self, sessions):
+        """Automatically assign enrolled students to sessions"""
+        enrollments = self.enrollments.filter(status__in=['pending', 'active']).order_by('created_at')
+        
+        session_index = 0
+        for enrollment in enrollments:
+            if session_index >= len(sessions):
+                session_index = 0  # Cycle back to first session if needed
+            
+            session = sessions[session_index]
+            
+            # Check if already registered
+            if not SessionRegistration.objects.filter(enrollment=enrollment, session=session).exists():
+                SessionRegistration.objects.create(
+                    enrollment=enrollment,
+                    session=session,
+                    status='registered'
+                )
+            
+            # Move to next session when current is full
+            if session.get_registered_count() >= self.capacity:
+                session_index += 1
 
 
 class BatchSession(TimeStampedModel):
-    """Individual sessions for physical batches"""
+    """Individual sessions for physical batches with automatic scheduling"""
     batch = models.ForeignKey(Batch, on_delete=models.CASCADE, related_name='sessions')
     title = models.CharField(max_length=255)
     start_datetime = models.DateTimeField()
     end_datetime = models.DateTimeField()
     location = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
+    session_number = models.PositiveIntegerField(default=1, help_text="Session number in the batch")
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['start_datetime', 'session_number']
+        unique_together = ['batch', 'session_number', 'start_datetime']
 
     def __str__(self):
-        return f"{self.batch.name} - {self.title}"
+        return f"{self.batch.name} - {self.title} (Session {self.session_number})"
+    
+    def get_registered_count(self):
+        """Get number of students registered for this session"""
+        return self.session_registrations.filter(status='registered').count()
+    
+    def is_full(self):
+        """Check if session is at capacity"""
+        return self.get_registered_count() >= self.batch.capacity
+
+
+class SessionRegistration(TimeStampedModel):
+    """Student registration for specific physical session"""
+    STATUS_CHOICES = [
+        ('registered', 'Registered'),
+        ('attended', 'Attended'),
+        ('absent', 'Absent'),
+        ('cancelled', 'Cancelled'),
+    ]
+    
+    enrollment = models.ForeignKey('Enrollment', on_delete=models.CASCADE, related_name='session_registrations')
+    session = models.ForeignKey(BatchSession, on_delete=models.CASCADE, related_name='session_registrations')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='registered')
+    registered_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ['enrollment', 'session']
+    
+    def __str__(self):
+        return f"{self.enrollment.user.username} - {self.session.title}"
 
 
 # ==================== ENROLLMENT & PROGRESS ====================
@@ -653,6 +787,44 @@ class Note(TimeStampedModel):
 
     def __str__(self):
         return f"{self.enrollment.user.username} - {self.lecture.title}"
+
+
+# ==================== Q&A (FAQ) ====================
+
+class QandA(TimeStampedModel):
+    """Course-specific frequently asked questions and answers"""
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='qandas')
+    question = models.TextField()
+    answer = models.TextField()
+    order = models.PositiveIntegerField(default=1, help_text="Display order")
+    is_active = models.BooleanField(default=True)
+    views_count = models.PositiveIntegerField(default=0, help_text="Number of times this Q&A was viewed")
+
+    class Meta:
+        ordering = ['order', 'created_at']
+        verbose_name = "Q&A"
+        verbose_name_plural = "Q&As"
+
+    def __str__(self):
+        return f"{self.course.title} - {self.question[:50]}"
+
+
+# ==================== ANNOUNCEMENTS ====================
+
+class Announcement(TimeStampedModel):
+    """Course announcements"""
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='announcements')
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    is_pinned = models.BooleanField(default=False, help_text="Pin to top of announcements list")
+    is_active = models.BooleanField(default=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='announcements_created')
+
+    class Meta:
+        ordering = ['-is_pinned', '-created_at']
+
+    def __str__(self):
+        return f"{self.course.title} - {self.title}"
 
 
 # ==================== NOTIFICATIONS ====================

@@ -6,7 +6,7 @@ from lms.models import (
     Course, CourseSection, Lecture, Category, Tag, 
     Batch, Enrollment, Review, Quiz, Assignment, Question, QuestionOption,
     QuizAttempt, AssignmentSubmission, Wishlist, Notification, Certificate,
-    Forum, Post, Reply, Resource, Note, Prerequisite
+    Forum, Post, Reply, Resource, Note, Prerequisite, QandA, Announcement
 )
 from .video_ids import get_video_id_for_course
 import random
@@ -571,6 +571,74 @@ class Command(BaseCommand):
                 }
             )
 
+        # Create Q&A (FAQ) for each course
+        qa_templates = {
+            'python': [
+                {'q': 'What programming experience do I need?', 'a': 'No prior programming experience is required. This course starts from the basics and gradually builds up to more advanced concepts.'},
+                {'q': 'How long does it take to complete the course?', 'a': 'The course is self-paced. Most students complete it in 4-6 weeks by dedicating 5-10 hours per week.'},
+                {'q': 'Will I get a certificate?', 'a': 'Yes! Upon completion, you will receive a certificate of completion that you can add to your resume or LinkedIn profile.'},
+                {'q': 'What if I get stuck?', 'a': 'You can ask questions in the Q&A section, and our instructors will help you. We also have a community forum for peer support.'},
+                {'q': 'Can I access the course materials after completion?', 'a': 'Yes! You have lifetime access to all course materials, including future updates.'},
+            ],
+            'django': [
+                {'q': 'Do I need to know Python before taking this course?', 'a': 'Yes, basic Python knowledge is recommended. We cover Django-specific concepts, but Python fundamentals are assumed.'},
+                {'q': 'What will I build in this course?', 'a': 'You will build a complete web application including user authentication, database models, API endpoints, and deployment.'},
+                {'q': 'Is Django still relevant in 2024?', 'a': 'Absolutely! Django is one of the most popular Python web frameworks and is widely used in production applications.'},
+            ],
+            'shopify': [
+                {'q': 'Do I need a Shopify account?', 'a': 'Yes, you will need a Shopify account. We provide instructions on setting up a free development store.'},
+                {'q': 'Will I learn how to create custom themes?', 'a': 'Yes! The course covers theme development, customization, and best practices for creating professional Shopify stores.'},
+                {'q': 'What about Shopify apps?', 'a': 'We cover both theme development and app development, giving you a complete understanding of the Shopify ecosystem.'},
+            ],
+        }
+        
+        announcement_templates = [
+            {'title': 'Welcome to the Course!', 'content': 'Welcome! We are excited to have you here. Make sure to check out the course materials and start with the first lecture.'},
+            {'title': 'New Content Added', 'content': 'We have added new lectures covering advanced topics. Check them out in the course content section.'},
+            {'title': 'Assignment Deadline Reminder', 'content': 'Don\'t forget! The assignment is due next week. Make sure to submit it on time to get full credit.'},
+        ]
+        
+        for course in all_courses:
+            # Create Q&A based on course title
+            course_key = course.title.lower()
+            qa_list = []
+            for key, qas in qa_templates.items():
+                if key in course_key:
+                    qa_list = qas
+                    break
+            
+            # Default Q&A if no match
+            if not qa_list:
+                qa_list = [
+                    {'q': 'What will I learn in this course?', 'a': f'This course covers all the essential concepts and practical applications of {course.title}.'},
+                    {'q': 'How long is the course?', 'a': f'The course includes {course.total_lectures} lectures with a total duration of {course.total_duration_hours} hours.'},
+                    {'q': 'Is there a certificate?', 'a': 'Yes, you will receive a certificate upon successful completion of the course.'},
+                ]
+            
+            for idx, qa in enumerate(qa_list[:5], 1):  # Create up to 5 Q&As per course
+                QandA.objects.get_or_create(
+                    course=course,
+                    question=qa['q'],
+                    defaults={
+                        'answer': qa['a'],
+                        'order': idx,
+                        'is_active': True,
+                    }
+                )
+            
+            # Create announcements for each course
+            for idx, ann in enumerate(announcement_templates[:3], 1):  # Create 3 announcements per course
+                Announcement.objects.get_or_create(
+                    course=course,
+                    title=ann['title'],
+                    defaults={
+                        'content': ann['content'],
+                        'is_pinned': idx == 1,  # First announcement is pinned
+                        'is_active': True,
+                        'created_by': admin_user,
+                    }
+                )
+        
         self.stdout.write(self.style.SUCCESS('\n✅ Successfully seeded database!'))
         self.stdout.write('\n📊 Created:')
         self.stdout.write(f'  - {Course.objects.count()} courses')
@@ -580,6 +648,8 @@ class Command(BaseCommand):
         self.stdout.write(f'  - {Question.objects.count()} questions')
         self.stdout.write(f'  - {Assignment.objects.count()} assignments')
         self.stdout.write(f'  - {Review.objects.count()} reviews')
+        self.stdout.write(f'  - {QandA.objects.count()} Q&As')
+        self.stdout.write(f'  - {Announcement.objects.count()} announcements')
         self.stdout.write(f'  - {Enrollment.objects.count()} enrollments')
         self.stdout.write(f'  - {User.objects.count()} users')
         self.stdout.write('\n' + '='*50)
