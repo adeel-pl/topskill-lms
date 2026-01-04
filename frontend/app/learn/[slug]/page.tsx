@@ -36,7 +36,7 @@ interface Section {
   total_lectures: number;
 }
 
-type TabType = 'overview' | 'reviews' | 'notes' | 'questions' | 'announcements';
+type TabType = 'overview' | 'reviews' | 'notes' | 'questions' | 'announcements' | 'quizzes' | 'assignments';
 
 export default function CoursePlayerPage() {
   const params = useParams();
@@ -48,6 +48,8 @@ export default function CoursePlayerPage() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [quizzes, setQuizzes] = useState<any[]>([]);
+  const [assignments, setAssignments] = useState<any[]>([]);
 
   useEffect(() => {
     loadCourseContent();
@@ -76,9 +78,9 @@ export default function CoursePlayerPage() {
         return;
       }
 
-      try {
-        const contentRes = await playerAPI.getContent(courseData.id);
-        const { sections: sectionsData, course: courseInfo, enrollment } = contentRes.data;
+        try {
+          const contentRes = await playerAPI.getContent(courseData.id);
+          const { sections: sectionsData, course: courseInfo, enrollment, quizzes, assignments } = contentRes.data;
 
         // Check if user is enrolled
         if (!enrollment || !enrollment.id) {
@@ -87,8 +89,10 @@ export default function CoursePlayerPage() {
           return;
         }
 
-        setCourse(courseInfo);
-        setSections(sectionsData);
+          setCourse({ ...courseInfo, quizzes, assignments });
+          setSections(sectionsData);
+          setQuizzes(quizzes || []);
+          setAssignments(assignments || []);
 
         if (sectionsData.length > 0 && sectionsData[0].lectures.length > 0) {
           const firstLecture = sectionsData[0].lectures[0];
@@ -284,35 +288,37 @@ export default function CoursePlayerPage() {
         {/* Right Panel - Video Player and Content */}
         <div className="flex-1 flex flex-col bg-white">
           {/* Video Player */}
-          <div className="bg-black aspect-video relative">
+          <div className="bg-black aspect-video relative w-full">
             {selectedLecture.youtube_video_id ? (
-              <VideoPlayer
-                url={`https://www.youtube.com/watch?v=${selectedLecture.youtube_video_id}`}
-                width="100%"
-                height="100%"
-                controls
-                playing
-                onProgress={handleProgress}
-                config={{
-                  youtube: {
-                    playerVars: {
-                      start: Math.floor(watchPosition),
-                    },
-                  },
-                }}
-              />
+              <div className="w-full h-full">
+                <iframe
+                  className="w-full h-full"
+                  src={`https://www.youtube.com/embed/${selectedLecture.youtube_video_id}?start=${Math.floor(watchPosition)}&rel=0&modestbranding=1&controls=1&enablejsapi=1&origin=${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}`}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  title={selectedLecture.title}
+                />
+              </div>
             ) : selectedLecture.content_url ? (
               <VideoPlayer
                 url={selectedLecture.content_url}
                 width="100%"
                 height="100%"
                 controls
-                playing
+                playing={false}
                 onProgress={handleProgress}
+                onError={(error: any) => {
+                  console.error('Video player error:', error);
+                }}
               />
             ) : (
               <div className="flex items-center justify-center h-full">
-                <div className="text-gray-400">No video available</div>
+                <div className="text-center text-gray-400">
+                  <p className="text-lg mb-2">No video available</p>
+                  <p className="text-sm">Video ID: {selectedLecture.youtube_video_id || 'Not set'}</p>
+                  <p className="text-xs mt-2">Please add a YouTube Video ID in the admin panel</p>
+                </div>
               </div>
             )}
           </div>
@@ -378,6 +384,26 @@ export default function CoursePlayerPage() {
                     <FiMessageSquare className="inline mr-1" />
                     Q&A
                   </button>
+                  <button
+                    onClick={() => setActiveTab('quizzes')}
+                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${
+                      activeTab === 'quizzes'
+                        ? 'border-[#66CC33] text-[#000F2C]'
+                        : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
+                    }`}
+                  >
+                    Quizzes
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('assignments')}
+                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${
+                      activeTab === 'assignments'
+                        ? 'border-[#66CC33] text-[#000F2C]'
+                        : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
+                    }`}
+                  >
+                    Assignments
+                  </button>
                 </div>
               </div>
 
@@ -391,6 +417,39 @@ export default function CoursePlayerPage() {
                         <p className="text-[#6a6f73] whitespace-pre-wrap leading-relaxed">
                           {selectedLecture.description}
                         </p>
+                      </div>
+                    )}
+                    
+                    {/* Mark as Complete Button */}
+                    {!selectedLecture.is_completed && (
+                      <div className="mb-6">
+                        <button
+                          onClick={async () => {
+                            try {
+                              await playerAPI.markComplete(course.id, selectedLecture.id);
+                              // Reload lecture to update completion status
+                              await selectLecture(course.id, selectedLecture.id);
+                              // Reload course content to update progress
+                              await loadCourseContent();
+                            } catch (error) {
+                              console.error('Error marking lecture as complete:', error);
+                              alert('Failed to mark lecture as complete');
+                            }
+                          }}
+                          className="px-6 py-3 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-sm font-semibold transition-colors flex items-center gap-2"
+                        >
+                          <FiCheck className="w-5 h-5" />
+                          Mark as Complete
+                        </button>
+                      </div>
+                    )}
+                    
+                    {selectedLecture.is_completed && (
+                      <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-sm">
+                        <div className="flex items-center gap-2 text-green-700">
+                          <FiCheck className="w-5 h-5" />
+                          <span className="font-semibold">Lecture completed!</span>
+                        </div>
                       </div>
                     )}
                     
@@ -471,6 +530,61 @@ export default function CoursePlayerPage() {
                     <button className="bg-[#66CC33] hover:bg-[#4da826] text-[#000F2C] px-4 py-2 rounded-sm font-semibold">
                       Ask a Question
                     </button>
+                  </div>
+                )}
+                
+                {/* Quizzes and Assignments Tab */}
+                {activeTab === 'quizzes' && (
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 text-[#000F2C]">Course Quizzes</h3>
+                    {course.quizzes && course.quizzes.length > 0 ? (
+                      <div className="space-y-4">
+                        {course.quizzes.map((quiz: any) => (
+                          <div key={quiz.id} className="border border-gray-200 rounded-sm p-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <h4 className="font-semibold text-[#000F2C]">{quiz.title}</h4>
+                              <span className="text-sm text-[#6a6f73]">{quiz.passing_score}% passing score</span>
+                            </div>
+                            {quiz.description && (
+                              <p className="text-sm text-[#6a6f73] mb-3">{quiz.description}</p>
+                            )}
+                            <button className="px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-sm font-semibold text-sm">
+                              Start Quiz
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-[#6a6f73]">No quizzes available for this course.</p>
+                    )}
+                  </div>
+                )}
+                
+                {activeTab === 'assignments' && (
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 text-[#000F2C]">Course Assignments</h3>
+                    {course.assignments && course.assignments.length > 0 ? (
+                      <div className="space-y-4">
+                        {course.assignments.map((assignment: any) => (
+                          <div key={assignment.id} className="border border-gray-200 rounded-sm p-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <h4 className="font-semibold text-[#000F2C]">{assignment.title}</h4>
+                              {assignment.due_date && (
+                                <span className="text-sm text-[#6a6f73]">
+                                  Due: {new Date(assignment.due_date).toLocaleDateString()}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-sm text-[#6a6f73] mb-3">{assignment.description}</p>
+                            <button className="px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-sm font-semibold text-sm">
+                              Submit Assignment
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-[#6a6f73]">No assignments available for this course.</p>
+                    )}
                   </div>
                 )}
               </div>

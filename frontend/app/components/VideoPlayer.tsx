@@ -11,6 +11,7 @@ const ReactPlayer = dynamic(
     loading: () => (
       <div className="flex items-center justify-center h-full bg-black">
         <div className="w-12 h-12 border-4 border-gray-600 border-t-white rounded-full animate-spin"></div>
+        <span className="ml-4 text-white">Loading video player...</span>
       </div>
     )
   }
@@ -22,6 +23,7 @@ interface VideoPlayerProps extends ComponentProps<typeof ReactPlayer> {
 
 export default function VideoPlayer(props: VideoPlayerProps) {
   const [mounted, setMounted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -31,10 +33,34 @@ export default function VideoPlayer(props: VideoPlayerProps) {
     return (
       <div className="flex items-center justify-center h-full bg-black">
         <div className="w-12 h-12 border-4 border-gray-600 border-t-white rounded-full animate-spin"></div>
+        <span className="ml-4 text-white">Loading video player...</span>
       </div>
     );
   }
 
-  return <ReactPlayer {...props} />;
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-full bg-black">
+        <div className="text-center text-white">
+          <p className="text-lg mb-2">Video unavailable</p>
+          <p className="text-sm text-gray-400">{error}</p>
+          <p className="text-xs text-gray-500 mt-2">URL: {props.url}</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <ReactPlayer
+      {...props}
+      onError={(err: any) => {
+        console.error('ReactPlayer error:', err);
+        setError(err?.message || 'Failed to load video');
+      }}
+      onReady={() => {
+        setError(null);
+      }}
+    />
+  );
 }
 

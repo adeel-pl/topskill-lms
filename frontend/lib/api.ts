@@ -104,6 +104,9 @@ export const playerAPI = {
   updateProgress: (courseId: number, lectureId: number, data: any) =>
     api.post(`/courses/${courseId}/player/lecture/${lectureId}/progress/`, data),
   
+  markComplete: (courseId: number, lectureId: number) =>
+    api.post(`/courses/${courseId}/player/lecture/${lectureId}/complete/`),
+  
   addNote: (courseId: number, lectureId: number, data: any) =>
     api.post(`/courses/${courseId}/player/lecture/${lectureId}/note/`, data),
   
@@ -112,6 +115,23 @@ export const playerAPI = {
   
   getOverview: (courseId: number) =>
     api.get(`/courses/${courseId}/player/overview/`),
+  
+  // Quiz APIs
+  getQuiz: (courseId: number, quizId: number) =>
+    api.get(`/quizzes/${quizId}/`),
+  
+  submitQuiz: (courseId: number, quizId: number, data: any) =>
+    api.post(`/quizzes/${quizId}/attempt/`, data),
+  
+  getQuizAttempts: (courseId: number, quizId: number) =>
+    api.get(`/quizzes/${quizId}/attempts/`),
+  
+  // Assignment APIs
+  getAssignment: (courseId: number, assignmentId: number) =>
+    api.get(`/assignments/${assignmentId}/`),
+  
+  submitAssignment: (courseId: number, assignmentId: number, data: any) =>
+    api.post(`/assignments/${assignmentId}/submit/`, data),
 };
 
 // Cart API

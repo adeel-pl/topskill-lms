@@ -282,7 +282,7 @@ export default function CourseDetailPage() {
               </div>
             </motion.div>
 
-            {/* Course Content */}
+            {/* Course Content Stats */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -320,6 +320,75 @@ export default function CourseDetailPage() {
                 </div>
               </div>
             </motion.div>
+
+            {/* Course Content Preview - Like Udemy */}
+            {overview?.content_preview && overview.content_preview.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                className="bg-gradient-to-br from-[#1E293B] to-[#0F172A] border-2 border-[#334155] rounded-3xl p-6 md:p-8 lg:p-10 shadow-xl shadow-black/20 relative overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-[#10B981]/5 via-transparent to-[#3B82F6]/5"></div>
+                
+                <div className="relative z-10">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#10B981] to-[#059669] flex items-center justify-center shadow-lg shadow-[#10B981]/30">
+                      <Play className="text-white w-5 h-5" />
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-black text-white">Course Curriculum</h2>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    {overview.content_preview.map((section: any, sectionIdx: number) => (
+                      <div key={section.id} className="border border-[#334155] rounded-xl overflow-hidden bg-[#0F172A]/30">
+                        <div className="px-4 py-4 bg-[#1E293B]/50 border-b border-[#334155] flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <span className="text-sm font-semibold text-[#9CA3AF]">Section {section.order}:</span>
+                            <h3 className="text-lg font-bold text-white">{section.title}</h3>
+                            {section.is_preview && (
+                              <span className="px-2 py-1 text-xs font-semibold bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/30 rounded">
+                                Preview
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-sm text-[#9CA3AF]">{section.total_lectures} lectures</span>
+                        </div>
+                        <div className="divide-y divide-[#334155]">
+                          {section.lectures.slice(0, isEnrolled ? section.lectures.length : 2).map((lecture: any, lectureIdx: number) => (
+                            <div key={lecture.id} className="px-4 py-3 flex items-center justify-between hover:bg-[#1E293B]/30 transition-colors">
+                              <div className="flex items-center gap-3 flex-1">
+                                <Play className="w-4 h-4 text-[#10B981] flex-shrink-0" />
+                                <span className="text-sm text-[#D1D5DB]">{lecture.title}</span>
+                                {lecture.is_preview && (
+                                  <span className="px-2 py-0.5 text-xs font-medium bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/30 rounded">
+                                    Preview
+                                  </span>
+                                )}
+                              </div>
+                              <span className="text-xs text-[#9CA3AF] ml-4">{lecture.duration_minutes}m</span>
+                            </div>
+                          ))}
+                          {!isEnrolled && section.lectures.length > 2 && (
+                            <div className="px-4 py-3 text-sm text-[#9CA3AF] italic">
+                              +{section.lectures.length - 2} more lectures (enroll to view all)
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {!isEnrolled && (
+                    <div className="mt-6 p-4 bg-[#10B981]/10 border border-[#10B981]/30 rounded-xl">
+                      <p className="text-sm text-[#D1D5DB]">
+                        <span className="font-semibold text-[#10B981]">Preview available:</span> You can preview the first 1-2 lectures of each section. Enroll to access all course content, quizzes, and assignments.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )}
           </div>
 
           {/* Sidebar - Pricing Card */}

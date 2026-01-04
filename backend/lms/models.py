@@ -87,6 +87,22 @@ class Course(TimeStampedModel):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+        # Auto-update course statistics (using string reference to avoid circular import)
+        self._update_course_stats()
+    
+    def _update_course_stats(self):
+        """Update course statistics from actual content"""
+        # Import here to avoid circular import
+        from .models import Lecture
+        total_lectures = Lecture.objects.filter(section__course=self).count()
+        total_duration = sum(
+            Lecture.objects.filter(section__course=self).values_list('duration_minutes', flat=True) or [0]
+        )
+        # Update without triggering save again to avoid recursion
+        Course.objects.filter(id=self.id).update(
+            total_lectures=total_lectures,
+            total_duration_hours=round(total_duration / 60, 2) if total_duration > 0 else 0
+        )
 
     def __str__(self):
         return self.title

@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.db.models import Q
 from .models import (
     Course, Enrollment, Lecture, CourseSection, LectureProgress,
-    Quiz, QuizAttempt, Assignment, AssignmentSubmission, Note, Forum, Post, Reply
+    Quiz, QuizAttempt, Assignment, AssignmentSubmission, Note, Forum, Post, Reply, Question, QuestionOption
 )
 from .serializers import (
     CourseSectionPlayerSerializer, LectureWithProgressSerializer,
@@ -218,6 +218,51 @@ class CoursePlayerViewSet(viewsets.ViewSet):
             }
         })
     
+    @action(detail=True, methods=['post'], url_path='lecture/(?P<lecture_id>[^/.]+)/complete')
+    def mark_lecture_complete(self, request, pk=None, lecture_id=None):
+        """Mark lecture as complete (manual completion)"""
+        try:
+            course = Course.objects.get(id=pk, is_active=True)
+            lecture = Lecture.objects.get(id=lecture_id, section__course=course)
+        except (Course.DoesNotExist, Lecture.DoesNotExist):
+            return Response(
+                {'error': 'Lecture not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        enrollment = Enrollment.objects.filter(
+            user=request.user,
+            course=course,
+            status__in=['active', 'completed']
+        ).first()
+        
+        if not enrollment:
+            return Response(
+                {'error': 'Not enrolled in this course'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        progress, created = LectureProgress.objects.get_or_create(
+            enrollment=enrollment,
+            lecture=lecture
+        )
+        
+        if not progress.completed:
+            progress.completed = True
+            progress.completed_at = timezone.now()
+            progress.save()
+            
+            # Update enrollment progress
+            enrollment.update_progress()
+        
+        return Response({
+            'message': 'Lecture marked as complete',
+            'progress': {
+                'completed': progress.completed,
+                'progress_percent': enrollment.progress_percent,
+            }
+        })
+    
     @action(detail=True, methods=['post'], url_path='lecture/(?P<lecture_id>[^/.]+)/note')
     def add_note(self, request, pk=None, lecture_id=None):
         """Add note to lecture"""
@@ -326,7 +371,7 @@ class CoursePlayerViewSet(viewsets.ViewSet):
                 course=course
             ).first()
         
-        # Get course stats
+        # Get course stats - DYNAMIC from actual content
         total_lectures = Lecture.objects.filter(section__course=course).count()
         total_duration = sum(
             Lecture.objects.filter(section__course=course).values_list('duration_minutes', flat=True) or [0]
@@ -335,6 +380,31 @@ class CoursePlayerViewSet(viewsets.ViewSet):
         # Get quizzes and assignments (they have course FK)
         total_quizzes = course.quizzes.filter(is_active=True).count()
         total_assignments = course.assignments.filter(is_active=True).count()
+        
+        # Get course content preview (sections with lectures) - visible to all
+        sections_preview = []
+        sections = course.sections.all().order_by('order')
+        for section in sections:
+            lectures = section.lectures.all().order_by('order')
+            # Show all sections and lectures in preview, but mark which are preview
+            section_lectures = []
+            for lecture in lectures:
+                section_lectures.append({
+                    'id': lecture.id,
+                    'title': lecture.title,
+                    'duration_minutes': lecture.duration_minutes,
+                    'is_preview': lecture.is_preview,
+                    'order': lecture.order,
+                })
+            
+            sections_preview.append({
+                'id': section.id,
+                'title': section.title,
+                'order': section.order,
+                'is_preview': section.is_preview,
+                'lectures': section_lectures,
+                'total_lectures': len(section_lectures),
+            })
         
         # Generate learning objectives based on course features
         learning_objectives = []
@@ -370,6 +440,7 @@ class CoursePlayerViewSet(viewsets.ViewSet):
                 'total_quizzes': total_quizzes,
                 'total_assignments': total_assignments,
             },
+            'content_preview': sections_preview,  # Course content visible to all
             'learning_objectives': learning_objectives,
             'enrollment': {
                 'enrolled': enrollment is not None,

@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.utils.html import format_html
+from django.urls import reverse
 from .models import (
     Course, Batch, Enrollment, Payment, Attendance, BatchSession,
     Lecture, CourseSection, Quiz, QuizAttempt, Assignment, AssignmentSubmission,
@@ -22,27 +24,236 @@ class TagAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
 
+class LectureInline(admin.TabularInline):
+    """Inline editor for lectures within sections"""
+    model = Lecture
+    extra = 2
+    fields = ('title', 'order', 'youtube_video_id', 'duration_minutes', 'is_preview')
+    verbose_name = 'Lecture'
+    verbose_name_plural = 'Lectures'
+    classes = ('collapse',)
+
+
+class CourseSectionInline(admin.StackedInline):
+    """Inline editor for sections within courses"""
+    model = CourseSection
+    extra = 1
+    fields = ('title', 'order', 'is_preview')
+    verbose_name = 'Section'
+    verbose_name_plural = 'Course Sections'
+    show_change_link = True
+
+
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ['title', 'slug', 'modality', 'price', 'max_batch_size', 'instructor', 'is_active', 'created_at']
+    list_display = ['title', 'slug', 'modality', 'price', 'instructor', 'total_duration_display', 'total_lectures_display', 'is_active', 'created_at']
     prepopulated_fields = {'slug': ('title',)}
     search_fields = ['title', 'description']
-    list_filter = ['modality', 'is_active', 'created_at']
+    list_filter = ['modality', 'is_active', 'level', 'created_at']
     filter_horizontal = ['categories', 'tags']
+    readonly_fields = ['total_duration_hours', 'total_lectures', 'total_students', 'rating', 'num_reviews', 'created_at', 'updated_at']
+    
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('title', 'slug', 'description', 'short_description', 'thumbnail'),
+            'description': 'Enter course title and description. The slug will be auto-generated from the title.'
+        }),
+        ('Course Details', {
+            'fields': ('instructor', 'modality', 'price', 'max_batch_size', 'language', 'level', 'is_active'),
+            'description': 'Set course instructor, price, and other details. Select modality (online/physical/hybrid).'
+        }),
+        ('Course Content', {
+            'description': '''
+            <strong>How to add course content (Udemy-style):</strong><br>
+            1. Scroll down to "Course Sections" section below<br>
+            2. Click "Add another Course Section" to add a new section<br>
+            3. Enter section title and order<br>
+            4. Click "Save and continue editing" to add lectures to the section<br>
+            5. Go to "Course Sections" in the admin menu to add lectures to each section<br>
+            <strong>Tip:</strong> You can also add sections and lectures directly from the Course Sections admin page.
+            ''',
+            'fields': (),
+        }),
+        ('Statistics (Auto-calculated)', {
+            'fields': ('total_duration_hours', 'total_lectures', 'total_students', 'rating', 'num_reviews'),
+            'classes': ('collapse',),
+            'description': 'These statistics are automatically calculated from your course content. Total duration is calculated from all lecture durations.'
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    inlines = [CourseSectionInline]
+    
+    def total_duration_display(self, obj):
+        """Display total duration in hours"""
+        total_minutes = sum(
+            Lecture.objects.filter(section__course=obj).values_list('duration_minutes', flat=True) or [0]
+        )
+        hours = total_minutes // 60
+        minutes = total_minutes % 60
+        if hours > 0:
+            return f"{hours}h {minutes}m" if minutes > 0 else f"{hours}h"
+        return f"{minutes}m"
+    total_duration_display.short_description = 'Total Duration'
+    
+    def total_lectures_display(self, obj):
+        """Display total number of lectures"""
+        count = Lecture.objects.filter(section__course=obj).count()
+        return count
+    total_lectures_display.short_description = 'Lectures'
+    
+    def save_model(self, request, obj, form, change):
+        """Update course stats when saving"""
+        super().save_model(request, obj, form, change)
+        # Recalculate stats
+        from .models import Lecture
+        total_lectures = Lecture.objects.filter(section__course=obj).count()
+        total_duration = sum(
+            Lecture.objects.filter(section__course=obj).values_list('duration_minutes', flat=True) or [0]
+        )
+        obj.total_lectures = total_lectures
+        obj.total_duration_hours = round(total_duration / 60, 2) if total_duration > 0 else 0
+        obj.save()
 
 
 @admin.register(CourseSection)
 class CourseSectionAdmin(admin.ModelAdmin):
-    list_display = ['title', 'course', 'order']
-    list_filter = ['course']
+    list_display = ['title', 'course_link', 'order', 'lecture_count', 'total_duration', 'is_preview']
+    list_filter = ['course', 'is_preview']
     ordering = ['course', 'order']
+    search_fields = ['title', 'course__title']
+    inlines = [LectureInline]
+    
+    fieldsets = (
+        ('Section Information', {
+            'fields': ('course', 'title', 'order', 'is_preview'),
+            'description': 'Create a section for your course. Then add lectures below.'
+        }),
+    )
+    
+    def course_link(self, obj):
+        """Link to course admin"""
+        url = reverse('admin:lms_course_change', args=[obj.course.id])
+        return format_html('<a href="{}">{}</a>', url, obj.course.title)
+    course_link.short_description = 'Course'
+    
+    def lecture_count(self, obj):
+        """Display number of lectures in section"""
+        count = obj.lectures.count()
+        return format_html('<strong>{}</strong>', count)
+    lecture_count.short_description = 'Lectures'
+    
+    def total_duration(self, obj):
+        """Display total duration of section"""
+        total_minutes = sum(obj.lectures.values_list('duration_minutes', flat=True) or [0])
+        hours = total_minutes // 60
+        minutes = total_minutes % 60
+        if hours > 0:
+            duration_str = f"{hours}h {minutes}m" if minutes > 0 else f"{hours}h"
+        else:
+            duration_str = f"{minutes}m"
+        return format_html('<strong>{}</strong>', duration_str)
+    total_duration.short_description = 'Duration'
+    
+    def save_model(self, request, obj, form, change):
+        """Update course stats when section is saved"""
+        super().save_model(request, obj, form, change)
+        # Update parent course stats
+        self._update_course_stats(obj.course)
+    
+    def save_formset(self, request, form, formset, change):
+        """Update course stats when lectures are saved"""
+        instances = formset.save(commit=False)
+        for instance in instances:
+            instance.save()
+        for obj in formset.deleted_objects:
+            obj.delete()
+        formset.save_m2m()
+        if instances:
+            self._update_course_stats(instances[0].section.course)
+    
+    def _update_course_stats(self, course):
+        """Helper method to update course statistics"""
+        from .models import Lecture
+        total_lectures = Lecture.objects.filter(section__course=course).count()
+        total_duration = sum(
+            Lecture.objects.filter(section__course=course).values_list('duration_minutes', flat=True) or [0]
+        )
+        course.total_lectures = total_lectures
+        course.total_duration_hours = round(total_duration / 60, 2) if total_duration > 0 else 0
+        course.save()
 
 
 @admin.register(Lecture)
 class LectureAdmin(admin.ModelAdmin):
-    list_display = ['title', 'section', 'order', 'duration_minutes', 'is_preview']
-    list_filter = ['is_preview', 'section__course']
-    ordering = ['section', 'order']
+    list_display = ['title', 'section_link', 'order', 'video_display', 'duration_display', 'is_preview']
+    list_filter = ['is_preview', 'section__course', 'video_type']
+    ordering = ['section__course', 'section__order', 'order']
+    search_fields = ['title', 'description', 'section__title', 'section__course__title']
+    
+    fieldsets = (
+        ('Lecture Information', {
+            'fields': ('section', 'title', 'description', 'order', 'is_preview'),
+            'description': 'Enter the lecture title and description. Set "Is preview" to allow non-enrolled users to view this lecture.'
+        }),
+        ('Video Content', {
+            'fields': ('video_type', 'youtube_video_id', 'content_url', 'duration_minutes'),
+            'description': '''
+            <strong>How to add a video:</strong><br>
+            1. <strong>YouTube Video:</strong> Set video_type to "YouTube" and enter the YouTube Video ID (e.g., "dQw4w9WgXcQ")<br>
+            2. <strong>Direct URL:</strong> Set video_type to "Direct URL" and enter the full video URL<br>
+            3. <strong>Duration:</strong> Enter duration in minutes (e.g., 25 for 25 minutes, 90 for 1 hour 30 minutes)<br>
+            <strong>Note:</strong> Total course duration is automatically calculated from all lecture durations.
+            '''
+        }),
+    )
+    
+    def section_link(self, obj):
+        """Link to section admin"""
+        url = reverse('admin:lms_coursesection_change', args=[obj.section.id])
+        return format_html('<a href="{}">{}</a>', url, obj.section.title)
+    section_link.short_description = 'Section'
+    
+    def video_display(self, obj):
+        """Display video information"""
+        if obj.youtube_video_id:
+            url = f"https://www.youtube.com/watch?v={obj.youtube_video_id}"
+            return format_html('<a href="{}" target="_blank">YouTube: {}</a>', url, obj.youtube_video_id[:20])
+        elif obj.content_url:
+            return format_html('<a href="{}" target="_blank">Direct URL</a>', obj.content_url)
+        return "No video"
+    video_display.short_description = 'Video'
+    
+    def duration_display(self, obj):
+        """Display duration in readable format"""
+        if obj.duration_minutes:
+            hours = obj.duration_minutes // 60
+            minutes = obj.duration_minutes % 60
+            if hours > 0:
+                return f"{hours}h {minutes}m" if minutes > 0 else f"{hours}h"
+            return f"{minutes}m"
+        return "-"
+    duration_display.short_description = 'Duration'
+    
+    def save_model(self, request, obj, form, change):
+        """Update course stats when lecture is saved"""
+        super().save_model(request, obj, form, change)
+        # Update parent course stats
+        self._update_course_stats(obj.section.course)
+    
+    def _update_course_stats(self, course):
+        """Helper method to update course statistics"""
+        from .models import Lecture
+        total_lectures = Lecture.objects.filter(section__course=course).count()
+        total_duration = sum(
+            Lecture.objects.filter(section__course=course).values_list('duration_minutes', flat=True) or [0]
+        )
+        course.total_lectures = total_lectures
+        course.total_duration_hours = round(total_duration / 60, 2) if total_duration > 0 else 0
+        course.save()
 
 
 @admin.register(Batch)
