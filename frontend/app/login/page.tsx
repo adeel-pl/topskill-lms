@@ -146,8 +146,8 @@ export default function LoginPage() {
                   Sign up
                 </Link>
               </p>
-              <Link href="/login" className="block text-sm text-[#10B981] hover:text-[#34D399] font-semibold transition-colors hover:underline">
-                Log in with your organization
+              <Link href="/forgot-password" className="block text-sm text-[#10B981] hover:text-[#34D399] font-semibold transition-colors hover:underline">
+                Forgot your password?
               </Link>
             </div>
           </div>

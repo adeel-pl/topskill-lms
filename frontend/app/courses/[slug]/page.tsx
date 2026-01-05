@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { coursesAPI, cartAPI, playerAPI } from '@/lib/api';
+import { coursesAPI, cartAPI, playerAPI, wishlistAPI } from '@/lib/api';
 import { useAuthStore } from '@/lib/store';
 import PureLogicsNavbar from '@/app/components/PureLogicsNavbar';
-import { Star, Users, Clock, Check, ShoppingCart, Play, User } from 'lucide-react';
+import { Star, Users, Clock, Check, ShoppingCart, Play, User, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useToast } from '@/app/contexts/ToastContext';
 
@@ -20,10 +20,19 @@ export default function CourseDetailPage() {
   const [loading, setLoading] = useState(true);
   const [enrolling, setEnrolling] = useState(false);
   const [isEnrolled, setIsEnrolled] = useState(false);
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [wishlistId, setWishlistId] = useState<number | null>(null);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
 
   useEffect(() => {
     loadCourse();
   }, [params.slug]);
+
+  useEffect(() => {
+    if (isAuthenticated && course) {
+      checkWishlist();
+    }
+  }, [isAuthenticated, course]);
 
   const loadCourse = async () => {
     try {
@@ -126,6 +135,47 @@ export default function CourseDetailPage() {
       } else {
         showError(errorMsg);
       }
+    }
+  };
+
+  const checkWishlist = async () => {
+    if (!isAuthenticated || !course) return;
+    
+    try {
+      const response = await wishlistAPI.getAll();
+      const wishlist = response.data.results || response.data || [];
+      const wishlistItem = wishlist.find((item: any) => item.course?.id === course.id);
+      if (wishlistItem) {
+        setIsInWishlist(true);
+        setWishlistId(wishlistItem.id);
+      }
+    } catch (error) {
+      console.error('Error checking wishlist:', error);
+    }
+  };
+
+  const handleToggleWishlist = async () => {
+    if (!isAuthenticated) {
+      router.push('/login');
+      return;
+    }
+
+    setWishlistLoading(true);
+    try {
+      if (isInWishlist && wishlistId) {
+        await wishlistAPI.remove(wishlistId);
+        setIsInWishlist(false);
+        setWishlistId(null);
+        showSuccess('Removed from wishlist');
+      } else {
+        await wishlistAPI.add(course.id);
+        await checkWishlist();
+        showSuccess('Added to wishlist');
+      }
+    } catch (error: any) {
+      showError(error.response?.data?.error || 'Failed to update wishlist');
+    } finally {
+      setWishlistLoading(false);
     }
   };
 
@@ -452,6 +502,20 @@ export default function CourseDetailPage() {
                       >
                         <ShoppingCart className="w-5 h-5" />
                         Add to Cart
+                      </motion.button>
+                      <motion.button
+                        onClick={handleToggleWishlist}
+                        disabled={wishlistLoading}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className={`w-full border-2 ${
+                          isInWishlist 
+                            ? 'border-[#EF4444] bg-[#EF4444]/10 text-[#EF4444]' 
+                            : 'border-[#334155] bg-[#0F172A]/50 text-white hover:border-[#EF4444] hover:bg-[#EF4444]/10'
+                        } backdrop-blur-sm py-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed`}
+                      >
+                        <Heart className={`w-5 h-5 ${isInWishlist ? 'fill-[#EF4444]' : ''}`} />
+                        {wishlistLoading ? 'Loading...' : isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
                       </motion.button>
                     </>
                   )}

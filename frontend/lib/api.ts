@@ -73,6 +73,15 @@ export const authAPI = {
   
   updateProfile: (data: any) =>
     api.put('/auth/profile/update/', data),
+  
+  changePassword: (data: { old_password: string; new_password: string; new_password2: string }) =>
+    api.post('/auth/change-password/', data),
+  
+  forgotPassword: (email: string) =>
+    api.post('/auth/forgot-password/', { email }),
+  
+  resetPassword: (data: { uid: string; token: string; new_password: string }) =>
+    api.post('/auth/reset-password/', data),
 };
 
 // Courses API

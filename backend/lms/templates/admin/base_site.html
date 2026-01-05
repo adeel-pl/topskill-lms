@@ -1,0 +1,32 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">TopSkill LMS Administration</a>
+</h1>
+{% endblock %}
+
+{% block usertools %}
+<div id="user-tools">
+    {% block welcome-msg %}
+        Welcome,
+        <strong>{% firstof user.get_short_name user.get_username %}</strong>.
+    {% endblock %}
+    {% block userlinks %}
+        {% if site_url %}
+            <a href="{{ site_url }}">View site</a> /
+        {% endif %}
+        {% if user.has_usable_password %}
+            <a href="{% url 'admin:password_change' %}">Change password</a> /
+        {% endif %}
+        <a href="{% url 'admin:logout' %}">Log out</a>
+    {% endblock %}
+    <span style="margin-left: 20px;">
+        <a href="{% url 'admin:lms_analytics' %}" style="background: #417690; color: white; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-weight: bold;">
+            📊 Analytics
+        </a>
+    </span>
+</div>
+{% endblock %}
+

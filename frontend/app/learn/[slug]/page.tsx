@@ -92,7 +92,7 @@ export default function CoursePlayerPage() {
 
       try {
         const contentRes = await playerAPI.getContent(courseData.id);
-        const { sections: sectionsData, course: courseInfo, enrollment, quizzes, assignments } = contentRes.data;
+        const { sections: sectionsData, course: courseInfo, enrollment, quizzes, assignments, qandas, announcements } = contentRes.data;
 
         // Check if user is enrolled
         if (!enrollment || !enrollment.id) {
@@ -218,6 +218,11 @@ export default function CoursePlayerPage() {
       setSelectedLecture(lectureData);
       setWatchPosition(lectureData.progress?.last_position || 0);
       setActiveTab('overview');
+      
+      // Load notes for this lecture
+      if (lectureData.notes) {
+        setNotes(lectureData.notes || []);
+      }
     } catch (error) {
       console.error('Error loading lecture:', error);
     }
@@ -239,6 +244,25 @@ export default function CoursePlayerPage() {
       } catch (error) {
         console.error('Error updating progress:', error);
       }
+    }
+  };
+
+  const handleAddNote = async (content: string) => {
+    if (!selectedLecture || !course) return;
+    
+    try {
+      const timestamp = watchPosition || 0;
+      const response = await playerAPI.addNote(course.id, selectedLecture.id, {
+        content,
+        timestamp,
+        is_public: false
+      });
+      
+      // Reload lecture to get updated notes
+      await selectLecture(course.id, selectedLecture.id);
+      showSuccess('Note added successfully!');
+    } catch (error: any) {
+      showError(error.response?.data?.error || 'Failed to add note');
     }
   };
 
@@ -458,16 +482,18 @@ export default function CoursePlayerPage() {
                     Announcements ({announcements.length})
                   </button>
                 )}
-                <button
-                  onClick={() => setActiveTab('notes')}
-                  className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${activeTab === 'notes'
-                    ? 'border-[#66CC33] text-[#000F2C]'
-                    : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
-                    }`}
-                >
-                  <FiBook className="inline mr-1" />
-                  Notes
-                </button>
+                {(notes.length > 0 || isEnrolled) && (
+                  <button
+                    onClick={() => setActiveTab('notes')}
+                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${activeTab === 'notes'
+                      ? 'border-[#66CC33] text-[#000F2C]'
+                      : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
+                      }`}
+                  >
+                    <FiBook className="inline mr-1" />
+                    Notes {notes.length > 0 && `(${notes.length})`}
+                  </button>
+                )}
                 {qandas.length > 0 && (
                   <button
                     onClick={() => setActiveTab('questions')}
@@ -775,11 +801,13 @@ export default function CoursePlayerPage() {
                     <h3 className="text-xl font-bold text-[#000F2C]">
                       My Notes ({notes.length})
                     </h3>
-                    {isEnrolled && (
+                    {isEnrolled && selectedLecture && (
                       <button
                         onClick={() => {
-                          // TODO: Implement add note functionality
-                          showSuccess('Note feature coming soon!');
+                          const noteContent = prompt('Enter your note:');
+                          if (noteContent && noteContent.trim()) {
+                            handleAddNote(noteContent.trim());
+                          }
                         }}
                         className="px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-lg font-semibold transition-colors"
                       >
@@ -856,9 +884,9 @@ export default function CoursePlayerPage() {
               {activeTab === 'quizzes' && (
                 <div>
                   <h3 className="text-lg font-semibold mb-4 text-[#000F2C]">Course Quizzes</h3>
-                  {course.quizzes && course.quizzes.length > 0 ? (
+                  {quizzes && quizzes.length > 0 ? (
                     <div className="space-y-4">
-                      {course.quizzes.map((quiz: any) => (
+                      {quizzes.map((quiz: any) => (
                         <div key={quiz.id} className="border border-gray-200 rounded-sm p-4">
                           <div className="flex items-center justify-between mb-2">
                             <h4 className="font-semibold text-[#000F2C]">{quiz.title}</h4>
@@ -867,7 +895,10 @@ export default function CoursePlayerPage() {
                           {quiz.description && (
                             <p className="text-sm text-[#6a6f73] mb-3">{quiz.description}</p>
                           )}
-                          <button className="px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-sm font-semibold text-sm">
+                          <button 
+                            onClick={() => router.push(`/courses/${params.slug}/quizzes/${quiz.id}`)}
+                            className="px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-sm font-semibold text-sm"
+                          >
                             Start Quiz
                           </button>
                         </div>
@@ -882,9 +913,9 @@ export default function CoursePlayerPage() {
               {activeTab === 'assignments' && (
                 <div>
                   <h3 className="text-lg font-semibold mb-4 text-[#000F2C]">Course Assignments</h3>
-                  {course.assignments && course.assignments.length > 0 ? (
+                  {assignments && assignments.length > 0 ? (
                     <div className="space-y-4">
-                      {course.assignments.map((assignment: any) => (
+                      {assignments.map((assignment: any) => (
                         <div key={assignment.id} className="border border-gray-200 rounded-sm p-4">
                           <div className="flex items-center justify-between mb-2">
                             <h4 className="font-semibold text-[#000F2C]">{assignment.title}</h4>
@@ -895,7 +926,13 @@ export default function CoursePlayerPage() {
                             )}
                           </div>
                           <p className="text-sm text-[#6a6f73] mb-3">{assignment.description}</p>
-                          <button className="px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-sm font-semibold text-sm">
+                          <button 
+                            onClick={() => {
+                              // Navigate to assignment submission page or show modal
+                              showInfo('Assignment submission feature coming soon!');
+                            }}
+                            className="px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-sm font-semibold text-sm"
+                          >
                             Submit Assignment
                           </button>
                         </div>

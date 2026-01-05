@@ -10,3 +10,4 @@ Pillow==10.2.0
 reportlab==4.0.7
 python-dotenv==1.0.0
 dj-database-url==3.0.1
+django-allauth==0.57.0

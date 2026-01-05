@@ -169,3 +169,4 @@ After creating a course, verify:
 - Verify sections are linked to the course
 
 
+

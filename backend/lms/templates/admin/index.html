@@ -1,0 +1,29 @@
+{% extends "admin/index.html" %}
+{% load static %}
+
+{% block content %}
+<div id="content-main">
+    <!-- Analytics Dashboard - Placed at the top, above Recent actions -->
+    <div class="module" style="margin-bottom: 20px;">
+        <table style="width: 100%;">
+            <caption>
+                <a href="{% url 'admin:lms_analytics' %}" class="section" title="View Analytics Dashboard" style="font-size: 18px; font-weight: bold; color: #417690;">
+                    📊 Analytics Dashboard
+                </a>
+            </caption>
+            <tr>
+                <th scope="row" style="width: 70%;">
+                    <a href="{% url 'admin:lms_analytics' %}" style="font-size: 14px;">View comprehensive analytics including courses, enrollments, revenue, and trends</a>
+                </th>
+                <td style="text-align: right;">
+                    <a href="{% url 'admin:lms_analytics' %}" class="addlink" style="font-size: 14px; font-weight: bold;">View Dashboard →</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Rest of the admin index content (app lists, recent actions, etc.) -->
+    {{ block.super }}
+</div>
+{% endblock %}
+

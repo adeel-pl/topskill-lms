@@ -73,7 +73,7 @@ const ToastComponent = ({ toast, onClose }: ToastProps) => {
         backdrop-blur-sm
         animate-slide-in-right
         flex
-        items-start
+        items-center
         gap-3
         relative
         overflow-hidden
@@ -85,33 +85,33 @@ const ToastComponent = ({ toast, onClose }: ToastProps) => {
       style={{
         animation: 'slideInRight 0.3s ease-out',
       }}
-      className="animate-slide-in-right"
     >
       {/* Animated background gradient */}
       <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       
-      {/* Icon */}
-      <div className={`${colorScheme.icon} flex-shrink-0 mt-0.5`}>
+      {/* Icon - Fixed on left */}
+      <div className={`${colorScheme.icon} flex-shrink-0`}>
         {icons[toast.type]}
       </div>
 
-      {/* Message */}
-      <div className="flex-1 text-white">
-        <p className="font-semibold text-sm leading-relaxed">{toast.message}</p>
+      {/* Message - Takes remaining space */}
+      <div className="flex-1 text-white min-w-0">
+        <p className="font-semibold text-sm leading-relaxed break-words">{toast.message}</p>
       </div>
 
-      {/* Close button */}
+      {/* Close button - Fixed on right */}
       <button
         onClick={() => onClose(toast.id)}
         className={`
           ${colorScheme.icon}
           hover:bg-white/20
           rounded-lg
-          p-1
+          p-1.5
           transition-colors
           flex-shrink-0
           opacity-70
           hover:opacity-100
+          ml-2
         `}
         aria-label="Close notification"
       >

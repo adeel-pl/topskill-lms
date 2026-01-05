@@ -43,6 +43,18 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return user
 
 
+class ChangePasswordSerializer(serializers.Serializer):
+    """Serializer for changing password"""
+    old_password = serializers.CharField(required=True, write_only=True)
+    new_password = serializers.CharField(required=True, write_only=True, validators=[validate_password])
+    new_password2 = serializers.CharField(required=True, write_only=True, label='Confirm New Password')
+    
+    def validate(self, attrs):
+        if attrs['new_password'] != attrs['new_password2']:
+            raise serializers.ValidationError({"new_password": "New password fields didn't match."})
+        return attrs
+
+
 class CategorySerializer(serializers.ModelSerializer):
     """Category serializer"""
     class Meta:
@@ -390,7 +402,7 @@ class LectureProgressSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = LectureProgress
-        fields = ['id', 'lecture', 'completed', 'completed_at', 'score']
+        fields = ['id', 'lecture', 'completed', 'completed_at', 'watch_time_seconds', 'last_position']
 
 
 class WishlistSerializer(serializers.ModelSerializer):

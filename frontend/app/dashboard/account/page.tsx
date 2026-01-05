@@ -3,18 +3,26 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
+import { authAPI } from '@/lib/api';
 import { FiUser, FiSave, FiMail, FiLock } from 'react-icons/fi';
+import { useToast } from '@/app/contexts/ToastContext';
 
 export default function AccountPage() {
   const router = useRouter();
   const { isAuthenticated, isLoading, user } = useAuthStore();
-  const { showSuccess } = useToast();
+  const { showSuccess, showError } = useToast();
   const [formData, setFormData] = useState({
     email: user?.email || '',
     first_name: user?.first_name || '',
     last_name: user?.last_name || '',
   });
+  const [passwordData, setPasswordData] = useState({
+    old_password: '',
+    new_password: '',
+    new_password2: '',
+  });
   const [saving, setSaving] = useState(false);
+  const [changingPassword, setChangingPassword] = useState(false);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -32,10 +40,39 @@ export default function AccountPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    setTimeout(() => {
+    try {
+      await authAPI.updateProfile(formData);
+      showSuccess('Profile updated successfully!');
+    } catch (err: any) {
+      showError(err.response?.data?.error || 'Failed to update profile');
+    } finally {
       setSaving(false);
-      showSuccess('Changes saved successfully!');
-    }, 1000);
+    }
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (passwordData.new_password !== passwordData.new_password2) {
+      showError('New passwords do not match');
+      return;
+    }
+
+    if (passwordData.new_password.length < 8) {
+      showError('Password must be at least 8 characters');
+      return;
+    }
+
+    setChangingPassword(true);
+    try {
+      await authAPI.changePassword(passwordData);
+      showSuccess('Password changed successfully!');
+      setPasswordData({ old_password: '', new_password: '', new_password2: '' });
+    } catch (err: any) {
+      showError(err.response?.data?.error || 'Failed to change password');
+    } finally {
+      setChangingPassword(false);
+    }
   };
 
   if (isLoading) {
@@ -113,31 +150,51 @@ export default function AccountPage() {
             </div>
 
             <div className="pt-6 md:pt-8 border-t border-[#334155]">
-              <div className="flex items-center gap-3 mb-4 md:mb-6">
-                <div className="w-10 h-10 rounded-xl bg-[#10B981]/20 flex items-center justify-center">
-                  <FiLock className="text-[#10B981] text-xl" />
+              <form onSubmit={handleChangePassword}>
+                <div className="flex items-center gap-3 mb-4 md:mb-6">
+                  <div className="w-10 h-10 rounded-xl bg-[#10B981]/20 flex items-center justify-center">
+                    <FiLock className="text-[#10B981] text-xl" />
+                  </div>
+                  <label className="block text-lg font-bold text-white">
+                    Change Password
+                  </label>
                 </div>
-                <label className="block text-lg font-bold text-white">
-                  Change Password
-                </label>
-              </div>
-              <div className="space-y-4">
-                <input
-                  type="password"
-                  placeholder="Current Password"
-                  className="w-full px-5 py-4 bg-[#0F172A] border border-[#334155] rounded-xl text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#10B981] focus:border-[#10B981] transition-all hover:bg-[#1E293B]"
-                />
-                <input
-                  type="password"
-                  placeholder="New Password"
-                  className="w-full px-5 py-4 bg-[#0F172A] border border-[#334155] rounded-xl text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#10B981] focus:border-[#10B981] transition-all hover:bg-[#1E293B]"
-                />
-                <input
-                  type="password"
-                  placeholder="Confirm New Password"
-                  className="w-full px-5 py-4 bg-[#0F172A] border border-[#334155] rounded-xl text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#10B981] focus:border-[#10B981] transition-all hover:bg-[#1E293B]"
-                />
-              </div>
+                <div className="space-y-4">
+                  <input
+                    type="password"
+                    required
+                    placeholder="Current Password"
+                    value={passwordData.old_password}
+                    onChange={(e) => setPasswordData({ ...passwordData, old_password: e.target.value })}
+                    className="w-full px-5 py-4 bg-[#0F172A] border border-[#334155] rounded-xl text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#10B981] focus:border-[#10B981] transition-all hover:bg-[#1E293B]"
+                  />
+                  <input
+                    type="password"
+                    required
+                    minLength={8}
+                    placeholder="New Password (min 8 characters)"
+                    value={passwordData.new_password}
+                    onChange={(e) => setPasswordData({ ...passwordData, new_password: e.target.value })}
+                    className="w-full px-5 py-4 bg-[#0F172A] border border-[#334155] rounded-xl text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#10B981] focus:border-[#10B981] transition-all hover:bg-[#1E293B]"
+                  />
+                  <input
+                    type="password"
+                    required
+                    minLength={8}
+                    placeholder="Confirm New Password"
+                    value={passwordData.new_password2}
+                    onChange={(e) => setPasswordData({ ...passwordData, new_password2: e.target.value })}
+                    className="w-full px-5 py-4 bg-[#0F172A] border border-[#334155] rounded-xl text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#10B981] focus:border-[#10B981] transition-all hover:bg-[#1E293B]"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={changingPassword}
+                  className="mt-4 w-full bg-gradient-to-r from-[#3B82F6] to-[#2563EB] hover:from-[#2563EB] hover:to-[#3B82F6] text-white px-6 py-3 rounded-xl font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 hover:shadow-xl"
+                >
+                  {changingPassword ? 'Changing...' : 'Change Password'}
+                </button>
+              </form>
             </div>
 
             <button

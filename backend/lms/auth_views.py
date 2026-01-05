@@ -4,7 +4,13 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from .serializers import UserSerializer, UserRegistrationSerializer
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.core.mail import send_mail
+from django.conf import settings
+from django.db.models import Q
+from .serializers import UserSerializer, UserRegistrationSerializer, ChangePasswordSerializer
 from .models import Cart
 
 
@@ -22,6 +28,39 @@ def register(request):
         # Generate JWT tokens
         refresh = RefreshToken.for_user(user)
         
+        # Send welcome email
+        import logging
+        logger = logging.getLogger(__name__)
+        
+        try:
+            result = send_mail(
+                subject='Welcome to TopSkill LMS!',
+                message=f'''
+Hello {user.get_full_name() or user.username},
+
+Welcome to TopSkill LMS! Your account has been successfully created.
+
+You can now:
+- Browse and enroll in courses
+- Track your learning progress
+- Get certificates upon completion
+- Connect with instructors and other students
+
+Start your learning journey today!
+
+Best regards,
+TopSkill LMS Team
+                ''',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email] if user.email else [],
+                fail_silently=False,  # Changed to False to see errors in console
+            )
+            if result:
+                logger.info(f'Welcome email sent successfully to {user.email}')
+        except Exception as e:
+            logger.error(f'Failed to send welcome email to {user.email}: {str(e)}', exc_info=True)
+            # Continue anyway - email is optional
+        
         return Response({
             'user': UserSerializer(user).data,
             'tokens': {
@@ -36,17 +75,26 @@ def register(request):
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def login(request):
-    """User login endpoint with JWT"""
-    username = request.data.get('username')
+    """User login endpoint with JWT - supports both username and email"""
+    username_or_email = request.data.get('username')
     password = request.data.get('password')
     
-    if not username or not password:
+    if not username_or_email or not password:
         return Response(
-            {'error': 'Username and password are required'},
+            {'error': 'Username/email and password are required'},
             status=status.HTTP_400_BAD_REQUEST
         )
     
-    user = authenticate(username=username, password=password)
+    # Try to authenticate - first try as username
+    user = authenticate(username=username_or_email, password=password)
+    
+    # If that fails, try as email
+    if user is None:
+        try:
+            user_obj = User.objects.get(Q(email=username_or_email) | Q(username=username_or_email))
+            user = authenticate(username=user_obj.username, password=password)
+        except User.DoesNotExist:
+            user = None
     
     if user is None:
         return Response(
@@ -97,6 +145,179 @@ def update_profile(request):
         serializer.save()
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def change_password(request):
+    """Change user password"""
+    serializer = ChangePasswordSerializer(data=request.data)
+    if serializer.is_valid():
+        user = request.user
+        if not user.check_password(serializer.validated_data['old_password']):
+            return Response(
+                {'error': 'Current password is incorrect'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        user.set_password(serializer.validated_data['new_password'])
+        user.save()
+        
+        # Send email notification
+        try:
+            send_mail(
+                subject='Password Changed Successfully',
+                message=f'Your password has been changed successfully. If you did not make this change, please contact support immediately.',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email],
+                fail_silently=True,
+            )
+        except Exception:
+            pass  # Email sending is optional
+        
+        return Response({'message': 'Password changed successfully'}, status=status.HTTP_200_OK)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([permissions.AllowAny])
+def forgot_password(request):
+    """Request password reset"""
+    email = request.data.get('email')
+    
+    if not email:
+        return Response(
+            {'error': 'Email is required'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    try:
+        user = User.objects.get(Q(email=email) | Q(username=email))
+    except User.DoesNotExist:
+        # Don't reveal if user exists or not for security
+        return Response(
+            {'message': 'If an account exists with this email, a password reset link has been sent.'},
+            status=status.HTTP_200_OK
+        )
+    
+    # Generate token
+    token = default_token_generator.make_token(user)
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    
+    # Create reset link
+    reset_link = f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}/"
+    
+    # Send email
+    import logging
+    logger = logging.getLogger(__name__)
+    
+    try:
+        result = send_mail(
+            subject='Password Reset Request',
+            message=f'''
+Hello {user.get_full_name() or user.username},
+
+You requested to reset your password. Click the link below to reset it:
+
+{reset_link}
+
+This link will expire in 24 hours.
+
+If you did not request this, please ignore this email.
+
+Best regards,
+TopSkill LMS Team
+            ''',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+            fail_silently=False,  # Changed to False to catch errors
+        )
+        
+        if result:
+            logger.info(f'Password reset email sent successfully to {user.email}')
+        else:
+            logger.warning(f'Password reset email failed to send to {user.email} (no error raised)')
+        
+        # Always return success message (security: don't reveal if email was sent)
+        return Response(
+            {'message': 'If an account exists with this email, a password reset link has been sent.'},
+            status=status.HTTP_200_OK
+        )
+    except Exception as e:
+        # Log the error but still return success for security
+        logger.error(f'Failed to send password reset email to {user.email}: {str(e)}', exc_info=True)
+        # Still return success to not reveal if user exists
+        return Response(
+            {'message': 'If an account exists with this email, a password reset link has been sent.'},
+            status=status.HTTP_200_OK
+        )
+
+
+@api_view(['POST'])
+@permission_classes([permissions.AllowAny])
+def reset_password(request):
+    """Reset password with token"""
+    uid = request.data.get('uid')
+    token = request.data.get('token')
+    new_password = request.data.get('new_password')
+    
+    if not all([uid, token, new_password]):
+        return Response(
+            {'error': 'uid, token, and new_password are required'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    try:
+        user_id = force_str(urlsafe_base64_decode(uid))
+        user = User.objects.get(pk=user_id)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        return Response(
+            {'error': 'Invalid reset link'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    if not default_token_generator.check_token(user, token):
+        return Response(
+            {'error': 'Invalid or expired reset link'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    # Validate password
+    from django.contrib.auth.password_validation import validate_password
+    try:
+        validate_password(new_password, user)
+    except Exception as e:
+        return Response(
+            {'error': str(e)},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    # Set new password
+    user.set_password(new_password)
+    user.save()
+    
+    # Send confirmation email
+    try:
+        send_mail(
+            subject='Password Reset Successful',
+            message=f'''
+Hello {user.get_full_name() or user.username},
+
+Your password has been successfully reset. If you did not make this change, please contact support immediately.
+
+Best regards,
+TopSkill LMS Team
+            ''',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+            fail_silently=True,
+        )
+    except Exception:
+        pass
+    
+    return Response({'message': 'Password reset successfully'}, status=status.HTTP_200_OK)
+
 
 
 

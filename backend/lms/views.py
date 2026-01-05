@@ -118,6 +118,36 @@ class CourseViewSet(viewsets.ModelViewSet):
                 related_course=course
             )
         
+        # Send enrollment confirmation email
+        from django.core.mail import send_mail
+        from django.conf import settings
+        try:
+            send_mail(
+                subject=f'Enrollment Confirmation: {course.title}',
+                message=f'''
+Hello {user.get_full_name() or user.username},
+
+Congratulations! You have successfully enrolled in "{course.title}".
+
+Course Details:
+- Title: {course.title}
+- Modality: {course.modality.title()}
+- Price: ${course.price}
+
+You can now access the course content and start learning.
+
+Start learning: {settings.FRONTEND_URL}/learn/{course.slug}
+
+Best regards,
+TopSkill LMS Team
+                ''',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email] if user.email else [],
+                fail_silently=True,
+            )
+        except Exception:
+            pass  # Email sending is optional
+        
         serializer = EnrollmentSerializer(enrollment)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
@@ -915,13 +945,23 @@ class NoteViewSet(viewsets.ModelViewSet):
         serializer.save()
 
 
-class QandAViewSet(viewsets.ReadOnlyModelViewSet):
-    """ViewSet for Q&A (FAQ)"""
+class QandAViewSet(viewsets.ModelViewSet):
+    """ViewSet for Q&A (FAQ) - Full CRUD for admins/instructors, read-only for others"""
     serializer_class = QandASerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     
     def get_queryset(self):
-        queryset = QandA.objects.filter(is_active=True)
+        # Public users see only active Q&As
+        if not self.request.user.is_authenticated:
+            queryset = QandA.objects.filter(is_active=True)
+        # Authenticated users see all (for admin/instructor management)
+        elif self.request.user.is_staff:
+            queryset = QandA.objects.all()
+        # Instructors see Q&As for their courses
+        else:
+            queryset = QandA.objects.filter(
+                Q(is_active=True) | Q(course__instructor=self.request.user)
+            )
         
         # Filter by course
         course_id = self.request.query_params.get('course')
@@ -929,6 +969,26 @@ class QandAViewSet(viewsets.ReadOnlyModelViewSet):
             queryset = queryset.filter(course_id=course_id)
         
         return queryset.order_by('order', 'created_at')
+    
+    def perform_create(self, serializer):
+        """Only staff and course instructors can create Q&As"""
+        course = serializer.validated_data['course']
+        if not self.request.user.is_staff and course.instructor != self.request.user:
+            raise permissions.PermissionDenied("Only course instructors can create Q&As")
+        serializer.save()
+    
+    def perform_update(self, serializer):
+        """Only staff and course instructors can update Q&As"""
+        qanda = self.get_object()
+        if not self.request.user.is_staff and qanda.course.instructor != self.request.user:
+            raise permissions.PermissionDenied("Only course instructors can update Q&As")
+        serializer.save()
+    
+    def perform_destroy(self, instance):
+        """Only staff and course instructors can delete Q&As"""
+        if not self.request.user.is_staff and instance.course.instructor != self.request.user:
+            raise permissions.PermissionDenied("Only course instructors can delete Q&As")
+        instance.delete()
     
     @action(detail=True, methods=['post'])
     def increment_views(self, request, pk=None):
@@ -939,13 +999,23 @@ class QandAViewSet(viewsets.ReadOnlyModelViewSet):
         return Response({'views_count': qanda.views_count})
 
 
-class AnnouncementViewSet(viewsets.ReadOnlyModelViewSet):
-    """ViewSet for announcements"""
+class AnnouncementViewSet(viewsets.ModelViewSet):
+    """ViewSet for announcements - Full CRUD for admins/instructors, read-only for others"""
     serializer_class = AnnouncementSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     
     def get_queryset(self):
-        queryset = Announcement.objects.filter(is_active=True)
+        # Public users see only active announcements
+        if not self.request.user.is_authenticated:
+            queryset = Announcement.objects.filter(is_active=True)
+        # Authenticated users see all (for admin/instructor management)
+        elif self.request.user.is_staff:
+            queryset = Announcement.objects.all()
+        # Instructors see announcements for their courses
+        else:
+            queryset = Announcement.objects.filter(
+                Q(is_active=True) | Q(course__instructor=self.request.user)
+            )
         
         # Filter by course
         course_id = self.request.query_params.get('course')
@@ -953,4 +1023,24 @@ class AnnouncementViewSet(viewsets.ReadOnlyModelViewSet):
             queryset = queryset.filter(course_id=course_id)
         
         return queryset.order_by('-is_pinned', '-created_at')
+    
+    def perform_create(self, serializer):
+        """Only staff and course instructors can create announcements"""
+        course = serializer.validated_data['course']
+        if not self.request.user.is_staff and course.instructor != self.request.user:
+            raise permissions.PermissionDenied("Only course instructors can create announcements")
+        serializer.save(created_by=self.request.user)
+    
+    def perform_update(self, serializer):
+        """Only staff and course instructors can update announcements"""
+        announcement = self.get_object()
+        if not self.request.user.is_staff and announcement.course.instructor != self.request.user:
+            raise permissions.PermissionDenied("Only course instructors can update announcements")
+        serializer.save()
+    
+    def perform_destroy(self, instance):
+        """Only staff and course instructors can delete announcements"""
+        if not self.request.user.is_staff and instance.course.instructor != self.request.user:
+            raise permissions.PermissionDenied("Only course instructors can delete announcements")
+        instance.delete()
 

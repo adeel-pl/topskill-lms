@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from django.urls import reverse
+from django.urls import reverse, path
+from django.shortcuts import redirect
 from .models import (
     Course, Batch, Enrollment, Payment, Attendance, BatchSession, SessionRegistration,
     Lecture, CourseSection, Quiz, QuizAttempt, Assignment, AssignmentSubmission,
@@ -655,3 +656,20 @@ class AnnouncementInline(admin.TabularInline):
     verbose_name = 'Announcement'
     verbose_name_plural = 'Announcements'
 
+
+
+# Add analytics dashboard to admin
+def get_admin_urls():
+    """Add custom admin URLs"""
+    from lms.admin_views import analytics_dashboard
+    from django.urls import path
+    return [
+        path('analytics/', admin.site.admin_view(analytics_dashboard), name='lms_analytics'),
+    ]
+
+# Monkey patch admin site to include analytics
+original_get_urls = admin.site.get_urls
+def get_urls_with_analytics():
+    return get_admin_urls() + original_get_urls()
+
+admin.site.get_urls = get_urls_with_analytics

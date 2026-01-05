@@ -24,7 +24,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     (message: string, type: ToastType = 'info', duration: number = 5000) => {
       const id = Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
       const newToast: Toast = { id, message, type, duration };
-      
+
       setToasts((prev) => [...prev, newToast]);
     },
     []
@@ -39,7 +39,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
   const showError = useCallback(
     (message: string, duration?: number) => {
-      showToast(message, 'error', duration || 6000);
+      showToast(message, 'error', duration || 10000); // Increased to 10 seconds for errors
     },
     [showToast]
   );
@@ -81,4 +81,5 @@ export function useToast() {
   }
   return context;
 }
+
 

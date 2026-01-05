@@ -13,7 +13,7 @@ from .views import (
     AssignmentViewSet, AssignmentSubmissionViewSet, LectureProgressViewSet, 
     ResourceViewSet, NoteViewSet, QandAViewSet, AnnouncementViewSet
 )
-from .auth_views import register, login, logout, profile, update_profile
+from .auth_views import register, login, logout, profile, update_profile, change_password, forgot_password, reset_password
 from .cart_views import CartViewSet
 from .course_player_views import CoursePlayerViewSet
 from .services import GroqAIService
@@ -71,6 +71,9 @@ urlpatterns = [
     path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('auth/profile/', profile, name='profile'),
     path('auth/profile/update/', update_profile, name='update_profile'),
+    path('auth/change-password/', change_password, name='change_password'),
+    path('auth/forgot-password/', forgot_password, name='forgot_password'),
+    path('auth/reset-password/', reset_password, name='reset_password'),
     # Course Player (Udemy-like)
     path('courses/<int:pk>/player/content/', CoursePlayerViewSet.as_view({'get': 'get_course_content'}), name='course-player-content'),
     path('courses/<int:pk>/player/lecture/<int:lecture_id>/', CoursePlayerViewSet.as_view({'get': 'get_lecture'}), name='course-player-lecture'),

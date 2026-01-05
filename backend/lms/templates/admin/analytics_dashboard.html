@@ -1,0 +1,363 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Analytics Dashboard | TopSkill LMS{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    .stat-card {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .stat-card h3 {
+        margin: 0 0 10px 0;
+        color: #666;
+        font-size: 14px;
+        font-weight: normal;
+        text-transform: uppercase;
+    }
+    .stat-card .value {
+        font-size: 32px;
+        font-weight: bold;
+        color: #417690;
+        margin: 0;
+    }
+    .course-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    .course-table th,
+    .course-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    .course-table th {
+        background: #f8f9fa;
+        font-weight: bold;
+    }
+    .course-table tr:hover {
+        background: #f8f9fa;
+    }
+    .badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    .badge-success {
+        background: #28a745;
+        color: white;
+    }
+    .badge-info {
+        background: #17a2b8;
+        color: white;
+    }
+    .badge-warning {
+        background: #ffc107;
+        color: #000;
+    }
+    .section-header {
+        background: #417690;
+        color: white;
+        padding: 15px 20px;
+        margin: 30px 0 15px 0;
+        border-radius: 4px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+    .date-filter {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        border: 1px solid #ddd;
+    }
+    .date-filter h3 {
+        margin: 0 0 15px 0;
+        color: #417690;
+        font-size: 16px;
+    }
+    .date-filter-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 15px;
+    }
+    .date-filter-btn {
+        padding: 8px 16px;
+        border: 1px solid #417690;
+        background: white;
+        color: #417690;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+    .date-filter-btn:hover {
+        background: #417690;
+        color: white;
+    }
+    .date-filter-btn.active {
+        background: #417690;
+        color: white;
+    }
+    .custom-date-range {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        margin-top: 15px;
+    }
+    .custom-date-range input[type="date"] {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    .custom-date-range button {
+        padding: 8px 20px;
+        background: #417690;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+    .custom-date-range button:hover {
+        background: #2c5a7a;
+    }
+    .date-label {
+        display: inline-block;
+        margin-left: 10px;
+        padding: 4px 12px;
+        background: #417690;
+        color: white;
+        border-radius: 4px;
+        font-size: 12px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="analytics-dashboard">
+    <h1>📊 TopSkill LMS Analytics Dashboard 
+        {% if date_label %}<span class="date-label">{{ date_label }}</span>{% endif %}
+    </h1>
+    
+    <!-- Date Filter -->
+    <div class="date-filter">
+        <h3>📅 Filter by Date Range</h3>
+        <form method="get" action="{% url 'admin:lms_analytics' %}" id="dateFilterForm">
+            <div class="date-filter-buttons">
+                <button type="button" class="date-filter-btn {% if date_range == 'all' %}active{% endif %}" 
+                        onclick="setDateRange('all')">All Time</button>
+                <button type="button" class="date-filter-btn {% if date_range == '1day' %}active{% endif %}" 
+                        onclick="setDateRange('1day')">Last 24 Hours</button>
+                <button type="button" class="date-filter-btn {% if date_range == '1week' %}active{% endif %}" 
+                        onclick="setDateRange('1week')">Last 7 Days</button>
+                <button type="button" class="date-filter-btn {% if date_range == '1month' %}active{% endif %}" 
+                        onclick="setDateRange('1month')">Last 30 Days</button>
+                <button type="button" class="date-filter-btn {% if date_range == 'custom' %}active{% endif %}" 
+                        onclick="toggleCustomDate()">Custom Range</button>
+            </div>
+            <input type="hidden" name="date_range" id="date_range" value="{{ date_range }}">
+            <div class="custom-date-range" id="customDateRange" style="display: {% if date_range == 'custom' %}flex{% else %}none{% endif %};">
+                <label>
+                    Start Date:
+                    <input type="date" name="start_date" id="start_date" value="{{ start_date }}">
+                </label>
+                <label>
+                    End Date:
+                    <input type="date" name="end_date" id="end_date" value="{{ end_date }}">
+                </label>
+                <button type="submit">Apply Filter</button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Overall Statistics -->
+    <div class="section-header">Overall Statistics</div>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Total Courses</h3>
+            <p class="value">{{ total_courses }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Enrollments</h3>
+            <p class="value">{{ total_enrollments }}</p>
+            <small>Active: {{ active_enrollments }} | Completed: {{ completed_enrollments }}</small>
+        </div>
+        <div class="stat-card">
+            <h3>Total Students</h3>
+            <p class="value">{{ total_students }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Revenue</h3>
+            <p class="value">${{ total_revenue|floatformat:2 }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Recent Enrollments (30 days)</h3>
+            <p class="value">{{ recent_enrollments }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Quizzes</h3>
+            <p class="value">{{ total_quizzes }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Assignments</h3>
+            <p class="value">{{ total_assignments }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Physical Classes</h3>
+            <p class="value">{{ total_batches }}</p>
+            <small>Sessions: {{ total_sessions }} | Registrations: {{ total_session_registrations }}</small>
+        </div>
+    </div>
+
+    <!-- Course-Specific Statistics -->
+    <div class="section-header">Course Enrollment Statistics</div>
+    <table class="course-table">
+        <thead>
+            <tr>
+                <th>Course Title</th>
+                <th>Total Enrollments</th>
+                <th>Active</th>
+                <th>Completed</th>
+                <th>Revenue</th>
+                <th>Avg Rating</th>
+                <th>Reviews</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stat in course_stats %}
+            <tr>
+                <td>
+                    <strong>{% if stat.course %}{{ stat.course.title }}{% else %}{{ stat.title }}{% endif %}</strong><br>
+                    <small style="color: #666;">{% if stat.course %}{{ stat.course.modality|title }}{% else %}{{ stat.modality|title }}{% endif %}</small>
+                </td>
+                <td><span class="badge badge-info">{{ stat.enrollment_count }}</span></td>
+                <td><span class="badge badge-success">{{ stat.active_enrollments }}</span></td>
+                <td><span class="badge badge-warning">{{ stat.completed_enrollments }}</span></td>
+                <td>${{ stat.total_revenue|default:0|floatformat:2 }}</td>
+                <td>
+                    {% if stat.avg_rating %}
+                        ⭐ {{ stat.avg_rating|floatformat:1 }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>{{ stat.review_count }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" style="text-align: center; padding: 20px; color: #666;">
+                    No courses found
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Top Courses -->
+    <div class="section-header">Top 10 Courses by Enrollment</div>
+    <table class="course-table">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Course Title</th>
+                <th>Enrollments</th>
+                <th>Modality</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in top_courses %}
+            <tr>
+                <td><strong>#{{ forloop.counter }}</strong></td>
+                <td>{% if item.course %}{{ item.course.title }}{% else %}{{ item.title }}{% endif %}</td>
+                <td><span class="badge badge-info">{% if item.enrollment_count %}{{ item.enrollment_count }}{% else %}0{% endif %}</span></td>
+                <td>{% if item.course %}{{ item.course.modality|title }}{% else %}{{ item.modality|title }}{% endif %}</td>
+                <td>${% if item.course %}{{ item.course.price|floatformat:2 }}{% else %}{{ item.price|floatformat:2 }}{% endif %}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 20px; color: #666;">
+                    No courses found
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Enrollment Trends -->
+    <div class="section-header">Enrollment Trends{% if date_label %} - {{ date_label }}{% endif %}</div>
+    <table class="course-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Enrollments</th>
+                <th>Visual</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trend in enrollment_trends %}
+            <tr>
+                <td>{{ trend.date }}</td>
+                <td><strong>{{ trend.count }}</strong></td>
+                <td>
+                    <div style="background: #e0e0e0; height: 20px; border-radius: 4px; width: 200px;">
+                        <div style="background: #417690; height: 100%; width: {% widthratio trend.count 10 100 %}%; border-radius: 4px;"></div>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+function setDateRange(range) {
+    document.getElementById('date_range').value = range;
+    if (range !== 'custom') {
+        document.getElementById('customDateRange').style.display = 'none';
+        document.getElementById('dateFilterForm').submit();
+    } else {
+        toggleCustomDate();
+    }
+}
+
+function toggleCustomDate() {
+    const customRange = document.getElementById('customDateRange');
+    if (customRange.style.display === 'none' || customRange.style.display === '') {
+        customRange.style.display = 'flex';
+        document.getElementById('date_range').value = 'custom';
+    } else {
+        customRange.style.display = 'none';
+    }
+}
+
+// Update active button state
+document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('.date-filter-btn');
+    buttons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            buttons.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+});
+</script>
+{% endblock %}
+
