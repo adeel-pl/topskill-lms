@@ -3,6 +3,11 @@ import Cookies from 'js-cookie';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
+// Export API base URL getter
+export function getApiBase(): string {
+  return API_BASE_URL;
+}
+
 // Log API URL for debugging
 if (typeof window !== 'undefined') {
   console.log('API Base URL:', API_BASE_URL);
@@ -218,6 +223,24 @@ export const reviewsAPI = {
   create: (courseId: number, data: { rating: number; comment: string }) => api.post('/reviews/', { course: courseId, ...data }),
   update: (id: number, data: { rating?: number; comment?: string }) => api.put(`/reviews/${id}/`, data),
   delete: (id: number) => api.delete(`/reviews/${id}/`),
+};
+
+// Assignment Submissions API
+export const assignmentSubmissionsAPI = {
+  getAll: (params?: any) => api.get('/assignment-submissions/', { params }),
+  create: (data: { enrollment: number; assignment: number; submission_text?: string; submission_file?: File }) => {
+    const formData = new FormData();
+    formData.append('enrollment', data.enrollment.toString());
+    formData.append('assignment', data.assignment.toString());
+    if (data.submission_text) formData.append('submission_text', data.submission_text);
+    if (data.submission_file) formData.append('submission_file', data.submission_file);
+    return api.post('/assignment-submissions/', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+  getById: (id: number) => api.get(`/assignment-submissions/${id}/`),
+  update: (id: number, data: any) => api.put(`/assignment-submissions/${id}/`, data),
+  delete: (id: number) => api.delete(`/assignment-submissions/${id}/`),
 };
 
 export default api;

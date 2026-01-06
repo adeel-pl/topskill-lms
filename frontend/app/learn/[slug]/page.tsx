@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { playerAPI, coursesAPI, reviewsAPI } from '@/lib/api';
+import { playerAPI, coursesAPI, reviewsAPI, assignmentSubmissionsAPI, enrollmentsAPI } from '@/lib/api';
 import PureLogicsNavbar from '@/app/components/PureLogicsNavbar';
 import VideoPlayer from '@/app/components/VideoPlayer';
 import { FiPlay, FiCheck, FiClock, FiBook, FiMessageSquare, FiChevronRight, FiChevronLeft, FiBell, FiStar } from 'react-icons/fi';
@@ -62,6 +62,10 @@ export default function CoursePlayerPage() {
   const [qandas, setQandas] = useState<any[]>([]);
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [notes, setNotes] = useState<any[]>([]);
+  const [submittingAssignment, setSubmittingAssignment] = useState<number | null>(null);
+  const [assignmentSubmissionText, setAssignmentSubmissionText] = useState('');
+  const [assignmentSubmissionFile, setAssignmentSubmissionFile] = useState<File | null>(null);
+  const [enrollmentId, setEnrollmentId] = useState<number | null>(null);
 
   useEffect(() => {
     loadCourseContent();
@@ -108,6 +112,7 @@ export default function CoursePlayerPage() {
         setQandas(contentRes.data.qandas || []);
         setAnnouncements(contentRes.data.announcements || []);
         setIsEnrolled(enrollment && enrollment.id ? true : false);
+        setEnrollmentId(enrollment?.id || null);
 
         // Load reviews for the course
         await loadReviews(courseInfo.id);
@@ -926,15 +931,80 @@ export default function CoursePlayerPage() {
                             )}
                           </div>
                           <p className="text-sm text-[#6a6f73] mb-3">{assignment.description}</p>
-                          <button 
-                            onClick={() => {
-                              // Navigate to assignment submission page or show modal
-                              showInfo('Assignment submission feature coming soon!');
-                            }}
-                            className="px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-sm font-semibold text-sm"
-                          >
-                            Submit Assignment
-                          </button>
+                          {submittingAssignment === assignment.id ? (
+                            <div className="space-y-3 mt-3">
+                              <textarea
+                                value={assignmentSubmissionText}
+                                onChange={(e) => setAssignmentSubmissionText(e.target.value)}
+                                placeholder="Enter your submission text here..."
+                                rows={4}
+                                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-sm text-[#000F2C] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#66CC33]"
+                              />
+                              <input
+                                type="file"
+                                onChange={(e) => setAssignmentSubmissionFile(e.target.files?.[0] || null)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-sm text-sm"
+                              />
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={async () => {
+                                    if (!enrollmentId) {
+                                      showError('Enrollment not found');
+                                      return;
+                                    }
+                                    try {
+                                      setSubmittingAssignment(assignment.id);
+                                      await assignmentSubmissionsAPI.create({
+                                        enrollment: enrollmentId,
+                                        assignment: assignment.id,
+                                        submission_text: assignmentSubmissionText || undefined,
+                                        submission_file: assignmentSubmissionFile || undefined,
+                                      });
+                                      showSuccess('Assignment submitted successfully!');
+                                      setSubmittingAssignment(null);
+                                      setAssignmentSubmissionText('');
+                                      setAssignmentSubmissionFile(null);
+                                    } catch (error: any) {
+                                      const errorMsg = error.response?.data?.error || 
+                                                      error.response?.data?.detail || 
+                                                      error.response?.data?.non_field_errors?.[0] ||
+                                                      error.message || 
+                                                      'Failed to submit assignment';
+                                      showError(errorMsg);
+                                      setSubmittingAssignment(null);
+                                    }
+                                  }}
+                                  disabled={!assignmentSubmissionText && !assignmentSubmissionFile}
+                                  className="px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-sm font-semibold text-sm"
+                                >
+                                  Submit
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    setSubmittingAssignment(null);
+                                    setAssignmentSubmissionText('');
+                                    setAssignmentSubmissionFile(null);
+                                  }}
+                                  className="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-[#000F2C] rounded-sm font-semibold text-sm"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <button 
+                              onClick={() => {
+                                if (!enrollmentId) {
+                                  showError('You must be enrolled to submit assignments');
+                                  return;
+                                }
+                                setSubmittingAssignment(assignment.id);
+                              }}
+                              className="px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-sm font-semibold text-sm"
+                            >
+                              Submit Assignment
+                            </button>
+                          )}
                         </div>
                       ))}
                     </div>

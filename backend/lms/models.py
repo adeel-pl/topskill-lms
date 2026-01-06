@@ -206,9 +206,16 @@ class Lecture(TimeStampedModel):
 # ==================== BATCH MANAGEMENT (Physical Courses) ====================
 
 class Batch(TimeStampedModel):
-    """Batches for physical courses"""
+    """Batches for physical courses, internships, and bootcamps"""
+    BATCH_TYPE_CHOICES = [
+        ('physical', 'Physical Class'),
+        ('internship', 'Internship'),
+        ('bootcamp', 'Bootcamp'),
+    ]
+    
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='batches')
     name = models.CharField(max_length=255)
+    batch_type = models.CharField(max_length=20, choices=BATCH_TYPE_CHOICES, default='physical', help_text="Type of batch: Physical Class, Internship, or Bootcamp")
     capacity = models.PositiveIntegerField(default=25)
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)

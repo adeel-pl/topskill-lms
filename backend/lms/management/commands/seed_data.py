@@ -200,6 +200,10 @@ class Command(BaseCommand):
         cat5, _ = Category.objects.get_or_create(name='Machine Learning', slug='machine-learning')
         cat6, _ = Category.objects.get_or_create(name='DevOps', slug='devops')
         cat7, _ = Category.objects.get_or_create(name='E-commerce', slug='e-commerce')
+        # Add categories for frontend dropdowns
+        cat_dev, _ = Category.objects.get_or_create(name='Development', slug='development')
+        cat_business, _ = Category.objects.get_or_create(name='Business', slug='business')
+        cat_design, _ = Category.objects.get_or_create(name='Design', slug='design')
 
         # Create tags
         tag1, _ = Tag.objects.get_or_create(name='Python', slug='python')

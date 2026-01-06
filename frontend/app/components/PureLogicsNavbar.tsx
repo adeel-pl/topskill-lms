@@ -60,13 +60,13 @@ export default function PureLogicsNavbar() {
                   transition={{ duration: 0.2 }}
                   className="absolute top-full left-0 mt-2 bg-[#1E293B] rounded-xl shadow-2xl w-64 py-2 z-50 border border-[#334155]"
                 >
-                  <Link href="/courses" className="block px-4 py-3 text-[#D1D5DB] hover:bg-[#334155] hover:text-[#10B981] text-sm transition-colors">
+                  <Link href="/courses?category=development" className="block px-4 py-3 text-[#D1D5DB] hover:bg-[#334155] hover:text-[#10B981] text-sm transition-colors">
                     Development
                   </Link>
-                  <Link href="/courses" className="block px-4 py-3 text-[#D1D5DB] hover:bg-[#334155] hover:text-[#10B981] text-sm transition-colors">
+                  <Link href="/courses?category=business" className="block px-4 py-3 text-[#D1D5DB] hover:bg-[#334155] hover:text-[#10B981] text-sm transition-colors">
                     Business
                   </Link>
-                  <Link href="/courses" className="block px-4 py-3 text-[#D1D5DB] hover:bg-[#334155] hover:text-[#10B981] text-sm transition-colors">
+                  <Link href="/courses?category=design" className="block px-4 py-3 text-[#D1D5DB] hover:bg-[#334155] hover:text-[#10B981] text-sm transition-colors">
                     Design
                   </Link>
                 </motion.div>
@@ -75,7 +75,17 @@ export default function PureLogicsNavbar() {
           </div>
 
           {/* Search Bar */}
-          <form className="flex-1 max-w-2xl mx-4 hidden md:block">
+          <form 
+            className="flex-1 max-w-2xl mx-4 hidden md:block"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const form = e.currentTarget;
+              const input = form.querySelector('input') as HTMLInputElement;
+              if (input?.value.trim()) {
+                window.location.href = `/courses?search=${encodeURIComponent(input.value.trim())}`;
+              }
+            }}
+          >
             <div className="relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] w-5 h-5" />
               <input

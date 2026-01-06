@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { getApiBase } from "@/lib/api";
 import { fetchWithAuth } from "@/lib/auth";
+import Cookies from 'js-cookie';
 import PureLogicsNavbar from "@/app/components/PureLogicsNavbar";
 import { useToast } from "@/app/contexts/ToastContext";
 
@@ -31,7 +32,7 @@ export default function QuizPage() {
   const router = useRouter();
   const { showError, showWarning } = useToast();
   const params = useParams();
-  const courseSlug = params?.courseId as string;
+  const courseSlug = params?.slug as string;
   const quizId = params?.quizId as string;
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [answers, setAnswers] = useState<Record<number, any>>({});
@@ -41,7 +42,8 @@ export default function QuizPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
+    // Use Cookies instead of localStorage (consistent with rest of app)
+    const token = typeof window !== 'undefined' ? Cookies.get('access_token') : null;
     if (!token) {
       router.push("/login");
       return;
@@ -72,8 +74,9 @@ export default function QuizPage() {
     try {
       const data = await fetchWithAuth(`/quizzes/${quizId}/`);
       setQuiz(data);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to load quiz:", error);
+      showError(error.message || "Quiz not found. Please check if the quiz exists for this course.");
     } finally {
       setLoading(false);
     }
@@ -88,10 +91,26 @@ export default function QuizPage() {
 
     try {
       const apiBase = getApiBase();
-      const token = localStorage.getItem("access_token");
+      const token = Cookies.get("access_token");
 
-      const courseData = await fetchWithAuth(`/courses/${courseSlug}/`);
-      const courseId = courseData.id;
+      // Get course by slug using API
+      const coursesRes = await fetch(`${getApiBase()}/courses/?slug=${encodeURIComponent(courseSlug)}`, {
+        headers: {
+          'Authorization': `Bearer ${Cookies.get('access_token')}`,
+        },
+      });
+      if (!coursesRes.ok) {
+        throw new Error('Failed to fetch course');
+      }
+      const coursesData = await coursesRes.json();
+      const courseData = Array.isArray(coursesData.results) 
+        ? coursesData.results.find((c: any) => c.slug === courseSlug) || coursesData.results[0]
+        : (coursesData.results && coursesData.results.length > 0 ? coursesData.results[0] : null) || coursesData[0];
+      const courseId = courseData?.id;
+      
+      if (!courseId) {
+        throw new Error('Course not found');
+      }
 
       const enrollments = await fetchWithAuth("/enrollments/");
       const enrollment = (enrollments.results || enrollments || []).find(

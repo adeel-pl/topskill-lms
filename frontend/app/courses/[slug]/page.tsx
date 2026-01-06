@@ -60,19 +60,35 @@ export default function CourseDetailPage() {
       setCourse(courseData);
 
       try {
+        // Overview API is public (AllowAny), so it works for non-logged-in users
         const overviewRes = await playerAPI.getOverview(courseData.id);
         setOverview(overviewRes.data);
-        // Check enrollment status
+        // Check enrollment status (only if user is logged in)
         setIsEnrolled(overviewRes.data?.enrollment?.enrolled || false);
       } catch (error) {
         console.error('Error loading overview:', error);
-        // Fallback to course data if overview fails
+        // Fallback to course data if overview fails - use actual course data
         setOverview({
+          course: courseData,
           stats: {
             total_sections: courseData.total_sections || courseData.sections?.length || 0,
             total_lectures: courseData.total_lectures || 0,
             total_duration_hours: courseData.total_duration_hours || 0,
           },
+          content_preview: courseData.sections?.map((section: any) => ({
+            id: section.id,
+            title: section.title,
+            order: section.order,
+            is_preview: section.is_preview || false,
+            lectures: section.lectures?.map((lecture: any) => ({
+              id: lecture.id,
+              title: lecture.title,
+              duration_minutes: lecture.duration_minutes || 0,
+              is_preview: lecture.is_preview || false,
+              order: lecture.order,
+            })) || [],
+            total_lectures: section.lectures?.length || 0,
+          })) || [],
           learning_objectives: [
             'Complete course content',
             'Certificate of completion',
@@ -416,20 +432,33 @@ export default function CourseDetailPage() {
                           <span className="text-sm text-[#9CA3AF]">{section.total_lectures} lectures</span>
                         </div>
                         <div className="divide-y divide-[#334155]">
-                          {section.lectures.slice(0, isEnrolled ? section.lectures.length : 2).map((lecture: any, lectureIdx: number) => (
-                            <div key={lecture.id} className="px-4 py-3 flex items-center justify-between hover:bg-[#1E293B]/30 transition-colors">
-                              <div className="flex items-center gap-3 flex-1">
-                                <Play className="w-4 h-4 text-[#10B981] flex-shrink-0" />
-                                <span className="text-sm text-[#D1D5DB]">{lecture.title}</span>
-                                {lecture.is_preview && (
-                                  <span className="px-2 py-0.5 text-xs font-medium bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/30 rounded">
-                                    Preview
-                                  </span>
-                                )}
+                          {section.lectures.slice(0, isEnrolled ? section.lectures.length : 2).map((lecture: any, lectureIdx: number) => {
+                            const canPreview = lecture.is_preview || isEnrolled;
+                            return (
+                              <div 
+                                key={lecture.id} 
+                                className={`px-4 py-3 flex items-center justify-between transition-colors ${
+                                  canPreview ? 'hover:bg-[#1E293B]/30 cursor-pointer' : 'opacity-60'
+                                }`}
+                                onClick={() => {
+                                  if (canPreview) {
+                                    router.push(`/learn/${course.slug}?lecture=${lecture.id}`);
+                                  }
+                                }}
+                              >
+                                <div className="flex items-center gap-3 flex-1">
+                                  <Play className={`w-4 h-4 ${canPreview ? 'text-[#10B981]' : 'text-[#6B7280]'} flex-shrink-0`} />
+                                  <span className={`text-sm ${canPreview ? 'text-[#D1D5DB]' : 'text-[#6B7280]'}`}>{lecture.title}</span>
+                                  {lecture.is_preview && (
+                                    <span className="px-2 py-0.5 text-xs font-medium bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/30 rounded">
+                                      Preview
+                                    </span>
+                                  )}
+                                </div>
+                                <span className={`text-xs ml-4 ${canPreview ? 'text-[#9CA3AF]' : 'text-[#6B7280]'}`}>{lecture.duration_minutes}m</span>
                               </div>
-                              <span className="text-xs text-[#9CA3AF] ml-4">{lecture.duration_minutes}m</span>
-                            </div>
-                          ))}
+                            );
+                          })}
                           {!isEnrolled && section.lectures.length > 2 && (
                             <div className="px-4 py-3 text-sm text-[#9CA3AF] italic">
                               +{section.lectures.length - 2} more lectures (enroll to view all)

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { coursesAPI } from '@/lib/api';
 import { Search, Star, Users, Filter, Grid3x3, List } from 'lucide-react';
 import PureLogicsNavbar from '@/app/components/PureLogicsNavbar';
@@ -25,6 +26,8 @@ interface Course {
 }
 
 export default function CoursesPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -33,19 +36,69 @@ export default function CoursesPage() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const requestIdRef = useRef(0);
 
+  // Get URL params on mount and sync with state
+  useEffect(() => {
+    const searchParam = searchParams.get('search');
+    const categoryParam = searchParams.get('category');
+    
+    if (searchParam) {
+      setSearch(searchParam);
+    }
+    // Category is handled in loadCourses via URL params
+  }, [searchParams]);
+
+  // Load courses when filters change (but not when search changes - handled separately)
   useEffect(() => {
     loadCourses();
   }, [filter, sortBy]);
 
+  // Update URL when search changes
+  useEffect(() => {
+    const currentParams = new URLSearchParams(searchParams.toString());
+    const currentSearchParam = searchParams.get('search') || '';
+    const trimmedSearch = search.trim();
+    
+    // Only update URL if search state differs from URL
+    if (trimmedSearch && trimmedSearch !== currentSearchParam) {
+      currentParams.set('search', trimmedSearch);
+      const newUrl = currentParams.toString();
+      router.push(`/courses?${newUrl}`, { scroll: false });
+    } else if (!trimmedSearch && currentSearchParam) {
+      // Search was cleared, remove from URL
+      currentParams.delete('search');
+      const newUrl = currentParams.toString();
+      router.push(`/courses${newUrl ? `?${newUrl}` : ''}`, { scroll: false });
+    }
+  }, [search, router, searchParams]);
+
+  // Reload courses when URL search params change (from URL navigation or our updates)
+  useEffect(() => {
+    // Sync search state from URL
+    const urlSearch = searchParams.get('search') || '';
+    if (urlSearch !== search) {
+      setSearch(urlSearch);
+    }
+    // Load courses with current URL params
+    loadCourses();
+  }, [searchParams]);
+
   const loadCourses = async () => {
     const currentRequestId = ++requestIdRef.current;
     try {
-      const params: any = {
-        limit: 20, // Load 20 courses
-      };
+      const params: any = {};
+      
+      // Use state values (which are synced with URL)
       if (filter !== 'all') {
         params.modality = filter;
       }
+      
+      // Get category from URL params
+      const category = searchParams.get('category');
+      if (category) {
+        params.category = category;
+      }
+      
+      // Use search state (synced with URL)
       if (search) {
         params.search = search;
       }
@@ -54,7 +107,24 @@ export default function CoursesPage() {
       
       // Only update state if this is still the latest request (prevents race conditions)
       if (currentRequestId === requestIdRef.current) {
-        setCourses(response.data.results || response.data);
+        // Handle different response formats (pagination vs direct array)
+        let coursesData = [];
+        if (response.data) {
+          if (response.data.results && Array.isArray(response.data.results)) {
+            coursesData = response.data.results;
+          } else if (Array.isArray(response.data)) {
+            coursesData = response.data;
+          }
+        }
+        
+        console.log('Courses API Response:', {
+          total: coursesData.length,
+          hasResults: !!response.data?.results,
+          isArray: Array.isArray(response.data),
+          fullResponse: response.data
+        });
+        
+        setCourses(coursesData);
         setLoading(false);
       }
     } catch (error) {
@@ -66,9 +136,35 @@ export default function CoursesPage() {
     }
   };
 
+  // Update URL when search changes and reload courses
+  useEffect(() => {
+    const currentParams = new URLSearchParams(searchParams.toString());
+    const currentSearchParam = searchParams.get('search');
+    
+    // Only update URL if search state differs from URL
+    if (search && search.trim() && search.trim() !== currentSearchParam) {
+      currentParams.set('search', search.trim());
+      const newUrl = currentParams.toString();
+      router.push(`/courses?${newUrl}`, { scroll: false });
+    } else if (!search && currentSearchParam) {
+      // Search was cleared, remove from URL
+      currentParams.delete('search');
+      const newUrl = currentParams.toString();
+      router.push(`/courses${newUrl ? `?${newUrl}` : ''}`, { scroll: false });
+    }
+    
+    // Always reload courses when search changes
+    loadCourses();
+  }, [search]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    loadCourses();
+    // URL update will trigger loadCourses via useEffect
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    // URL will be updated via useEffect
   };
 
   const formatPrice = (price: number) => {
@@ -119,7 +215,7 @@ export default function CoursesPage() {
                     type="text"
                     placeholder="Search courses by title, instructor, or topic..."
                     value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    onChange={(e) => handleSearchChange(e.target.value)}
                     className="w-full pl-12 md:pl-14 pr-4 md:pr-5 py-3 md:py-3.5 lg:py-4 bg-[#0F172A] border border-[#334155] rounded-xl text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#10B981] focus:border-[#10B981] transition-all hover:bg-[#1E293B] text-sm md:text-base"
                   />
                 </div>

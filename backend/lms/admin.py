@@ -297,15 +297,15 @@ class BatchSessionInline(admin.TabularInline):
 
 @admin.register(Batch)
 class BatchAdmin(admin.ModelAdmin):
-    list_display = ['name', 'course', 'instructor', 'capacity', 'enrolled_count', 'available_slots', 'start_date', 'end_date', 'is_active']
-    list_filter = ['course', 'instructor', 'start_date', 'is_active']
+    list_display = ['name', 'course', 'batch_type', 'instructor', 'capacity', 'enrolled_count', 'available_slots', 'start_date', 'end_date', 'is_active']
+    list_filter = ['batch_type', 'course', 'instructor', 'start_date', 'is_active']
     search_fields = ['name', 'course__title']
     readonly_fields = ['enrolled_count', 'available_slots', 'created_at', 'updated_at']
     inlines = [BatchSessionInline]
     
     fieldsets = (
         ('Basic Information', {
-            'fields': ('course', 'name', 'instructor', 'capacity', 'is_active'),
+            'fields': ('course', 'name', 'batch_type', 'instructor', 'capacity', 'is_active'),
         }),
         ('Schedule', {
             'fields': ('start_date', 'end_date'),
