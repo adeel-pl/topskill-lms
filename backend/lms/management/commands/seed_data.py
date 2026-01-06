@@ -7,7 +7,8 @@ from lms.models import (
     Batch, BatchSession, SessionRegistration, Attendance,
     Enrollment, Review, Quiz, Assignment, Question, QuestionOption,
     QuizAttempt, AssignmentSubmission, Wishlist, Notification, Certificate,
-    Forum, Post, Reply, Resource, Note, Prerequisite, QandA, Announcement
+    Forum, Post, Reply, Resource, Note, Prerequisite, QandA, Announcement,
+    Cart, CartItem, Payment, LectureProgress
 )
 from .video_ids import get_video_id_for_course
 import random
@@ -870,9 +871,32 @@ class Command(BaseCommand):
                     enrollment.batch = batch
                     enrollment.save()
                 
-                # Register for some sessions
-                sessions = batch.sessions.all()[:3]
-                for session in sessions:
+                # Create some past sessions for attendance tracking
+                past_sessions = []
+                for i in range(3):
+                    session_date = timezone.now().date() - timedelta(days=i*7)
+                    start_datetime = timezone.make_aware(
+                        datetime.combine(session_date, datetime.min.time().replace(hour=14, minute=0))
+                    )
+                    end_datetime = start_datetime + timedelta(hours=2)
+                    
+                    past_session, _ = BatchSession.objects.get_or_create(
+                        batch=batch,
+                        session_number=i+1,
+                        start_datetime=start_datetime,
+                        defaults={
+                            'title': f'Past Session {i+1}',
+                            'end_datetime': end_datetime,
+                            'location': 'Main Campus - Room 101',
+                            'description': f'Past session for attendance tracking.',
+                            'is_active': True,
+                        }
+                    )
+                    past_sessions.append(past_session)
+                
+                # Register for sessions (past and future)
+                all_sessions = list(past_sessions) + list(batch.sessions.filter(start_datetime__gte=timezone.now())[:2])
+                for session in all_sessions:
                     SessionRegistration.objects.get_or_create(
                         enrollment=enrollment,
                         session=session,
@@ -889,6 +913,7 @@ class Command(BaseCommand):
                             defaults={
                                 'present': random.choice([True, True, True, False]),
                                 'note': 'Attended session' if random.choice([True, True, True, False]) else 'Absent',
+                                'checked_in_at': session.start_datetime + timedelta(minutes=random.randint(0, 10)),
                             }
                         )
 
@@ -1098,12 +1123,15 @@ class Command(BaseCommand):
                 }
             )
 
-        # Create wishlist items
-        for course in all_courses[3:6]:
-            Wishlist.objects.get_or_create(
-                user=student,
-                course=course,
-            )
+        # Create wishlist items for multiple students
+        for stu in students:
+            # Each student has 2-4 courses in wishlist
+            wishlist_courses = random.sample(list(all_courses), random.randint(2, 4))
+            for course in wishlist_courses:
+                Wishlist.objects.get_or_create(
+                    user=stu,
+                    course=course,
+                )
 
         # Create notifications
         for i in range(5):
@@ -1199,7 +1227,385 @@ class Command(BaseCommand):
                         'created_by': admin_user,
                     }
                 )
+
+        # Create cart and cart items for students
+        for stu in students:
+            cart, _ = Cart.objects.get_or_create(user=stu)
+            # Add more courses to each cart (3-6 courses)
+            courses_to_cart = random.sample(list(all_courses), random.randint(3, 6))
+            for course in courses_to_cart:
+                CartItem.objects.get_or_create(
+                    cart=cart,
+                    course=course,
+                )
         
+        # Also create carts for admin and instructor (they might want to purchase courses)
+        for user in [admin_user, instructor]:
+            cart, _ = Cart.objects.get_or_create(user=user)
+            courses_to_cart = random.sample(list(all_courses), random.randint(2, 4))
+            for course in courses_to_cart:
+                CartItem.objects.get_or_create(
+                    cart=cart,
+                    course=course,
+                )
+
+        # Create payments for enrollments (multiple students, multiple courses)
+        all_enrollments = Enrollment.objects.all()
+        payment_statuses = ['completed', 'pending', 'failed', 'completed', 'completed']
+        for enrollment in all_enrollments:
+            # Create payment for each enrollment
+            Payment.objects.get_or_create(
+                user=enrollment.user,
+                course=enrollment.course,
+                defaults={
+                    'amount': enrollment.course.price,
+                    'status': random.choice(payment_statuses),
+                    'payfast_payment_id': f'PF-{random.randint(100000, 999999)}',
+                    'created_at': enrollment.created_at,
+                }
+            )
+        
+        # Create additional payments (some users might have multiple payment attempts)
+        for stu in students[:4]:
+            courses_to_pay = random.sample(list(all_courses), random.randint(2, 5))
+            for course in courses_to_pay:
+                # Check if payment already exists
+                if not Payment.objects.filter(user=stu, course=course).exists():
+                    Payment.objects.create(
+                        user=stu,
+                        course=course,
+                        amount=course.price,
+                        status=random.choice(['completed', 'pending', 'failed']),
+                        payfast_payment_id=f'PF-{random.randint(100000, 999999)}',
+                    )
+
+        # Create quiz attempts for enrolled students
+        all_enrollments_for_quizzes = Enrollment.objects.all()
+        for enrollment in all_enrollments_for_quizzes:
+            quiz = enrollment.course.quizzes.first()
+            if quiz:
+                # Create quiz attempts for ALL enrolled students
+                course_enrollments = Enrollment.objects.filter(course=enrollment.course)
+                for stu_enrollment in course_enrollments:
+                    # Create 1-3 attempts per student
+                    num_attempts = random.randint(1, 3)
+                    for attempt_num in range(1, num_attempts + 1):
+                        score = random.randint(60, 95) if attempt_num == 1 else random.randint(40, 85)
+                        passed = score >= float(quiz.passing_score)
+                        
+                        attempt, created = QuizAttempt.objects.get_or_create(
+                            enrollment=stu_enrollment,
+                            quiz=quiz,
+                            attempt_number=attempt_num,
+                            defaults={
+                                'score': score,
+                                'passed': passed,
+                                'started_at': timezone.now() - timedelta(days=attempt_num*2),
+                                'completed_at': timezone.now() - timedelta(days=attempt_num*2) + timedelta(minutes=random.randint(15, 25)),
+                                'answers': {
+                                    str(i): random.randint(1, 4) if random.choice([True, False]) else random.choice(['True', 'False'])
+                                    for i in range(1, min(quiz.questions.count() + 1, 6))
+                                }
+                            }
+                        )
+                        # Only create if new
+                        if not created:
+                            break
+
+        # Create assignment submissions for multiple students
+        for course in all_courses:
+            assignment = course.assignments.first()
+            if not assignment:
+                continue
+                
+            # Get ALL enrollments for this course
+            course_enrollments = Enrollment.objects.filter(course=course)
+            for enrollment in course_enrollments:
+                status = random.choice(['submitted', 'graded', 'returned', 'submitted', 'draft'])
+                score = random.randint(70, 100) if status == 'graded' else None
+                
+                feedback_options = [
+                    'Great work! You demonstrated a good understanding of the concepts.',
+                    'Excellent submission. Well done!',
+                    'Good effort. Consider adding more detail in section 2.',
+                    'Well structured. Minor improvements needed in the conclusion.',
+                    'Outstanding work! Your analysis was thorough and well-researched.',
+                    'Good submission. Please revise section 3 based on the feedback.',
+                ]
+                
+                submission, _ = AssignmentSubmission.objects.get_or_create(
+                    enrollment=enrollment,
+                    assignment=assignment,
+                    defaults={
+                        'submission_text': f'This is my submission for {assignment.title}. I have completed all the requirements and included detailed explanations. Here is my work:\n\n1. Introduction\n2. Main content\n3. Conclusion',
+                        'status': status,
+                        'score': score,
+                        'feedback': random.choice(feedback_options) if status == 'graded' else '',
+                        'submitted_at': timezone.now() - timedelta(days=random.randint(1, 15)),
+                        'graded_at': timezone.now() - timedelta(days=random.randint(1, 7)) if status == 'graded' else None,
+                        'is_late': random.choice([True, False, False, False]),  # 25% late
+                    }
+                )
+
+        # Create lecture progress for enrolled students
+        all_enrollments_for_progress = Enrollment.objects.all()
+        for enrollment in all_enrollments_for_progress:
+            lectures = Lecture.objects.filter(section__course=enrollment.course)[:10]
+            for lecture in lectures:
+                # Some lectures completed, some in progress
+                is_completed = random.choice([True, True, False])  # 66% completed
+                watch_time = lecture.duration_minutes * 60 if is_completed else random.randint(0, lecture.duration_minutes * 60)
+                
+                LectureProgress.objects.get_or_create(
+                    enrollment=enrollment,
+                    lecture=lecture,
+                    defaults={
+                        'completed': is_completed,
+                        'watch_time_seconds': watch_time,
+                        'last_position': watch_time,
+                        'completed_at': timezone.now() - timedelta(days=random.randint(1, 20)) if is_completed else None,
+                    }
+                )
+
+        # Create notes for enrolled students
+        all_enrollments_for_notes = Enrollment.objects.all()
+        for enrollment in all_enrollments_for_notes:
+            # Get more lectures per enrollment
+            lectures = Lecture.objects.filter(section__course=enrollment.course)[:8]
+            for lecture in lectures:
+                note_texts = [
+                    'Important concept to remember',
+                    'Need to review this section',
+                    'Great explanation!',
+                    'Key takeaway: Practice makes perfect',
+                    'Question: How does this relate to previous topics?',
+                    'This is a key point I should memorize',
+                    'Excellent example provided here',
+                    'I need to practice this more',
+                    'This connects to what we learned earlier',
+                    'Important formula to remember',
+                ]
+                # Create multiple notes per lecture (some students take multiple notes)
+                num_notes = random.randint(1, 2)
+                for _ in range(num_notes):
+                    Note.objects.get_or_create(
+                        enrollment=enrollment,
+                        lecture=lecture,
+                        content=random.choice(note_texts),
+                        defaults={
+                            'timestamp': random.randint(0, lecture.duration_minutes * 60),
+                            'is_public': random.choice([True, False]),
+                        }
+                    )
+
+        # Create more session registrations for physical courses (all students)
+        physical_enrollments = Enrollment.objects.filter(course__modality__in=['physical', 'hybrid'])
+        # Also enroll more students in physical courses
+        for course in Course.objects.filter(modality__in=['physical', 'hybrid']):
+            batch = course.batches.first()
+            if batch:
+                for stu in students[:4]:  # Enroll 4 students
+                    enrollment, _ = Enrollment.objects.get_or_create(
+                        user=stu,
+                        course=course,
+                        defaults={
+                            'status': 'active',
+                            'progress_percent': random.randint(10, 50),
+                        }
+                    )
+                    if enrollment.batch != batch:
+                        enrollment.batch = batch
+                        enrollment.save()
+                    
+                    # Register for multiple sessions
+                    sessions = batch.sessions.all()[:10]
+                    for session in sessions:
+                        SessionRegistration.objects.get_or_create(
+                            enrollment=enrollment,
+                            session=session,
+                            defaults={
+                                'status': random.choice(['registered', 'registered', 'registered', 'cancelled', 'waitlisted']),
+                            }
+                        )
+
+        # Create more attendance records for all past sessions
+        all_physical_enrollments = Enrollment.objects.filter(course__modality__in=['physical', 'hybrid'])
+        for enrollment in all_physical_enrollments:
+            batch = enrollment.batch
+            if batch:
+                # Get all past sessions (create some if needed)
+                past_sessions = batch.sessions.filter(start_datetime__lt=timezone.now())
+                
+                # If no past sessions, create some
+                if past_sessions.count() == 0:
+                    for i in range(5):
+                        session_date = timezone.now().date() - timedelta(days=(i+1)*7)
+                        start_datetime = timezone.make_aware(
+                            datetime.combine(session_date, datetime.min.time().replace(hour=14, minute=0))
+                        )
+                        end_datetime = start_datetime + timedelta(hours=2)
+                        
+                        past_session, _ = BatchSession.objects.get_or_create(
+                            batch=batch,
+                            session_number=100+i,  # High number to avoid conflicts
+                            start_datetime=start_datetime,
+                            defaults={
+                                'title': f'Past Session {i+1}',
+                                'end_datetime': end_datetime,
+                                'location': 'Main Campus - Room 101',
+                                'description': f'Past session for attendance tracking.',
+                                'is_active': True,
+                            }
+                        )
+                        past_sessions = BatchSession.objects.filter(batch=batch, start_datetime__lt=timezone.now())
+                
+                # Create attendance for all past sessions
+                for session in past_sessions:
+                    # Ensure registration exists
+                    SessionRegistration.objects.get_or_create(
+                        enrollment=enrollment,
+                        session=session,
+                        defaults={'status': 'registered'}
+                    )
+                    
+                    # Create attendance record
+                    Attendance.objects.get_or_create(
+                        enrollment=enrollment,
+                        session=session,
+                        defaults={
+                            'present': random.choice([True, True, True, False]),  # 75% attendance
+                            'note': 'Attended session' if random.choice([True, True, True, False]) else 'Absent - notified instructor',
+                            'checked_in_at': session.start_datetime + timedelta(minutes=random.randint(0, 15)),
+                        }
+                    )
+
+        # Mark some enrollments as completed and create certificates
+        # Complete more enrollments (about 30-40% of all enrollments)
+        enrollments_to_complete = Enrollment.objects.all()[:10]
+        for enrollment in enrollments_to_complete:
+            enrollment.status = 'completed'
+            enrollment.progress_percent = 100
+            enrollment.save()
+            
+            Certificate.objects.get_or_create(
+                enrollment=enrollment,
+                defaults={
+                    'issued_at': timezone.now() - timedelta(days=random.randint(1, 60)),
+                }
+            )
+
+        # Create more forum posts and replies for all courses
+        for course in all_courses:
+            forum, _ = Forum.objects.get_or_create(course=course)
+            
+            # Create multiple posts per course
+            post_titles = [
+                f'Welcome to {course.title} Discussion',
+                f'Question about {course.title}',
+                f'Help needed with {course.title}',
+                f'Sharing my experience with {course.title}',
+            ]
+            
+            for i, title in enumerate(post_titles[:3]):
+                stu = students[i % len(students)] if students else student
+                post, _ = Post.objects.get_or_create(
+                    forum=forum,
+                    user=stu,
+                    title=title,
+                    defaults={
+                        'content': f'This is a discussion post about {course.title}. Feel free to share your thoughts and ask questions!',
+                        'post_type': random.choice(['discussion', 'question', 'announcement']),
+                        'is_pinned': i == 0,
+                        'is_locked': False,
+                    }
+                )
+                
+                # Create multiple replies for each post
+                for reply_idx, reply_stu in enumerate(students[:3], 1):
+                    Reply.objects.get_or_create(
+                        post=post,
+                        user=reply_stu,
+                        content=f'Reply {reply_idx}: Great post! Here is my response based on my experience.',
+                        defaults={
+                            'is_answer': reply_idx == 1 and post.post_type == 'question',
+                        }
+                    )
+
+        # Create more resources for courses
+        resource_types = ['pdf', 'link', 'video', 'document', 'code']
+        resource_titles = [
+            'Course Materials',
+            'Additional Resources',
+            'Reference Guide',
+            'Practice Exercises',
+            'Code Examples',
+            'Supplementary Reading',
+        ]
+        for course in all_courses:
+            # Create 2-3 resources per course
+            num_resources = random.randint(2, 3)
+            for i in range(num_resources):
+                Resource.objects.get_or_create(
+                    course=course,
+                    title=f'{course.title} - {random.choice(resource_titles)} {i+1}',
+                    defaults={
+                        'resource_type': random.choice(resource_types),
+                        'external_url': f'https://example.com/resources/{course.slug}/{i+1}',
+                        'description': f'Additional learning resources and materials for {course.title}.',
+                        'is_active': True,
+                        'order': i + 1,
+                    }
+                )
+
+        # Create more notifications for different users
+        notification_templates = [
+            {'title': 'Course Update Available', 'message': 'New content has been added to one of your enrolled courses!', 'type': 'info'},
+            {'title': 'Assignment Graded', 'message': 'Your assignment has been graded. Check your course for feedback.', 'type': 'success'},
+            {'title': 'New Quiz Available', 'message': 'A new quiz is now available in one of your courses.', 'type': 'info'},
+            {'title': 'Certificate Ready', 'message': 'Congratulations! Your certificate is ready for download.', 'type': 'success'},
+            {'title': 'Session Reminder', 'message': 'You have an upcoming session scheduled. Don\'t forget to attend!', 'type': 'warning'},
+            {'title': 'Payment Successful', 'message': 'Your payment has been processed successfully.', 'type': 'success'},
+            {'title': 'Course Recommendation', 'message': 'Based on your interests, we recommend checking out this new course.', 'type': 'info'},
+        ]
+        
+        for stu in students:
+            # Create 3-5 notifications per student
+            num_notifications = random.randint(3, 5)
+            for i in range(num_notifications):
+                template = random.choice(notification_templates)
+                Notification.objects.get_or_create(
+                    user=stu,
+                    title=template['title'],
+                    message=template['message'],
+                    defaults={
+                        'notification_type': template['type'],
+                        'is_read': random.choice([True, False, False]),  # 33% read
+                    }
+                )
+
+        # Create prerequisites (courses that require other courses)
+        # Example: Advanced courses require beginner courses
+        prerequisite_mappings = [
+            # Django requires Python
+            ('django-web-development', 'python-for-beginners'),
+            # Full Stack requires both Django and React
+            ('full-stack-django-react', 'django-web-development'),
+            ('full-stack-django-react', 'react-complete-guide'),
+            # Node.js requires some JavaScript knowledge (could be React)
+            ('nodejs-backend-development', 'react-complete-guide'),
+        ]
+        
+        for course_slug, required_slug in prerequisite_mappings:
+            try:
+                course = Course.objects.get(slug=course_slug)
+                required_course = Course.objects.get(slug=required_slug)
+                Prerequisite.objects.get_or_create(
+                    course=course,
+                    required_course=required_course,
+                )
+            except Course.DoesNotExist:
+                pass  # Skip if course doesn't exist
+
         self.stdout.write(self.style.SUCCESS('\n✅ Successfully seeded database!'))
         self.stdout.write('\n📊 Created:')
         self.stdout.write(f'  - {Course.objects.count()} courses')
@@ -1222,6 +1628,18 @@ class Command(BaseCommand):
         self.stdout.write(f'  - {QandA.objects.count()} Q&As')
         self.stdout.write(f'  - {Announcement.objects.count()} announcements')
         self.stdout.write(f'  - {Enrollment.objects.count()} enrollments')
+        self.stdout.write(f'  - {Cart.objects.count()} carts')
+        self.stdout.write(f'  - {CartItem.objects.count()} cart items')
+        self.stdout.write(f'  - {Payment.objects.count()} payments')
+        self.stdout.write(f'  - {QuizAttempt.objects.count()} quiz attempts')
+        self.stdout.write(f'  - {AssignmentSubmission.objects.count()} assignment submissions')
+        self.stdout.write(f'  - {LectureProgress.objects.count()} lecture progress records')
+        self.stdout.write(f'  - {Note.objects.count()} notes')
+        self.stdout.write(f'  - {Post.objects.count()} forum posts')
+        self.stdout.write(f'  - {Reply.objects.count()} forum replies')
+        self.stdout.write(f'  - {Certificate.objects.count()} certificates')
+        self.stdout.write(f'  - {Prerequisite.objects.count()} prerequisites')
+        self.stdout.write(f'  - {QuestionOption.objects.count()} question options')
         self.stdout.write(f'  - {User.objects.count()} users')
         self.stdout.write('\n' + '='*50)
         self.stdout.write(self.style.SUCCESS('USER CREDENTIALS:'))
