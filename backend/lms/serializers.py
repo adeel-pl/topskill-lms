@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from .models import (
     Course, Batch, Enrollment, Payment, Attendance, BatchSession, SessionRegistration,
-    Lecture, CourseSection, Quiz, QuizAttempt, Assignment, AssignmentSubmission,
+    Lecture, CourseSection, Quiz, Question, QuestionOption, QuizAttempt, Assignment, AssignmentSubmission,
     Review, Wishlist, Category, Tag, Notification, Certificate, LectureProgress,
     Forum, Post, Reply, Resource, Note, Cart, CartItem, QandA, Announcement
 )
@@ -342,21 +342,49 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
         return Review.objects.create(user=user, **validated_data)
 
 
+class QuestionOptionSerializer(serializers.ModelSerializer):
+    """Serializer for question options"""
+    class Meta:
+        model = QuestionOption
+        fields = ['id', 'option_text', 'is_correct', 'order']
+
+
+class QuestionSerializer(serializers.ModelSerializer):
+    """Serializer for quiz questions"""
+    options = QuestionOptionSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = Question
+        fields = ['id', 'question_text', 'question_type', 'points', 'order', 'correct_answer', 'options']
+
+
 class QuizSerializer(serializers.ModelSerializer):
     """Quiz serializer"""
+    questions = QuestionSerializer(many=True, read_only=True)
+    
     class Meta:
         model = Quiz
         fields = ['id', 'title', 'description', 'passing_score', 'time_limit_minutes',
-                  'max_attempts', 'is_active', 'order']
+                  'max_attempts', 'is_active', 'order', 'questions']
 
 
 class QuizAttemptSerializer(serializers.ModelSerializer):
     """Quiz attempt serializer"""
-    quiz = QuizSerializer(read_only=True)
+    quiz = serializers.PrimaryKeyRelatedField(queryset=Quiz.objects.all(), required=True)
+    enrollment = serializers.PrimaryKeyRelatedField(queryset=Enrollment.objects.all(), required=True)
+    quiz_detail = QuizSerializer(source='quiz', read_only=True)
     
     class Meta:
         model = QuizAttempt
-        fields = ['id', 'quiz', 'score', 'passed', 'started_at', 'completed_at', 'answers']
+        fields = ['id', 'enrollment', 'quiz', 'quiz_detail', 'score', 'passed', 'started_at', 'completed_at', 'answers']
+        read_only_fields = ['id', 'quiz_detail', 'score', 'passed', 'started_at', 'completed_at', 'answers']
+    
+    def to_representation(self, instance):
+        """Return nested quiz in response"""
+        representation = super().to_representation(instance)
+        if instance.quiz:
+            representation['quiz'] = QuizSerializer(instance.quiz).data
+        return representation
 
 
 class AssignmentSerializer(serializers.ModelSerializer):
@@ -368,12 +396,21 @@ class AssignmentSerializer(serializers.ModelSerializer):
 
 class AssignmentSubmissionSerializer(serializers.ModelSerializer):
     """Assignment submission serializer"""
-    assignment = AssignmentSerializer(read_only=True)
+    assignment = serializers.PrimaryKeyRelatedField(queryset=Assignment.objects.all(), required=True)
+    enrollment = serializers.PrimaryKeyRelatedField(queryset=Enrollment.objects.all(), required=True)
     
     class Meta:
         model = AssignmentSubmission
-        fields = ['id', 'assignment', 'submission_text', 'submission_file', 'status',
+        fields = ['id', 'enrollment', 'assignment', 'submission_text', 'submission_file', 'status',
                   'score', 'feedback', 'submitted_at', 'graded_at']
+        read_only_fields = ['id', 'status', 'score', 'feedback', 'submitted_at', 'graded_at']
+    
+    def to_representation(self, instance):
+        """Return nested assignment in response"""
+        representation = super().to_representation(instance)
+        if instance.assignment:
+            representation['assignment'] = AssignmentSerializer(instance.assignment).data
+        return representation
 
 
 class NotificationSerializer(serializers.ModelSerializer):

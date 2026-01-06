@@ -920,17 +920,82 @@ export default function CoursePlayerPage() {
                   <h3 className="text-lg font-semibold mb-4 text-[#000F2C]">Course Assignments</h3>
                   {assignments && assignments.length > 0 ? (
                     <div className="space-y-4">
-                      {assignments.map((assignment: any) => (
+                      {assignments.map((assignment: any) => {
+                        const submission = assignment.submission;
+                        const isSubmitted = submission !== null;
+                        const isGraded = submission && submission.status === 'graded';
+                        const isLate = assignment.due_date && submission && new Date(submission.submitted_at) > new Date(assignment.due_date);
+                        
+                        return (
                         <div key={assignment.id} className="border border-gray-200 rounded-sm p-4">
                           <div className="flex items-center justify-between mb-2">
                             <h4 className="font-semibold text-[#000F2C]">{assignment.title}</h4>
-                            {assignment.due_date && (
-                              <span className="text-sm text-[#6a6f73]">
-                                Due: {new Date(assignment.due_date).toLocaleDateString()}
-                              </span>
-                            )}
+                            <div className="flex items-center gap-3">
+                              {assignment.due_date && (
+                                <span className={`text-sm ${isLate ? 'text-red-500' : 'text-[#6a6f73]'}`}>
+                                  Due: {new Date(assignment.due_date).toLocaleDateString()}
+                                </span>
+                              )}
+                              {isSubmitted && (
+                                <span className={`px-2 py-1 text-xs font-semibold rounded ${
+                                  submission.status === 'graded' ? 'bg-green-100 text-green-800' :
+                                  submission.status === 'returned' ? 'bg-blue-100 text-blue-800' :
+                                  'bg-yellow-100 text-yellow-800'
+                                }`}>
+                                  {submission.status === 'graded' ? 'Graded' :
+                                   submission.status === 'returned' ? 'Returned' : 'Submitted'}
+                                </span>
+                              )}
+                            </div>
                           </div>
                           <p className="text-sm text-[#6a6f73] mb-3">{assignment.description}</p>
+                          
+                          {/* Show submission status and grades */}
+                          {isSubmitted && (
+                            <div className="mb-3 p-3 bg-gray-50 border border-gray-200 rounded-sm">
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-sm font-medium text-[#000F2C]">Submission Status:</span>
+                                  <span className={`text-sm font-semibold ${
+                                    submission.status === 'graded' ? 'text-green-600' :
+                                    submission.status === 'returned' ? 'text-blue-600' : 'text-yellow-600'
+                                  }`}>
+                                    {submission.status.charAt(0).toUpperCase() + submission.status.slice(1)}
+                                  </span>
+                                </div>
+                                <div className="text-xs text-[#6a6f73]">
+                                  Submitted: {new Date(submission.submitted_at).toLocaleString()}
+                                </div>
+                                {isGraded && submission.score !== null && (
+                                  <div className="flex items-center justify-between pt-2 border-t border-gray-200">
+                                    <span className="text-sm font-medium text-[#000F2C]">Score:</span>
+                                    <span className="text-lg font-bold text-[#66CC33]">
+                                      {submission.score} / {assignment.max_score}
+                                    </span>
+                                  </div>
+                                )}
+                                {isGraded && submission.feedback && (
+                                  <div className="pt-2 border-t border-gray-200">
+                                    <span className="text-sm font-medium text-[#000F2C] block mb-1">Feedback:</span>
+                                    <p className="text-sm text-[#6a6f73] whitespace-pre-wrap">{submission.feedback}</p>
+                                  </div>
+                                )}
+                                {submission.submission_file && (
+                                  <div className="pt-2 border-t border-gray-200">
+                                    <a 
+                                      href={submission.submission_file} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer"
+                                      className="text-sm text-[#66CC33] hover:underline"
+                                    >
+                                      View Submitted File →
+                                    </a>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                          
                           {submittingAssignment === assignment.id ? (
                             <div className="space-y-3 mt-3">
                               <textarea
@@ -964,6 +1029,8 @@ export default function CoursePlayerPage() {
                                       setSubmittingAssignment(null);
                                       setAssignmentSubmissionText('');
                                       setAssignmentSubmissionFile(null);
+                                      // Reload course content to show updated submission status
+                                      loadCourseContent();
                                     } catch (error: any) {
                                       const errorMsg = error.response?.data?.error || 
                                                       error.response?.data?.detail || 
@@ -992,21 +1059,43 @@ export default function CoursePlayerPage() {
                               </div>
                             </div>
                           ) : (
-                            <button 
-                              onClick={() => {
-                                if (!enrollmentId) {
-                                  showError('You must be enrolled to submit assignments');
-                                  return;
-                                }
-                                setSubmittingAssignment(assignment.id);
-                              }}
-                              className="px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-sm font-semibold text-sm"
-                            >
-                              Submit Assignment
-                            </button>
+                            <div className="flex items-center gap-2">
+                              {!isSubmitted ? (
+                                <button 
+                                  onClick={() => {
+                                    if (!enrollmentId) {
+                                      showError('You must be enrolled to submit assignments');
+                                      return;
+                                    }
+                                    setSubmittingAssignment(assignment.id);
+                                  }}
+                                  className="px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-sm font-semibold text-sm"
+                                >
+                                  Submit Assignment
+                                </button>
+                              ) : (
+                                <button 
+                                  onClick={() => {
+                                    if (!enrollmentId) {
+                                      showError('You must be enrolled to submit assignments');
+                                      return;
+                                    }
+                                    // Pre-fill with existing submission
+                                    if (submission.submission_text) {
+                                      setAssignmentSubmissionText(submission.submission_text);
+                                    }
+                                    setSubmittingAssignment(assignment.id);
+                                  }}
+                                  className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-sm font-semibold text-sm"
+                                >
+                                  Update Submission
+                                </button>
+                              )}
+                            </div>
                           )}
                         </div>
-                      ))}
+                      );
+                      })}
                     </div>
                   ) : (
                     <p className="text-[#6a6f73]">No assignments available for this course.</p>

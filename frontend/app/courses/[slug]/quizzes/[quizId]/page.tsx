@@ -60,7 +60,9 @@ export default function QuizPage() {
         setTimeRemaining((prev) => {
           if (prev === null || prev <= 1) {
             clearInterval(interval);
-            if (prev === 1) handleSubmit();
+            if (prev === 1) {
+              handleSubmit();
+            }
             return 0;
           }
           return prev - 1;
@@ -68,6 +70,7 @@ export default function QuizPage() {
       }, 1000);
       return () => clearInterval(interval);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quiz, submitted]);
 
   const loadQuiz = async () => {
@@ -193,7 +196,7 @@ export default function QuizPage() {
       <main className="mx-auto max-w-4xl px-6 py-8">
         <div className="mb-6">
           <Link
-            href={`/courses/${courseSlug}`}
+            href={`/learn/${courseSlug}`}
             className="text-[#66CC33] hover:text-[#4da826] mb-4 inline-block"
           >
             ← Back to Course
@@ -237,7 +240,7 @@ export default function QuizPage() {
               Passing Score: {quiz.passing_score}%
             </p>
             <Link
-              href={`/courses/${courseSlug}`}
+              href={`/learn/${courseSlug}`}
               className="inline-block px-6 py-3 bg-[#66CC33] hover:bg-[#4da826] text-[#000F2C] font-semibold rounded-sm transition-colors"
             >
               Back to Course
@@ -245,84 +248,92 @@ export default function QuizPage() {
           </div>
         ) : (
           <div className="space-y-6">
-            {quiz.questions.map((question, idx) => (
-              <div
-                key={question.id}
-                className="rounded-sm border border-gray-200 bg-white p-6"
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-[#000F2C]">
-                    Question {idx + 1}: {question.question_text}
-                  </h3>
-                  <span className="text-sm text-[#6a6f73]">{question.points} points</span>
+            {quiz.questions && quiz.questions.length > 0 ? (
+              <>
+                {quiz.questions.map((question, idx) => (
+                  <div
+                    key={question.id}
+                    className="rounded-sm border border-gray-200 bg-white p-6"
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <h3 className="text-lg font-semibold text-[#000F2C]">
+                        Question {idx + 1}: {question.question_text}
+                      </h3>
+                      <span className="text-sm text-[#6a6f73]">{question.points} points</span>
+                    </div>
+
+                    {question.question_type === "multiple_choice" && question.options && (
+                      <div className="space-y-2">
+                        {question.options.map((option) => (
+                          <label
+                            key={option.id}
+                            className="flex items-center gap-3 p-3 rounded-sm hover:bg-gray-50 cursor-pointer border border-gray-200"
+                          >
+                            <input
+                              type="radio"
+                              name={`question-${question.id}`}
+                              value={option.id}
+                              checked={answers[question.id] === option.id}
+                              onChange={() => handleAnswerChange(question.id, option.id)}
+                              className="w-4 h-4 text-[#66CC33]"
+                            />
+                            <span className="text-[#000F2C]">{option.option_text}</span>
+                          </label>
+                        ))}
+                      </div>
+                    )}
+
+                    {question.question_type === "true_false" && (
+                      <div className="space-y-2">
+                        {["True", "False"].map((option) => (
+                          <label
+                            key={option}
+                            className="flex items-center gap-3 p-3 rounded-sm hover:bg-gray-50 cursor-pointer border border-gray-200"
+                          >
+                            <input
+                              type="radio"
+                              name={`question-${question.id}`}
+                              value={option}
+                              checked={answers[question.id] === option}
+                              onChange={() => handleAnswerChange(question.id, option)}
+                              className="w-4 h-4 text-[#66CC33]"
+                            />
+                            <span className="text-[#000F2C]">{option}</span>
+                          </label>
+                        ))}
+                      </div>
+                    )}
+
+                    {question.question_type === "short_answer" && (
+                      <textarea
+                        value={answers[question.id] || ""}
+                        onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+                        placeholder="Type your answer here..."
+                        rows={4}
+                        className="w-full px-4 py-2 bg-white border border-gray-300 rounded-sm text-[#000F2C] focus:outline-none focus:ring-2 focus:ring-[#66CC33] focus:border-[#66CC33]"
+                      />
+                    )}
+                  </div>
+                ))}
+
+                <div className="flex items-center justify-between pt-6">
+                  <p className="text-[#6a6f73]">
+                    Answered: {Object.keys(answers).length} / {quiz.questions.length}
+                  </p>
+                  <button
+                    onClick={handleSubmit}
+                    disabled={submitted || Object.keys(answers).length === 0}
+                    className="px-8 py-3 bg-[#66CC33] hover:bg-[#4da826] disabled:bg-gray-300 disabled:cursor-not-allowed text-[#000F2C] font-semibold rounded-sm transition-colors"
+                  >
+                    Submit Quiz
+                  </button>
                 </div>
-
-                {question.question_type === "multiple_choice" && question.options && (
-                  <div className="space-y-2">
-                    {question.options.map((option) => (
-                      <label
-                        key={option.id}
-                        className="flex items-center gap-3 p-3 rounded-sm hover:bg-gray-50 cursor-pointer border border-gray-200"
-                      >
-                        <input
-                          type="radio"
-                          name={`question-${question.id}`}
-                          value={option.id}
-                          checked={answers[question.id] === option.id}
-                          onChange={() => handleAnswerChange(question.id, option.id)}
-                          className="w-4 h-4 text-[#66CC33]"
-                        />
-                        <span className="text-[#000F2C]">{option.option_text}</span>
-                      </label>
-                    ))}
-                  </div>
-                )}
-
-                {question.question_type === "true_false" && (
-                  <div className="space-y-2">
-                    {["True", "False"].map((option) => (
-                      <label
-                        key={option}
-                        className="flex items-center gap-3 p-3 rounded-sm hover:bg-gray-50 cursor-pointer border border-gray-200"
-                      >
-                        <input
-                          type="radio"
-                          name={`question-${question.id}`}
-                          value={option}
-                          checked={answers[question.id] === option}
-                          onChange={() => handleAnswerChange(question.id, option)}
-                          className="w-4 h-4 text-[#66CC33]"
-                        />
-                        <span className="text-[#000F2C]">{option}</span>
-                      </label>
-                    ))}
-                  </div>
-                )}
-
-                {question.question_type === "short_answer" && (
-                  <textarea
-                    value={answers[question.id] || ""}
-                    onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-                    placeholder="Type your answer here..."
-                    rows={4}
-                    className="w-full px-4 py-2 bg-white border border-gray-300 rounded-sm text-[#000F2C] focus:outline-none focus:ring-2 focus:ring-[#66CC33] focus:border-[#66CC33]"
-                  />
-                )}
+              </>
+            ) : (
+              <div className="rounded-sm border border-gray-200 bg-white p-8 text-center">
+                <p className="text-[#6a6f73]">No questions available for this quiz.</p>
               </div>
-            ))}
-
-            <div className="flex items-center justify-between pt-6">
-              <p className="text-[#6a6f73]">
-                Answered: {Object.keys(answers).length} / {quiz.questions.length}
-              </p>
-              <button
-                onClick={handleSubmit}
-                disabled={submitted || Object.keys(answers).length === 0}
-                className="px-8 py-3 bg-[#66CC33] hover:bg-[#4da826] disabled:bg-gray-300 disabled:cursor-not-allowed text-[#000F2C] font-semibold rounded-sm transition-colors"
-              >
-                Submit Quiz
-              </button>
-            </div>
+            )}
           </div>
         )}
       </main>

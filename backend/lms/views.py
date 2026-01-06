@@ -5,6 +5,7 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.db.models import Q, Count, Avg
+from django.db import IntegrityError
 from django.utils import timezone
 from .models import (
     Course, Batch, Enrollment, Payment, Attendance, BatchSession, SessionRegistration,
@@ -719,7 +720,9 @@ class QuizViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     
     def get_queryset(self):
-        queryset = Quiz.objects.filter(is_active=True).select_related('course')
+        queryset = Quiz.objects.filter(is_active=True).select_related('course').prefetch_related(
+            'questions__options'
+        )
         
         # Filter by course
         course_id = self.request.query_params.get('course')
@@ -771,6 +774,76 @@ class QuizAttemptViewSet(viewsets.ModelViewSet):
         if enrollment.user != self.request.user and not self.request.user.is_staff:
             raise permissions.PermissionDenied("You can only create attempts for your own enrollments")
         serializer.save()
+    
+    @action(detail=True, methods=['post'])
+    def submit(self, request, pk=None):
+        """Submit quiz answers and grade the quiz"""
+        attempt = self.get_object()
+        
+        # Check if already submitted
+        if attempt.completed_at:
+            return Response(
+                {'error': 'This quiz attempt has already been submitted.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Check ownership
+        if attempt.enrollment.user != request.user and not request.user.is_staff:
+            raise permissions.PermissionDenied("You can only submit your own quiz attempts")
+        
+        answers = request.data.get('answers', {})
+        quiz = attempt.quiz
+        
+        # Grade the quiz
+        total_points = 0
+        earned_points = 0
+        
+        for question in quiz.questions.all():
+            total_points += float(question.points)
+            question_id = question.id
+            user_answer = answers.get(str(question_id)) or answers.get(question_id)
+            
+            if question.question_type == 'multiple_choice':
+                # Check if user selected the correct option
+                correct_option = question.options.filter(is_correct=True).first()
+                if correct_option and user_answer:
+                    try:
+                        user_answer_id = int(user_answer)
+                        if user_answer_id == correct_option.id:
+                            earned_points += float(question.points)
+                    except (ValueError, TypeError):
+                        pass
+            
+            elif question.question_type == 'true_false':
+                # Check if answer matches correct_answer
+                if user_answer and str(user_answer).strip().lower() == str(question.correct_answer).strip().lower():
+                    earned_points += float(question.points)
+            
+            elif question.question_type == 'short_answer':
+                # For short answer, we'll give partial credit if answer contains keywords
+                # For now, simple exact match (can be improved)
+                if user_answer and str(user_answer).strip().lower() == str(question.correct_answer).strip().lower():
+                    earned_points += float(question.points)
+        
+        # Calculate score percentage
+        score = (earned_points / total_points * 100) if total_points > 0 else 0
+        passed = score >= float(quiz.passing_score)
+        
+        # Update attempt
+        attempt.answers = answers
+        attempt.score = round(score, 2)
+        attempt.passed = passed
+        attempt.completed_at = timezone.now()
+        attempt.save()
+        
+        return Response({
+            'id': attempt.id,
+            'score': float(attempt.score),
+            'passed': attempt.passed,
+            'earned_points': earned_points,
+            'total_points': total_points,
+            'passing_score': float(quiz.passing_score)
+        }, status=status.HTTP_200_OK)
 
 
 class AssignmentViewSet(viewsets.ModelViewSet):
@@ -827,10 +900,33 @@ class AssignmentSubmissionViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         enrollment = serializer.validated_data['enrollment']
+        assignment = serializer.validated_data['assignment']
+        
         # Only the enrolled user can create submissions
         if enrollment.user != self.request.user and not self.request.user.is_staff:
             raise permissions.PermissionDenied("You can only submit assignments for your own enrollments")
-        serializer.save()
+        
+        # Check if submission already exists (due to unique_together constraint)
+        existing = AssignmentSubmission.objects.filter(
+            enrollment=enrollment,
+            assignment=assignment
+        ).first()
+        
+        if existing:
+            # Update existing submission instead of creating new one
+            serializer.instance = existing
+            serializer.save()
+        else:
+            try:
+                serializer.save()
+            except IntegrityError:
+                # Handle race condition where submission was created between check and save
+                existing = AssignmentSubmission.objects.get(
+                    enrollment=enrollment,
+                    assignment=assignment
+                )
+                serializer.instance = existing
+                serializer.save()
 
 
 class LectureProgressViewSet(viewsets.ModelViewSet):

@@ -70,9 +70,33 @@ class CoursePlayerViewSet(viewsets.ViewSet):
         quizzes = Quiz.objects.filter(course=course, is_active=True).order_by('order')
         quizzes_data = QuizSerializer(quizzes, many=True).data
         
-        # Get assignments
+        # Get assignments with submission status
         assignments = Assignment.objects.filter(course=course, is_active=True).order_by('order')
-        assignments_data = AssignmentSerializer(assignments, many=True).data
+        assignments_data = []
+        for assignment in assignments:
+            assignment_dict = AssignmentSerializer(assignment).data
+            # Add submission info if enrolled
+            if enrollment:
+                submission = AssignmentSubmission.objects.filter(
+                    enrollment=enrollment,
+                    assignment=assignment
+                ).first()
+                if submission:
+                    assignment_dict['submission'] = {
+                        'id': submission.id,
+                        'status': submission.status,
+                        'score': float(submission.score) if submission.score else None,
+                        'feedback': submission.feedback,
+                        'submitted_at': submission.submitted_at,
+                        'graded_at': submission.graded_at,
+                        'submission_text': submission.submission_text,
+                        'submission_file': submission.submission_file.url if submission.submission_file else None,
+                    }
+                else:
+                    assignment_dict['submission'] = None
+            else:
+                assignment_dict['submission'] = None
+            assignments_data.append(assignment_dict)
         
         # Get Q&A (FAQ)
         qandas = QandA.objects.filter(course=course, is_active=True).order_by('order', 'created_at')

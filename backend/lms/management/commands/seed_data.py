@@ -1,10 +1,11 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from django.utils import timezone
-from datetime import timedelta
+from datetime import timedelta, datetime
 from lms.models import (
     Course, CourseSection, Lecture, Category, Tag, 
-    Batch, Enrollment, Review, Quiz, Assignment, Question, QuestionOption,
+    Batch, BatchSession, SessionRegistration, Attendance,
+    Enrollment, Review, Quiz, Assignment, Question, QuestionOption,
     QuizAttempt, AssignmentSubmission, Wishlist, Notification, Certificate,
     Forum, Post, Reply, Resource, Note, Prerequisite, QandA, Announcement
 )
@@ -274,6 +275,7 @@ class Command(BaseCommand):
             students.append(stu)
 
         # Courses to create with specific content
+        # Online courses
         courses_to_create = [
             {
                 'slug': 'python-for-beginners',
@@ -356,6 +358,62 @@ class Command(BaseCommand):
                 'tags': [tag1, tag3, tag4],
             },
         ]
+        
+        # Physical courses
+        physical_courses_to_create = [
+            {
+                'slug': 'python-programming-physical',
+                'title': 'Python Programming - Physical Class',
+                'description': 'Learn Python programming in a physical classroom setting. Hands-on practice with instructor guidance.',
+                'short_description': 'Python programming in-person class',
+                'price': 199.99,
+                'level': 'beginner',
+                'category': cat1,
+                'tags': [tag1],
+                'max_batch_size': 25,
+            },
+            {
+                'slug': 'web-development-bootcamp',
+                'title': 'Web Development Bootcamp',
+                'description': 'Intensive web development bootcamp covering HTML, CSS, JavaScript, and modern frameworks.',
+                'short_description': 'Intensive web development bootcamp',
+                'price': 499.99,
+                'level': 'beginner',
+                'category': cat2,
+                'tags': [tag2, tag4],
+                'max_batch_size': 30,
+            },
+        ]
+        
+        # Hybrid courses
+        hybrid_courses_to_create = [
+            {
+                'slug': 'full-stack-hybrid',
+                'title': 'Full Stack Development - Hybrid',
+                'description': 'Learn full-stack development with online lectures and physical hands-on sessions.',
+                'short_description': 'Full-stack hybrid course',
+                'price': 299.99,
+                'level': 'intermediate',
+                'category': cat2,
+                'tags': [tag1, tag2, tag3, tag4],
+                'max_batch_size': 20,
+            },
+        ]
+        
+        # Internship courses
+        internship_courses_to_create = [
+            {
+                'slug': 'software-development-internship',
+                'title': 'Software Development Internship',
+                'description': '3-month internship program with structured learning, mentorship, and real-world projects.',
+                'short_description': 'Software development internship program',
+                'price': 799.99,
+                'level': 'intermediate',
+                'category': cat1,
+                'tags': [tag1, tag3],
+                'max_batch_size': 10,
+            },
+        ]
 
         all_courses = []
         for course_data in courses_to_create:
@@ -423,67 +481,566 @@ class Command(BaseCommand):
             
             all_courses.append(course)
 
-        # Create quizzes for each course
-        for course in all_courses:
-            if course.quizzes.count() == 0:
-                quiz1, _ = Quiz.objects.get_or_create(
+        # Create physical courses
+        for course_data in physical_courses_to_create:
+            course, created = Course.objects.get_or_create(
+                slug=course_data['slug'],
+                defaults={
+                    'title': course_data['title'],
+                    'description': course_data['description'],
+                    'short_description': course_data['short_description'],
+                    'modality': 'physical',
+                    'price': course_data['price'],
+                    'instructor': instructor,
+                    'language': 'English',
+                    'level': course_data['level'],
+                    'max_batch_size': course_data['max_batch_size'],
+                    'is_active': True,
+                }
+            )
+            if created:
+                course.categories.add(course_data['category'])
+                for tag in course_data['tags']:
+                    course.tags.add(tag)
+            else:
+                if not course.categories.filter(id=course_data['category'].id).exists():
+                    course.categories.add(course_data['category'])
+                for tag in course_data['tags']:
+                    if not course.tags.filter(id=tag.id).exists():
+                        course.tags.add(tag)
+            
+            # Create sections and lectures
+            if course.sections.count() == 0:
+                lecture_content = get_course_lecture_content(course.title)
+                for section_idx, section_data in enumerate(lecture_content['sections'], 1):
+                    section, _ = CourseSection.objects.get_or_create(
+                        course=course,
+                        title=section_data['title'],
+                        defaults={
+                            'order': section_idx,
+                            'is_preview': section_idx == 1,
+                        }
+                    )
+                    
+                    for lecture_idx, lecture_data in enumerate(section_data['lectures'], 1):
+                        video_id = get_video_id_for_course(course.title, lecture_idx, section_idx)
+                        Lecture.objects.get_or_create(
+                            section=section,
+                            title=lecture_data['title'],
+                            defaults={
+                                'order': lecture_idx,
+                                'description': lecture_data['description'],
+                                'youtube_video_id': video_id,
+                                'duration_minutes': lecture_data['duration'],
+                                'is_preview': section_idx == 1 and lecture_idx == 1,
+                            }
+                        )
+            
+            # Update course stats
+            total_lectures = Lecture.objects.filter(section__course=course).count()
+            total_duration = sum(
+                Lecture.objects.filter(section__course=course).values_list('duration_minutes', flat=True) or [0]
+            )
+            course.total_lectures = total_lectures
+            course.total_duration_hours = round(total_duration / 60, 2) if total_duration > 0 else 0
+            course.save()
+            
+            # Create batches for physical courses
+            if course.batches.count() == 0:
+                batch1, _ = Batch.objects.get_or_create(
                     course=course,
-                    title=f'{course.title} - Quiz 1',
+                    name=f'{course.title} - Batch 1',
                     defaults={
-                        'description': f'Test your knowledge of {course.title} fundamentals.',
-                        'passing_score': 70.0,
-                        'time_limit_minutes': 30,
-                        'max_attempts': 3,
-                        'order': 1,
+                        'batch_type': 'physical',
+                        'capacity': course.max_batch_size,
+                        'start_date': timezone.now().date() + timedelta(days=7),
+                        'end_date': timezone.now().date() + timedelta(days=37),
+                        'instructor': instructor,
                         'is_active': True,
                     }
                 )
                 
-                # Create questions for quiz
-                questions_data = [
-                    {
-                        'text': f'What is the main topic covered in {course.title}?',
-                        'type': 'multiple_choice',
-                        'points': 10,
-                        'options': [
-                            {'text': 'Basic concepts', 'is_correct': True},
-                            {'text': 'Advanced topics', 'is_correct': False},
-                            {'text': 'Both', 'is_correct': False},
-                            {'text': 'None', 'is_correct': False},
-                        ]
-                    },
-                    {
-                        'text': f'Is {course.title} suitable for beginners?',
-                        'type': 'true_false',
-                        'points': 5,
-                        'options': [
-                            {'text': 'True', 'is_correct': course.level == 'beginner'},
-                            {'text': 'False', 'is_correct': course.level != 'beginner'},
-                        ]
-                    },
-                ]
+                # Create sessions for the batch (weekly sessions for 4 weeks)
+                if batch1.sessions.count() == 0:
+                    for week in range(4):
+                        for day_offset in [0, 2]:  # Monday and Wednesday
+                            session_date = batch1.start_date + timedelta(days=(week * 7) + day_offset)
+                            start_datetime = timezone.make_aware(
+                                datetime.combine(session_date, datetime.min.time().replace(hour=14, minute=0))
+                            )
+                            end_datetime = start_datetime + timedelta(hours=2)
+                            
+                            BatchSession.objects.get_or_create(
+                                batch=batch1,
+                                session_number=(week * 2) + (day_offset // 2) + 1,
+                                start_datetime=start_datetime,
+                                defaults={
+                                    'title': f'Week {week + 1} - Session {(week * 2) + (day_offset // 2) + 1}',
+                                    'end_datetime': end_datetime,
+                                    'location': 'Main Campus - Room 101',
+                                    'description': f'Physical class session covering course materials.',
+                                    'is_active': True,
+                                }
+                            )
+            
+            all_courses.append(course)
+
+        # Create hybrid courses
+        for course_data in hybrid_courses_to_create:
+            course, created = Course.objects.get_or_create(
+                slug=course_data['slug'],
+                defaults={
+                    'title': course_data['title'],
+                    'description': course_data['description'],
+                    'short_description': course_data['short_description'],
+                    'modality': 'hybrid',
+                    'price': course_data['price'],
+                    'instructor': instructor,
+                    'language': 'English',
+                    'level': course_data['level'],
+                    'max_batch_size': course_data['max_batch_size'],
+                    'is_active': True,
+                }
+            )
+            if created:
+                course.categories.add(course_data['category'])
+                for tag in course_data['tags']:
+                    course.tags.add(tag)
+            else:
+                if not course.categories.filter(id=course_data['category'].id).exists():
+                    course.categories.add(course_data['category'])
+                for tag in course_data['tags']:
+                    if not course.tags.filter(id=tag.id).exists():
+                        course.tags.add(tag)
+            
+            # Create sections and lectures
+            if course.sections.count() == 0:
+                lecture_content = get_course_lecture_content(course.title)
+                for section_idx, section_data in enumerate(lecture_content['sections'], 1):
+                    section, _ = CourseSection.objects.get_or_create(
+                        course=course,
+                        title=section_data['title'],
+                        defaults={
+                            'order': section_idx,
+                            'is_preview': section_idx == 1,
+                        }
+                    )
+                    
+                    for lecture_idx, lecture_data in enumerate(section_data['lectures'], 1):
+                        video_id = get_video_id_for_course(course.title, lecture_idx, section_idx)
+                        Lecture.objects.get_or_create(
+                            section=section,
+                            title=lecture_data['title'],
+                            defaults={
+                                'order': lecture_idx,
+                                'description': lecture_data['description'],
+                                'youtube_video_id': video_id,
+                                'duration_minutes': lecture_data['duration'],
+                                'is_preview': section_idx == 1 and lecture_idx == 1,
+                            }
+                        )
+            
+            # Update course stats
+            total_lectures = Lecture.objects.filter(section__course=course).count()
+            total_duration = sum(
+                Lecture.objects.filter(section__course=course).values_list('duration_minutes', flat=True) or [0]
+            )
+            course.total_lectures = total_lectures
+            course.total_duration_hours = round(total_duration / 60, 2) if total_duration > 0 else 0
+            course.save()
+            
+            # Create batches for hybrid courses
+            if course.batches.count() == 0:
+                batch1, _ = Batch.objects.get_or_create(
+                    course=course,
+                    name=f'{course.title} - Hands-on Batch 1',
+                    defaults={
+                        'batch_type': 'physical',
+                        'capacity': course.max_batch_size,
+                        'start_date': timezone.now().date() + timedelta(days=14),
+                        'end_date': timezone.now().date() + timedelta(days=44),
+                        'instructor': instructor,
+                        'is_active': True,
+                    }
+                )
+                
+                # Create sessions for hybrid course
+                if batch1.sessions.count() == 0:
+                    for week in range(4):
+                        session_date = batch1.start_date + timedelta(days=week * 7)
+                        start_datetime = timezone.make_aware(
+                            datetime.combine(session_date, datetime.min.time().replace(hour=10, minute=0))
+                        )
+                        end_datetime = start_datetime + timedelta(hours=3)
+                        
+                        BatchSession.objects.get_or_create(
+                            batch=batch1,
+                            session_number=week + 1,
+                            start_datetime=start_datetime,
+                            defaults={
+                                'title': f'Hands-on Session {week + 1}',
+                                'end_datetime': end_datetime,
+                                'location': 'Lab Room 205',
+                                'description': f'Physical hands-on session for practical application.',
+                                'is_active': True,
+                            }
+                        )
+            
+            all_courses.append(course)
+
+        # Create internship courses
+        for course_data in internship_courses_to_create:
+            course, created = Course.objects.get_or_create(
+                slug=course_data['slug'],
+                defaults={
+                    'title': course_data['title'],
+                    'description': course_data['description'],
+                    'short_description': course_data['short_description'],
+                    'modality': 'physical',
+                    'price': course_data['price'],
+                    'instructor': instructor,
+                    'language': 'English',
+                    'level': course_data['level'],
+                    'max_batch_size': course_data['max_batch_size'],
+                    'is_active': True,
+                }
+            )
+            if created:
+                course.categories.add(course_data['category'])
+                for tag in course_data['tags']:
+                    course.tags.add(tag)
+            else:
+                if not course.categories.filter(id=course_data['category'].id).exists():
+                    course.categories.add(course_data['category'])
+                for tag in course_data['tags']:
+                    if not course.tags.filter(id=tag.id).exists():
+                        course.tags.add(tag)
+            
+            # Create sections and lectures
+            if course.sections.count() == 0:
+                lecture_content = get_course_lecture_content(course.title)
+                for section_idx, section_data in enumerate(lecture_content['sections'], 1):
+                    section, _ = CourseSection.objects.get_or_create(
+                        course=course,
+                        title=section_data['title'],
+                        defaults={
+                            'order': section_idx,
+                            'is_preview': section_idx == 1,
+                        }
+                    )
+                    
+                    for lecture_idx, lecture_data in enumerate(section_data['lectures'], 1):
+                        video_id = get_video_id_for_course(course.title, lecture_idx, section_idx)
+                        Lecture.objects.get_or_create(
+                            section=section,
+                            title=lecture_data['title'],
+                            defaults={
+                                'order': lecture_idx,
+                                'description': lecture_data['description'],
+                                'youtube_video_id': video_id,
+                                'duration_minutes': lecture_data['duration'],
+                                'is_preview': section_idx == 1 and lecture_idx == 1,
+                            }
+                        )
+            
+            # Update course stats
+            total_lectures = Lecture.objects.filter(section__course=course).count()
+            total_duration = sum(
+                Lecture.objects.filter(section__course=course).values_list('duration_minutes', flat=True) or [0]
+            )
+            course.total_lectures = total_lectures
+            course.total_duration_hours = round(total_duration / 60, 2) if total_duration > 0 else 0
+            course.save()
+            
+            # Create internship batch
+            if course.batches.count() == 0:
+                batch1, _ = Batch.objects.get_or_create(
+                    course=course,
+                    name=f'{course.title} - Summer 2024',
+                    defaults={
+                        'batch_type': 'internship',
+                        'capacity': course.max_batch_size,
+                        'start_date': timezone.now().date() + timedelta(days=30),
+                        'end_date': timezone.now().date() + timedelta(days=120),
+                        'instructor': instructor,
+                        'is_active': True,
+                    }
+                )
+                
+                # Create mentorship sessions (weekly for 12 weeks)
+                if batch1.sessions.count() == 0:
+                    for week in range(12):
+                        session_date = batch1.start_date + timedelta(days=week * 7)
+                        start_datetime = timezone.make_aware(
+                            datetime.combine(session_date, datetime.min.time().replace(hour=15, minute=0))
+                        )
+                        end_datetime = start_datetime + timedelta(hours=2)
+                        
+                        BatchSession.objects.get_or_create(
+                            batch=batch1,
+                            session_number=week + 1,
+                            start_datetime=start_datetime,
+                            defaults={
+                                'title': f'Week {week + 1} - Mentorship Session',
+                                'end_datetime': end_datetime,
+                                'location': 'Mentor Office - Room 301',
+                                'description': f'Weekly mentorship session for project guidance and progress review.',
+                                'is_active': True,
+                            }
+                        )
+            
+            all_courses.append(course)
+
+        # Create bootcamp batch for web development bootcamp course
+        bootcamp_course = Course.objects.filter(slug='web-development-bootcamp').first()
+        if bootcamp_course and bootcamp_course.batches.filter(batch_type='bootcamp').count() == 0:
+            bootcamp_batch, _ = Batch.objects.get_or_create(
+                course=bootcamp_course,
+                name=f'{bootcamp_course.title} - January 2024',
+                defaults={
+                    'batch_type': 'bootcamp',
+                    'capacity': bootcamp_course.max_batch_size,
+                    'start_date': timezone.now().date() + timedelta(days=14),
+                    'end_date': timezone.now().date() + timedelta(days=28),
+                    'instructor': instructor,
+                    'is_active': True,
+                }
+            )
+            
+            # Create intensive daily sessions for bootcamp
+            if bootcamp_batch.sessions.count() == 0:
+                session_num = 1
+                for week in range(2):
+                    for day in range(5):
+                        session_date = bootcamp_batch.start_date + timedelta(days=(week * 7) + day)
+                        # Morning session
+                        morning_start = timezone.make_aware(
+                            datetime.combine(session_date, datetime.min.time().replace(hour=9, minute=0))
+                        )
+                        morning_end = morning_start + timedelta(hours=3)
+                        
+                        BatchSession.objects.get_or_create(
+                            batch=bootcamp_batch,
+                            session_number=session_num,
+                            start_datetime=morning_start,
+                            defaults={
+                                'title': f'Day {session_num} - Morning Session',
+                                'end_datetime': morning_end,
+                                'location': 'Bootcamp Lab - Room 401',
+                                'description': f'Intensive morning session covering core concepts.',
+                                'is_active': True,
+                            }
+                        )
+                        session_num += 1
+                        
+                        # Afternoon session
+                        afternoon_start = timezone.make_aware(
+                            datetime.combine(session_date, datetime.min.time().replace(hour=14, minute=0))
+                        )
+                        afternoon_end = afternoon_start + timedelta(hours=3)
+                        
+                        BatchSession.objects.get_or_create(
+                            batch=bootcamp_batch,
+                            session_number=session_num,
+                            start_datetime=afternoon_start,
+                            defaults={
+                                'title': f'Day {session_num - 1} - Afternoon Session',
+                                'end_datetime': afternoon_end,
+                                'location': 'Bootcamp Lab - Room 401',
+                                'description': f'Intensive afternoon session with hands-on practice.',
+                                'is_active': True,
+                            }
+                        )
+                        session_num += 1
+
+        # Create enrollments for physical/hybrid courses
+        physical_courses = Course.objects.filter(modality__in=['physical', 'hybrid'])
+        for course in physical_courses[:2]:
+            batch = course.batches.first()
+            if batch:
+                enrollment, _ = Enrollment.objects.get_or_create(
+                    user=student,
+                    course=course,
+                    defaults={
+                        'status': 'active',
+                        'progress_percent': 20,
+                    }
+                )
+                if enrollment.batch != batch:
+                    enrollment.batch = batch
+                    enrollment.save()
+                
+                # Register for some sessions
+                sessions = batch.sessions.all()[:3]
+                for session in sessions:
+                    SessionRegistration.objects.get_or_create(
+                        enrollment=enrollment,
+                        session=session,
+                        defaults={
+                            'status': 'registered',
+                        }
+                    )
+                    
+                    # Create attendance records for past sessions
+                    if session.start_datetime < timezone.now():
+                        Attendance.objects.get_or_create(
+                            enrollment=enrollment,
+                            session=session,
+                            defaults={
+                                'present': random.choice([True, True, True, False]),
+                                'note': 'Attended session' if random.choice([True, True, True, False]) else 'Absent',
+                            }
+                        )
+
+        # Create quizzes for each course
+        for course in all_courses:
+            quiz1, created = Quiz.objects.get_or_create(
+                course=course,
+                title=f'{course.title} - Quiz 1',
+                defaults={
+                    'description': f'Test your knowledge of {course.title} fundamentals.',
+                    'passing_score': 70.0,
+                    'time_limit_minutes': 30,
+                    'max_attempts': 3,
+                    'order': 1,
+                    'is_active': True,
+                }
+            )
+            
+            # Add questions if quiz is new or has fewer than 3 questions
+            if created or quiz1.questions.count() < 3:
+                
+                # Create questions for quiz - course-specific questions
+                course_lower = course.title.lower()
+                questions_data = []
+                
+                # Shopify-specific questions
+                if 'shopify' in course_lower:
+                    questions_data = [
+                        {
+                            'text': 'What is the main topic covered in Shopify E-commerce Mastery?',
+                            'type': 'multiple_choice',
+                            'points': 10,
+                            'options': [
+                                {'text': 'Building and managing online stores', 'is_correct': True},
+                                {'text': 'Advanced programming', 'is_correct': False},
+                                {'text': 'Database management', 'is_correct': False},
+                                {'text': 'Mobile app development', 'is_correct': False},
+                            ]
+                        },
+                        {
+                            'text': 'Is Shopify E-commerce Mastery suitable for beginners?',
+                            'type': 'true_false',
+                            'points': 5,
+                            'options': [
+                                {'text': 'True', 'is_correct': True},
+                                {'text': 'False', 'is_correct': False},
+                            ]
+                        },
+                        {
+                            'text': 'What payment methods can you configure in Shopify?',
+                            'type': 'multiple_choice',
+                            'points': 15,
+                            'options': [
+                                {'text': 'Credit cards, PayPal, and other gateways', 'is_correct': True},
+                                {'text': 'Only credit cards', 'is_correct': False},
+                                {'text': 'Only PayPal', 'is_correct': False},
+                                {'text': 'Cash on delivery only', 'is_correct': False},
+                            ]
+                        },
+                        {
+                            'text': 'What is a product collection in Shopify?',
+                            'type': 'multiple_choice',
+                            'points': 15,
+                            'options': [
+                                {'text': 'A way to organize products into groups', 'is_correct': True},
+                                {'text': 'A type of product variant', 'is_correct': False},
+                                {'text': 'A payment method', 'is_correct': False},
+                                {'text': 'A shipping option', 'is_correct': False},
+                            ]
+                        },
+                        {
+                            'text': 'Can you customize Shopify store themes?',
+                            'type': 'true_false',
+                            'points': 10,
+                            'options': [
+                                {'text': 'True', 'is_correct': True},
+                                {'text': 'False', 'is_correct': False},
+                            ]
+                        },
+                    ]
+                else:
+                    # Default questions for other courses
+                    questions_data = [
+                        {
+                            'text': f'What is the main topic covered in {course.title}?',
+                            'type': 'multiple_choice',
+                            'points': 10,
+                            'options': [
+                                {'text': 'Basic concepts', 'is_correct': True},
+                                {'text': 'Advanced topics', 'is_correct': False},
+                                {'text': 'Both', 'is_correct': False},
+                                {'text': 'None', 'is_correct': False},
+                            ]
+                        },
+                        {
+                            'text': f'Is {course.title} suitable for beginners?',
+                            'type': 'true_false',
+                            'points': 5,
+                            'options': [
+                                {'text': 'True', 'is_correct': course.level == 'beginner'},
+                                {'text': 'False', 'is_correct': course.level != 'beginner'},
+                            ]
+                        },
+                        {
+                            'text': f'What will you learn in {course.title}?',
+                            'type': 'multiple_choice',
+                            'points': 15,
+                            'options': [
+                                {'text': 'Core concepts and practical skills', 'is_correct': True},
+                                {'text': 'Only theory', 'is_correct': False},
+                                {'text': 'Only advanced topics', 'is_correct': False},
+                                {'text': 'Nothing specific', 'is_correct': False},
+                            ]
+                        },
+                        {
+                            'text': f'Does {course.title} include hands-on practice?',
+                            'type': 'true_false',
+                            'points': 10,
+                            'options': [
+                                {'text': 'True', 'is_correct': True},
+                                {'text': 'False', 'is_correct': False},
+                            ]
+                        },
+                    ]
+                
+                # Get existing question count
+                existing_count = quiz1.questions.count()
+                start_order = existing_count + 1
                 
                 for q_idx, q_data in enumerate(questions_data, 1):
-                    question, _ = Question.objects.get_or_create(
+                    question, created = Question.objects.get_or_create(
                         quiz=quiz1,
                         question_text=q_data['text'],
                         defaults={
                             'question_type': q_data['type'],
                             'points': q_data['points'],
-                            'order': q_idx,
+                            'order': start_order + q_idx - 1,
                             'correct_answer': '{}',
                         }
                     )
                     
-                    for opt_idx, opt_data in enumerate(q_data['options'], 1):
-                        QuestionOption.objects.get_or_create(
-                            question=question,
-                            option_text=opt_data['text'],
-                            defaults={
-                                'is_correct': opt_data['is_correct'],
-                                'order': opt_idx,
-                            }
-                        )
+                    # Only create options if question was just created
+                    if created:
+                        for opt_idx, opt_data in enumerate(q_data['options'], 1):
+                            QuestionOption.objects.get_or_create(
+                                question=question,
+                                option_text=opt_data['text'],
+                                defaults={
+                                    'is_correct': opt_data['is_correct'],
+                                    'order': opt_idx,
+                                }
+                            )
 
         # Create assignments for each course
         for course in all_courses:
@@ -646,6 +1203,16 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('\n✅ Successfully seeded database!'))
         self.stdout.write('\n📊 Created:')
         self.stdout.write(f'  - {Course.objects.count()} courses')
+        self.stdout.write(f'    • Online: {Course.objects.filter(modality="online").count()}')
+        self.stdout.write(f'    • Physical: {Course.objects.filter(modality="physical").count()}')
+        self.stdout.write(f'    • Hybrid: {Course.objects.filter(modality="hybrid").count()}')
+        self.stdout.write(f'  - {Batch.objects.count()} batches')
+        self.stdout.write(f'    • Physical Classes: {Batch.objects.filter(batch_type="physical").count()}')
+        self.stdout.write(f'    • Internships: {Batch.objects.filter(batch_type="internship").count()}')
+        self.stdout.write(f'    • Bootcamps: {Batch.objects.filter(batch_type="bootcamp").count()}')
+        self.stdout.write(f'  - {BatchSession.objects.count()} batch sessions')
+        self.stdout.write(f'  - {SessionRegistration.objects.count()} session registrations')
+        self.stdout.write(f'  - {Attendance.objects.count()} attendance records')
         self.stdout.write(f'  - {CourseSection.objects.count()} sections')
         self.stdout.write(f'  - {Lecture.objects.count()} lectures')
         self.stdout.write(f'  - {Quiz.objects.count()} quizzes')

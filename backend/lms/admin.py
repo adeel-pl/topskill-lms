@@ -471,11 +471,74 @@ class WishlistAdmin(admin.ModelAdmin):
     search_fields = ['user__username', 'course__title']
 
 
+class QuestionOptionInline(admin.TabularInline):
+    """Inline editor for question options within questions"""
+    model = QuestionOption
+    extra = 2
+    fields = ('option_text', 'is_correct', 'order')
+    verbose_name = 'Option'
+    verbose_name_plural = 'Options'
+
+
+class QuestionInline(admin.StackedInline):
+    """Inline editor for questions within quizzes"""
+    model = Question
+    extra = 1
+    fields = ('question_text', 'question_type', 'points', 'order', 'correct_answer')
+    verbose_name = 'Question'
+    verbose_name_plural = 'Questions'
+    show_change_link = True
+    
+    def get_readonly_fields(self, request, obj=None):
+        """Show instructions for adding options"""
+        return []
+
+
 @admin.register(Quiz)
 class QuizAdmin(admin.ModelAdmin):
-    list_display = ['title', 'course', 'passing_score', 'is_active', 'order']
+    list_display = ['title', 'course', 'passing_score', 'is_active', 'order', 'question_count']
     list_filter = ['is_active', 'course']
     ordering = ['course', 'order']
+    inlines = [QuestionInline]
+    
+    fieldsets = (
+        ('Quiz Information', {
+            'fields': ('course', 'title', 'description', 'order', 'is_active'),
+        }),
+        ('Quiz Settings', {
+            'fields': ('passing_score', 'time_limit_minutes', 'max_attempts'),
+            'description': 'Set passing score (0-100), time limit in minutes, and maximum attempts allowed.'
+        }),
+        ('Questions', {
+            'fields': (),
+            'description': '''
+            <div style="background: #f0f0f0; padding: 15px; border-left: 4px solid #417690; margin: 10px 0;">
+                <h3 style="margin-top: 0;">📝 How to Add Questions and MCQ Options:</h3>
+                <ol style="margin-bottom: 0;">
+                    <li><strong>Add Questions:</strong> Scroll down to the "Questions" section below and click "+ Add another Question"</li>
+                    <li><strong>Set Question Details:</strong> Enter question text, select type (Multiple Choice, True/False, or Short Answer), set points, and order</li>
+                    <li><strong>Add MCQ Options:</strong> 
+                        <ul>
+                            <li>After saving the quiz, click the <strong>"Change"</strong> link next to the question</li>
+                            <li>Or go to <strong>LMS → Questions</strong> in the admin menu and find your question</li>
+                            <li>In the question detail page, scroll to the <strong>"Options"</strong> section</li>
+                            <li>Click "+ Add another Option" to add multiple choice options</li>
+                            <li>For each option, enter the text and check the <strong>"Is correct"</strong> checkbox for the correct answer</li>
+                        </ul>
+                    </li>
+                    <li><strong>Save:</strong> Click "Save" to save your changes</li>
+                </ol>
+                <p style="margin-bottom: 0; color: #d9534f;"><strong>💡 Tip:</strong> For multiple choice questions, make sure to mark exactly one option as correct by checking the "Is correct" checkbox.</p>
+            </div>
+            ''',
+        }),
+    )
+    
+    def question_count(self, obj):
+        """Display number of questions in quiz"""
+        count = obj.questions.count()
+        return format_html('<strong>{}</strong>', count)
+    question_count.short_description = 'Questions'
 
 
 @admin.register(QuizAttempt)
@@ -566,18 +629,70 @@ class PrerequisiteAdmin(admin.ModelAdmin):
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ['quiz', 'question_text', 'question_type', 'points', 'order']
+    list_display = ['quiz', 'question_text_preview', 'question_type', 'points', 'order', 'option_count']
     list_filter = ['question_type', 'quiz']
     ordering = ['quiz', 'order']
     search_fields = ['question_text']
+    inlines = [QuestionOptionInline]
+    
+    fieldsets = (
+        ('Question Information', {
+            'fields': ('quiz', 'question_text', 'question_type', 'points', 'order'),
+            'description': 'Set the question text, type (multiple_choice, true_false, short_answer), and points value. Points determine how much this question is worth in the quiz.'
+        }),
+        ('MCQ Options', {
+            'fields': (),
+            'description': '''
+            <div style="background: #e8f5e9; padding: 15px; border-left: 4px solid #4caf50; margin: 10px 0;">
+                <h3 style="margin-top: 0;">✅ How to Add Multiple Choice Options:</h3>
+                <ol style="margin-bottom: 0;">
+                    <li>Scroll down to the <strong>"Options"</strong> section below</li>
+                    <li>Click <strong>"+ Add another Option"</strong> to add each option</li>
+                    <li>Enter the <strong>Option Text</strong> (e.g., "Option A", "Option B", etc.)</li>
+                    <li>Check the <strong>"Is correct"</strong> checkbox for the correct answer</li>
+                    <li>Set the <strong>Order</strong> (1, 2, 3, etc.) to control the display order</li>
+                    <li>Repeat for all options (typically 4 options for MCQ)</li>
+                </ol>
+                <p style="margin-bottom: 0; color: #d32f2f;"><strong>⚠️ Important:</strong> Make sure exactly ONE option has "Is correct" checked for multiple choice questions!</p>
+            </div>
+            ''',
+        }),
+        ('Correct Answer', {
+            'fields': ('correct_answer',),
+            'description': 'For multiple choice: JSON string. For true/false: "True" or "False". For short answer: the expected answer text.',
+            'classes': ('collapse',),
+        }),
+    )
+    
+    def question_text_preview(self, obj):
+        """Display question text preview"""
+        preview = obj.question_text[:60] + '...' if len(obj.question_text) > 60 else obj.question_text
+        return format_html('<strong>{}</strong>', preview)
+    question_text_preview.short_description = 'Question'
+    
+    def option_count(self, obj):
+        """Display number of options for multiple choice questions"""
+        if obj.question_type == 'multiple_choice':
+            count = obj.options.count()
+            correct = obj.options.filter(is_correct=True).count()
+            return format_html('{} options ({} correct)', count, correct)
+        return '-'
+    option_count.short_description = 'Options'
 
 
 @admin.register(QuestionOption)
 class QuestionOptionAdmin(admin.ModelAdmin):
     list_display = ['question', 'option_text', 'is_correct', 'order']
-    list_filter = ['is_correct', 'question__quiz']
+    list_filter = ['is_correct', 'question__quiz', 'question__question_type']
     ordering = ['question', 'order']
-    search_fields = ['option_text']
+    search_fields = ['option_text', 'question__question_text']
+    
+    fieldsets = (
+        ('Option Information', {
+            'fields': ('question', 'option_text', 'is_correct', 'order'),
+            'description': 'Set the option text and mark "Is correct" for the correct answer. Only one option should be marked as correct for multiple choice questions.'
+        }),
+    )
 
 
 @admin.register(Cart)
