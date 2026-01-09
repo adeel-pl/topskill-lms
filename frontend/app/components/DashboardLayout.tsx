@@ -23,11 +23,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { logout } = useAuthStore();
 
   const navItems = [
-    { href: '/dashboard/my-courses', icon: FiBookOpen, label: 'My learning', color: 'from-[#10B981] to-emerald-400' },
-    { href: '/dashboard/certifications', icon: FiAward, label: 'Certifications', color: 'from-[#F59E0B] to-orange-500' },
-    { href: '/dashboard/archived', icon: FiArchive, label: 'Archived', color: 'from-[#6B7280] to-gray-600' },
-    { href: '/dashboard/purchase-history', icon: FiShoppingBag, label: 'Purchase history', color: 'from-[#3B82F6] to-[#8B5CF6]' },
-    { href: '/dashboard/account', icon: FiUser, label: 'Account settings', color: 'from-[#8B5CF6] to-[#EC4899]' },
+    { href: '/dashboard/my-courses', icon: FiBookOpen, label: 'My learning', color: 'from-[#66CC33] to-[#4da826]' },
+    { href: '/dashboard/certifications', icon: FiAward, label: 'Certifications', color: 'from-[#66CC33] to-[#4da826]' },
+    { href: '/dashboard/archived', icon: FiArchive, label: 'Archived', color: 'from-[#66CC33] to-[#4da826]' },
+    { href: '/dashboard/purchase-history', icon: FiShoppingBag, label: 'Purchase history', color: 'from-[#66CC33] to-[#4da826]' },
+    { href: '/dashboard/account', icon: FiUser, label: 'Account settings', color: 'from-[#66CC33] to-[#4da826]' },
   ];
 
   const isActive = (href: string) => pathname === href;

@@ -119,16 +119,17 @@ export default function PurchaseHistoryPage() {
         {/* Enrolled Courses */}
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-6">
-            <BookOpen className="w-6 h-6 text-[#10B981]" />
+            <BookOpen className="w-6 h-6 text-[#66CC33]" />
             <h2 className="text-2xl md:text-3xl font-black text-white">Enrolled Courses ({enrollments.length})</h2>
           </div>
 
           {enrollments.length === 0 ? (
             <div className="bg-[#1E293B] border border-[#334155] rounded-2xl p-12 text-center">
-              <p className="text-[#9CA3AF] mb-4">No enrolled courses yet</p>
+              <BookOpen className="w-16 h-16 text-[#66CC33] mx-auto mb-4 opacity-50" />
+              <p className="text-[#9CA3AF] mb-4 text-lg">No enrolled courses yet</p>
               <Link
                 href="/courses"
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-[#10B981] to-[#059669] text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
+                className="inline-flex items-center gap-2 bg-[#66CC33] hover:bg-[#4da826] text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
               >
                 Browse Courses
               </Link>
@@ -141,7 +142,7 @@ export default function PurchaseHistoryPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="bg-[#1E293B] border border-[#334155] rounded-2xl overflow-hidden hover:border-[#10B981]/50 transition-all hover:shadow-xl hover:shadow-[#10B981]/20"
+                  className="bg-[#1E293B] border border-[#334155] rounded-2xl overflow-hidden hover:border-[#66CC33]/50 transition-all hover:shadow-xl hover:shadow-[#66CC33]/20"
                 >
                   <Link href={`/learn/${enrollment.course.slug}`}>
                     <div className="relative aspect-video bg-gradient-to-br from-[#10B981] via-[#3B82F6] to-[#8B5CF6]">
@@ -164,7 +165,7 @@ export default function PurchaseHistoryPage() {
                   
                   <div className="p-6">
                     <Link href={`/learn/${enrollment.course.slug}`}>
-                      <h3 className="text-xl font-bold text-white mb-3 hover:text-[#10B981] transition-colors line-clamp-2">
+                      <h3 className="text-xl font-bold text-white mb-3 hover:text-[#66CC33] transition-colors line-clamp-2">
                         {enrollment.course.title}
                       </h3>
                     </Link>
@@ -173,7 +174,7 @@ export default function PurchaseHistoryPage() {
                     <div className="mb-4">
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-sm text-[#9CA3AF] font-medium">Progress</span>
-                        <span className="text-sm font-bold text-[#10B981]">
+                        <span className="text-sm font-bold text-[#66CC33]">
                           {Math.round(enrollment.progress_percent || 0)}%
                         </span>
                       </div>
@@ -182,7 +183,7 @@ export default function PurchaseHistoryPage() {
                           initial={{ width: 0 }}
                           animate={{ width: `${enrollment.progress_percent || 0}%` }}
                           transition={{ duration: 0.5, delay: index * 0.1 }}
-                          className="h-full bg-gradient-to-r from-[#10B981] to-[#059669] rounded-full"
+                          className="h-full bg-[#66CC33] rounded-full"
                         />
                       </div>
                     </div>
@@ -194,7 +195,7 @@ export default function PurchaseHistoryPage() {
                       </div>
                       <Link
                         href={`/learn/${enrollment.course.slug}`}
-                        className="flex items-center gap-2 bg-gradient-to-r from-[#10B981] to-[#059669] text-white px-4 py-2 rounded-lg font-bold text-sm hover:scale-105 transition-all"
+                        className="flex items-center gap-2 bg-[#66CC33] hover:bg-[#4da826] text-white px-4 py-2 rounded-lg font-bold text-sm hover:scale-105 transition-all"
                       >
                         <Play className="w-4 h-4" />
                         Continue
@@ -210,16 +211,17 @@ export default function PurchaseHistoryPage() {
         {/* Cart Items */}
         <div>
           <div className="flex items-center gap-3 mb-6">
-            <ShoppingCart className="w-6 h-6 text-[#3B82F6]" />
+            <ShoppingCart className="w-6 h-6 text-[#66CC33]" />
             <h2 className="text-2xl md:text-3xl font-black text-white">Cart Items ({cartItems.length})</h2>
           </div>
 
           {cartItems.length === 0 ? (
             <div className="bg-[#1E293B] border border-[#334155] rounded-2xl p-12 text-center">
-              <p className="text-[#9CA3AF] mb-4">Your cart is empty</p>
+              <ShoppingCart className="w-16 h-16 text-[#66CC33] mx-auto mb-4 opacity-50" />
+              <p className="text-[#9CA3AF] mb-4 text-lg">Your cart is empty</p>
               <Link
                 href="/courses"
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-[#10B981] to-[#059669] text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
+                className="inline-flex items-center gap-2 bg-[#66CC33] hover:bg-[#4da826] text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
               >
                 Browse Courses
               </Link>
@@ -232,7 +234,7 @@ export default function PurchaseHistoryPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="bg-[#1E293B] border border-[#334155] rounded-2xl overflow-hidden hover:border-[#3B82F6]/50 transition-all hover:shadow-xl hover:shadow-[#3B82F6]/20"
+                  className="bg-[#1E293B] border border-[#334155] rounded-2xl overflow-hidden hover:border-[#66CC33]/50 transition-all hover:shadow-xl hover:shadow-[#66CC33]/20"
                 >
                   <Link href={`/courses/${item.course.slug}`}>
                     <div className="relative aspect-video bg-gradient-to-br from-[#3B82F6] via-[#8B5CF6] to-[#EC4899]">
@@ -255,7 +257,7 @@ export default function PurchaseHistoryPage() {
                   
                   <div className="p-6">
                     <Link href={`/courses/${item.course.slug}`}>
-                      <h3 className="text-xl font-bold text-white mb-3 hover:text-[#3B82F6] transition-colors line-clamp-2">
+                      <h3 className="text-xl font-bold text-white mb-3 hover:text-[#66CC33] transition-colors line-clamp-2">
                         {item.course.title}
                       </h3>
                     </Link>
@@ -266,7 +268,7 @@ export default function PurchaseHistoryPage() {
                       </div>
                       <Link
                         href="/cart"
-                        className="flex items-center gap-2 bg-[#3B82F6] text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-[#2563EB] transition-all"
+                        className="flex items-center gap-2 bg-[#66CC33] hover:bg-[#4da826] text-white px-4 py-2 rounded-lg font-bold text-sm transition-all"
                       >
                         <ShoppingCart className="w-4 h-4" />
                         View Cart

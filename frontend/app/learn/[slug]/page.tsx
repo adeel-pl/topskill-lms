@@ -66,6 +66,8 @@ export default function CoursePlayerPage() {
   const [assignmentSubmissionText, setAssignmentSubmissionText] = useState('');
   const [assignmentSubmissionFile, setAssignmentSubmissionFile] = useState<File | null>(null);
   const [enrollmentId, setEnrollmentId] = useState<number | null>(null);
+  const [showNoteModal, setShowNoteModal] = useState(false);
+  const [noteText, setNoteText] = useState('');
 
   useEffect(() => {
     loadCourseContent();
@@ -808,12 +810,7 @@ export default function CoursePlayerPage() {
                     </h3>
                     {isEnrolled && selectedLecture && (
                       <button
-                        onClick={() => {
-                          const noteContent = prompt('Enter your note:');
-                          if (noteContent && noteContent.trim()) {
-                            handleAddNote(noteContent.trim());
-                          }
-                        }}
+                        onClick={() => setShowNoteModal(true)}
                         className="px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-lg font-semibold transition-colors"
                       >
                         <FiBook className="inline mr-1" />
@@ -891,23 +888,101 @@ export default function CoursePlayerPage() {
                   <h3 className="text-lg font-semibold mb-4 text-[#000F2C]">Course Quizzes</h3>
                   {quizzes && quizzes.length > 0 ? (
                     <div className="space-y-4">
-                      {quizzes.map((quiz: any) => (
-                        <div key={quiz.id} className="border border-gray-200 rounded-sm p-4">
-                          <div className="flex items-center justify-between mb-2">
-                            <h4 className="font-semibold text-[#000F2C]">{quiz.title}</h4>
-                            <span className="text-sm text-[#6a6f73]">{quiz.passing_score}% passing score</span>
+                      {quizzes.map((quiz: any) => {
+                        const attempts = quiz.attempts || [];
+                        const bestScore = quiz.best_score;
+                        const bestPassed = quiz.best_passed;
+                        const canRetake = quiz.can_retake !== false;
+                        const hasAttempts = attempts.length > 0;
+                        const hasCompletedAttempts = attempts.some((a: any) => a.completed_at);
+                        
+                        return (
+                          <div key={quiz.id} className="border border-gray-200 rounded-sm p-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <h4 className="font-semibold text-[#000F2C]">{quiz.title}</h4>
+                              <span className="text-sm text-[#6a6f73]">{quiz.passing_score}% passing score</span>
+                            </div>
+                            {quiz.description && (
+                              <p className="text-sm text-[#6a6f73] mb-3">{quiz.description}</p>
+                            )}
+                            
+                            {/* Show best score if available */}
+                            {hasCompletedAttempts && bestScore !== null && (
+                              <div className="mb-3 p-3 bg-gray-50 border border-gray-200 rounded-sm">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-sm font-medium text-[#000F2C]">Best Score:</span>
+                                  <span className={`text-lg font-bold ${bestPassed ? 'text-green-600' : 'text-red-600'}`}>
+                                    {bestScore.toFixed(1)}%
+                                  </span>
+                                </div>
+                                {bestPassed && (
+                                  <div className="mt-2 text-xs text-green-600 font-medium">
+                                    ✓ Passed
+                                  </div>
+                                )}
+                                {!bestPassed && (
+                                  <div className="mt-2 text-xs text-red-600 font-medium">
+                                    ✗ Failed (Need {quiz.passing_score}% to pass)
+                                  </div>
+                                )}
+                                {attempts.length > 0 && (
+                                  <div className="mt-2 text-xs text-[#6a6f73]">
+                                    Attempts: {attempts.filter((a: any) => a.completed_at).length}
+                                    {quiz.max_attempts && ` / ${quiz.max_attempts}`}
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                            
+                            {/* Show all attempts */}
+                            {hasAttempts && (
+                              <div className="mb-3 space-y-2">
+                                <div className="text-xs font-semibold text-[#6a6f73] uppercase">Previous Attempts:</div>
+                                {attempts.filter((a: any) => a.completed_at).map((attempt: any, idx: number) => (
+                                  <div key={attempt.id} className="text-xs p-2 bg-gray-50 rounded border border-gray-200">
+                                    <div className="flex items-center justify-between">
+                                      <span>Attempt {attempt.attempt_number || idx + 1}</span>
+                                      <span className={`font-semibold ${attempt.passed ? 'text-green-600' : 'text-red-600'}`}>
+                                        {attempt.score !== null ? `${attempt.score.toFixed(1)}%` : 'N/A'}
+                                      </span>
+                                    </div>
+                                    <div className="text-[#6a6f73] mt-1">
+                                      {new Date(attempt.completed_at).toLocaleString()}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                            
+                            <div className="flex items-center gap-2">
+                              {hasCompletedAttempts && bestPassed && canRetake ? (
+                                <button 
+                                  onClick={() => router.push(`/courses/${params.slug}/quizzes/${quiz.id}`)}
+                                  className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-sm font-semibold text-sm"
+                                >
+                                  Retake Quiz
+                                </button>
+                              ) : hasCompletedAttempts && !bestPassed && canRetake ? (
+                                <button 
+                                  onClick={() => router.push(`/courses/${params.slug}/quizzes/${quiz.id}`)}
+                                  className="px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-sm font-semibold text-sm"
+                                >
+                                  Retake Quiz
+                                </button>
+                              ) : !hasCompletedAttempts ? (
+                                <button 
+                                  onClick={() => router.push(`/courses/${params.slug}/quizzes/${quiz.id}`)}
+                                  className="px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-sm font-semibold text-sm"
+                                >
+                                  Start Quiz
+                                </button>
+                              ) : (
+                                <span className="text-sm text-[#6a6f73]">Maximum attempts reached</span>
+                              )}
+                            </div>
                           </div>
-                          {quiz.description && (
-                            <p className="text-sm text-[#6a6f73] mb-3">{quiz.description}</p>
-                          )}
-                          <button 
-                            onClick={() => router.push(`/courses/${params.slug}/quizzes/${quiz.id}`)}
-                            className="px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-sm font-semibold text-sm"
-                          >
-                            Start Quiz
-                          </button>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   ) : (
                     <p className="text-[#6a6f73]">No quizzes available for this course.</p>
@@ -983,7 +1058,7 @@ export default function CoursePlayerPage() {
                                 {submission.submission_file && (
                                   <div className="pt-2 border-t border-gray-200">
                                     <a 
-                                      href={submission.submission_file} 
+                                      href={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000'}${submission.submission_file}`}
                                       target="_blank" 
                                       rel="noopener noreferrer"
                                       className="text-sm text-[#66CC33] hover:underline"
@@ -1019,13 +1094,25 @@ export default function CoursePlayerPage() {
                                     }
                                     try {
                                       setSubmittingAssignment(assignment.id);
-                                      await assignmentSubmissionsAPI.create({
-                                        enrollment: enrollmentId,
-                                        assignment: assignment.id,
-                                        submission_text: assignmentSubmissionText || undefined,
-                                        submission_file: assignmentSubmissionFile || undefined,
-                                      });
-                                      showSuccess('Assignment submitted successfully!');
+                                      
+                                      // If submission exists, update it; otherwise create new
+                                      if (submission && submission.id) {
+                                        const formData = new FormData();
+                                        if (assignmentSubmissionText) formData.append('submission_text', assignmentSubmissionText);
+                                        if (assignmentSubmissionFile) formData.append('submission_file', assignmentSubmissionFile);
+                                        
+                                        await assignmentSubmissionsAPI.update(submission.id, formData);
+                                        showSuccess('Assignment updated successfully!');
+                                      } else {
+                                        await assignmentSubmissionsAPI.create({
+                                          enrollment: enrollmentId,
+                                          assignment: assignment.id,
+                                          submission_text: assignmentSubmissionText || undefined,
+                                          submission_file: assignmentSubmissionFile || undefined,
+                                        });
+                                        showSuccess('Assignment submitted successfully!');
+                                      }
+                                      
                                       setSubmittingAssignment(null);
                                       setAssignmentSubmissionText('');
                                       setAssignmentSubmissionFile(null);
@@ -1044,7 +1131,7 @@ export default function CoursePlayerPage() {
                                   disabled={!assignmentSubmissionText && !assignmentSubmissionFile}
                                   className="px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-sm font-semibold text-sm"
                                 >
-                                  Submit
+                                  {submission && submission.id ? 'Update' : 'Submit'}
                                 </button>
                                 <button
                                   onClick={() => {
@@ -1106,6 +1193,46 @@ export default function CoursePlayerPage() {
           </div>
         </div>
       </div>
+
+      {/* Note Modal */}
+      {showNoteModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
+            <h3 className="text-xl font-bold text-[#000F2C] mb-4">Add Note</h3>
+            <textarea
+              value={noteText}
+              onChange={(e) => setNoteText(e.target.value)}
+              placeholder="Enter your note here..."
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#66CC33] resize-none text-[#000F2C]"
+              rows={6}
+              autoFocus
+            />
+            <div className="flex gap-3 mt-4">
+              <button
+                onClick={() => {
+                  if (noteText.trim()) {
+                    handleAddNote(noteText.trim());
+                    setNoteText('');
+                    setShowNoteModal(false);
+                  }
+                }}
+                className="flex-1 px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-lg font-semibold transition-colors"
+              >
+                Save Note
+              </button>
+              <button
+                onClick={() => {
+                  setNoteText('');
+                  setShowNoteModal(false);
+                }}
+                className="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-[#000F2C] rounded-lg font-semibold transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

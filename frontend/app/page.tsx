@@ -107,11 +107,7 @@ export default function HomePage() {
               transition={{ duration: 0.6 }}
               className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white mb-6 leading-tight"
             >
-              Learn Without
-              <br />
-              <span className="bg-gradient-to-r from-[#10B981] via-[#3B82F6] to-[#8B5CF6] bg-clip-text text-transparent">
-                Limits
-              </span>
+              Learn Without Limits
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -150,7 +146,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Courses Section - Premium Grid */}
+      {/* Online Courses Section */}
       <section className="py-20 mb-50">
         <div className="max-w-container xl:max-w-container-xl 2xl:max-w-container-2xl mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16">
           <motion.div
@@ -161,10 +157,10 @@ export default function HomePage() {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
-              Featured Courses
+              Online Courses
             </h2>
             <p className="text-xl text-[#9CA3AF] max-w-3xl mx-auto mb-8">
-              Handpicked courses to accelerate your career
+              Learn at your own pace with our comprehensive online courses
             </p>
           </motion.div>
           {loading ? (
@@ -172,16 +168,62 @@ export default function HomePage() {
               <div className="w-16 h-16 border-4 border-[#334155] border-t-[#10B981] rounded-full animate-spin mx-auto mb-4"></div>
               <p className="text-[#9CA3AF] text-lg">Loading courses...</p>
             </div>
-          ) : courses.length === 0 ? (
-            <div className="text-center py-20 text-[#9CA3AF] text-lg">No courses available</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 md:gap-8 lg:gap-10">
-              {courses.map((course, index) => (
-                <div key={course.id} className="w-full">
-                  <CourseCard course={course} index={index} />
+            (() => {
+              const onlineCourses = courses.filter((c: Course) => c.modality === 'online' || !c.modality);
+              return onlineCourses.length === 0 ? (
+                <div className="text-center py-20 text-[#9CA3AF] text-lg">No online courses available</div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 md:gap-8 lg:gap-10">
+                  {onlineCourses.slice(0, 8).map((course, index) => (
+                    <div key={course.id} className="w-full">
+                      <CourseCard course={course} index={index} />
+                    </div>
+                  ))}
                 </div>
-              ))}
+              );
+            })()
+          )}
+        </div>
+      </section>
+
+      {/* Physical Courses / Bootcamps Section */}
+      <section className="py-20 mb-50 bg-gradient-to-br from-[#1E293B] to-[#0F172A]">
+        <div className="max-w-container xl:max-w-container-xl 2xl:max-w-container-2xl mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
+              Physical Courses & Bootcamps
+            </h2>
+            <p className="text-xl text-[#9CA3AF] max-w-3xl mx-auto mb-8">
+              Join our in-person classes, bootcamps, and internship programs with hands-on learning
+            </p>
+          </motion.div>
+          {loading ? (
+            <div className="text-center py-20">
+              <div className="w-16 h-16 border-4 border-[#334155] border-t-[#10B981] rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-[#9CA3AF] text-lg">Loading courses...</p>
             </div>
+          ) : (
+            (() => {
+              const physicalCourses = courses.filter((c: Course) => c.modality === 'physical' || c.modality === 'hybrid');
+              return physicalCourses.length === 0 ? (
+                <div className="text-center py-20 text-[#9CA3AF] text-lg">No physical courses or bootcamps available</div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 md:gap-8 lg:gap-10">
+                  {physicalCourses.slice(0, 8).map((course, index) => (
+                    <div key={course.id} className="w-full">
+                      <CourseCard course={course} index={index} />
+                    </div>
+                  ))}
+                </div>
+              );
+            })()
           )}
         </div>
       </section>

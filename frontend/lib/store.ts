@@ -50,7 +50,45 @@ export const useAuthStore = create<AuthState>((set) => ({
       
       set({ user, isAuthenticated: true, isLoading: false });
     } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Registration failed');
+      // Extract detailed error messages from backend
+      let errorMessage = 'Registration failed';
+      
+      if (error.response?.data) {
+        const data = error.response.data;
+        
+        // Handle field-specific errors
+        if (typeof data === 'object') {
+          const fieldErrors: string[] = [];
+          
+          // Check for non_field_errors
+          if (data.non_field_errors && Array.isArray(data.non_field_errors)) {
+            fieldErrors.push(...data.non_field_errors);
+          }
+          
+          // Check for field-specific errors
+          Object.keys(data).forEach((key) => {
+            if (key !== 'non_field_errors' && Array.isArray(data[key])) {
+              fieldErrors.push(`${key}: ${data[key].join(', ')}`);
+            } else if (key !== 'non_field_errors' && typeof data[key] === 'string') {
+              fieldErrors.push(`${key}: ${data[key]}`);
+            }
+          });
+          
+          if (fieldErrors.length > 0) {
+            errorMessage = fieldErrors.join('. ');
+          } else if (data.error) {
+            errorMessage = data.error;
+          } else if (data.detail) {
+            errorMessage = data.detail;
+          }
+        } else if (typeof data === 'string') {
+          errorMessage = data;
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      throw new Error(errorMessage);
     }
   },
 
@@ -82,6 +120,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 }));
+
+
 
 
 

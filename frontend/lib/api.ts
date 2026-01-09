@@ -239,7 +239,14 @@ export const assignmentSubmissionsAPI = {
     });
   },
   getById: (id: number) => api.get(`/assignment-submissions/${id}/`),
-  update: (id: number, data: any) => api.put(`/assignment-submissions/${id}/`, data),
+  update: (id: number, data: FormData | any) => {
+    if (data instanceof FormData) {
+      return api.put(`/assignment-submissions/${id}/`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+    }
+    return api.put(`/assignment-submissions/${id}/`, data);
+  },
   delete: (id: number) => api.delete(`/assignment-submissions/${id}/`),
 };
 

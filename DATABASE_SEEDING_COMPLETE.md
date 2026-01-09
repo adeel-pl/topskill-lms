@@ -129,3 +129,5 @@ print(Attendance.objects.count())
 - Completed enrollments have certificates generated
 
 
+
+

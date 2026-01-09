@@ -66,9 +66,39 @@ class CoursePlayerViewSet(viewsets.ViewSet):
             serializer = CourseSectionPlayerSerializer(section, context=context)
             sections_data.append(serializer.data)
         
-        # Get quizzes
+        # Get quizzes with attempt information
         quizzes = Quiz.objects.filter(course=course, is_active=True).order_by('order')
-        quizzes_data = QuizSerializer(quizzes, many=True).data
+        quizzes_data = []
+        for quiz in quizzes:
+            quiz_dict = QuizSerializer(quiz).data
+            # Add attempt info if enrolled
+            if enrollment:
+                attempts = QuizAttempt.objects.filter(
+                    enrollment=enrollment,
+                    quiz=quiz
+                ).order_by('-started_at')
+                quiz_dict['attempts'] = [
+                    {
+                        'id': attempt.id,
+                        'score': float(attempt.score) if attempt.score else None,
+                        'passed': attempt.passed,
+                        'started_at': attempt.started_at,
+                        'completed_at': attempt.completed_at,
+                        'attempt_number': attempt.attempt_number,
+                    }
+                    for attempt in attempts
+                ]
+                # Get best attempt
+                best_attempt = attempts.filter(completed_at__isnull=False).order_by('-score').first()
+                quiz_dict['best_score'] = float(best_attempt.score) if best_attempt and best_attempt.score else None
+                quiz_dict['best_passed'] = best_attempt.passed if best_attempt else False
+                quiz_dict['can_retake'] = quiz.max_attempts is None or attempts.count() < quiz.max_attempts
+            else:
+                quiz_dict['attempts'] = []
+                quiz_dict['best_score'] = None
+                quiz_dict['best_passed'] = False
+                quiz_dict['can_retake'] = True
+            quizzes_data.append(quiz_dict)
         
         # Get assignments with submission status
         assignments = Assignment.objects.filter(course=course, is_active=True).order_by('order')
