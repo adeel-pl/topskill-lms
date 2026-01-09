@@ -20,10 +20,24 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      await login(formData.username, formData.password);
-      router.push('/dashboard/my-courses');
+      const user = await login(formData.username, formData.password);
+      
+      // Redirect based on user role
+      if (user?.is_staff || user?.role === 'admin') {
+        // Admin goes to admin dashboard
+        router.push('/admin');
+      } else if (user?.is_instructor || user?.role === 'instructor') {
+        // Instructor goes to admin dashboard (they use the same interface)
+        router.push('/admin');
+      } else {
+        // Student goes to student dashboard
+        router.push('/dashboard/my-courses');
+      }
     } catch (err: any) {
-      setError(err.response?.data?.error || err.message || 'Login failed');
+      // Show detailed error message
+      const errorMessage = err.message || err.response?.data?.error || err.response?.data?.detail || 'Login failed. Please check your credentials and try again.';
+      setError(errorMessage);
+      console.error('Login error:', err);
     } finally {
       setLoading(false);
     }
@@ -63,7 +77,13 @@ export default function LoginPage() {
             <form className="space-y-6" onSubmit={handleSubmit}>
               {error && (
                 <div className="bg-gradient-to-r from-[#EF4444]/20 to-[#DC2626]/20 border border-[#EF4444]/50 text-[#FCA5A5] px-6 py-4 rounded-xl text-sm font-medium backdrop-blur-sm">
-                  {error}
+                  <div className="flex items-start gap-3">
+                    <span className="text-lg">⚠️</span>
+                    <div>
+                      <p className="font-bold mb-1">Login Failed</p>
+                      <p>{error}</p>
+                    </div>
+                  </div>
                 </div>
               )}
 

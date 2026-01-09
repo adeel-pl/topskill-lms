@@ -11,10 +11,25 @@ from .models import (
 
 class UserSerializer(serializers.ModelSerializer):
     """User serializer"""
+    role = serializers.SerializerMethodField()
+    is_instructor = serializers.SerializerMethodField()
+    
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'is_staff', 'date_joined']
-        read_only_fields = ['id', 'is_staff', 'date_joined']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'is_staff', 'date_joined', 'role', 'is_instructor']
+        read_only_fields = ['id', 'is_staff', 'date_joined', 'role', 'is_instructor']
+    
+    def get_role(self, obj):
+        """Get user role: 'admin', 'instructor', or 'student'"""
+        if obj.is_staff:
+            return 'admin'
+        elif obj.instructed_courses.exists():
+            return 'instructor'
+        return 'student'
+    
+    def get_is_instructor(self, obj):
+        """Check if user is an instructor"""
+        return obj.instructed_courses.exists()
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):

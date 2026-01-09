@@ -17,6 +17,13 @@ from .auth_views import register, login, logout, profile, update_profile, change
 from .cart_views import CartViewSet
 from .course_player_views import CoursePlayerViewSet
 from .services import GroqAIService
+from .admin_api_views import (
+    admin_analytics, admin_courses_list, admin_course_detail,
+    admin_students_list, admin_payments_list,
+    admin_quizzes_list, admin_quiz_detail,
+    admin_questions_list, admin_question_detail,
+    admin_users_list, admin_user_detail
+)
 
 router = DefaultRouter()
 router.register(r'courses', CourseViewSet, basename='course')
@@ -84,5 +91,17 @@ urlpatterns = [
     path('courses/<int:pk>/player/overview/', CoursePlayerViewSet.as_view({'get': 'get_overview'}), name='course-player-overview'),
     # Chatbot
     path('chatbot/', chatbot_view, name='chatbot'),
+    # Admin API endpoints
+    path('admin/analytics/', admin_analytics, name='admin-analytics'),
+    path('admin/courses/', admin_courses_list, name='admin-courses'),
+    path('admin/courses/<int:course_id>/', admin_course_detail, name='admin-course-detail'),
+    path('admin/courses/<int:course_id>/quizzes/', admin_quizzes_list, name='admin-quizzes'),
+    path('admin/courses/<int:course_id>/quizzes/<int:quiz_id>/', admin_quiz_detail, name='admin-quiz-detail'),
+    path('admin/courses/<int:course_id>/quizzes/<int:quiz_id>/questions/', admin_questions_list, name='admin-questions'),
+    path('admin/courses/<int:course_id>/quizzes/<int:quiz_id>/questions/<int:question_id>/', admin_question_detail, name='admin-question-detail'),
+    path('admin/students/', admin_students_list, name='admin-students'),
+    path('admin/payments/', admin_payments_list, name='admin-payments'),
+    path('admin/users/', admin_users_list, name='admin-users'),
+    path('admin/users/<int:user_id>/', admin_user_detail, name='admin-user-detail'),
 ]
 

@@ -98,8 +98,15 @@ def login(request):
     
     if user is None:
         return Response(
-            {'error': 'Invalid credentials'},
+            {'error': 'Invalid username/email or password. Please check your credentials and try again.'},
             status=status.HTTP_401_UNAUTHORIZED
+        )
+    
+    # Check if user account is active
+    if not user.is_active:
+        return Response(
+            {'error': 'Your account has been deactivated. Please contact support.'},
+            status=status.HTTP_403_FORBIDDEN
         )
     
     # Generate JWT tokens

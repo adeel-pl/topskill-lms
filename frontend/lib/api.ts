@@ -250,6 +250,67 @@ export const assignmentSubmissionsAPI = {
   delete: (id: number) => api.delete(`/assignment-submissions/${id}/`),
 };
 
+// Admin API
+export const adminAPI = {
+  // Analytics
+  getAnalytics: (params?: { date_range?: string; start_date?: string; end_date?: string }) =>
+    api.get('/admin/analytics/', { params }),
+  
+  // Courses
+  getCourses: (params?: { page?: number; page_size?: number; search?: string; modality?: string; is_active?: boolean }) =>
+    api.get('/admin/courses/', { params }),
+  createCourse: (data: any) =>
+    api.post('/admin/courses/', data),
+  getCourse: (courseId: number) =>
+    api.get(`/admin/courses/${courseId}/`),
+  updateCourse: (courseId: number, data: any) =>
+    api.patch(`/admin/courses/${courseId}/`, data),
+  deleteCourse: (courseId: number) =>
+    api.delete(`/admin/courses/${courseId}/`),
+  
+  // Quizzes
+  getQuizzes: (courseId: number) =>
+    api.get(`/admin/courses/${courseId}/quizzes/`),
+  createQuiz: (courseId: number, data: any) =>
+    api.post(`/admin/courses/${courseId}/quizzes/`, data),
+  getQuiz: (courseId: number, quizId: number) =>
+    api.get(`/admin/courses/${courseId}/quizzes/${quizId}/`),
+  updateQuiz: (courseId: number, quizId: number, data: any) =>
+    api.patch(`/admin/courses/${courseId}/quizzes/${quizId}/`, data),
+  deleteQuiz: (courseId: number, quizId: number) =>
+    api.delete(`/admin/courses/${courseId}/quizzes/${quizId}/`),
+  
+  // Questions
+  getQuestions: (courseId: number, quizId: number) =>
+    api.get(`/admin/courses/${courseId}/quizzes/${quizId}/questions/`),
+  createQuestion: (courseId: number, quizId: number, data: any) =>
+    api.post(`/admin/courses/${courseId}/quizzes/${quizId}/questions/`, data),
+  getQuestion: (courseId: number, quizId: number, questionId: number) =>
+    api.get(`/admin/courses/${courseId}/quizzes/${quizId}/questions/${questionId}/`),
+  updateQuestion: (courseId: number, quizId: number, questionId: number, data: any) =>
+    api.patch(`/admin/courses/${courseId}/quizzes/${quizId}/questions/${questionId}/`, data),
+  deleteQuestion: (courseId: number, quizId: number, questionId: number) =>
+    api.delete(`/admin/courses/${courseId}/quizzes/${quizId}/questions/${questionId}/`),
+  
+  // Students
+  getStudents: (params?: { page?: number; page_size?: number; search?: string }) =>
+    api.get('/admin/students/', { params }),
+  
+  // Payments
+  getPayments: (params?: { page?: number; page_size?: number; search?: string; status?: string; start_date?: string; end_date?: string }) =>
+    api.get('/admin/payments/', { params }),
+  
+  // Users (Admin only)
+  getUsers: (params?: { page?: number; page_size?: number; search?: string; role?: string }) =>
+    api.get('/admin/users/', { params }),
+  createUser: (data: any) =>
+    api.post('/admin/users/', data),
+  getUser: (userId: number) =>
+    api.get(`/admin/users/${userId}/`),
+  updateUser: (userId: number, data: any) =>
+    api.patch(`/admin/users/${userId}/`, data),
+};
+
 export default api;
 
 
