@@ -68,7 +68,11 @@ class CourseViewSet(viewsets.ModelViewSet):
         search = self.request.query_params.get('search')
         if search:
             queryset = queryset.filter(
-                Q(title__icontains=search) | Q(description__icontains=search)
+                Q(title__icontains=search) | 
+                Q(description__icontains=search) |
+                Q(instructor__username__icontains=search) |
+                Q(instructor__first_name__icontains=search) |
+                Q(instructor__last_name__icontains=search)
             )
         
         return queryset.distinct()

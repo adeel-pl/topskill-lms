@@ -100,11 +100,18 @@ export default function CoursePlayerPage() {
         const contentRes = await playerAPI.getContent(courseData.id);
         const { sections: sectionsData, course: courseInfo, enrollment, quizzes, assignments, qandas, announcements } = contentRes.data;
 
-        // Check if user is enrolled
+        // Allow access if enrolled or if there are preview lectures
+        const hasPreviewLectures = sectionsData?.some((section: any) => 
+          section.lectures?.some((lecture: any) => lecture.is_preview)
+        ) || false;
+        
         if (!enrollment || !enrollment.id) {
-          console.error('Not enrolled in this course');
-          router.push(`/courses/${params.slug}`);
-          return;
+          if (!hasPreviewLectures) {
+            console.error('Not enrolled in this course and no preview available');
+            router.push(`/courses/${params.slug}`);
+            return;
+          }
+          // Allow preview access - continue loading
         }
 
         setCourse({ ...courseInfo, quizzes, assignments, qandas: contentRes.data.qandas || [], announcements: contentRes.data.announcements || [] });

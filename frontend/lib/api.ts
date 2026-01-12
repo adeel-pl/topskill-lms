@@ -70,6 +70,9 @@ export const authAPI = {
   login: (data: { username: string; password: string }) =>
     api.post('/auth/login/', data),
   
+  googleLogin: (token: string) =>
+    api.post('/auth/google-login/', { token }),
+  
   logout: (data: { refresh: string }) =>
     api.post('/auth/logout/', data),
   
@@ -179,6 +182,18 @@ export const enrollmentsAPI = {
   
   updateProgress: (id: number, progress: number) =>
     api.post(`/enrollments/${id}/update_progress/`, { progress_percent: progress }),
+};
+
+// Payments API
+export const paymentsAPI = {
+  getAll: (params?: any) =>
+    api.get('/payments/', { params }),
+  
+  getById: (id: number) =>
+    api.get(`/payments/${id}/`),
+  
+  create: (data: { course: number; amount: number }) =>
+    api.post('/payments/', data),
 };
 
 // Other APIs

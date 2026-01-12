@@ -1,0 +1,55 @@
+═══════════════════════════════════════════════════════════════
+  QUICK START: Get Google Client ID in 5 Minutes
+═══════════════════════════════════════════════════════════════
+
+1. Go to: https://console.cloud.google.com/
+   → Sign in with Google
+
+2. Create Project:
+   → Click project dropdown (top)
+   → Click "NEW PROJECT"
+   → Name: "TopSkill LMS"
+   → Click "CREATE"
+
+3. OAuth Consent Screen:
+   → APIs & Services > OAuth consent screen
+   → Select "External"
+   → App name: "TopSkill LMS"
+   → Your email
+   → Add scopes: email, profile, openid
+   → Add test users (your email)
+   → Save all steps
+
+4. Create Client ID:
+   → APIs & Services > Credentials
+   → "+ CREATE CREDENTIALS" > "OAuth client ID"
+   → Application type: "Web application"
+   → Name: "TopSkill LMS Web Client"
+   → Authorized origins: http://localhost:3000
+   → Redirect URIs: http://localhost:3000
+   → Click "CREATE"
+
+5. Copy Client ID:
+   → Copy the Client ID (looks like: 123...apps.googleusercontent.com)
+   → Click "OK"
+
+6. Add to Files:
+   
+   backend/.env:
+   GOOGLE_CLIENT_ID=your-client-id-here.apps.googleusercontent.com
+   
+   frontend/.env.local:
+   NEXT_PUBLIC_GOOGLE_CLIENT_ID=your-client-id-here.apps.googleusercontent.com
+
+7. Restart Servers:
+   → Backend: python manage.py runserver
+   → Frontend: npm run dev
+
+8. Test:
+   → Go to http://localhost:3000/login
+   → Click Google button
+   → Sign in!
+
+═══════════════════════════════════════════════════════════════
+For detailed instructions, see: GET_GOOGLE_CLIENT_ID.md
+═══════════════════════════════════════════════════════════════

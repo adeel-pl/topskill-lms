@@ -326,8 +326,116 @@ TopSkill LMS Team
     return Response({'message': 'Password reset successfully'}, status=status.HTTP_200_OK)
 
 
-
-
+@api_view(['POST'])
+@permission_classes([permissions.AllowAny])
+def google_login(request):
+    """Google OAuth login endpoint - accepts ID token from Google Sign-In"""
+    from google.oauth2 import id_token
+    from google.auth.transport import requests
+    import os
+    
+    # Accept 'token', 'credential', or 'id_token' for compatibility
+    token = request.data.get('token') or request.data.get('credential') or request.data.get('id_token')
+    
+    if not token:
+        return Response(
+            {'error': 'Google ID token is required'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    try:
+        # Verify the token
+        GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', '')
+        
+        if not GOOGLE_CLIENT_ID:
+            return Response(
+                {'error': 'Google OAuth is not configured on the server'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        
+        # Verify the ID token
+        idinfo = id_token.verify_oauth2_token(token, requests.Request(), GOOGLE_CLIENT_ID)
+        
+        # Get user info from Google
+        email = idinfo.get('email')
+        first_name = idinfo.get('given_name', '')
+        last_name = idinfo.get('family_name', '')
+        google_id = idinfo.get('sub')
+        picture = idinfo.get('picture', '')
+        
+        if not email:
+            return Response(
+                {'error': 'Email not provided by Google'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Check if user exists
+        try:
+            user = User.objects.get(email=email)
+            # Update user info if needed
+            if not user.first_name and first_name:
+                user.first_name = first_name
+            if not user.last_name and last_name:
+                user.last_name = last_name
+            user.save()
+        except User.DoesNotExist:
+            # Create new user
+            username = email.split('@')[0]
+            # Ensure username is unique
+            base_username = username
+            counter = 1
+            while User.objects.filter(username=username).exists():
+                username = f"{base_username}{counter}"
+                counter += 1
+            
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                first_name=first_name,
+                last_name=last_name,
+                is_active=True
+            )
+            
+            # Create cart for new user
+            Cart.objects.get_or_create(user=user)
+        
+        # Check if user account is active
+        if not user.is_active:
+            return Response(
+                {'error': 'Your account has been deactivated. Please contact support.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        # Generate JWT tokens
+        refresh = RefreshToken.for_user(user)
+        
+        return Response({
+            'user': UserSerializer(user).data,
+            'tokens': {
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+            }
+        }, status=status.HTTP_200_OK)
+        
+    except ValueError as e:
+        # Invalid token
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f'Google token verification error: {str(e)}')
+        return Response(
+            {'error': f'Invalid Google token: {str(e)}'},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+    except Exception as e:
+        import logging
+        import traceback
+        logger = logging.getLogger(__name__)
+        error_trace = traceback.format_exc()
+        logger.error(f'Google login error: {str(e)}\n{error_trace}')
+        return Response(
+            {'error': f'Google authentication failed: {str(e)}'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
 

@@ -7,7 +7,6 @@ import { useAuthStore } from '@/lib/store';
 import { enrollmentsAPI, cartAPI } from '@/lib/api';
 import { BookOpen, ShoppingCart, Play, Clock, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
-import DashboardLayout from '@/app/components/DashboardLayout';
 
 interface Enrollment {
   id: number;
@@ -93,27 +92,67 @@ export default function PurchaseHistoryPage() {
     }).format(price);
   };
 
+  const calculateTotalValue = () => {
+    const enrolledValue = enrollments.reduce((sum, e) => sum + (e.course.price || 0), 0);
+    const cartValue = cartItems.reduce((sum, item) => sum + (item.course.price || 0), 0);
+    return enrolledValue + cartValue;
+  };
+
+  const calculateAverageProgress = () => {
+    if (enrollments.length === 0) return 0;
+    const totalProgress = enrollments.reduce((sum, e) => sum + (e.progress_percent || 0), 0);
+    return Math.round(totalProgress / enrollments.length);
+  };
+
   if (isLoading || loading) {
     return (
-      <DashboardLayout>
-        <div className="min-h-screen bg-[#0F172A] flex items-center justify-center">
-          <div className="text-center">
-            <div className="w-16 h-16 border-4 border-[#334155] border-t-[#10B981] rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-[#9CA3AF]">Loading...</p>
-          </div>
+      <div className="min-h-screen bg-[#0F172A] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-[#334155] border-t-[#10B981] rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-[#9CA3AF]">Loading...</p>
         </div>
-      </DashboardLayout>
+      </div>
     );
   }
 
   return (
-    <DashboardLayout>
+    <div className="px-4 sm:px-6 lg:px-8 py-8 md:py-12 text-white">
       <div className="max-w-container xl:max-w-container-xl 2xl:max-w-container-2xl mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-10 md:py-12">
         <div className="mb-8 md:mb-12">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-black mb-2 text-white">
             Purchase History
           </h1>
           <p className="text-[#9CA3AF] text-base md:text-lg">View all your enrolled courses and cart items</p>
+        </div>
+
+        {/* Analytics Summary */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-[#1E293B] border border-[#334155] rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[#9CA3AF] text-sm font-medium">Total Enrolled</span>
+              <BookOpen className="w-5 h-5 text-[#66CC33]" />
+            </div>
+            <p className="text-3xl font-black text-white">{enrollments.length}</p>
+            <p className="text-xs text-[#9CA3AF] mt-1">Active courses</p>
+          </div>
+          <div className="bg-[#1E293B] border border-[#334155] rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[#9CA3AF] text-sm font-medium">Total Value</span>
+              <TrendingUp className="w-5 h-5 text-[#66CC33]" />
+            </div>
+            <p className="text-3xl font-black text-[#66CC33]">
+              {formatPrice(calculateTotalValue())}
+            </p>
+            <p className="text-xs text-[#9CA3AF] mt-1">Enrolled + Cart</p>
+          </div>
+          <div className="bg-[#1E293B] border border-[#334155] rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[#9CA3AF] text-sm font-medium">Average Progress</span>
+              <Play className="w-5 h-5 text-[#66CC33]" />
+            </div>
+            <p className="text-3xl font-black text-white">{calculateAverageProgress()}%</p>
+            <p className="text-xs text-[#9CA3AF] mt-1">Across all courses</p>
+          </div>
         </div>
 
         {/* Enrolled Courses */}
@@ -281,6 +320,6 @@ export default function PurchaseHistoryPage() {
           )}
         </div>
       </div>
-    </DashboardLayout>
+    </div>
   );
 }

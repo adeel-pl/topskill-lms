@@ -3,16 +3,18 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { GoogleLogin } from '@react-oauth/google';
 import { useAuthStore } from '@/lib/store';
 import PureLogicsNavbar from '@/app/components/PureLogicsNavbar';
 import { FiLock, FiUser, FiMail, FiArrowRight } from 'react-icons/fi';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login } = useAuthStore();
+  const { login, googleLogin } = useAuthStore();
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,6 +43,36 @@ export default function LoginPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    setGoogleLoading(true);
+    setError('');
+    
+    try {
+      // Send the ID token (credential) to backend
+      const user = await googleLogin(credentialResponse.credential);
+      
+      // Redirect based on user role
+      if (user?.is_staff || user?.role === 'admin') {
+        router.push('/admin');
+      } else if (user?.is_instructor || user?.role === 'instructor') {
+        router.push('/admin');
+      } else {
+        router.push('/dashboard/my-courses');
+      }
+    } catch (err: any) {
+      const errorMessage = err.message || err.response?.data?.error || err.response?.data?.detail || 'Google login failed. Please try again.';
+      setError(errorMessage);
+      console.error('Google login error:', err);
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setError('Google login failed. Please try again.');
+    setGoogleLoading(false);
   };
 
   return (
@@ -141,20 +173,40 @@ export default function LoginPage() {
             {/* Enhanced Social Login */}
             <div className="mt-8 pt-8 border-t border-[#334155]">
               <p className="text-center text-sm text-[#9CA3AF] mb-6 font-medium">Or continue with</p>
-              <div className="flex gap-4 justify-center">
-                {[
-                  { label: 'Google', icon: 'G', color: 'hover:bg-[#4285F4]/20 hover:border-[#4285F4]' },
-                  { label: 'Facebook', icon: 'f', color: 'hover:bg-[#1877F2]/20 hover:border-[#1877F2]' },
-                  { label: 'Microsoft', icon: 'M', color: 'hover:bg-[#00A4EF]/20 hover:border-[#00A4EF]' },
-                ].map((social, idx) => (
-                  <button
-                    key={idx}
-                    className={`w-14 h-14 border-2 border-[#334155] rounded-xl flex items-center justify-center ${social.color} transition-all duration-300 hover:scale-110 text-white font-bold text-lg backdrop-blur-sm`}
-                    title={social.label}
-                  >
-                    {social.icon}
-                  </button>
-                ))}
+              <div className="flex gap-4 justify-center items-center">
+                <div className="relative">
+                  <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={handleGoogleError}
+                    useOneTap={false}
+                    shape="rectangular"
+                    theme="filled_black"
+                    size="large"
+                    text="signin_with"
+                    locale="en"
+                  />
+                  {googleLoading && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-[#1E293B]/80 rounded-lg">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  )}
+                </div>
+                {/* Facebook login - Hidden for now, can be enabled later */}
+                {/* <button
+                  className="w-14 h-14 border-2 border-[#334155] rounded-xl flex items-center justify-center hover:bg-[#1877F2]/20 hover:border-[#1877F2] transition-all duration-300 hover:scale-110 text-white font-bold text-lg backdrop-blur-sm opacity-50 cursor-not-allowed"
+                  title="Facebook (Coming Soon)"
+                  disabled
+                >
+                  f
+                </button> */}
+                {/* Microsoft login - Hidden for now, can be enabled later */}
+                {/* <button
+                  className="w-14 h-14 border-2 border-[#334155] rounded-xl flex items-center justify-center hover:bg-[#00A4EF]/20 hover:border-[#00A4EF] transition-all duration-300 hover:scale-110 text-white font-bold text-lg backdrop-blur-sm opacity-50 cursor-not-allowed"
+                  title="Microsoft (Coming Soon)"
+                  disabled
+                >
+                  M
+                </button> */}
               </div>
             </div>
 

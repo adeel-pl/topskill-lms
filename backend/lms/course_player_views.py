@@ -17,13 +17,14 @@ from .serializers import (
 
 class CoursePlayerViewSet(viewsets.ViewSet):
     """Udemy-like course player API"""
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]  # Allow preview access for non-authenticated users
     
     @action(detail=True, methods=['get'], url_path='content')
     def get_course_content(self, request, pk=None):
         """
         Get course content for player (Udemy-style)
         Returns sections with lectures, quizzes, assignments
+        Allows preview access for non-enrolled users
         """
         try:
             course = Course.objects.get(id=pk, is_active=True)
@@ -33,16 +34,21 @@ class CoursePlayerViewSet(viewsets.ViewSet):
                 status=status.HTTP_404_NOT_FOUND
             )
         
-        # Check enrollment
-        enrollment = Enrollment.objects.filter(
-            user=request.user,
-            course=course,
-            status__in=['active', 'completed']
-        ).first()
+        # Check enrollment (only if user is authenticated)
+        enrollment = None
+        if request.user.is_authenticated:
+            enrollment = Enrollment.objects.filter(
+                user=request.user,
+                course=course,
+                status__in=['active', 'completed']
+            ).first()
         
+        # Allow access if enrolled, is staff, or has preview content
         if not enrollment and not request.user.is_staff:
-            # Check if course has preview content
-            if not course.sections.filter(is_preview=True).exists():
+            # Check if course has preview content (sections or lectures with is_preview=True)
+            has_preview_sections = course.sections.filter(is_preview=True).exists()
+            has_preview_lectures = Lecture.objects.filter(section__course=course, is_preview=True).exists()
+            if not has_preview_sections and not has_preview_lectures:
                 return Response(
                     {'error': 'Not enrolled in this course'},
                     status=status.HTTP_403_FORBIDDEN
@@ -154,9 +160,9 @@ class CoursePlayerViewSet(viewsets.ViewSet):
             }
         })
     
-    @action(detail=True, methods=['get'], url_path='lecture/(?P<lecture_id>[^/.]+)')
+    @action(detail=True, methods=['get'], url_path='lecture/(?P<lecture_id>[^/.]+)', permission_classes=[permissions.AllowAny])
     def get_lecture(self, request, pk=None, lecture_id=None):
-        """Get specific lecture with progress"""
+        """Get specific lecture with progress - allows preview access"""
         try:
             course = Course.objects.get(id=pk, is_active=True)
             lecture = Lecture.objects.get(id=lecture_id, section__course=course)
@@ -166,14 +172,17 @@ class CoursePlayerViewSet(viewsets.ViewSet):
                 status=status.HTTP_404_NOT_FOUND
             )
         
-        # Check enrollment
-        enrollment = Enrollment.objects.filter(
-            user=request.user,
-            course=course,
-            status__in=['active', 'completed']
-        ).first()
+        # Check enrollment (only if user is authenticated)
+        enrollment = None
+        if request.user.is_authenticated:
+            enrollment = Enrollment.objects.filter(
+                user=request.user,
+                course=course,
+                status__in=['active', 'completed']
+            ).first()
         
-        if not enrollment and not lecture.is_preview and not request.user.is_staff:
+        # Allow access if enrolled, is preview, or is staff
+        if not enrollment and not lecture.is_preview and not (request.user.is_authenticated and request.user.is_staff):
             return Response(
                 {'error': 'Not enrolled in this course'},
                 status=status.HTTP_403_FORBIDDEN

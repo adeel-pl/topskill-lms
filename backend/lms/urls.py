@@ -13,7 +13,7 @@ from .views import (
     AssignmentViewSet, AssignmentSubmissionViewSet, LectureProgressViewSet, 
     ResourceViewSet, NoteViewSet, QandAViewSet, AnnouncementViewSet
 )
-from .auth_views import register, login, logout, profile, update_profile, change_password, forgot_password, reset_password
+from .auth_views import register, login, logout, profile, update_profile, change_password, forgot_password, reset_password, google_login
 from .cart_views import CartViewSet
 from .course_player_views import CoursePlayerViewSet
 from .services import GroqAIService
@@ -74,6 +74,7 @@ urlpatterns = [
     # Authentication endpoints
     path('auth/register/', register, name='register'),
     path('auth/login/', login, name='login'),
+    path('auth/google-login/', google_login, name='google_login'),
     path('auth/logout/', logout, name='logout'),
     path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('auth/profile/', profile, name='profile'),

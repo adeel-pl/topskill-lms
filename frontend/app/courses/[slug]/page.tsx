@@ -68,6 +68,7 @@ export default function CourseDetailPage() {
       } catch (error) {
         console.error('Error loading overview:', error);
         // Fallback to course data if overview fails - use actual course data
+        // This ensures curriculum is shown even if API fails
         setOverview({
           course: courseData,
           stats: {
@@ -399,7 +400,7 @@ export default function CourseDetailPage() {
             </motion.div>
 
             {/* Course Content Preview - Like Udemy */}
-            {overview?.content_preview && overview.content_preview.length > 0 && (
+            {(overview?.content_preview && overview.content_preview.length > 0) && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -432,7 +433,7 @@ export default function CourseDetailPage() {
                           <span className="text-sm text-[#9CA3AF]">{section.total_lectures} lectures</span>
                         </div>
                         <div className="divide-y divide-[#334155]">
-                          {section.lectures.slice(0, isEnrolled ? section.lectures.length : 2).map((lecture: any, lectureIdx: number) => {
+                          {section.lectures.map((lecture: any, lectureIdx: number) => {
                             const canPreview = lecture.is_preview || isEnrolled;
                             return (
                               <div 
@@ -443,6 +444,10 @@ export default function CourseDetailPage() {
                                 onClick={() => {
                                   if (canPreview) {
                                     router.push(`/learn/${course.slug}?lecture=${lecture.id}`);
+                                  } else if (!isAuthenticated) {
+                                    showInfo('Please add this course to cart or enroll to access this lecture');
+                                  } else {
+                                    showInfo('Please add this course to cart or enroll to access this lecture');
                                   }
                                 }}
                               >
@@ -459,23 +464,10 @@ export default function CourseDetailPage() {
                               </div>
                             );
                           })}
-                          {!isEnrolled && section.lectures.length > 2 && (
-                            <div className="px-4 py-3 text-sm text-[#9CA3AF] italic">
-                              +{section.lectures.length - 2} more lectures (enroll to view all)
-                            </div>
-                          )}
                         </div>
                       </div>
                     ))}
                   </div>
-                  
-                  {!isEnrolled && (
-                    <div className="mt-6 p-4 bg-[#10B981]/10 border border-[#10B981]/30 rounded-xl">
-                      <p className="text-sm text-[#D1D5DB]">
-                        <span className="font-semibold text-[#10B981]">Preview available:</span> You can preview the first 1-2 lectures of each section. Enroll to access all course content, quizzes, and assignments.
-                      </p>
-                    </div>
-                  )}
                 </div>
               </motion.div>
             )}
@@ -513,39 +505,43 @@ export default function CourseDetailPage() {
                     </Link>
                   ) : (
                     <>
-                      <motion.button
-                        onClick={handleEnroll}
-                        disabled={enrolling}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="w-full bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#10B981] text-white py-4 rounded-xl font-black text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-[#10B981]/30 hover:shadow-[#10B981]/50 flex items-center justify-center gap-2"
-                      >
-                        <Play className="w-5 h-5" />
-                        {enrolling ? 'Enrolling...' : 'Enroll Now'}
-                      </motion.button>
+                      {isAuthenticated && (
+                        <motion.button
+                          onClick={handleEnroll}
+                          disabled={enrolling}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="w-full bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#10B981] text-white py-4 rounded-xl font-black text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-[#10B981]/30 hover:shadow-[#10B981]/50 flex items-center justify-center gap-2"
+                        >
+                          <Play className="w-5 h-5" />
+                          {enrolling ? 'Enrolling...' : 'Enroll Now'}
+                        </motion.button>
+                      )}
                       <motion.button
                         onClick={handleAddToCart}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="w-full border-2 border-[#334155] bg-[#0F172A]/50 backdrop-blur-sm text-white py-4 rounded-xl font-bold hover:border-[#10B981] hover:bg-[#10B981]/10 transition-all duration-300 flex items-center justify-center gap-2"
+                        className="w-full bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#10B981] text-white py-4 rounded-xl font-black text-lg transition-all duration-300 shadow-xl shadow-[#10B981]/30 hover:shadow-[#10B981]/50 flex items-center justify-center gap-2"
                       >
                         <ShoppingCart className="w-5 h-5" />
                         Add to Cart
                       </motion.button>
-                      <motion.button
-                        onClick={handleToggleWishlist}
-                        disabled={wishlistLoading}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className={`w-full border-2 ${
-                          isInWishlist 
-                            ? 'border-[#EF4444] bg-[#EF4444]/10 text-[#EF4444]' 
-                            : 'border-[#334155] bg-[#0F172A]/50 text-white hover:border-[#EF4444] hover:bg-[#EF4444]/10'
-                        } backdrop-blur-sm py-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed`}
-                      >
-                        <Heart className={`w-5 h-5 ${isInWishlist ? 'fill-[#EF4444]' : ''}`} />
-                        {wishlistLoading ? 'Loading...' : isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
-                      </motion.button>
+                      {isAuthenticated && (
+                        <motion.button
+                          onClick={handleToggleWishlist}
+                          disabled={wishlistLoading}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          className={`w-full border-2 ${
+                            isInWishlist 
+                              ? 'border-[#EF4444] bg-[#EF4444]/10 text-[#EF4444]' 
+                              : 'border-[#334155] bg-[#0F172A]/50 text-white hover:border-[#EF4444] hover:bg-[#EF4444]/10'
+                          } backdrop-blur-sm py-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed`}
+                        >
+                          <Heart className={`w-5 h-5 ${isInWishlist ? 'fill-[#EF4444]' : ''}`} />
+                          {wishlistLoading ? 'Loading...' : isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
+                        </motion.button>
+                      )}
                     </>
                   )}
                 </div>

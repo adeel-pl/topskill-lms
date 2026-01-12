@@ -65,3 +65,9 @@ docker compose logs -f
 
 
 
+
+
+
+
+
+

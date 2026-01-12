@@ -17,7 +17,8 @@ interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (username: string, password: string) => Promise<void>;
+  login: (username: string, password: string) => Promise<User>;
+  googleLogin: (token: string) => Promise<User>;
   register: (data: any) => Promise<void>;
   logout: () => void;
   loadUser: () => Promise<void>;
@@ -65,6 +66,34 @@ export const useAuthStore = create<AuthState>((set) => ({
               errorMessage = firstError;
             }
           }
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      throw new Error(errorMessage);
+    }
+  },
+
+  googleLogin: async (token: string) => {
+    try {
+      const response = await authAPI.googleLogin(token);
+      const { user, tokens } = response.data;
+      
+      Cookies.set('access_token', tokens.access);
+      Cookies.set('refresh_token', tokens.refresh);
+      
+      set({ user, isAuthenticated: true, isLoading: false });
+      return user; // Return user for redirect logic
+    } catch (error: any) {
+      let errorMessage = 'Google login failed';
+      
+      if (error.response?.data) {
+        const data = error.response.data;
+        if (data.error) {
+          errorMessage = data.error;
+        } else if (data.detail) {
+          errorMessage = data.detail;
         }
       } else if (error.message) {
         errorMessage = error.message;

@@ -44,8 +44,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
       <div className="flex max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 relative z-10 pt-16 md:pt-20">
         {/* Sidebar */}
-        <aside className="hidden md:block w-72 bg-[#1E293B] border-r border-[#334155] min-h-[calc(100vh-80px)] sticky top-16 md:top-20">
-          <div className="p-6">
+        <aside className="hidden md:block w-72 bg-[#1E293B] border-r border-[#334155] min-h-[calc(100vh-80px)] sticky top-16 md:top-20 z-30" style={{ backgroundColor: '#1E293B', backfaceVisibility: 'hidden', transform: 'translateZ(0)' }}>
+          <div className="p-6 relative" style={{ backgroundColor: '#1E293B' }}>
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#10B981] to-[#059669] flex items-center justify-center shadow-lg shadow-[#10B981]/50">
@@ -65,7 +65,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     href={item.href}
                     className={`group flex items-center gap-4 px-5 py-4 rounded-xl font-semibold transition-all duration-300 text-sm relative overflow-hidden ${
                       active
-                        ? `bg-gradient-to-r ${item.color} text-white shadow-lg scale-105`
+                        ? `bg-gradient-to-r ${item.color} text-white shadow-lg`
                         : 'text-[#D1D5DB] hover:text-white hover:bg-[#334155]'
                     }`}
                   >

@@ -34,6 +34,7 @@ services:
       - PAYFAST_MERCHANT_ID=${PAYFAST_MERCHANT_ID:-}
       - PAYFAST_MERCHANT_KEY=${PAYFAST_MERCHANT_KEY:-}
       - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - GOOGLE_CLIENT_ID=370863717645-duhkahlagvn68fguvndire3dhvbu363e.apps.googleusercontent.com
       - PYTHONUNBUFFERED=1
     depends_on:
       db:
@@ -56,6 +57,7 @@ services:
       - "3000:3000"
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:8000/api
+      - NEXT_PUBLIC_GOOGLE_CLIENT_ID=370863717645-duhkahlagvn68fguvndire3dhvbu363e.apps.googleusercontent.com
       - NODE_ENV=development
     depends_on:
       - backend
