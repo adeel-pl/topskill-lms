@@ -229,16 +229,6 @@ export default function PureLogicsNavbar() {
                         <Search className="w-4 h-4 text-[#9CA3AF] group-hover:text-[#10B981] transition-colors flex-shrink-0" />
                       </Link>
                     ))}
-                    <Link
-                      href={`/courses?search=${encodeURIComponent(searchQuery.trim())}`}
-                      onClick={() => {
-                        setShowSuggestions(false);
-                      }}
-                      className="flex items-center justify-center gap-2 px-4 py-3 border-t border-[#334155] text-[#10B981] hover:bg-[#334155] transition-colors text-sm font-semibold"
-                    >
-                      <span>View all results for "{searchQuery}"</span>
-                      <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
-                    </Link>
                   </div>
                 </motion.div>
               )}

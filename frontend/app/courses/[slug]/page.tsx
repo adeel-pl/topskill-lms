@@ -18,8 +18,8 @@ export default function CourseDetailPage() {
   const [course, setCourse] = useState<any>(null);
   const [overview, setOverview] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [enrolling, setEnrolling] = useState(false);
   const [isEnrolled, setIsEnrolled] = useState(false);
+  const [isInCart, setIsInCart] = useState(false);
   const [isInWishlist, setIsInWishlist] = useState(false);
   const [wishlistId, setWishlistId] = useState<number | null>(null);
   const [wishlistLoading, setWishlistLoading] = useState(false);
@@ -31,6 +31,7 @@ export default function CourseDetailPage() {
   useEffect(() => {
     if (isAuthenticated && course) {
       checkWishlist();
+      checkCartAndEnrollment();
     }
   }, [isAuthenticated, course]);
 
@@ -63,8 +64,7 @@ export default function CourseDetailPage() {
         // Overview API is public (AllowAny), so it works for non-logged-in users
         const overviewRes = await playerAPI.getOverview(courseData.id);
         setOverview(overviewRes.data);
-        // Check enrollment status (only if user is logged in)
-        setIsEnrolled(overviewRes.data?.enrollment?.enrolled || false);
+        // Don't set enrollment status here - check separately for logged-in users
       } catch (error) {
         console.error('Error loading overview:', error);
         // Fallback to course data if overview fails - use actual course data
@@ -100,7 +100,6 @@ export default function CourseDetailPage() {
             enrolled: false,
           }
         });
-        setIsEnrolled(false);
       }
 
       setLoading(false);
@@ -110,23 +109,24 @@ export default function CourseDetailPage() {
     }
   };
 
-  const handleEnroll = async () => {
-    if (!isAuthenticated) {
-      router.push('/login');
-      return;
-    }
-
-    setEnrolling(true);
+  const checkCartAndEnrollment = async () => {
+    if (!isAuthenticated || !course) return;
+    
     try {
-      await coursesAPI.enroll(course.id);
-      showSuccess('Successfully enrolled! Redirecting to course...');
-      setTimeout(() => {
-        router.push(`/learn/${course.slug}`);
-      }, 1500);
-    } catch (error: any) {
-      showError(error.response?.data?.error || 'Enrollment failed');
-    } finally {
-      setEnrolling(false);
+      // Check enrollment status
+      const overviewRes = await playerAPI.getOverview(course.id);
+      setIsEnrolled(overviewRes.data?.enrollment?.enrolled || false);
+      
+      // Check cart status
+      const cartRes = await cartAPI.get();
+      const cartData = Array.isArray(cartRes.data) ? cartRes.data[0] : cartRes.data;
+      const cartItems = cartData?.items || [];
+      const courseInCart = cartItems.some((item: any) => item.course?.id === course.id || item.course_id === course.id);
+      setIsInCart(courseInCart);
+    } catch (error) {
+      console.error('Error checking cart/enrollment:', error);
+      setIsEnrolled(false);
+      setIsInCart(false);
     }
   };
 
@@ -138,6 +138,7 @@ export default function CourseDetailPage() {
 
     try {
       await cartAPI.addItem(course.id);
+      setIsInCart(true);
       showSuccess('Course added to cart!');
       setTimeout(() => {
         router.push('/cart');
@@ -145,6 +146,7 @@ export default function CourseDetailPage() {
     } catch (error: any) {
       const errorMsg = error.response?.data?.error || 'Failed to add to cart';
       if (errorMsg.includes('already in cart')) {
+        setIsInCart(true);
         showInfo('Course is already in your cart');
         setTimeout(() => {
           router.push('/cart');
@@ -434,33 +436,36 @@ export default function CourseDetailPage() {
                         </div>
                         <div className="divide-y divide-[#334155]">
                           {section.lectures.map((lecture: any, lectureIdx: number) => {
-                            const canPreview = lecture.is_preview || isEnrolled;
+                            // Preview lectures work for everyone (logged in or not)
+                            // Full lectures only work if enrolled or in cart
+                            const isPreviewLecture = lecture.is_preview;
+                            const hasFullAccess = isEnrolled || isInCart;
+                            const canAccess = isPreviewLecture || hasFullAccess;
+                            
                             return (
                               <div 
                                 key={lecture.id} 
                                 className={`px-4 py-3 flex items-center justify-between transition-colors ${
-                                  canPreview ? 'hover:bg-[#1E293B]/30 cursor-pointer' : 'opacity-60'
+                                  canAccess ? 'hover:bg-[#1E293B]/30 cursor-pointer' : 'opacity-60'
                                 }`}
                                 onClick={() => {
-                                  if (canPreview) {
+                                  if (canAccess) {
                                     router.push(`/learn/${course.slug}?lecture=${lecture.id}`);
-                                  } else if (!isAuthenticated) {
-                                    showInfo('Please add this course to cart or enroll to access this lecture');
                                   } else {
-                                    showInfo('Please add this course to cart or enroll to access this lecture');
+                                    showInfo('Please add this course to cart to access this lecture');
                                   }
                                 }}
                               >
                                 <div className="flex items-center gap-3 flex-1">
-                                  <Play className={`w-4 h-4 ${canPreview ? 'text-[#10B981]' : 'text-[#6B7280]'} flex-shrink-0`} />
-                                  <span className={`text-sm ${canPreview ? 'text-[#D1D5DB]' : 'text-[#6B7280]'}`}>{lecture.title}</span>
-                                  {lecture.is_preview && (
+                                  <Play className={`w-4 h-4 ${canAccess ? 'text-[#10B981]' : 'text-[#6B7280]'} flex-shrink-0`} />
+                                  <span className={`text-sm ${canAccess ? 'text-[#D1D5DB]' : 'text-[#6B7280]'}`}>{lecture.title}</span>
+                                  {isPreviewLecture && (
                                     <span className="px-2 py-0.5 text-xs font-medium bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/30 rounded">
                                       Preview
                                     </span>
                                   )}
                                 </div>
-                                <span className={`text-xs ml-4 ${canPreview ? 'text-[#9CA3AF]' : 'text-[#6B7280]'}`}>{lecture.duration_minutes}m</span>
+                                <span className={`text-xs ml-4 ${canAccess ? 'text-[#9CA3AF]' : 'text-[#6B7280]'}`}>{lecture.duration_minutes}m</span>
                               </div>
                             );
                           })}
@@ -492,7 +497,7 @@ export default function CourseDetailPage() {
                 </div>
 
                 <div className="space-y-4 mb-8">
-                  {isEnrolled ? (
+                  {(isEnrolled || isInCart) ? (
                     <Link href={`/learn/${course.slug}`}>
                       <motion.button
                         whileHover={{ scale: 1.02 }}
@@ -505,18 +510,6 @@ export default function CourseDetailPage() {
                     </Link>
                   ) : (
                     <>
-                      {isAuthenticated && (
-                        <motion.button
-                          onClick={handleEnroll}
-                          disabled={enrolling}
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          className="w-full bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#10B981] text-white py-4 rounded-xl font-black text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-[#10B981]/30 hover:shadow-[#10B981]/50 flex items-center justify-center gap-2"
-                        >
-                          <Play className="w-5 h-5" />
-                          {enrolling ? 'Enrolling...' : 'Enroll Now'}
-                        </motion.button>
-                      )}
                       <motion.button
                         onClick={handleAddToCart}
                         whileHover={{ scale: 1.02 }}
