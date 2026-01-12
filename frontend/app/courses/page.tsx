@@ -239,7 +239,7 @@ export default function CoursesPage() {
                     onClick={() => setViewMode('grid')}
                     className={`p-2 md:p-2.5 lg:p-3 rounded-xl transition-all duration-300 ${
                       viewMode === 'grid' 
-                        ? 'bg-gradient-to-r from-[#10B981] to-[#059669] text-white shadow-lg' 
+                        ? 'bg-[#10B981] text-white shadow-lg' 
                         : 'text-[#9CA3AF] hover:text-white hover:bg-[#1E293B]'
                     }`}
                   >
@@ -249,7 +249,7 @@ export default function CoursesPage() {
                     onClick={() => setViewMode('list')}
                     className={`p-2 md:p-2.5 lg:p-3 rounded-xl transition-all duration-300 ${
                       viewMode === 'list' 
-                        ? 'bg-gradient-to-r from-[#10B981] to-[#059669] text-white shadow-lg' 
+                        ? 'bg-[#10B981] text-white shadow-lg' 
                         : 'text-[#9CA3AF] hover:text-white hover:bg-[#1E293B]'
                     }`}
                   >
@@ -300,7 +300,7 @@ export default function CoursesPage() {
                 >
                   <div className="bg-[#1E293B] border border-[#334155] rounded-2xl p-4 md:p-5 lg:p-6 hover:bg-[#334155] hover:border-[#10B981] transition-all duration-500 hover:scale-[1.01] hover:-translate-y-1">
                     <div className="flex items-start gap-4 md:gap-5 lg:gap-6">
-                      <div className="relative w-28 md:w-40 lg:w-48 h-20 md:h-28 lg:h-32 rounded-xl overflow-hidden flex-shrink-0 bg-gradient-to-br from-[#10B981] to-[#3B82F6]">
+                      <div className="relative w-28 md:w-40 lg:w-48 h-20 md:h-28 lg:h-32 rounded-xl overflow-hidden flex-shrink-0 bg-[#10B981]">
                         {course.thumbnail ? (
                           <img
                             src={course.thumbnail}

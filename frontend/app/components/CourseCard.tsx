@@ -43,7 +43,7 @@ export default function CourseCard({ course, index = 0 }: CourseCardProps) {
       <Link href={`/courses/${course.slug}`} className="block group h-full">
         <div className="h-full flex flex-col bg-[#1E293B] rounded-2xl overflow-hidden border border-[#334155] hover:border-[#10B981]/50 transition-all duration-300 hover:shadow-2xl hover:shadow-[#10B981]/20 hover:-translate-y-1 shadow-lg shadow-black/20">
           {/* Course Image */}
-          <div className="relative w-full aspect-video bg-gradient-to-br from-[#10B981] via-[#3B82F6] to-[#8B5CF6] overflow-hidden">
+          <div className="relative w-full aspect-video bg-[#10B981] overflow-hidden">
             {course.thumbnail ? (
               <>
                 <motion.img

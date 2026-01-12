@@ -87,7 +87,7 @@ export default function AdminCoursesPage() {
           </div>
           <Link
             href="/admin/courses/new"
-            className="px-6 py-3 bg-gradient-to-r from-[#10B981] to-[#059669] text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-[#10B981]/30 transition-all flex items-center gap-2"
+            className="px-6 py-3 bg-[#10B981] text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-[#10B981]/30 transition-all flex items-center gap-2"
           >
             <FiPlus /> Create Course
           </Link>
@@ -160,7 +160,7 @@ export default function AdminCoursesPage() {
               <p className="text-[#9CA3AF] mb-4">No courses found</p>
               <Link
                 href="/admin/courses/new"
-                className="inline-block px-6 py-3 bg-gradient-to-r from-[#10B981] to-[#059669] text-white rounded-lg font-semibold"
+                className="inline-block px-6 py-3 bg-[#10B981] text-white rounded-lg font-semibold"
               >
                 Create First Course
               </Link>

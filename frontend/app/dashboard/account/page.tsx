@@ -190,7 +190,7 @@ export default function AccountPage() {
                 <button
                   type="submit"
                   disabled={changingPassword}
-                  className="mt-4 w-full bg-gradient-to-r from-[#3B82F6] to-[#2563EB] hover:from-[#2563EB] hover:to-[#3B82F6] text-white px-6 py-3 rounded-xl font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 hover:shadow-xl"
+                  className="mt-4 w-full bg-[#10B981] hover:bg-[#10B981] text-white px-6 py-3 rounded-xl font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 hover:shadow-xl"
                 >
                   {changingPassword ? 'Changing...' : 'Change Password'}
                 </button>
@@ -200,7 +200,7 @@ export default function AccountPage() {
             <button
               type="submit"
               disabled={saving}
-              className="w-full bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#10B981] text-white px-6 py-4 rounded-xl font-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 hover:shadow-2xl hover:shadow-[#10B981]/50 flex items-center justify-center gap-2"
+              className="w-full bg-[#10B981] hover:bg-[#10B981] text-white px-6 py-4 rounded-xl font-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 hover:shadow-2xl hover:shadow-[#10B981]/50 flex items-center justify-center gap-2"
             >
               <FiSave className={saving ? 'animate-spin' : ''} />
               {saving ? 'Saving...' : 'Save Changes'}

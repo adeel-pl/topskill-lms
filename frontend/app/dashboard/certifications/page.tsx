@@ -45,7 +45,7 @@ export default function CertificationsPage() {
           <p className="text-[#9CA3AF] mb-6 md:mb-8">Complete courses to earn certificates and showcase your achievements!</p>
           <Link
             href="/courses"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-[#10B981] to-[#059669] text-white px-8 py-4 rounded-xl font-black transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#10B981]/50"
+            className="inline-flex items-center gap-2 bg-[#10B981] text-white px-8 py-4 rounded-xl font-black transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#10B981]/50"
           >
             <FiBookOpen />
             Browse Courses

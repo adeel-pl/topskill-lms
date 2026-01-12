@@ -77,7 +77,7 @@ export default function WishlistPage() {
             <p className="text-[#9CA3AF] mb-6 md:mb-8">Add courses to your wishlist to save them for later!</p>
             <Link
               href="/courses"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-[#10B981] to-[#059669] text-white px-8 py-4 rounded-xl font-black transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#10B981]/50"
+              className="inline-flex items-center gap-2 bg-[#10B981] text-white px-8 py-4 rounded-xl font-black transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#10B981]/50"
             >
               <FiBookOpen />
               Browse Courses
@@ -107,7 +107,7 @@ export default function WishlistPage() {
                 <div className="text-xl md:text-2xl font-black text-[#10B981]">${item.course?.price || 0}</div>
                 <Link
                   href={`/courses/${item.course?.slug}`}
-                  className="bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#10B981] text-white px-4 md:px-5 py-2 md:py-2.5 rounded-xl font-black transition-all duration-300 hover:scale-105 text-sm"
+                  className="bg-[#10B981] hover:bg-[#10B981] text-white px-4 md:px-5 py-2 md:py-2.5 rounded-xl font-black transition-all duration-300 hover:scale-105 text-sm"
                 >
                   View Course
                 </Link>

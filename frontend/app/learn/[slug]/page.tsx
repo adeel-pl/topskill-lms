@@ -299,7 +299,7 @@ export default function CoursePlayerPage() {
           <p className="text-[#9CA3AF] mb-6">The course you're looking for doesn't exist or you're not enrolled.</p>
           <button
             onClick={() => router.push('/courses')}
-            className="bg-gradient-to-r from-[#10B981] to-[#059669] text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
+            className="bg-[#10B981] text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
           >
             Browse Courses
           </button>
@@ -330,7 +330,7 @@ export default function CoursePlayerPage() {
           <p className="text-[#9CA3AF] mb-6">This course doesn't have any lectures yet.</p>
           <button
             onClick={() => router.push('/courses')}
-            className="bg-gradient-to-r from-[#10B981] to-[#059669] text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
+            className="bg-[#10B981] text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
           >
             Browse Courses
           </button>
@@ -353,13 +353,13 @@ export default function CoursePlayerPage() {
               <h2 className="text-base font-bold text-white line-clamp-2">{course.title}</h2>
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="text-white hover:text-[#66CC33] transition-colors p-1"
+                className="text-white hover:text-[#10B981] transition-colors p-1"
                 aria-label="Close sidebar"
               >
                 ×
               </button>
             </div>
-            <div className="text-xs text-[#66CC33]">{totalLectures} lectures</div>
+            <div className="text-xs text-[#10B981]">{totalLectures} lectures</div>
           </div>
 
           <div className="p-2 pb-4">
@@ -367,7 +367,7 @@ export default function CoursePlayerPage() {
               <div key={section.id} className="mb-2">
                 <div className="px-3 py-2 font-semibold text-xs bg-[#1a2a4a] rounded-sm text-white">
                   {section.title}
-                  <span className="ml-2 text-[#66CC33]">
+                  <span className="ml-2 text-[#10B981]">
                     {section.completed_lectures}/{section.total_lectures}
                   </span>
                 </div>
@@ -376,22 +376,22 @@ export default function CoursePlayerPage() {
                     <button
                       key={lecture.id}
                       onClick={() => selectLecture(course.id, lecture.id)}
-                      className={`w-full text-left px-4 py-2.5 text-sm hover:bg-[#1a2a4a] rounded-sm flex items-center justify-between ${selectedLecture.id === lecture.id ? 'bg-[#1a2a4a] border-l-2 border-[#66CC33]' : 'text-[#E5E7EB]'
+                      className={`w-full text-left px-4 py-2.5 text-sm hover:bg-[#1a2a4a] rounded-sm flex items-center justify-between ${selectedLecture.id === lecture.id ? 'bg-[#1a2a4a] border-l-2 border-[#10B981]' : 'text-[#E5E7EB]'
                         }`}
                     >
                       <div className="flex items-center gap-2 flex-1 min-w-0">
                         {lecture.is_completed ? (
-                          <FiCheck className="text-[#66CC33] flex-shrink-0" />
+                          <FiCheck className="text-[#10B981] flex-shrink-0" />
                         ) : (
-                          <FiPlay className="text-[#66CC33] flex-shrink-0 text-xs" />
+                          <FiPlay className="text-[#10B981] flex-shrink-0 text-xs" />
                         )}
                         <span className="truncate text-sm">{lecture.title}</span>
                         {lecture.is_preview && (
-                          <span className="text-xs text-[#66CC33] ml-1">Preview</span>
+                          <span className="text-xs text-[#10B981] ml-1">Preview</span>
                         )}
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-                        <FiClock className="text-[#66CC33] text-xs" />
+                        <FiClock className="text-[#10B981] text-xs" />
                         <span className="text-xs text-[#E5E7EB]">
                           {lecture.duration_minutes}m
                         </span>
@@ -467,7 +467,7 @@ export default function CoursePlayerPage() {
                 <button
                   onClick={() => setActiveTab('overview')}
                   className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${activeTab === 'overview'
-                    ? 'border-[#66CC33] text-[#000F2C]'
+                    ? 'border-[#10B981] text-[#000F2C]'
                     : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
                     }`}
                 >
@@ -477,7 +477,7 @@ export default function CoursePlayerPage() {
                   <button
                     onClick={() => setActiveTab('reviews')}
                     className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${activeTab === 'reviews'
-                      ? 'border-[#66CC33] text-[#000F2C]'
+                      ? 'border-[#10B981] text-[#000F2C]'
                       : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
                       }`}
                   >
@@ -488,7 +488,7 @@ export default function CoursePlayerPage() {
                   <button
                     onClick={() => setActiveTab('announcements')}
                     className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${activeTab === 'announcements'
-                      ? 'border-[#66CC33] text-[#000F2C]'
+                      ? 'border-[#10B981] text-[#000F2C]'
                       : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
                       }`}
                   >
@@ -500,7 +500,7 @@ export default function CoursePlayerPage() {
                   <button
                     onClick={() => setActiveTab('notes')}
                     className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${activeTab === 'notes'
-                      ? 'border-[#66CC33] text-[#000F2C]'
+                      ? 'border-[#10B981] text-[#000F2C]'
                       : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
                       }`}
                   >
@@ -512,7 +512,7 @@ export default function CoursePlayerPage() {
                   <button
                     onClick={() => setActiveTab('questions')}
                     className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${activeTab === 'questions'
-                      ? 'border-[#66CC33] text-[#000F2C]'
+                      ? 'border-[#10B981] text-[#000F2C]'
                       : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
                       }`}
                   >
@@ -524,7 +524,7 @@ export default function CoursePlayerPage() {
                   <button
                     onClick={() => setActiveTab('quizzes')}
                     className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${activeTab === 'quizzes'
-                      ? 'border-[#66CC33] text-[#000F2C]'
+                      ? 'border-[#10B981] text-[#000F2C]'
                       : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
                       }`}
                   >
@@ -535,7 +535,7 @@ export default function CoursePlayerPage() {
                   <button
                     onClick={() => setActiveTab('assignments')}
                     className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${activeTab === 'assignments'
-                      ? 'border-[#66CC33] text-[#000F2C]'
+                      ? 'border-[#10B981] text-[#000F2C]'
                       : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
                       }`}
                   >
@@ -576,7 +576,7 @@ export default function CoursePlayerPage() {
                             showError(errorMsg);
                           }
                         }}
-                        className="px-6 py-3 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-sm font-semibold transition-colors flex items-center gap-2"
+                        className="px-6 py-3 bg-[#10B981] hover:bg-[#10B981] text-white rounded-sm font-semibold transition-colors flex items-center gap-2"
                       >
                         <FiCheck className="w-5 h-5" />
                         Mark as Complete
@@ -612,7 +612,7 @@ export default function CoursePlayerPage() {
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
                               }
                             }}
-                            className="flex items-center gap-2 px-6 py-3 border-2 border-gray-300 rounded-lg hover:bg-gray-50 hover:border-[#66CC33] transition-all text-[#000F2C] font-semibold"
+                            className="flex items-center gap-2 px-6 py-3 border-2 border-gray-300 rounded-lg hover:bg-gray-50 hover:border-[#10B981] transition-all text-[#000F2C] font-semibold"
                           >
                             <FiChevronLeft className="w-5 h-5" />
                             Previous
@@ -635,7 +635,7 @@ export default function CoursePlayerPage() {
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
                               }
                             }}
-                            className="flex items-center gap-2 px-6 py-3 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-lg font-semibold transition-all shadow-md hover:shadow-lg"
+                            className="flex items-center gap-2 px-6 py-3 bg-[#10B981] hover:bg-[#10B981] text-white rounded-lg font-semibold transition-all shadow-md hover:shadow-lg"
                           >
                             Next
                             <FiChevronRight className="w-5 h-5" />
@@ -656,7 +656,7 @@ export default function CoursePlayerPage() {
                     {isEnrolled && isAuthenticated && (
                       <button
                         onClick={() => setShowReviewForm(!showReviewForm)}
-                        className="px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-lg font-semibold transition-colors"
+                        className="px-4 py-2 bg-[#10B981] hover:bg-[#10B981] text-white rounded-lg font-semibold transition-colors"
                       >
                         {showReviewForm ? 'Cancel' : 'Write a Review'}
                       </button>
@@ -689,13 +689,13 @@ export default function CoursePlayerPage() {
                           value={reviewForm.comment}
                           onChange={(e) => setReviewForm({ ...reviewForm, comment: e.target.value })}
                           placeholder="Share your thoughts about this course..."
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#66CC33] resize-none"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#10B981] resize-none"
                           rows={5}
                         />
                       </div>
                       <button
                         onClick={handleSubmitReview}
-                        className="px-6 py-2 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-lg font-semibold transition-colors"
+                        className="px-6 py-2 bg-[#10B981] hover:bg-[#10B981] text-white rounded-lg font-semibold transition-colors"
                       >
                         Submit Review
                       </button>
@@ -716,7 +716,7 @@ export default function CoursePlayerPage() {
                       {reviews.slice(0, reviewsToShow).map((review: any) => (
                         <div key={review.id} className="border-b border-gray-200 pb-6 last:border-b-0">
                           <div className="flex items-start gap-4">
-                            <div className="w-10 h-10 bg-[#66CC33] rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
+                            <div className="w-10 h-10 bg-[#10B981] rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
                               {review.user?.first_name?.charAt(0) || review.user?.username?.charAt(0) || 'U'}
                             </div>
                             <div className="flex-1">
@@ -756,7 +756,7 @@ export default function CoursePlayerPage() {
                         <div className="text-center pt-4">
                           <button
                             onClick={() => setReviewsToShow(reviewsToShow + 5)}
-                            className="px-6 py-2 border-2 border-[#66CC33] text-[#66CC33] rounded-lg font-semibold hover:bg-[#66CC33] hover:text-white transition-colors"
+                            className="px-6 py-2 border-2 border-[#10B981] text-[#10B981] rounded-lg font-semibold hover:bg-[#10B981] hover:text-white transition-colors"
                           >
                             Show More ({reviews.length - reviewsToShow} more reviews)
                           </button>
@@ -780,11 +780,11 @@ export default function CoursePlayerPage() {
                   ) : (
                     <div className="space-y-4">
                       {announcements.map((announcement: any) => (
-                        <div key={announcement.id} className={`border rounded-lg p-6 ${announcement.is_pinned ? 'border-[#66CC33] bg-green-50' : 'border-gray-200 bg-white'}`}>
+                        <div key={announcement.id} className={`border rounded-lg p-6 ${announcement.is_pinned ? 'border-[#10B981] bg-green-50' : 'border-gray-200 bg-white'}`}>
                           <div className="flex items-start justify-between mb-3">
                             <div className="flex items-center gap-2">
                               {announcement.is_pinned && (
-                                <FiBell className="text-[#66CC33] flex-shrink-0" />
+                                <FiBell className="text-[#10B981] flex-shrink-0" />
                               )}
                               <h4 className="text-lg font-semibold text-[#000F2C]">{announcement.title}</h4>
                             </div>
@@ -818,7 +818,7 @@ export default function CoursePlayerPage() {
                     {isEnrolled && selectedLecture && (
                       <button
                         onClick={() => setShowNoteModal(true)}
-                        className="px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-lg font-semibold transition-colors"
+                        className="px-4 py-2 bg-[#10B981] hover:bg-[#10B981] text-white rounded-lg font-semibold transition-colors"
                       >
                         <FiBook className="inline mr-1" />
                         Add Note
@@ -870,7 +870,7 @@ export default function CoursePlayerPage() {
                       {qandas.map((qa: any, index: number) => (
                         <div key={qa.id} className="border border-gray-200 rounded-lg p-6 bg-white">
                           <div className="flex items-start gap-4">
-                            <div className="flex-shrink-0 w-8 h-8 bg-[#66CC33] rounded-full flex items-center justify-center text-white font-bold">
+                            <div className="flex-shrink-0 w-8 h-8 bg-[#10B981] rounded-full flex items-center justify-center text-white font-bold">
                               {index + 1}
                             </div>
                             <div className="flex-1">
@@ -972,14 +972,14 @@ export default function CoursePlayerPage() {
                               ) : hasCompletedAttempts && !bestPassed && canRetake ? (
                                 <button 
                                   onClick={() => router.push(`/courses/${params.slug}/quizzes/${quiz.id}`)}
-                                  className="px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-sm font-semibold text-sm"
+                                  className="px-4 py-2 bg-[#10B981] hover:bg-[#10B981] text-white rounded-sm font-semibold text-sm"
                                 >
                                   Retake Quiz
                                 </button>
                               ) : !hasCompletedAttempts ? (
                                 <button 
                                   onClick={() => router.push(`/courses/${params.slug}/quizzes/${quiz.id}`)}
-                                  className="px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-sm font-semibold text-sm"
+                                  className="px-4 py-2 bg-[#10B981] hover:bg-[#10B981] text-white rounded-sm font-semibold text-sm"
                                 >
                                   Start Quiz
                                 </button>
@@ -1051,7 +1051,7 @@ export default function CoursePlayerPage() {
                                 {isGraded && submission.score !== null && (
                                   <div className="flex items-center justify-between pt-2 border-t border-gray-200">
                                     <span className="text-sm font-medium text-[#000F2C]">Score:</span>
-                                    <span className="text-lg font-bold text-[#66CC33]">
+                                    <span className="text-lg font-bold text-[#10B981]">
                                       {submission.score} / {assignment.max_score}
                                     </span>
                                   </div>
@@ -1068,7 +1068,7 @@ export default function CoursePlayerPage() {
                                       href={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000'}${submission.submission_file}`}
                                       target="_blank" 
                                       rel="noopener noreferrer"
-                                      className="text-sm text-[#66CC33] hover:underline"
+                                      className="text-sm text-[#10B981] hover:underline"
                                     >
                                       View Submitted File →
                                     </a>
@@ -1085,7 +1085,7 @@ export default function CoursePlayerPage() {
                                 onChange={(e) => setAssignmentSubmissionText(e.target.value)}
                                 placeholder="Enter your submission text here..."
                                 rows={4}
-                                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-sm text-[#000F2C] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#66CC33]"
+                                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-sm text-[#000F2C] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#10B981]"
                               />
                               <input
                                 type="file"
@@ -1136,7 +1136,7 @@ export default function CoursePlayerPage() {
                                     }
                                   }}
                                   disabled={!assignmentSubmissionText && !assignmentSubmissionFile}
-                                  className="px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-sm font-semibold text-sm"
+                                  className="px-4 py-2 bg-[#10B981] hover:bg-[#10B981] disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-sm font-semibold text-sm"
                                 >
                                   {submission && submission.id ? 'Update' : 'Submit'}
                                 </button>
@@ -1163,7 +1163,7 @@ export default function CoursePlayerPage() {
                                     }
                                     setSubmittingAssignment(assignment.id);
                                   }}
-                                  className="px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-sm font-semibold text-sm"
+                                  className="px-4 py-2 bg-[#10B981] hover:bg-[#10B981] text-white rounded-sm font-semibold text-sm"
                                 >
                                   Submit Assignment
                                 </button>
@@ -1210,7 +1210,7 @@ export default function CoursePlayerPage() {
               value={noteText}
               onChange={(e) => setNoteText(e.target.value)}
               placeholder="Enter your note here..."
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#66CC33] resize-none text-[#000F2C]"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#10B981] resize-none text-[#000F2C]"
               rows={6}
               autoFocus
             />
@@ -1223,7 +1223,7 @@ export default function CoursePlayerPage() {
                     setShowNoteModal(false);
                   }
                 }}
-                className="flex-1 px-4 py-2 bg-[#66CC33] hover:bg-[#4da826] text-white rounded-lg font-semibold transition-colors"
+                className="flex-1 px-4 py-2 bg-[#10B981] hover:bg-[#10B981] text-white rounded-lg font-semibold transition-colors"
               >
                 Save Note
               </button>

@@ -45,7 +45,7 @@ export default function ArchivedPage() {
                     <p className="text-[#9CA3AF] mb-6 md:mb-8">Archived courses will appear here when you archive them</p>
                     <Link
                         href="/dashboard/my-courses"
-                        className="inline-flex items-center gap-2 bg-gradient-to-r from-[#10B981] to-[#059669] text-white px-8 py-4 rounded-xl font-black transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#10B981]/50"
+                        className="inline-flex items-center gap-2 bg-[#10B981] text-white px-8 py-4 rounded-xl font-black transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#10B981]/50"
                     >
                         <FiBookOpen />
                         View My Courses

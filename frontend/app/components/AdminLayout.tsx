@@ -137,7 +137,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           {/* Logo & Header */}
           <div className="flex items-center justify-between p-6 border-b border-[#334155]">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#10B981] to-[#059669] rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-[#10B981] rounded-lg flex items-center justify-center">
                 <FiLayout className="text-white text-xl" />
               </div>
               <div>
@@ -174,7 +174,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     transition-all duration-200
                     ${
                       active
-                        ? 'bg-gradient-to-r from-[#10B981]/20 to-[#059669]/20 text-[#10B981] border-l-4 border-[#10B981]'
+                        ? 'bg-[#10B981]/20 text-[#10B981] border-l-4 border-[#10B981]'
                         : 'text-[#D1D5DB] hover:bg-[#1E293B] hover:text-white'
                     }
                   `}
@@ -192,7 +192,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           {/* User Section */}
           <div className="p-4 border-t border-[#334155]">
             <div className="flex items-center gap-3 mb-3 p-3 rounded-lg bg-[#1E293B]">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#10B981] to-[#059669] rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-[#10B981] rounded-full flex items-center justify-center">
                 <span className="text-white font-bold text-sm">
                   {user?.username?.charAt(0).toUpperCase() || 'A'}
                 </span>

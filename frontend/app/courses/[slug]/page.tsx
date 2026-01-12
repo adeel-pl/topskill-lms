@@ -248,7 +248,7 @@ export default function CourseDetailPage() {
             transition={{ duration: 0.5 }}
             className="mb-10 rounded-3xl overflow-hidden border-2 border-[#334155] shadow-2xl"
           >
-            <div className="relative w-full h-80 lg:h-96 bg-gradient-to-br from-[#10B981] via-[#3B82F6] to-[#8B5CF6]">
+            <div className="relative w-full h-80 lg:h-96 bg-[#10B981]">
               <img
                 src={course.thumbnail}
                 alt={course.title}
@@ -289,7 +289,7 @@ export default function CourseDetailPage() {
               <div className="flex items-center gap-4 md:gap-6 mb-6 md:mb-8 flex-wrap">
                 {(course.instructor_name || overview?.course?.instructor?.name) && (
                   <div className="flex items-center gap-3 bg-[#1E293B]/50 backdrop-blur-sm border border-[#334155] rounded-xl px-4 md:px-5 py-3 md:py-3.5 hover:border-[#10B981]/50 transition-colors">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#10B981] to-[#059669] flex items-center justify-center flex-shrink-0 shadow-lg shadow-[#10B981]/30">
+                    <div className="w-12 h-12 rounded-full bg-[#10B981] flex items-center justify-center flex-shrink-0 shadow-lg shadow-[#10B981]/30">
                       <User className="text-white w-5 h-5" />
                     </div>
                     <div className="ml-2">
@@ -333,13 +333,13 @@ export default function CourseDetailPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="bg-gradient-to-br from-[#1E293B] to-[#0F172A] border-2 border-[#334155] rounded-3xl p-6 md:p-8 lg:p-10 shadow-xl shadow-black/20 relative overflow-hidden"
+              className="bg-[#1E293B] border-2 border-[#334155] rounded-3xl p-6 md:p-8 lg:p-10 shadow-xl shadow-black/20 relative overflow-hidden"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-[#10B981]/5 via-transparent to-[#3B82F6]/5"></div>
+              <div className="absolute inset-0 bg-[#10B981]/5"></div>
               
               <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-8">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#10B981] to-[#059669] flex items-center justify-center shadow-lg shadow-[#10B981]/30">
+                  <div className="w-12 h-12 rounded-xl bg-[#10B981] flex items-center justify-center shadow-lg shadow-[#10B981]/30">
                     <Check className="text-white w-5 h-5" />
                   </div>
                   <h2 className="text-2xl md:text-3xl font-black text-white">What you'll learn</h2>
@@ -352,7 +352,7 @@ export default function CourseDetailPage() {
                     'Lifetime access',
                   ]).map((item: string, idx: number) => (
                     <div key={idx} className="flex items-start gap-3 p-3 md:p-4 bg-[#0F172A]/30 rounded-xl border border-[#334155]/50 hover:border-[#10B981]/50 transition-colors">
-                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#10B981] to-[#059669] flex items-center justify-center flex-shrink-0 mt-0.5 shadow-md shadow-[#10B981]/30">
+                      <div className="w-6 h-6 rounded-full bg-[#10B981] flex items-center justify-center flex-shrink-0 mt-0.5 shadow-md shadow-[#10B981]/30">
                         <Check className="text-white w-4 h-4" />
                       </div>
                       <span className="text-[#D1D5DB] text-base font-medium leading-relaxed">{item}</span>
@@ -367,13 +367,13 @@ export default function CourseDetailPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="bg-gradient-to-br from-[#1E293B] to-[#0F172A] border-2 border-[#334155] rounded-3xl p-6 md:p-8 lg:p-10 shadow-xl shadow-black/20 relative overflow-hidden"
+              className="bg-[#1E293B] border-2 border-[#334155] rounded-3xl p-6 md:p-8 lg:p-10 shadow-xl shadow-black/20 relative overflow-hidden"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-[#3B82F6]/5 via-transparent to-[#8B5CF6]/5"></div>
+              <div className="absolute inset-0 bg-[#10B981]/5"></div>
               
               <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-8">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#3B82F6] to-[#8B5CF6] flex items-center justify-center shadow-lg shadow-[#3B82F6]/30">
+                  <div className="w-12 h-12 rounded-xl bg-[#10B981] flex items-center justify-center shadow-lg shadow-[#10B981]/30">
                     <Clock className="text-white w-5 h-5" />
                   </div>
                   <h2 className="text-2xl md:text-3xl font-black text-white">Course Content</h2>
@@ -407,13 +407,13 @@ export default function CourseDetailPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
-                className="bg-gradient-to-br from-[#1E293B] to-[#0F172A] border-2 border-[#334155] rounded-3xl p-6 md:p-8 lg:p-10 shadow-xl shadow-black/20 relative overflow-hidden"
+                className="bg-[#1E293B] border-2 border-[#334155] rounded-3xl p-6 md:p-8 lg:p-10 shadow-xl shadow-black/20 relative overflow-hidden"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-[#10B981]/5 via-transparent to-[#3B82F6]/5"></div>
+                <div className="absolute inset-0 bg-[#10B981]/5"></div>
                 
                 <div className="relative z-10">
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#10B981] to-[#059669] flex items-center justify-center shadow-lg shadow-[#10B981]/30">
+                    <div className="w-12 h-12 rounded-xl bg-[#10B981] flex items-center justify-center shadow-lg shadow-[#10B981]/30">
                       <Play className="text-white w-5 h-5" />
                     </div>
                     <h2 className="text-2xl md:text-3xl font-black text-white">Course Curriculum</h2>
@@ -484,13 +484,13 @@ export default function CourseDetailPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="sticky top-24 bg-gradient-to-br from-[#1E293B] to-[#0F172A] border-2 border-[#334155] rounded-3xl p-6 md:p-8 lg:p-10 shadow-2xl shadow-black/30 relative overflow-hidden"
+              className="sticky top-24 bg-[#1E293B] border-2 border-[#334155] rounded-3xl p-6 md:p-8 lg:p-10 shadow-2xl shadow-black/30 relative overflow-hidden"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-[#10B981]/5 via-transparent to-[#3B82F6]/5"></div>
+              <div className="absolute inset-0 bg-[#10B981]/5"></div>
               
               <div className="relative z-10">
                 <div className="mb-8">
-                  <div className="text-5xl md:text-6xl font-black text-white mb-2 bg-gradient-to-r from-white to-[#10B981] bg-clip-text text-transparent">
+                  <div className="text-5xl md:text-6xl font-black text-white mb-2 text-[#10B981]">
                     {formatPrice(course.price)}
                   </div>
                   <div className="text-sm text-[#9CA3AF] font-medium">One-time payment</div>
@@ -502,7 +502,7 @@ export default function CourseDetailPage() {
                       <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="w-full bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#10B981] text-white py-4 rounded-xl font-black text-lg transition-all duration-300 shadow-xl shadow-[#10B981]/30 hover:shadow-[#10B981]/50 flex items-center justify-center gap-2"
+                        className="w-full bg-[#10B981] hover:bg-[#10B981] text-white py-4 rounded-xl font-black text-lg transition-all duration-300 shadow-xl shadow-[#10B981]/30 hover:shadow-[#10B981]/50 flex items-center justify-center gap-2"
                       >
                         <Play className="w-5 h-5" />
                         Go to Course
@@ -514,7 +514,7 @@ export default function CourseDetailPage() {
                         onClick={handleAddToCart}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="w-full bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#10B981] text-white py-4 rounded-xl font-black text-lg transition-all duration-300 shadow-xl shadow-[#10B981]/30 hover:shadow-[#10B981]/50 flex items-center justify-center gap-2"
+                        className="w-full bg-[#10B981] hover:bg-[#10B981] text-white py-4 rounded-xl font-black text-lg transition-all duration-300 shadow-xl shadow-[#10B981]/30 hover:shadow-[#10B981]/50 flex items-center justify-center gap-2"
                       >
                         <ShoppingCart className="w-5 h-5" />
                         Add to Cart
@@ -541,7 +541,7 @@ export default function CourseDetailPage() {
 
                 <div className="border-t border-[#334155] pt-6 space-y-4">
                   <div className="flex items-center gap-3 bg-[#0F172A]/30 backdrop-blur-sm border border-[#334155] rounded-xl px-4 py-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#10B981]/20 to-[#059669]/20 flex items-center justify-center flex-shrink-0 border border-[#10B981]/30">
+                    <div className="w-10 h-10 rounded-xl bg-[#10B981]/20 flex items-center justify-center flex-shrink-0 border border-[#10B981]/30">
                       <Star className="text-[#10B981] w-5 h-5" />
                     </div>
                     <span className="text-[#D1D5DB] text-sm font-medium">
@@ -549,7 +549,7 @@ export default function CourseDetailPage() {
                     </span>
                   </div>
                   <div className="flex items-center gap-3 bg-[#0F172A]/30 backdrop-blur-sm border border-[#334155] rounded-xl px-4 py-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#10B981]/20 to-[#059669]/20 flex items-center justify-center flex-shrink-0 border border-[#10B981]/30">
+                    <div className="w-10 h-10 rounded-xl bg-[#10B981]/20 flex items-center justify-center flex-shrink-0 border border-[#10B981]/30">
                       <Users className="text-[#10B981] w-5 h-5" />
                     </div>
                     <span className="text-[#D1D5DB] text-sm font-medium">
@@ -557,7 +557,7 @@ export default function CourseDetailPage() {
                     </span>
                   </div>
                   <div className="flex items-center gap-3 bg-[#0F172A]/30 backdrop-blur-sm border border-[#334155] rounded-xl px-4 py-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#10B981]/20 to-[#059669]/20 flex items-center justify-center flex-shrink-0 border border-[#10B981]/30">
+                    <div className="w-10 h-10 rounded-xl bg-[#10B981]/20 flex items-center justify-center flex-shrink-0 border border-[#10B981]/30">
                       <Clock className="text-[#10B981] w-5 h-5" />
                     </div>
                     <span className="text-[#D1D5DB] text-sm font-medium">

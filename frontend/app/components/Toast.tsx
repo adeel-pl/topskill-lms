@@ -35,7 +35,7 @@ const ToastComponent = ({ toast, onClose }: ToastProps) => {
 
   const colors = {
     success: {
-      bg: 'bg-gradient-to-r from-[#10B981] to-[#059669]',
+      bg: 'bg-[#10B981]',
       border: 'border-[#10B981]',
       icon: 'text-white',
     },
@@ -50,7 +50,7 @@ const ToastComponent = ({ toast, onClose }: ToastProps) => {
       icon: 'text-white',
     },
     info: {
-      bg: 'bg-gradient-to-r from-[#3B82F6] to-[#2563EB]',
+      bg: 'bg-[#10B981]',
       border: 'border-[#3B82F6]',
       icon: 'text-white',
     },

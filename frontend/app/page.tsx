@@ -127,7 +127,7 @@ export default function HomePage() {
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Link
                   href="/courses"
-                  className="group px-8 py-4 bg-gradient-to-r from-[#10B981] to-[#059669] text-white font-bold text-lg rounded-xl shadow-lg shadow-[#10B981]/30 hover:shadow-[#10B981]/50 transition-all duration-300 flex items-center gap-2"
+                  className="group px-8 py-4 bg-[#10B981] text-white font-bold text-lg rounded-xl shadow-lg shadow-[#10B981]/30 hover:shadow-[#10B981]/50 transition-all duration-300 flex items-center gap-2"
                 >
                   Explore Courses
                   <ArrowRight className="group-hover:translate-x-1 transition-transform w-5 h-5" />
@@ -188,7 +188,7 @@ export default function HomePage() {
       </section>
 
       {/* Physical Courses / Bootcamps Section */}
-      <section className="py-20 mb-50 bg-gradient-to-br from-[#1E293B] to-[#0F172A]">
+      <section className="py-20 mb-50 bg-[#1E293B]">
         <div className="max-w-container xl:max-w-container-xl 2xl:max-w-container-2xl mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -229,8 +229,8 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section - Premium Design */}
-      <section className="py-24 bg-gradient-to-br from-[#1E293B] to-[#0F172A] relative overflow-hidden mb-50">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#10B981]/5 via-transparent to-[#3B82F6]/5"></div>
+      <section className="py-24 bg-[#1E293B] relative overflow-hidden mb-50">
+        <div className="absolute inset-0 bg-[#10B981]/5"></div>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -247,7 +247,7 @@ export default function HomePage() {
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link
               href="/courses"
-              className="inline-block px-10 py-5 bg-gradient-to-r from-[#10B981] to-[#059669] text-white font-bold text-lg rounded-xl transition-all duration-300 shadow-xl shadow-[#10B981]/30 hover:shadow-[#10B981]/50"
+              className="inline-block px-10 py-5 bg-[#10B981] text-white font-bold text-lg rounded-xl transition-all duration-300 shadow-xl shadow-[#10B981]/30 hover:shadow-[#10B981]/50"
             >
               Browse All Courses
             </Link>
@@ -262,7 +262,7 @@ export default function HomePage() {
             {/* Brand */}
             <div className="sm:col-span-2 md:col-span-1">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#10B981] to-[#059669] rounded-xl flex items-center justify-center shadow-lg shadow-[#10B981]/30">
+                <div className="w-12 h-12 bg-[#10B981] rounded-xl flex items-center justify-center shadow-lg shadow-[#10B981]/30">
                   <div className="w-6 h-6 bg-[#0F172A] rounded-lg"></div>
                 </div>
                 <span className="text-2xl font-black text-white">

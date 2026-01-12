@@ -102,7 +102,7 @@ export default function PureLogicsNavbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 flex-shrink-0 group">
             <motion.div
-              className="w-10 h-10 bg-gradient-to-br from-[#10B981] to-[#059669] rounded-xl flex items-center justify-center shadow-lg shadow-[#10B981]/30"
+              className="w-10 h-10 bg-[#10B981] rounded-xl flex items-center justify-center shadow-lg shadow-[#10B981]/30"
               whileHover={{ scale: 1.1 }}
               transition={{ duration: 0.2 }}
             >
@@ -207,7 +207,7 @@ export default function PureLogicsNavbar() {
                         }}
                         className="flex items-center gap-3 px-4 py-3 hover:bg-[#334155] transition-colors group"
                       >
-                        <div className="flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden bg-gradient-to-br from-[#10B981] to-[#3B82F6] flex items-center justify-center">
+                        <div className="flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden bg-[#10B981] flex items-center justify-center">
                           {course.thumbnail ? (
                             <img
                               src={course.thumbnail}
@@ -259,7 +259,7 @@ export default function PureLogicsNavbar() {
                 </Link>
                 <motion.button
                   onClick={logout}
-                  className="bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#10B981] text-white px-5 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap transition-all duration-300 shadow-lg shadow-[#10B981]/20"
+                  className="bg-[#10B981] hover:bg-[#10B981] text-white px-5 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap transition-all duration-300 shadow-lg shadow-[#10B981]/20"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -277,7 +277,7 @@ export default function PureLogicsNavbar() {
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Link
                     href="/register"
-                    className="bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#10B981] text-white px-5 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap transition-all duration-300 shadow-lg shadow-[#10B981]/20 inline-block"
+                    className="bg-[#10B981] hover:bg-[#10B981] text-white px-5 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap transition-all duration-300 shadow-lg shadow-[#10B981]/20 inline-block"
                   >
                     Sign up
                   </Link>

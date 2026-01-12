@@ -23,11 +23,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { logout } = useAuthStore();
 
   const navItems = [
-    { href: '/dashboard/my-courses', icon: FiBookOpen, label: 'My learning', color: 'from-[#66CC33] to-[#4da826]' },
-    { href: '/dashboard/certifications', icon: FiAward, label: 'Certifications', color: 'from-[#66CC33] to-[#4da826]' },
-    { href: '/dashboard/archived', icon: FiArchive, label: 'Archived', color: 'from-[#66CC33] to-[#4da826]' },
-    { href: '/dashboard/purchase-history', icon: FiShoppingBag, label: 'Purchase history', color: 'from-[#66CC33] to-[#4da826]' },
-    { href: '/dashboard/account', icon: FiUser, label: 'Account settings', color: 'from-[#66CC33] to-[#4da826]' },
+    { href: '/dashboard/my-courses', icon: FiBookOpen, label: 'My learning' },
+    { href: '/dashboard/certifications', icon: FiAward, label: 'Certifications' },
+    { href: '/dashboard/archived', icon: FiArchive, label: 'Archived' },
+    { href: '/dashboard/purchase-history', icon: FiShoppingBag, label: 'Purchase history' },
+    { href: '/dashboard/account', icon: FiUser, label: 'Account settings' },
   ];
 
   const isActive = (href: string) => pathname === href;
@@ -48,7 +48,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="p-6 relative" style={{ backgroundColor: '#1E293B' }}>
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#10B981] to-[#059669] flex items-center justify-center shadow-lg shadow-[#10B981]/50">
+                <div className="w-10 h-10 rounded-xl bg-[#10B981] flex items-center justify-center shadow-lg shadow-[#10B981]/50">
                   <FiZap className="text-white text-xl" />
                 </div>
                 <h2 className="text-xl font-black text-white">My Learning</h2>
@@ -65,7 +65,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     href={item.href}
                     className={`group flex items-center gap-4 px-5 py-4 rounded-xl font-semibold transition-all duration-300 text-sm relative overflow-hidden ${
                       active
-                        ? `bg-gradient-to-r ${item.color} text-white shadow-lg`
+                        ? `bg-[#10B981] text-white shadow-lg`
                         : 'text-[#D1D5DB] hover:text-white hover:bg-[#334155]'
                     }`}
                   >

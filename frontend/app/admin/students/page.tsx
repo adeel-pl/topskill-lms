@@ -120,7 +120,7 @@ export default function AdminStudentsPage() {
                       <tr key={student.id} className="hover:bg-[#1E293B]/50 transition-colors">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-gradient-to-br from-[#10B981] to-[#059669] rounded-full flex items-center justify-center">
+                            <div className="w-10 h-10 bg-[#10B981] rounded-full flex items-center justify-center">
                               <span className="text-white font-bold text-sm">
                                 {student.first_name?.charAt(0) || student.username?.charAt(0) || 'U'}
                               </span>

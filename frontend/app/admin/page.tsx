@@ -135,7 +135,7 @@ export default function AdminDashboardPage() {
             </select>
             <button
               onClick={loadAnalytics}
-              className="px-4 py-2 bg-gradient-to-r from-[#10B981] to-[#059669] text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-[#10B981]/30 transition-all"
+              className="px-4 py-2 bg-[#10B981] text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-[#10B981]/30 transition-all"
             >
               Refresh
             </button>

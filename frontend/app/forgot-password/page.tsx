@@ -81,7 +81,7 @@ export default function ForgotPasswordPage() {
         <div className="max-w-[500px] xl:max-w-[600px] mx-auto w-full px-4 sm:px-6">
           <div className="text-center mb-12">
             <div className="inline-block mb-8">
-              <div className="w-20 h-20 bg-gradient-to-br from-[#10B981] to-[#059669] rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-[#10B981]/50">
+              <div className="w-20 h-20 bg-[#10B981] rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-[#10B981]/50">
                 <FiMail className="text-white text-3xl" />
               </div>
             </div>
@@ -111,7 +111,7 @@ export default function ForgotPasswordPage() {
                 <div className="space-y-4">
                   <Link
                     href="/login"
-                    className="block w-full bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#10B981] text-white py-4 rounded-xl font-black transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-[#10B981]/50"
+                    className="block w-full bg-[#10B981] hover:bg-[#10B981] text-white py-4 rounded-xl font-black transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-[#10B981]/50"
                   >
                     Back to Login
                   </Link>
@@ -168,7 +168,7 @@ export default function ForgotPasswordPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#10B981] text-white py-4 md:py-5 rounded-xl font-black text-base md:text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-2xl hover:shadow-[#10B981]/50 flex items-center justify-center gap-2 group"
+                  className="w-full bg-[#10B981] hover:bg-[#10B981] text-white py-4 md:py-5 rounded-xl font-black text-base md:text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-2xl hover:shadow-[#10B981]/50 flex items-center justify-center gap-2 group"
                 >
                   {loading ? (
                     <>

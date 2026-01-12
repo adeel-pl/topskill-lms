@@ -120,7 +120,7 @@ export default function CartPage() {
               <p className="text-[#9CA3AF] mb-5 md:mb-6 lg:mb-8 text-sm md:text-base">Keep shopping to find a course!</p>
               <Link
                 href="/courses"
-                className="inline-block bg-gradient-to-r from-[#10B981] to-[#059669] text-white px-7 md:px-8 py-3.5 md:py-4 rounded-xl font-black transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#10B981]/50 text-sm md:text-base"
+                className="inline-block bg-[#10B981] text-white px-7 md:px-8 py-3.5 md:py-4 rounded-xl font-black transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#10B981]/50 text-sm md:text-base"
               >
                 Keep shopping
               </Link>
@@ -136,7 +136,7 @@ export default function CartPage() {
                   style={{ animationDelay: `${idx * 100}ms` }}
                 >
                   <div className="flex items-start gap-4 md:gap-5 lg:gap-6">
-                    <div className="w-24 md:w-28 lg:w-32 h-20 md:h-24 lg:h-28 rounded-xl bg-gradient-to-br from-[#10B981] to-[#8B5CF6] overflow-hidden flex-shrink-0">
+                    <div className="w-24 md:w-28 lg:w-32 h-20 md:h-24 lg:h-28 rounded-xl bg-[#10B981] overflow-hidden flex-shrink-0">
                       {item.course?.thumbnail ? (
                         <img src={item.course.thumbnail} alt={item.course.title} className="w-full h-full object-cover" />
                       ) : (
@@ -170,7 +170,7 @@ export default function CartPage() {
                 <button
                   onClick={handleCheckout}
                   disabled={checkingOut || itemCount === 0}
-                  className="w-full bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#10B981] text-white py-3.5 md:py-4 lg:py-5 rounded-xl font-black text-base md:text-lg transition-all duration-300 mb-3 md:mb-4 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 hover:shadow-2xl hover:shadow-[#10B981]/50 flex items-center justify-center gap-2"
+                  className="w-full bg-[#10B981] hover:bg-[#10B981] text-white py-3.5 md:py-4 lg:py-5 rounded-xl font-black text-base md:text-lg transition-all duration-300 mb-3 md:mb-4 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 hover:shadow-2xl hover:shadow-[#10B981]/50 flex items-center justify-center gap-2"
                 >
                   {checkingOut ? (
                     <>

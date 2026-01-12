@@ -118,7 +118,7 @@ export default function MyCoursesPage() {
               <p className="text-[#9CA3AF] mb-5 md:mb-6 lg:mb-8 text-sm md:text-base">Start learning by enrolling in a course!</p>
               <Link
                 href="/courses"
-                className="inline-block bg-gradient-to-r from-[#10B981] to-[#059669] text-white px-7 md:px-8 py-3.5 md:py-4 rounded-xl font-black transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#10B981]/50 text-sm md:text-base"
+                className="inline-block bg-[#10B981] text-white px-7 md:px-8 py-3.5 md:py-4 rounded-xl font-black transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#10B981]/50 text-sm md:text-base"
               >
                 Browse Courses
               </Link>
@@ -192,7 +192,7 @@ export default function MyCoursesPage() {
                       </div>
                       <div className="w-full bg-[#0F172A] rounded-full h-2.5 md:h-3 lg:h-4 overflow-hidden">
                         <div
-                          className="bg-gradient-to-r from-[#10B981] to-[#059669] h-full rounded-full transition-all duration-1000 shadow-lg shadow-[#10B981]/50"
+                          className="bg-[#10B981] h-full rounded-full transition-all duration-1000 shadow-lg shadow-[#10B981]/50"
                           style={{ 
                             width: `${displayProgress}%` 
                           }}
@@ -205,7 +205,7 @@ export default function MyCoursesPage() {
                     {/* Action Button */}
                     <Link
                       href={`/learn/${enrollment.course.slug}`}
-                      className="w-full bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#10B981] text-white px-5 md:px-6 py-3 md:py-3.5 lg:py-4 rounded-xl font-black transition-all duration-300 flex items-center justify-center gap-2 md:gap-3 hover:scale-105 hover:shadow-2xl hover:shadow-[#10B981]/50 text-sm md:text-base"
+                      className="w-full bg-[#10B981] hover:bg-[#10B981] text-white px-5 md:px-6 py-3 md:py-3.5 lg:py-4 rounded-xl font-black transition-all duration-300 flex items-center justify-center gap-2 md:gap-3 hover:scale-105 hover:shadow-2xl hover:shadow-[#10B981]/50 text-sm md:text-base"
                     >
                       <FiPlay className="text-lg md:text-xl" />
                       Continue Learning
