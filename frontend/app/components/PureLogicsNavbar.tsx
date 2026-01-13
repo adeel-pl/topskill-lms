@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/store';
 import { coursesAPI } from '@/lib/api';
-import { Search, ShoppingCart, Globe, ChevronDown, Menu, X, BookOpen } from 'lucide-react';
+import { Search, ShoppingCart, ChevronDown, Menu, X, BookOpen } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
@@ -19,7 +19,6 @@ interface CourseSuggestion {
 export default function PureLogicsNavbar() {
   const { isAuthenticated, user, logout } = useAuthStore();
   const router = useRouter();
-  const [showExplore, setShowExplore] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchSuggestions, setSearchSuggestions] = useState<CourseSuggestion[]>([]);
@@ -30,16 +29,13 @@ export default function PureLogicsNavbar() {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (showExplore && !(event.target as Element).closest('.explore-dropdown')) {
-        setShowExplore(false);
-      }
       if (showSuggestions && searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
         setShowSuggestions(false);
       }
     };
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
-  }, [showExplore, showSuggestions]);
+  }, [showSuggestions]);
 
   // Debounced search for suggestions
   useEffect(() => {
@@ -113,40 +109,14 @@ export default function PureLogicsNavbar() {
             </span>
           </Link>
 
-          {/* Explore Dropdown */}
-          <div className="relative hidden md:block explore-dropdown">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowExplore(!showExplore);
-              }}
-              className="text-[#D1D5DB] px-4 py-2 hover:bg-[#1E293B] rounded-lg flex items-center gap-2 text-sm font-medium transition-colors"
-            >
-              Explore
-              <ChevronDown className={`w-4 h-4 transition-transform ${showExplore ? 'rotate-180' : ''}`} />
-            </button>
-            <AnimatePresence>
-              {showExplore && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
-                  className="absolute top-full left-0 mt-2 bg-[#1E293B] rounded-xl shadow-2xl w-64 py-2 z-50 border border-[#334155]"
-                >
-                  <Link href="/courses?category=development" className="block px-4 py-3 text-[#D1D5DB] hover:bg-[#334155] hover:text-[#10B981] text-sm transition-colors">
-                    Development
-                  </Link>
-                  <Link href="/courses?category=business" className="block px-4 py-3 text-[#D1D5DB] hover:bg-[#334155] hover:text-[#10B981] text-sm transition-colors">
-                    Business
-                  </Link>
-                  <Link href="/courses?category=design" className="block px-4 py-3 text-[#D1D5DB] hover:bg-[#334155] hover:text-[#10B981] text-sm transition-colors">
-                    Design
-                  </Link>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+          {/* Explore Link */}
+          <Link
+            href="/courses"
+            className="text-[#D1D5DB] px-4 py-2 hover:bg-[#1E293B] rounded-lg flex items-center gap-2 text-sm font-medium transition-colors hidden md:flex"
+          >
+            Explore
+            <ChevronDown className="w-4 h-4" />
+          </Link>
 
           {/* Search Bar with Predictive Search */}
           <div ref={searchContainerRef} className="flex-1 max-w-2xl mx-4 hidden md:block relative">
@@ -246,9 +216,7 @@ export default function PureLogicsNavbar() {
             <Link href="/cart" className="text-[#D1D5DB] hover:text-white p-2.5 rounded-lg hover:bg-[#1E293B] transition-colors relative">
               <ShoppingCart className="w-5 h-5" />
             </Link>
-            <button className="text-[#D1D5DB] hover:text-white p-2.5 rounded-lg hover:bg-[#1E293B] transition-colors hidden md:block">
-              <Globe className="w-5 h-5" />
-            </button>
+            {/* Globe button removed - no functionality implemented */}
             {isAuthenticated ? (
               <>
                 <Link

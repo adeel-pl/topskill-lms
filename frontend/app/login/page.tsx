@@ -7,6 +7,7 @@ import { GoogleLogin } from '@react-oauth/google';
 import { useAuthStore } from '@/lib/store';
 import PureLogicsNavbar from '@/app/components/PureLogicsNavbar';
 import { FiLock, FiUser, FiMail, FiArrowRight } from 'react-icons/fi';
+import { colors } from '@/lib/colors';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -76,15 +77,13 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0F172A] text-white pt-16 md:pt-20">
+    <div className="min-h-screen pt-16 md:pt-20" style={{ backgroundColor: colors.background.primary, color: colors.text.dark }}>
+      <style jsx global>{`
+        input::placeholder {
+          color: ${colors.text.muted} !important;
+        }
+      `}</style>
       <PureLogicsNavbar />
-
-      {/* Enhanced Background Pattern */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-20 left-10 w-96 h-96 bg-[#10B981] opacity-[0.08] rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-80 h-80 bg-[#3B82F6] opacity-[0.06] rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#10B981] opacity-[0.03] rounded-full blur-3xl"></div>
-      </div>
 
       <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4 sm:px-6 py-12 md:py-16 relative z-10">
         <div className="max-w-[500px] xl:max-w-[600px] 2xl:max-w-[700px] mx-auto w-full px-4 sm:px-6">
@@ -98,14 +97,14 @@ export default function LoginPage() {
                 <div className="absolute inset-0 bg-[#10B981] rounded-3xl opacity-20 blur-2xl animate-pulse"></div>
               </div>
             </div>
-            <h2 className="text-5xl md:text-6xl font-black mb-4 text-white leading-tight">
+            <h2 className="text-5xl md:text-6xl font-black mb-4 leading-tight" style={{ color: colors.text.dark }}>
               Welcome Back
             </h2>
-            <p className="text-[#D1D5DB] text-lg md:text-xl">Log in to continue your learning journey</p>
+            <p className="text-lg md:text-xl" style={{ color: colors.text.dark }}>Log in to continue your learning journey</p>
           </div>
 
           {/* Premium Form Card */}
-          <div className="bg-[#1E293B]/90 backdrop-blur-xl border border-[#334155] rounded-3xl p-8 md:p-10 shadow-2xl hover:border-[#10B981]/50 transition-all duration-500">
+          <div className="rounded-3xl p-8 md:p-10 shadow-2xl transition-all duration-500" style={{ backgroundColor: colors.background.card, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
             <form className="space-y-6" onSubmit={handleSubmit}>
               {error && (
                 <div className="bg-gradient-to-r from-[#EF4444]/20 to-[#DC2626]/20 border border-[#EF4444]/50 text-[#FCA5A5] px-6 py-4 rounded-xl text-sm font-medium backdrop-blur-sm">
@@ -120,33 +119,63 @@ export default function LoginPage() {
               )}
 
               <div>
-                <label className="block text-sm font-bold text-white mb-3">Email or Username</label>
+                <label className="block text-sm font-bold mb-3" style={{ color: colors.text.dark }}>Email or Username</label>
                 <div className="relative group">
                   <div className="absolute inset-0 bg-[#10B981]/0 rounded-xl group-focus-within:bg-[#10B981]/10 transition-all duration-300"></div>
                   <FiMail className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#10B981] transition-colors z-10" />
                   <input
                     type="text"
                     required
-                    className="relative w-full pl-14 pr-5 py-4 bg-[#0F172A] border-2 border-[#334155] rounded-xl text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#10B981]/50 focus:border-[#10B981] transition-all hover:bg-[#1E293B] hover:border-[#475569]"
+                    className="relative w-full pl-14 pr-5 py-4 rounded-xl focus:outline-none focus:ring-2 transition-all"
+                    style={{ 
+                      backgroundColor: colors.background.secondary, 
+                      borderColor: colors.border.primary, 
+                      borderWidth: '2px', 
+                      borderStyle: 'solid',
+                      color: colors.text.dark,
+                    }}
                     placeholder="Enter your email or username"
                     value={formData.username}
                     onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = colors.accent.primary;
+                      e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.accent.primary}50`;
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = colors.border.primary;
+                      e.currentTarget.style.boxShadow = '';
+                    }}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-white mb-3">Password</label>
+                <label className="block text-sm font-bold mb-3" style={{ color: colors.text.dark }}>Password</label>
                 <div className="relative group">
                   <div className="absolute inset-0 bg-[#10B981]/0 rounded-xl group-focus-within:bg-[#10B981]/10 transition-all duration-300"></div>
                   <FiLock className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#10B981] transition-colors z-10" />
                   <input
                     type="password"
                     required
-                    className="relative w-full pl-14 pr-5 py-4 bg-[#0F172A] border-2 border-[#334155] rounded-xl text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#10B981]/50 focus:border-[#10B981] transition-all hover:bg-[#1E293B] hover:border-[#475569]"
+                    className="relative w-full pl-14 pr-5 py-4 rounded-xl focus:outline-none focus:ring-2 transition-all"
+                    style={{ 
+                      backgroundColor: colors.background.secondary, 
+                      borderColor: colors.border.primary, 
+                      borderWidth: '2px', 
+                      borderStyle: 'solid',
+                      color: colors.text.dark,
+                    }}
                     placeholder="Enter your password"
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = colors.accent.primary;
+                      e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.accent.primary}50`;
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = colors.border.primary;
+                      e.currentTarget.style.boxShadow = '';
+                    }}
                   />
                 </div>
               </div>
@@ -154,7 +183,18 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#10B981] hover:bg-[#10B981] text-white py-4 md:py-5 rounded-xl font-black text-base md:text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-2xl hover:shadow-[#10B981]/50 flex items-center justify-center gap-2 group"
+                className="w-full py-4 md:py-5 rounded-xl font-black text-base md:text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-2xl flex items-center justify-center gap-2 group"
+                style={{ 
+                  backgroundColor: colors.button.primary, 
+                  color: colors.text.white,
+                  boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(16, 185, 129, 0.5)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(16, 185, 129, 0.3)';
+                }}
               >
                 {loading ? (
                   <>
@@ -172,7 +212,7 @@ export default function LoginPage() {
 
             {/* Enhanced Social Login */}
             <div className="mt-8 pt-8 border-t border-[#334155]">
-              <p className="text-center text-sm text-[#9CA3AF] mb-6 font-medium">Or continue with</p>
+              <p className="text-center text-sm mb-6 font-medium" style={{ color: colors.text.muted }}>Or continue with</p>
               <div className="flex gap-4 justify-center items-center">
                 <div className="relative">
                   <GoogleLogin
@@ -212,13 +252,13 @@ export default function LoginPage() {
 
             {/* Enhanced Footer Links */}
             <div className="mt-8 text-center space-y-4">
-              <p className="text-sm text-[#9CA3AF]">
+              <p className="text-sm" style={{ color: colors.text.muted }}>
                 Don't have an account?{' '}
-                <Link href="/register" className="text-[#10B981] hover:text-[#34D399] font-bold transition-colors hover:underline">
+                <Link href="/register" className="font-bold transition-colors hover:underline" style={{ color: colors.accent.primary }}>
                   Sign up
                 </Link>
               </p>
-              <Link href="/forgot-password" className="block text-sm text-[#10B981] hover:text-[#34D399] font-semibold transition-colors hover:underline">
+              <Link href="/forgot-password" className="block text-sm font-semibold transition-colors hover:underline" style={{ color: colors.accent.primary }}>
                 Forgot your password?
               </Link>
             </div>

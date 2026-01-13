@@ -14,6 +14,40 @@ from .video_ids import get_video_id_for_course
 import random
 
 
+def get_course_thumbnail(course_title):
+    """Get relevant thumbnail image URL based on course title"""
+    course_lower = course_title.lower()
+    
+    # Map course titles to relevant image keywords
+    image_mapping = {
+        'python': 'https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=800&h=600&fit=crop',
+        'postgresql': 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=800&h=600&fit=crop',
+        'postgres': 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=800&h=600&fit=crop',
+        'git': 'https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=800&h=600&fit=crop',
+        'github': 'https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=800&h=600&fit=crop',
+        'shopify': 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop',
+        'e-commerce': 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop',
+        'django': 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop',
+        'react': 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=600&fit=crop',
+        'node': 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&h=600&fit=crop',
+        'nodejs': 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&h=600&fit=crop',
+        'full stack': 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&h=600&fit=crop',
+        'web development': 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&h=600&fit=crop',
+        'bootcamp': 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop',
+        'internship': 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop',
+        'software development': 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=600&fit=crop',
+        'programming': 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=600&fit=crop',
+    }
+    
+    # Check for matches in course title
+    for keyword, image_url in image_mapping.items():
+        if keyword in course_lower:
+            return image_url
+    
+    # Default image for courses that don't match
+    return 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&h=600&fit=crop'
+
+
 # Course-specific lecture content
 COURSE_LECTURE_CONTENT = {
     'python': {
@@ -418,6 +452,9 @@ class Command(BaseCommand):
 
         all_courses = []
         for course_data in courses_to_create:
+            # Get thumbnail image for this course
+            thumbnail_url = get_course_thumbnail(course_data['title'])
+            
             course, created = Course.objects.get_or_create(
                 slug=course_data['slug'],
                 defaults={
@@ -429,9 +466,14 @@ class Command(BaseCommand):
                     'instructor': instructor,
                     'language': 'English',
                     'level': course_data['level'],
+                    'thumbnail': thumbnail_url,
                     'is_active': True,
                 }
             )
+            # Update thumbnail if course already exists but doesn't have one
+            if not created and not course.thumbnail:
+                course.thumbnail = thumbnail_url
+                course.save()
             if created:
                 course.categories.add(course_data['category'])
                 for tag in course_data['tags']:
@@ -484,6 +526,9 @@ class Command(BaseCommand):
 
         # Create physical courses
         for course_data in physical_courses_to_create:
+            # Get thumbnail image for this course
+            thumbnail_url = get_course_thumbnail(course_data['title'])
+            
             course, created = Course.objects.get_or_create(
                 slug=course_data['slug'],
                 defaults={
@@ -496,9 +541,14 @@ class Command(BaseCommand):
                     'language': 'English',
                     'level': course_data['level'],
                     'max_batch_size': course_data['max_batch_size'],
+                    'thumbnail': thumbnail_url,
                     'is_active': True,
                 }
             )
+            # Update thumbnail if course already exists but doesn't have one
+            if not created and not course.thumbnail:
+                course.thumbnail = thumbnail_url
+                course.save()
             if created:
                 course.categories.add(course_data['category'])
                 for tag in course_data['tags']:
@@ -588,6 +638,9 @@ class Command(BaseCommand):
 
         # Create hybrid courses
         for course_data in hybrid_courses_to_create:
+            # Get thumbnail image for this course
+            thumbnail_url = get_course_thumbnail(course_data['title'])
+            
             course, created = Course.objects.get_or_create(
                 slug=course_data['slug'],
                 defaults={
@@ -600,9 +653,14 @@ class Command(BaseCommand):
                     'language': 'English',
                     'level': course_data['level'],
                     'max_batch_size': course_data['max_batch_size'],
+                    'thumbnail': thumbnail_url,
                     'is_active': True,
                 }
             )
+            # Update thumbnail if course already exists but doesn't have one
+            if not created and not course.thumbnail:
+                course.thumbnail = thumbnail_url
+                course.save()
             if created:
                 course.categories.add(course_data['category'])
                 for tag in course_data['tags']:
@@ -691,6 +749,9 @@ class Command(BaseCommand):
 
         # Create internship courses
         for course_data in internship_courses_to_create:
+            # Get thumbnail image for this course
+            thumbnail_url = get_course_thumbnail(course_data['title'])
+            
             course, created = Course.objects.get_or_create(
                 slug=course_data['slug'],
                 defaults={
@@ -703,9 +764,14 @@ class Command(BaseCommand):
                     'language': 'English',
                     'level': course_data['level'],
                     'max_batch_size': course_data['max_batch_size'],
+                    'thumbnail': thumbnail_url,
                     'is_active': True,
                 }
             )
+            # Update thumbnail if course already exists but doesn't have one
+            if not created and not course.thumbnail:
+                course.thumbnail = thumbnail_url
+                course.save()
             if created:
                 course.categories.add(course_data['category'])
                 for tag in course_data['tags']:

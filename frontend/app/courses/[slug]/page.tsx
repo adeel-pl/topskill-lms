@@ -9,6 +9,7 @@ import PureLogicsNavbar from '@/app/components/PureLogicsNavbar';
 import { Star, Users, Clock, Check, ShoppingCart, Play, User, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useToast } from '@/app/contexts/ToastContext';
+import { colors } from '@/lib/colors';
 
 export default function CourseDetailPage() {
   const params = useParams();
@@ -113,11 +114,11 @@ export default function CourseDetailPage() {
     if (!isAuthenticated || !course) return;
     
     try {
-      // Check enrollment status
+      // Check enrollment status only - enrollment happens after checkout, not just adding to cart
       const overviewRes = await playerAPI.getOverview(course.id);
       setIsEnrolled(overviewRes.data?.enrollment?.enrolled || false);
       
-      // Check cart status
+      // Check cart status (for display purposes only, doesn't affect access)
       const cartRes = await cartAPI.get();
       const cartData = Array.isArray(cartRes.data) ? cartRes.data[0] : cartRes.data;
       const cartItems = cartData?.items || [];
@@ -209,10 +210,10 @@ export default function CourseDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0F172A] flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: colors.background.primary }}>
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#334155] border-t-[#10B981] rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-[#9CA3AF]">Loading course...</p>
+          <div className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4" style={{ borderColor: colors.border.primary, borderTopColor: colors.accent.primary }}></div>
+          <p style={{ color: colors.text.muted }}>Loading course...</p>
         </div>
       </div>
     );
@@ -220,24 +221,18 @@ export default function CourseDetailPage() {
 
   if (!course) {
     return (
-      <div className="min-h-screen bg-[#0F172A] flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: colors.background.primary }}>
         <div className="text-center">
-          <h2 className="text-3xl font-black mb-4 text-white">Course not found</h2>
-          <Link href="/courses" className="text-[#10B981] hover:underline font-semibold">Browse Courses</Link>
+          <h2 className="text-3xl font-black mb-4" style={{ color: colors.text.dark }}>Course not found</h2>
+          <Link href="/courses" className="hover:underline font-semibold" style={{ color: colors.accent.primary }}>Browse Courses</Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0F172A] text-white pt-20">
+    <div className="min-h-screen pt-20" style={{ backgroundColor: colors.background.primary, color: colors.text.dark }}>
       <PureLogicsNavbar />
-
-      {/* Animated Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-20 left-10 w-96 h-96 bg-[#10B981] opacity-[0.06] rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-80 h-80 bg-[#3B82F6] opacity-[0.05] rounded-full blur-3xl animate-pulse delay-1000"></div>
-      </div>
 
       <div className="max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-12 relative z-10">
         {/* Course Thumbnail */}
@@ -246,15 +241,15 @@ export default function CourseDetailPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="mb-10 rounded-3xl overflow-hidden border-2 border-[#334155] shadow-2xl"
+            className="mb-10 rounded-3xl overflow-hidden shadow-2xl"
+            style={{ borderColor: colors.border.primary, borderWidth: '2px', borderStyle: 'solid' }}
           >
-            <div className="relative w-full h-80 lg:h-96 bg-[#10B981]">
+            <div className="relative w-full h-80 lg:h-96" style={{ backgroundColor: colors.accent.primary }}>
               <img
                 src={course.thumbnail}
                 alt={course.title}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
               {course.modality && (
                 <div className="absolute top-6 right-6">
                   <span className={`px-4 py-2 rounded-xl text-sm font-black backdrop-blur-md border-2 shadow-xl ${
@@ -281,40 +276,40 @@ export default function CourseDetailPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-black mb-6 text-white leading-tight">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-black mb-6 leading-tight" style={{ color: colors.text.dark }}>
                 {course.title}
               </h1>
               
               {/* Instructor and Rating Info */}
               <div className="flex items-center gap-4 md:gap-6 mb-6 md:mb-8 flex-wrap">
                 {(course.instructor_name || overview?.course?.instructor?.name) && (
-                  <div className="flex items-center gap-3 bg-[#1E293B]/50 backdrop-blur-sm border border-[#334155] rounded-xl px-4 md:px-5 py-3 md:py-3.5 hover:border-[#10B981]/50 transition-colors">
-                    <div className="w-12 h-12 rounded-full bg-[#10B981] flex items-center justify-center flex-shrink-0 shadow-lg shadow-[#10B981]/30">
+                  <div className="flex items-center gap-3 rounded-xl px-4 md:px-5 py-3 md:py-3.5 transition-colors" style={{ backgroundColor: colors.background.secondary, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
+                    <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: colors.accent.primary }}>
                       <User className="text-white w-5 h-5" />
                     </div>
                     <div className="ml-2">
-                      <p className="text-xs text-[#9CA3AF] font-medium mb-1">Instructor</p>
-                      <p className="text-base font-bold text-white">
+                      <p className="text-xs font-medium mb-1" style={{ color: colors.text.muted }}>Instructor</p>
+                      <p className="text-base font-bold" style={{ color: colors.text.dark }}>
                         {course.instructor_name || overview?.course?.instructor?.name || 'John Instructor'}
                       </p>
                     </div>
                   </div>
                 )}
                 {course.average_rating && course.average_rating > 0 && (
-                  <div className="flex items-center gap-2 bg-[#1E293B]/50 backdrop-blur-sm border border-[#334155] rounded-xl px-4 md:px-5 py-3 md:py-3.5 hover:border-[#10B981]/50 transition-colors">
+                  <div className="flex items-center gap-2 rounded-xl px-4 md:px-5 py-3 md:py-3.5 transition-colors" style={{ backgroundColor: colors.background.secondary, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
                     <div className="flex items-center gap-1.5">
-                      <Star className="text-[#10B981] fill-[#10B981] w-5 h-5" />
-                      <span className="text-xl font-black text-white">{course.average_rating.toFixed(1)}</span>
+                      <Star className="w-5 h-5" style={{ color: colors.accent.primary, fill: colors.accent.primary }} />
+                      <span className="text-xl font-black" style={{ color: colors.text.dark }}>{course.average_rating.toFixed(1)}</span>
                     </div>
                     {course.rating_count && (
-                      <span className="text-sm text-[#9CA3AF] ml-2">
+                      <span className="text-sm ml-2" style={{ color: colors.text.muted }}>
                         ({course.rating_count > 1000 ? `${(course.rating_count / 1000).toFixed(1)}K` : course.rating_count} ratings)
                       </span>
                     )}
                   </div>
                 )}
                 {((course.enrolled_count || overview?.course?.total_students || 0) > 0) && (
-                  <div className="flex items-center gap-2 bg-[#1E293B]/50 backdrop-blur-sm border border-[#334155] rounded-xl px-4 md:px-5 py-3 md:py-3.5 text-[#9CA3AF] hover:border-[#10B981]/50 transition-colors">
+                  <div className="flex items-center gap-2 rounded-xl px-4 md:px-5 py-3 md:py-3.5 transition-colors" style={{ backgroundColor: colors.background.secondary, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid', color: colors.text.muted }}>
                     <Users className="w-5 h-5" />
                     <span className="text-sm font-medium ml-1">
                       {course.enrolled_count || overview?.course?.total_students || 0} students enrolled
@@ -323,7 +318,7 @@ export default function CourseDetailPage() {
                 )}
               </div>
 
-              <p className="text-lg md:text-xl text-[#D1D5DB] leading-relaxed mb-4 md:mb-6">
+              <p className="text-lg md:text-xl leading-relaxed mb-4 md:mb-6" style={{ color: colors.text.muted }}>
                 {course.short_description || course.description || overview?.course?.short_description || overview?.course?.description || 'Introduction to data science with Python. Learn pandas, numpy, and matplotlib.'}
               </p>
             </motion.div>
@@ -333,16 +328,15 @@ export default function CourseDetailPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="bg-[#1E293B] border-2 border-[#334155] rounded-3xl p-6 md:p-8 lg:p-10 shadow-xl shadow-black/20 relative overflow-hidden"
+              className="rounded-3xl p-6 md:p-8 lg:p-10 shadow-xl relative overflow-hidden"
+              style={{ backgroundColor: colors.background.secondary, borderColor: colors.border.primary, borderWidth: '2px', borderStyle: 'solid' }}
             >
-              <div className="absolute inset-0 bg-[#10B981]/5"></div>
-              
               <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-8">
-                  <div className="w-12 h-12 rounded-xl bg-[#10B981] flex items-center justify-center shadow-lg shadow-[#10B981]/30">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: colors.accent.primary }}>
                     <Check className="text-white w-5 h-5" />
                   </div>
-                  <h2 className="text-2xl md:text-3xl font-black text-white">What you'll learn</h2>
+                  <h2 className="text-2xl md:text-3xl font-black" style={{ color: colors.text.dark }}>What you'll learn</h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
                   {(overview?.learning_objectives || [
@@ -351,11 +345,11 @@ export default function CourseDetailPage() {
                     'Quizzes and assignments',
                     'Lifetime access',
                   ]).map((item: string, idx: number) => (
-                    <div key={idx} className="flex items-start gap-3 p-3 md:p-4 bg-[#0F172A]/30 rounded-xl border border-[#334155]/50 hover:border-[#10B981]/50 transition-colors">
-                      <div className="w-6 h-6 rounded-full bg-[#10B981] flex items-center justify-center flex-shrink-0 mt-0.5 shadow-md shadow-[#10B981]/30">
+                    <div key={idx} className="flex items-start gap-3 p-3 md:p-4 rounded-xl transition-colors" style={{ backgroundColor: colors.background.primary, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
+                      <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: colors.accent.primary }}>
                         <Check className="text-white w-4 h-4" />
                       </div>
-                      <span className="text-[#D1D5DB] text-base font-medium leading-relaxed">{item}</span>
+                      <span className="text-base font-medium leading-relaxed" style={{ color: colors.text.dark }}>{item}</span>
                     </div>
                   ))}
                 </div>
@@ -367,35 +361,34 @@ export default function CourseDetailPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="bg-[#1E293B] border-2 border-[#334155] rounded-3xl p-6 md:p-8 lg:p-10 shadow-xl shadow-black/20 relative overflow-hidden"
+              className="rounded-3xl p-6 md:p-8 lg:p-10 shadow-xl relative overflow-hidden"
+              style={{ backgroundColor: colors.background.secondary, borderColor: colors.border.primary, borderWidth: '2px', borderStyle: 'solid' }}
             >
-              <div className="absolute inset-0 bg-[#10B981]/5"></div>
-              
               <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-8">
-                  <div className="w-12 h-12 rounded-xl bg-[#10B981] flex items-center justify-center shadow-lg shadow-[#10B981]/30">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: colors.accent.primary }}>
                     <Clock className="text-white w-5 h-5" />
                   </div>
-                  <h2 className="text-2xl md:text-3xl font-black text-white">Course Content</h2>
+                  <h2 className="text-2xl md:text-3xl font-black" style={{ color: colors.text.dark }}>Course Content</h2>
                 </div>
                 <div className="flex items-center gap-4 md:gap-6 lg:gap-8 flex-wrap">
-                  <div className="flex items-center gap-3 bg-[#0F172A]/50 backdrop-blur-sm border border-[#334155] rounded-xl px-5 md:px-6 py-4 md:py-5 hover:border-[#10B981]/50 transition-colors flex-1 min-w-[140px]">
-                    <span className="text-3xl md:text-4xl font-black text-white">
+                  <div className="flex items-center gap-3 rounded-xl px-5 md:px-6 py-4 md:py-5 transition-colors flex-1 min-w-[140px]" style={{ backgroundColor: colors.background.primary, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
+                    <span className="text-3xl md:text-4xl font-black" style={{ color: colors.text.dark }}>
                       {overview?.stats?.total_sections ?? course?.total_sections ?? course?.sections?.length ?? 0}
                     </span>
-                    <span className="text-sm md:text-base text-[#9CA3AF] font-medium ml-2">sections</span>
+                    <span className="text-sm md:text-base font-medium ml-2" style={{ color: colors.text.muted }}>sections</span>
                   </div>
-                  <div className="flex items-center gap-3 bg-[#0F172A]/50 backdrop-blur-sm border border-[#334155] rounded-xl px-5 md:px-6 py-4 md:py-5 hover:border-[#10B981]/50 transition-colors flex-1 min-w-[140px]">
-                    <span className="text-3xl md:text-4xl font-black text-white">
+                  <div className="flex items-center gap-3 rounded-xl px-5 md:px-6 py-4 md:py-5 transition-colors flex-1 min-w-[140px]" style={{ backgroundColor: colors.background.primary, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
+                    <span className="text-3xl md:text-4xl font-black" style={{ color: colors.text.dark }}>
                       {overview?.stats?.total_lectures ?? course?.total_lectures ?? 0}
                     </span>
-                    <span className="text-sm md:text-base text-[#9CA3AF] font-medium ml-2">lectures</span>
+                    <span className="text-sm md:text-base font-medium ml-2" style={{ color: colors.text.muted }}>lectures</span>
                   </div>
-                  <div className="flex items-center gap-3 bg-[#0F172A]/50 backdrop-blur-sm border border-[#334155] rounded-xl px-5 md:px-6 py-4 md:py-5 hover:border-[#10B981]/50 transition-colors flex-1 min-w-[140px]">
-                    <span className="text-3xl md:text-4xl font-black text-white">
+                  <div className="flex items-center gap-3 rounded-xl px-5 md:px-6 py-4 md:py-5 transition-colors flex-1 min-w-[140px]" style={{ backgroundColor: colors.background.primary, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
+                    <span className="text-3xl md:text-4xl font-black" style={{ color: colors.text.dark }}>
                       {overview?.stats?.total_duration_hours ?? course?.total_duration_hours ?? 0}h
                     </span>
-                    <span className="text-sm md:text-base text-[#9CA3AF] font-medium ml-2">total length</span>
+                    <span className="text-sm md:text-base font-medium ml-2" style={{ color: colors.text.muted }}>total length</span>
                   </div>
                 </div>
               </div>
@@ -407,65 +400,65 @@ export default function CourseDetailPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
-                className="bg-[#1E293B] border-2 border-[#334155] rounded-3xl p-6 md:p-8 lg:p-10 shadow-xl shadow-black/20 relative overflow-hidden"
+                className="rounded-3xl p-6 md:p-8 lg:p-10 shadow-xl relative overflow-hidden"
+                style={{ backgroundColor: colors.background.secondary, borderColor: colors.border.primary, borderWidth: '2px', borderStyle: 'solid' }}
               >
-                <div className="absolute inset-0 bg-[#10B981]/5"></div>
-                
                 <div className="relative z-10">
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="w-12 h-12 rounded-xl bg-[#10B981] flex items-center justify-center shadow-lg shadow-[#10B981]/30">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: colors.accent.primary }}>
                       <Play className="text-white w-5 h-5" />
                     </div>
-                    <h2 className="text-2xl md:text-3xl font-black text-white">Course Curriculum</h2>
+                    <h2 className="text-2xl md:text-3xl font-black" style={{ color: colors.text.dark }}>Course Curriculum</h2>
                   </div>
                   
                   <div className="space-y-4">
                     {overview.content_preview.map((section: any, sectionIdx: number) => (
-                      <div key={section.id} className="border border-[#334155] rounded-xl overflow-hidden bg-[#0F172A]/30">
-                        <div className="px-4 py-4 bg-[#1E293B]/50 border-b border-[#334155] flex items-center justify-between">
+                      <div key={section.id} className="rounded-xl overflow-hidden" style={{ backgroundColor: colors.background.primary, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
+                        <div className="px-4 py-4 flex items-center justify-between" style={{ backgroundColor: colors.background.secondary, borderBottomColor: colors.border.primary, borderBottomWidth: '1px', borderBottomStyle: 'solid' }}>
                           <div className="flex items-center gap-3">
-                            <span className="text-sm font-semibold text-[#9CA3AF]">Section {section.order}:</span>
-                            <h3 className="text-lg font-bold text-white">{section.title}</h3>
+                            <span className="text-sm font-semibold" style={{ color: colors.text.muted }}>Section {section.order}:</span>
+                            <h3 className="text-lg font-bold" style={{ color: colors.text.dark }}>{section.title}</h3>
                             {section.is_preview && (
-                              <span className="px-2 py-1 text-xs font-semibold bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/30 rounded">
+                              <span className="px-2 py-1 text-xs font-semibold rounded" style={{ backgroundColor: `${colors.accent.primary}20`, color: colors.accent.primary, borderColor: `${colors.accent.primary}30`, borderWidth: '1px', borderStyle: 'solid' }}>
                                 Preview
                               </span>
                             )}
                           </div>
-                          <span className="text-sm text-[#9CA3AF]">{section.total_lectures} lectures</span>
+                          <span className="text-sm" style={{ color: colors.text.muted }}>{section.total_lectures} lectures</span>
                         </div>
-                        <div className="divide-y divide-[#334155]">
+                        <div style={{ borderTopColor: colors.border.primary, borderTopWidth: '1px', borderTopStyle: 'solid' }}>
                           {section.lectures.map((lecture: any, lectureIdx: number) => {
                             // Preview lectures work for everyone (logged in or not)
-                            // Full lectures only work if enrolled or in cart
+                            // Full lectures only work if enrolled (after checkout), not just in cart
                             const isPreviewLecture = lecture.is_preview;
-                            const hasFullAccess = isEnrolled || isInCart;
+                            const hasFullAccess = isEnrolled; // Only check enrollment, not cart
                             const canAccess = isPreviewLecture || hasFullAccess;
                             
                             return (
                               <div 
                                 key={lecture.id} 
                                 className={`px-4 py-3 flex items-center justify-between transition-colors ${
-                                  canAccess ? 'hover:bg-[#1E293B]/30 cursor-pointer' : 'opacity-60'
+                                  canAccess ? 'cursor-pointer hover:opacity-80' : 'opacity-60'
                                 }`}
+                                style={canAccess ? { backgroundColor: colors.background.secondary } : {}}
                                 onClick={() => {
                                   if (canAccess) {
                                     router.push(`/learn/${course.slug}?lecture=${lecture.id}`);
                                   } else {
-                                    showInfo('Please add this course to cart to access this lecture');
+                                    showInfo('Please complete checkout to access this lecture');
                                   }
                                 }}
                               >
                                 <div className="flex items-center gap-3 flex-1">
-                                  <Play className={`w-4 h-4 ${canAccess ? 'text-[#10B981]' : 'text-[#6B7280]'} flex-shrink-0`} />
-                                  <span className={`text-sm ${canAccess ? 'text-[#D1D5DB]' : 'text-[#6B7280]'}`}>{lecture.title}</span>
+                                  <Play className={`w-4 h-4 flex-shrink-0`} style={{ color: canAccess ? colors.accent.primary : colors.text.muted }} />
+                                  <span className={`text-sm`} style={{ color: canAccess ? colors.text.dark : colors.text.muted }}>{lecture.title}</span>
                                   {isPreviewLecture && (
-                                    <span className="px-2 py-0.5 text-xs font-medium bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/30 rounded">
+                                    <span className="px-2 py-0.5 text-xs font-medium rounded" style={{ backgroundColor: `${colors.accent.primary}20`, color: colors.accent.primary, borderColor: `${colors.accent.primary}30`, borderWidth: '1px', borderStyle: 'solid' }}>
                                       Preview
                                     </span>
                                   )}
                                 </div>
-                                <span className={`text-xs ml-4 ${canAccess ? 'text-[#9CA3AF]' : 'text-[#6B7280]'}`}>{lecture.duration_minutes}m</span>
+                                <span className={`text-xs ml-4`} style={{ color: canAccess ? colors.text.muted : colors.text.muted }}>{lecture.duration_minutes}m</span>
                               </div>
                             );
                           })}
@@ -484,25 +477,25 @@ export default function CourseDetailPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="sticky top-24 bg-[#1E293B] border-2 border-[#334155] rounded-3xl p-6 md:p-8 lg:p-10 shadow-2xl shadow-black/30 relative overflow-hidden"
+              className="sticky top-24 rounded-3xl p-6 md:p-8 lg:p-10 shadow-2xl relative overflow-hidden"
+              style={{ backgroundColor: colors.background.secondary, borderColor: colors.border.primary, borderWidth: '2px', borderStyle: 'solid' }}
             >
-              <div className="absolute inset-0 bg-[#10B981]/5"></div>
-              
               <div className="relative z-10">
                 <div className="mb-8">
-                  <div className="text-5xl md:text-6xl font-black text-white mb-2 text-[#10B981]">
+                  <div className="text-5xl md:text-6xl font-black mb-2" style={{ color: colors.accent.primary }}>
                     {formatPrice(course.price)}
                   </div>
-                  <div className="text-sm text-[#9CA3AF] font-medium">One-time payment</div>
+                  <div className="text-sm font-medium" style={{ color: colors.text.muted }}>One-time payment</div>
                 </div>
 
                 <div className="space-y-4 mb-8">
-                  {(isEnrolled || isInCart) ? (
+                  {isEnrolled ? (
                     <Link href={`/learn/${course.slug}`}>
                       <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="w-full bg-[#10B981] hover:bg-[#10B981] text-white py-4 rounded-xl font-black text-lg transition-all duration-300 shadow-xl shadow-[#10B981]/30 hover:shadow-[#10B981]/50 flex items-center justify-center gap-2"
+                        className="w-full py-4 rounded-xl font-black text-lg transition-all duration-300 flex items-center justify-center gap-2"
+                        style={{ backgroundColor: colors.button.primary, color: colors.text.white }}
                       >
                         <Play className="w-5 h-5" />
                         Go to Course
@@ -514,7 +507,8 @@ export default function CourseDetailPage() {
                         onClick={handleAddToCart}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="w-full bg-[#10B981] hover:bg-[#10B981] text-white py-4 rounded-xl font-black text-lg transition-all duration-300 shadow-xl shadow-[#10B981]/30 hover:shadow-[#10B981]/50 flex items-center justify-center gap-2"
+                        className="w-full py-4 rounded-xl font-black text-lg transition-all duration-300 flex items-center justify-center gap-2"
+                        style={{ backgroundColor: colors.button.primary, color: colors.text.white }}
                       >
                         <ShoppingCart className="w-5 h-5" />
                         Add to Cart
@@ -525,11 +519,14 @@ export default function CourseDetailPage() {
                           disabled={wishlistLoading}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
-                          className={`w-full border-2 ${
-                            isInWishlist 
-                              ? 'border-[#EF4444] bg-[#EF4444]/10 text-[#EF4444]' 
-                              : 'border-[#334155] bg-[#0F172A]/50 text-white hover:border-[#EF4444] hover:bg-[#EF4444]/10'
-                          } backdrop-blur-sm py-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed`}
+                          className="w-full py-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                          style={{ 
+                            borderColor: isInWishlist ? '#EF4444' : colors.border.primary, 
+                            borderWidth: '2px', 
+                            borderStyle: 'solid',
+                            backgroundColor: isInWishlist ? '#EF4444' : colors.background.primary,
+                            color: isInWishlist ? '#EF4444' : colors.text.dark
+                          }}
                         >
                           <Heart className={`w-5 h-5 ${isInWishlist ? 'fill-[#EF4444]' : ''}`} />
                           {wishlistLoading ? 'Loading...' : isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
@@ -539,28 +536,28 @@ export default function CourseDetailPage() {
                   )}
                 </div>
 
-                <div className="border-t border-[#334155] pt-6 space-y-4">
-                  <div className="flex items-center gap-3 bg-[#0F172A]/30 backdrop-blur-sm border border-[#334155] rounded-xl px-4 py-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#10B981]/20 flex items-center justify-center flex-shrink-0 border border-[#10B981]/30">
-                      <Star className="text-[#10B981] w-5 h-5" />
+                <div className="pt-6 space-y-4" style={{ borderTopColor: colors.border.primary, borderTopWidth: '1px', borderTopStyle: 'solid' }}>
+                  <div className="flex items-center gap-3 rounded-xl px-4 py-3" style={{ backgroundColor: colors.background.primary, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${colors.accent.primary}20`, borderColor: `${colors.accent.primary}30`, borderWidth: '1px', borderStyle: 'solid' }}>
+                      <Star className="w-5 h-5" style={{ color: colors.accent.primary }} />
                     </div>
-                    <span className="text-[#D1D5DB] text-sm font-medium">
+                    <span className="text-sm font-medium" style={{ color: colors.text.dark }}>
                       {course.average_rating ? `${course.average_rating.toFixed(1)} rating` : overview?.course?.rating ? `${overview.course.rating.toFixed(1)} rating` : 'No ratings yet'}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3 bg-[#0F172A]/30 backdrop-blur-sm border border-[#334155] rounded-xl px-4 py-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#10B981]/20 flex items-center justify-center flex-shrink-0 border border-[#10B981]/30">
-                      <Users className="text-[#10B981] w-5 h-5" />
+                  <div className="flex items-center gap-3 rounded-xl px-4 py-3" style={{ backgroundColor: colors.background.primary, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${colors.accent.primary}20`, borderColor: `${colors.accent.primary}30`, borderWidth: '1px', borderStyle: 'solid' }}>
+                      <Users className="w-5 h-5" style={{ color: colors.accent.primary }} />
                     </div>
-                    <span className="text-[#D1D5DB] text-sm font-medium">
+                    <span className="text-sm font-medium" style={{ color: colors.text.dark }}>
                       {course.enrolled_count || overview?.course?.total_students || 0} students
                     </span>
                   </div>
-                  <div className="flex items-center gap-3 bg-[#0F172A]/30 backdrop-blur-sm border border-[#334155] rounded-xl px-4 py-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#10B981]/20 flex items-center justify-center flex-shrink-0 border border-[#10B981]/30">
-                      <Clock className="text-[#10B981] w-5 h-5" />
+                  <div className="flex items-center gap-3 rounded-xl px-4 py-3" style={{ backgroundColor: colors.background.primary, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${colors.accent.primary}20`, borderColor: `${colors.accent.primary}30`, borderWidth: '1px', borderStyle: 'solid' }}>
+                      <Clock className="w-5 h-5" style={{ color: colors.accent.primary }} />
                     </div>
-                    <span className="text-[#D1D5DB] text-sm font-medium">
+                    <span className="text-sm font-medium" style={{ color: colors.text.dark }}>
                       {overview?.stats?.total_duration_hours || course?.total_duration_hours || 0} hours
                     </span>
                   </div>

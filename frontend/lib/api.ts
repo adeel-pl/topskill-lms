@@ -232,6 +232,12 @@ export const sessionRegistrationsAPI = {
   cancel: (id: number) => api.delete(`/session-registrations/${id}/`),
 };
 
+// Categories API
+export const categoriesAPI = {
+  getAll: () => api.get('/categories/'),
+  getById: (id: number) => api.get(`/categories/${id}/`),
+};
+
 // Reviews API
 export const reviewsAPI = {
   getAll: (courseId: number, params?: any) => api.get(`/reviews/`, { params: { course: courseId, ...params } }),
