@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState, useRef } from 'react';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { playerAPI, coursesAPI, reviewsAPI, assignmentSubmissionsAPI, enrollmentsAPI } from '@/lib/api';
 import PureLogicsNavbar from '@/app/components/PureLogicsNavbar';
 import VideoPlayer from '@/app/components/VideoPlayer';
@@ -43,8 +43,10 @@ type TabType = 'overview' | 'reviews' | 'notes' | 'questions' | 'announcements' 
 export default function CoursePlayerPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { showSuccess, showError } = useToast();
   const { isAuthenticated } = useAuthStore();
+  const errorShownRef = useRef<Set<number>>(new Set()); // Track which lecture IDs we've shown errors for
   const [course, setCourse] = useState<any>(null);
   const [sections, setSections] = useState<Section[]>([]);
   const [selectedLecture, setSelectedLecture] = useState<Lecture | null>(null);
@@ -107,33 +109,105 @@ export default function CoursePlayerPage() {
         
         if (!enrollment || !enrollment.id) {
           if (!hasPreviewLectures) {
-            console.error('Not enrolled in this course and no preview available');
+            // No preview available - redirect to course page
             router.push(`/courses/${params.slug}`);
             return;
           }
-          // Allow preview access - continue loading
+          // Allow preview access - will show first preview lecture only
         }
 
+        // Filter sections/lectures for non-enrolled users - only show preview content
+        let filteredSections = sectionsData;
+        if (!enrollment || !enrollment.id) {
+          // For non-enrolled users, find the very first preview lecture from ANY section
+          let firstPreviewLecture = null;
+          let firstPreviewSection = null;
+          
+          // Find the first preview lecture across all sections
+          for (const section of sectionsData) {
+            const previewLectures = section.lectures?.filter((lecture: any) => lecture.is_preview) || [];
+            if (previewLectures.length > 0 && !firstPreviewLecture) {
+              firstPreviewLecture = previewLectures[0];
+              firstPreviewSection = section;
+              break; // Found the first one, stop searching
+            }
+          }
+          
+          // Create a single section with only the first preview lecture
+          if (firstPreviewLecture && firstPreviewSection) {
+            filteredSections = [{
+              ...firstPreviewSection,
+              lectures: [firstPreviewLecture],
+              total_lectures: 1,
+              completed_lectures: 0,
+            }];
+          } else {
+            // No preview found - show empty (shouldn't happen, but handle gracefully)
+            filteredSections = [];
+          }
+        }
+
+        const isUserEnrolled = enrollment && enrollment.id ? true : false;
+        
         setCourse({ ...courseInfo, quizzes, assignments, qandas: contentRes.data.qandas || [], announcements: contentRes.data.announcements || [] });
-        setSections(sectionsData);
+        setSections(filteredSections);
         setQuizzes(quizzes || []);
         setAssignments(assignments || []);
         setQandas(contentRes.data.qandas || []);
         setAnnouncements(contentRes.data.announcements || []);
-        setIsEnrolled(enrollment && enrollment.id ? true : false);
+        setIsEnrolled(isUserEnrolled);
         setEnrollmentId(enrollment?.id || null);
 
         // Load reviews for the course
         await loadReviews(courseInfo.id);
 
-        if (sectionsData.length > 0 && sectionsData[0].lectures.length > 0) {
-          const firstLecture = sectionsData[0].lectures[0];
-          selectLecture(courseData.id, firstLecture.id);
+        // Determine enrollment status from API response (not state, which isn't set yet)
+        const userIsEnrolled = enrollment && enrollment.id ? true : false;
+
+        // Select lecture - for non-enrolled users, ALWAYS show first preview (completely ignore URL parameter)
+        if (filteredSections.length > 0) {
+          let lectureToSelect = null;
+          
+          if (userIsEnrolled) {
+            // Enrolled users: check URL parameter first
+            const lectureIdFromUrl = searchParams?.get('lecture');
+            if (lectureIdFromUrl) {
+              const lectureFromUrl = filteredSections
+                .flatMap((s: any) => s.lectures || [])
+                .find((l: any) => l.id === parseInt(lectureIdFromUrl));
+              if (lectureFromUrl) {
+                lectureToSelect = lectureFromUrl;
+              }
+            }
+            // If no valid lecture from URL, use first available
+            if (!lectureToSelect) {
+              lectureToSelect = filteredSections[0]?.lectures?.[0];
+            }
+          } else {
+            // Non-enrolled users: ALWAYS use first preview lecture (completely ignore URL parameter)
+            // This ensures they always see the first preview video, regardless of URL
+            lectureToSelect = filteredSections
+              .flatMap((s: any) => s.lectures || [])
+              .find((l: any) => l.is_preview) || filteredSections[0]?.lectures?.[0];
+          }
+          
+          if (lectureToSelect) {
+            // Pass the lecture data directly to avoid state timing issues
+            selectLecture(courseData.id, lectureToSelect.id, lectureToSelect)
+              .then(() => {
+                // Lecture loaded successfully
+                setLoading(false);
+              })
+              .catch((error) => {
+                console.error('Error selecting lecture:', error);
+                setLoading(false);
+              });
+          } else {
+            setLoading(false);
+          }
         } else {
           setLoading(false);
         }
-
-        setLoading(false);
       } catch (contentError: any) {
         console.error('Error loading course content:', contentError);
         if (contentError.response?.status === 403) {
@@ -224,10 +298,63 @@ export default function CoursePlayerPage() {
     }
   };
 
-  const selectLecture = async (courseId: number, lectureId: number) => {
+  const selectLecture = async (courseId: number, lectureId: number, lectureDataOverride?: any) => {
+    // Prevent duplicate calls for the same lecture
+    if (selectedLecture?.id === lectureId) {
+      setLoading(false);
+      return;
+    }
+
+    // For non-enrolled users, only allow selecting preview lectures
+    if (!isEnrolled) {
+      // Trust the provided lecture data (from filteredSections) - it's already filtered
+      if (lectureDataOverride) {
+        // If lecture data is provided, trust it - it's already been filtered to be preview
+        if (!lectureDataOverride.is_preview) {
+          // This shouldn't happen if filtering is correct, but handle it
+          console.warn('Non-preview lecture provided for non-enrolled user');
+          setLoading(false);
+          return;
+        }
+      } else {
+        // No lecture data provided - try to find from sections state
+        const lecture = sections
+          .flatMap(s => s.lectures || [])
+          .find(l => l.id === lectureId);
+        
+        if (!lecture || !lecture.is_preview) {
+          // Try to find first preview as fallback
+          const firstPreview = sections
+            .flatMap(s => s.lectures || [])
+            .find(l => l.is_preview);
+          if (firstPreview && firstPreview.id !== lectureId) {
+            return await selectLecture(courseId, firstPreview.id, firstPreview);
+          }
+          setLoading(false);
+          return;
+        }
+      }
+    }
+
     try {
+      // Always fetch from API to get complete lecture data
       const lectureRes = await playerAPI.getLecture(courseId, lectureId);
       const lectureData = lectureRes.data;
+
+      // Double-check: if not enrolled and not preview, don't load it
+      if (!isEnrolled && !lectureData.is_preview) {
+        // Silently prevent - don't redirect or show error
+        // Find and load the first preview lecture instead
+        const firstPreview = sections
+          .flatMap(s => s.lectures || [])
+          .find(l => l.is_preview);
+        if (firstPreview && firstPreview.id !== lectureId) {
+          // Recursively call with the first preview lecture
+          return await selectLecture(courseId, firstPreview.id);
+        }
+        setLoading(false);
+        return;
+      }
 
       setSelectedLecture(lectureData);
       setWatchPosition(lectureData.progress?.last_position || 0);
@@ -237,8 +364,30 @@ export default function CoursePlayerPage() {
       if (lectureData.notes) {
         setNotes(lectureData.notes || []);
       }
-    } catch (error) {
+      
+      // Ensure loading is set to false after lecture is loaded
+      setLoading(false);
+    } catch (error: any) {
       console.error('Error loading lecture:', error);
+      if (error.response?.status === 403) {
+        // For non-enrolled users, try to load first preview instead of redirecting
+        if (!isEnrolled) {
+          const firstPreview = sections
+            .flatMap(s => s.lectures)
+            .find(l => l.is_preview);
+          if (firstPreview && firstPreview.id !== lectureId) {
+            // Load first preview lecture instead - don't redirect
+            selectLecture(courseId, firstPreview.id);
+            return;
+          }
+        }
+        // Only show error once per session, and only if we can't load preview
+        if (!errorShownRef.current.has(lectureId)) {
+          errorShownRef.current.add(lectureId);
+          showError('Please enroll in this course to access this lecture');
+        }
+        // Don't redirect - let the page stay and show the first preview lecture
+      }
     }
   };
 
@@ -308,10 +457,29 @@ export default function CoursePlayerPage() {
     );
   }
 
-  if (!selectedLecture && sections.length > 0 && sections[0].lectures.length > 0) {
-    // Auto-select first lecture if none selected
-    const firstLecture = sections[0].lectures[0];
-    selectLecture(course.id, firstLecture.id);
+  // Don't auto-select here - it's already handled in loadCourseContent
+  // This was causing duplicate calls
+
+  // Only show "No lectures available" if we're not loading and sections are empty
+  if (!loading && !selectedLecture && sections.length === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#0F172A]">
+        <div className="text-center">
+          <h2 className="text-3xl font-black mb-4 text-white">No lectures available</h2>
+          <p className="text-[#9CA3AF] mb-6">This course doesn't have any lectures yet.</p>
+          <button
+            onClick={() => router.push('/courses')}
+            className="bg-[#10B981] text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
+          >
+            Browse Courses
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // If still loading or no lecture selected but sections exist, show loading
+  if ((loading || !selectedLecture) && sections.length > 0) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[#0F172A]">
         <div className="text-center">
@@ -322,7 +490,8 @@ export default function CoursePlayerPage() {
     );
   }
 
-  if (!selectedLecture) {
+  // If no lecture selected and no sections, show error
+  if (!selectedLecture && sections.length === 0 && !loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[#0F172A]">
         <div className="text-center">
@@ -372,12 +541,22 @@ export default function CoursePlayerPage() {
                   </span>
                 </div>
                 <div className="mt-1">
-                  {section.lectures.map((lecture) => (
+                  {section.lectures.map((lecture) => {
+                    // For non-enrolled users, disable non-preview lectures
+                    const isDisabled = !isEnrolled && !lecture.is_preview;
+                    return (
                     <button
                       key={lecture.id}
-                      onClick={() => selectLecture(course.id, lecture.id)}
-                      className={`w-full text-left px-4 py-2.5 text-sm hover:bg-[#1a2a4a] rounded-sm flex items-center justify-between ${selectedLecture.id === lecture.id ? 'bg-[#1a2a4a] border-l-2 border-[#10B981]' : 'text-[#E5E7EB]'
-                        }`}
+                      onClick={() => !isDisabled && selectLecture(course.id, lecture.id)}
+                      disabled={isDisabled}
+                      className={`w-full text-left px-4 py-2.5 text-sm rounded-sm flex items-center justify-between ${
+                        isDisabled 
+                          ? 'opacity-50 cursor-not-allowed text-[#6B7280]' 
+                          : selectedLecture.id === lecture.id 
+                            ? 'bg-[#1a2a4a] border-l-2 border-[#10B981] hover:bg-[#1a2a4a]' 
+                            : 'text-[#E5E7EB] hover:bg-[#1a2a4a]'
+                      }`}
+                      title={isDisabled ? 'Enroll to access this lecture' : ''}
                     >
                       <div className="flex items-center gap-2 flex-1 min-w-0">
                         {lecture.is_completed ? (
@@ -397,7 +576,8 @@ export default function CoursePlayerPage() {
                         </span>
                       </div>
                     </button>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             ))}

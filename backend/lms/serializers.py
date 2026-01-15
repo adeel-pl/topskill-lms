@@ -553,13 +553,32 @@ class LectureWithProgressSerializer(serializers.ModelSerializer):
 
 class CourseSectionPlayerSerializer(serializers.ModelSerializer):
     """Course section with lectures for player"""
-    lectures = LectureWithProgressSerializer(many=True, read_only=True)
+    lectures = serializers.SerializerMethodField()
     completed_lectures = serializers.SerializerMethodField()
     total_lectures = serializers.SerializerMethodField()
     
     class Meta:
         model = CourseSection
         fields = ['id', 'title', 'order', 'is_preview', 'lectures', 'completed_lectures', 'total_lectures']
+    
+    def get_lectures(self, obj):
+        """Get lectures, filtered for non-enrolled users to only show preview lectures"""
+        enrollment = self.context.get('enrollment')
+        all_lectures = obj.lectures.all().order_by('order')
+        
+        # For non-enrolled users, only return preview lectures (and only the first one)
+        if not enrollment:
+            preview_lectures = [l for l in all_lectures if l.is_preview]
+            # Only return the very first preview lecture
+            if preview_lectures:
+                preview_lectures = [preview_lectures[0]]
+            lectures_to_serialize = preview_lectures
+        else:
+            # Enrolled users see all lectures
+            lectures_to_serialize = all_lectures
+        
+        context = self.context
+        return LectureWithProgressSerializer(lectures_to_serialize, many=True, context=context).data
     
     def get_completed_lectures(self, obj):
         enrollment = self.context.get('enrollment')
@@ -572,6 +591,11 @@ class CourseSectionPlayerSerializer(serializers.ModelSerializer):
         return 0
     
     def get_total_lectures(self, obj):
+        enrollment = self.context.get('enrollment')
+        # For non-enrolled users, only count preview lectures (and only the first one)
+        if not enrollment:
+            preview_lectures = [l for l in obj.lectures.all() if l.is_preview]
+            return 1 if preview_lectures else 0
         return obj.lectures.count()
 
 

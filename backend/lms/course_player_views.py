@@ -70,7 +70,23 @@ class CoursePlayerViewSet(viewsets.ViewSet):
                 continue
             
             serializer = CourseSectionPlayerSerializer(section, context=context)
-            sections_data.append(serializer.data)
+            section_data = serializer.data
+            
+            # For non-enrolled users, only show preview lectures
+            if not enrollment:
+                # Filter to only show preview lectures
+                section_data['lectures'] = [
+                    lecture for lecture in section_data['lectures']
+                    if lecture.get('is_preview', False)
+                ]
+                # Only include section if it has preview lectures
+                if not section_data['lectures']:
+                    continue
+                # Update counts
+                section_data['total_lectures'] = len(section_data['lectures'])
+                section_data['completed_lectures'] = 0
+            
+            sections_data.append(section_data)
         
         # Get quizzes with attempt information
         quizzes = Quiz.objects.filter(course=course, is_active=True).order_by('order')

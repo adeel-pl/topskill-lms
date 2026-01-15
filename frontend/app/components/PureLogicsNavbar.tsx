@@ -43,7 +43,7 @@ export default function PureLogicsNavbar() {
       clearTimeout(searchTimeoutRef.current);
     }
 
-    if (searchQuery.trim().length >= 2) {
+    if (searchQuery.trim().length >= 1) {
       setIsSearching(true);
       searchTimeoutRef.current = setTimeout(async () => {
         try {

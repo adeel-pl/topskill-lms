@@ -487,31 +487,57 @@ class Command(BaseCommand):
                         course.tags.add(tag)
             
             # Create sections and lectures with course-specific content
-            if course.sections.count() == 0:
-                lecture_content = get_course_lecture_content(course.title)
-                for section_idx, section_data in enumerate(lecture_content['sections'], 1):
-                    section, _ = CourseSection.objects.get_or_create(
-                        course=course,
-                        title=section_data['title'],
+            # Always ensure course has complete content (even if sections exist, check for missing lectures)
+            lecture_content = get_course_lecture_content(course.title)
+            for section_idx, section_data in enumerate(lecture_content['sections'], 1):
+                section, _ = CourseSection.objects.get_or_create(
+                    course=course,
+                    title=section_data['title'],
+                    defaults={
+                        'order': section_idx,
+                        'is_preview': section_idx == 1,  # First section is preview
+                    }
+                )
+                # Update section order if it exists but order is wrong
+                if not _ and section.order != section_idx:
+                    section.order = section_idx
+                    section.is_preview = (section_idx == 1)
+                    section.save()
+                
+                for lecture_idx, lecture_data in enumerate(section_data['lectures'], 1):
+                    video_id = get_video_id_for_course(course.title, lecture_idx, section_idx)
+                    lecture, created = Lecture.objects.get_or_create(
+                        section=section,
+                        title=lecture_data['title'],
                         defaults={
-                            'order': section_idx,
-                            'is_preview': section_idx == 1,  # First section is preview
+                            'order': lecture_idx,
+                            'description': lecture_data['description'],
+                            'youtube_video_id': video_id,
+                            'duration_minutes': lecture_data['duration'],
+                            'is_preview': section_idx == 1 and lecture_idx == 1,  # First lecture is preview
+                            'video_type': 'youtube',
                         }
                     )
-                    
-                    for lecture_idx, lecture_data in enumerate(section_data['lectures'], 1):
-                        video_id = get_video_id_for_course(course.title, lecture_idx, section_idx)
-                        Lecture.objects.get_or_create(
-                            section=section,
-                            title=lecture_data['title'],
-                            defaults={
-                                'order': lecture_idx,
-                                'description': lecture_data['description'],
-                                'youtube_video_id': video_id,
-                                'duration_minutes': lecture_data['duration'],
-                                'is_preview': section_idx == 1 and lecture_idx == 1,  # First lecture is preview
-                            }
-                        )
+                    # Update lecture if it exists but missing data
+                    if not created:
+                        updated = False
+                        if not lecture.youtube_video_id:
+                            lecture.youtube_video_id = video_id
+                            updated = True
+                        if not lecture.description:
+                            lecture.description = lecture_data['description']
+                            updated = True
+                        if lecture.duration_minutes == 0:
+                            lecture.duration_minutes = lecture_data['duration']
+                            updated = True
+                        if lecture.order != lecture_idx:
+                            lecture.order = lecture_idx
+                            updated = True
+                        if not lecture.video_type:
+                            lecture.video_type = 'youtube'
+                            updated = True
+                        if updated:
+                            lecture.save()
             
             # Update course stats dynamically
             total_lectures = Lecture.objects.filter(section__course=course).count()
@@ -560,32 +586,55 @@ class Command(BaseCommand):
                     if not course.tags.filter(id=tag.id).exists():
                         course.tags.add(tag)
             
-            # Create sections and lectures
-            if course.sections.count() == 0:
-                lecture_content = get_course_lecture_content(course.title)
-                for section_idx, section_data in enumerate(lecture_content['sections'], 1):
-                    section, _ = CourseSection.objects.get_or_create(
-                        course=course,
-                        title=section_data['title'],
+            # Create sections and lectures - ensure complete content
+            lecture_content = get_course_lecture_content(course.title)
+            for section_idx, section_data in enumerate(lecture_content['sections'], 1):
+                section, _ = CourseSection.objects.get_or_create(
+                    course=course,
+                    title=section_data['title'],
+                    defaults={
+                        'order': section_idx,
+                        'is_preview': section_idx == 1,
+                    }
+                )
+                if not _ and section.order != section_idx:
+                    section.order = section_idx
+                    section.is_preview = (section_idx == 1)
+                    section.save()
+                
+                for lecture_idx, lecture_data in enumerate(section_data['lectures'], 1):
+                    video_id = get_video_id_for_course(course.title, lecture_idx, section_idx)
+                    lecture, created = Lecture.objects.get_or_create(
+                        section=section,
+                        title=lecture_data['title'],
                         defaults={
-                            'order': section_idx,
-                            'is_preview': section_idx == 1,
+                            'order': lecture_idx,
+                            'description': lecture_data['description'],
+                            'youtube_video_id': video_id,
+                            'duration_minutes': lecture_data['duration'],
+                            'is_preview': section_idx == 1 and lecture_idx == 1,
+                            'video_type': 'youtube',
                         }
                     )
-                    
-                    for lecture_idx, lecture_data in enumerate(section_data['lectures'], 1):
-                        video_id = get_video_id_for_course(course.title, lecture_idx, section_idx)
-                        Lecture.objects.get_or_create(
-                            section=section,
-                            title=lecture_data['title'],
-                            defaults={
-                                'order': lecture_idx,
-                                'description': lecture_data['description'],
-                                'youtube_video_id': video_id,
-                                'duration_minutes': lecture_data['duration'],
-                                'is_preview': section_idx == 1 and lecture_idx == 1,
-                            }
-                        )
+                    if not created:
+                        updated = False
+                        if not lecture.youtube_video_id:
+                            lecture.youtube_video_id = video_id
+                            updated = True
+                        if not lecture.description:
+                            lecture.description = lecture_data['description']
+                            updated = True
+                        if lecture.duration_minutes == 0:
+                            lecture.duration_minutes = lecture_data['duration']
+                            updated = True
+                        if lecture.order != lecture_idx:
+                            lecture.order = lecture_idx
+                            updated = True
+                        if not lecture.video_type:
+                            lecture.video_type = 'youtube'
+                            updated = True
+                        if updated:
+                            lecture.save()
             
             # Update course stats
             total_lectures = Lecture.objects.filter(section__course=course).count()
@@ -672,32 +721,55 @@ class Command(BaseCommand):
                     if not course.tags.filter(id=tag.id).exists():
                         course.tags.add(tag)
             
-            # Create sections and lectures
-            if course.sections.count() == 0:
-                lecture_content = get_course_lecture_content(course.title)
-                for section_idx, section_data in enumerate(lecture_content['sections'], 1):
-                    section, _ = CourseSection.objects.get_or_create(
-                        course=course,
-                        title=section_data['title'],
+            # Create sections and lectures - ensure complete content
+            lecture_content = get_course_lecture_content(course.title)
+            for section_idx, section_data in enumerate(lecture_content['sections'], 1):
+                section, _ = CourseSection.objects.get_or_create(
+                    course=course,
+                    title=section_data['title'],
+                    defaults={
+                        'order': section_idx,
+                        'is_preview': section_idx == 1,
+                    }
+                )
+                if not _ and section.order != section_idx:
+                    section.order = section_idx
+                    section.is_preview = (section_idx == 1)
+                    section.save()
+                
+                for lecture_idx, lecture_data in enumerate(section_data['lectures'], 1):
+                    video_id = get_video_id_for_course(course.title, lecture_idx, section_idx)
+                    lecture, created = Lecture.objects.get_or_create(
+                        section=section,
+                        title=lecture_data['title'],
                         defaults={
-                            'order': section_idx,
-                            'is_preview': section_idx == 1,
+                            'order': lecture_idx,
+                            'description': lecture_data['description'],
+                            'youtube_video_id': video_id,
+                            'duration_minutes': lecture_data['duration'],
+                            'is_preview': section_idx == 1 and lecture_idx == 1,
+                            'video_type': 'youtube',
                         }
                     )
-                    
-                    for lecture_idx, lecture_data in enumerate(section_data['lectures'], 1):
-                        video_id = get_video_id_for_course(course.title, lecture_idx, section_idx)
-                        Lecture.objects.get_or_create(
-                            section=section,
-                            title=lecture_data['title'],
-                            defaults={
-                                'order': lecture_idx,
-                                'description': lecture_data['description'],
-                                'youtube_video_id': video_id,
-                                'duration_minutes': lecture_data['duration'],
-                                'is_preview': section_idx == 1 and lecture_idx == 1,
-                            }
-                        )
+                    if not created:
+                        updated = False
+                        if not lecture.youtube_video_id:
+                            lecture.youtube_video_id = video_id
+                            updated = True
+                        if not lecture.description:
+                            lecture.description = lecture_data['description']
+                            updated = True
+                        if lecture.duration_minutes == 0:
+                            lecture.duration_minutes = lecture_data['duration']
+                            updated = True
+                        if lecture.order != lecture_idx:
+                            lecture.order = lecture_idx
+                            updated = True
+                        if not lecture.video_type:
+                            lecture.video_type = 'youtube'
+                            updated = True
+                        if updated:
+                            lecture.save()
             
             # Update course stats
             total_lectures = Lecture.objects.filter(section__course=course).count()
@@ -783,32 +855,55 @@ class Command(BaseCommand):
                     if not course.tags.filter(id=tag.id).exists():
                         course.tags.add(tag)
             
-            # Create sections and lectures
-            if course.sections.count() == 0:
-                lecture_content = get_course_lecture_content(course.title)
-                for section_idx, section_data in enumerate(lecture_content['sections'], 1):
-                    section, _ = CourseSection.objects.get_or_create(
-                        course=course,
-                        title=section_data['title'],
+            # Create sections and lectures - ensure complete content
+            lecture_content = get_course_lecture_content(course.title)
+            for section_idx, section_data in enumerate(lecture_content['sections'], 1):
+                section, _ = CourseSection.objects.get_or_create(
+                    course=course,
+                    title=section_data['title'],
+                    defaults={
+                        'order': section_idx,
+                        'is_preview': section_idx == 1,
+                    }
+                )
+                if not _ and section.order != section_idx:
+                    section.order = section_idx
+                    section.is_preview = (section_idx == 1)
+                    section.save()
+                
+                for lecture_idx, lecture_data in enumerate(section_data['lectures'], 1):
+                    video_id = get_video_id_for_course(course.title, lecture_idx, section_idx)
+                    lecture, created = Lecture.objects.get_or_create(
+                        section=section,
+                        title=lecture_data['title'],
                         defaults={
-                            'order': section_idx,
-                            'is_preview': section_idx == 1,
+                            'order': lecture_idx,
+                            'description': lecture_data['description'],
+                            'youtube_video_id': video_id,
+                            'duration_minutes': lecture_data['duration'],
+                            'is_preview': section_idx == 1 and lecture_idx == 1,
+                            'video_type': 'youtube',
                         }
                     )
-                    
-                    for lecture_idx, lecture_data in enumerate(section_data['lectures'], 1):
-                        video_id = get_video_id_for_course(course.title, lecture_idx, section_idx)
-                        Lecture.objects.get_or_create(
-                            section=section,
-                            title=lecture_data['title'],
-                            defaults={
-                                'order': lecture_idx,
-                                'description': lecture_data['description'],
-                                'youtube_video_id': video_id,
-                                'duration_minutes': lecture_data['duration'],
-                                'is_preview': section_idx == 1 and lecture_idx == 1,
-                            }
-                        )
+                    if not created:
+                        updated = False
+                        if not lecture.youtube_video_id:
+                            lecture.youtube_video_id = video_id
+                            updated = True
+                        if not lecture.description:
+                            lecture.description = lecture_data['description']
+                            updated = True
+                        if lecture.duration_minutes == 0:
+                            lecture.duration_minutes = lecture_data['duration']
+                            updated = True
+                        if lecture.order != lecture_idx:
+                            lecture.order = lecture_idx
+                            updated = True
+                        if not lecture.video_type:
+                            lecture.video_type = 'youtube'
+                            updated = True
+                        if updated:
+                            lecture.save()
             
             # Update course stats
             total_lectures = Lecture.objects.filter(section__course=course).count()

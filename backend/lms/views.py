@@ -735,6 +735,36 @@ class QuizViewSet(viewsets.ModelViewSet):
         
         return queryset.order_by('order')
     
+    def retrieve(self, request, *args, **kwargs):
+        """Override retrieve to check enrollment"""
+        quiz = self.get_object()
+        
+        # Staff can always access
+        if request.user.is_staff:
+            return super().retrieve(request, *args, **kwargs)
+        
+        # Check if user is enrolled in the course
+        if request.user.is_authenticated:
+            enrollment = Enrollment.objects.filter(
+                user=request.user,
+                course=quiz.course,
+                status__in=['active', 'completed']
+            ).first()
+            
+            if not enrollment:
+                return Response(
+                    {'error': 'You must be enrolled in this course to access quizzes.'},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+        else:
+            # Not authenticated - deny access
+            return Response(
+                {'error': 'You must be logged in and enrolled in this course to access quizzes.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        return super().retrieve(request, *args, **kwargs)
+    
     def perform_create(self, serializer):
         course = serializer.validated_data['course']
         # Only instructors or staff can create quizzes

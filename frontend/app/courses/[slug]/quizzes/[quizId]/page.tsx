@@ -40,6 +40,8 @@ export default function QuizPage() {
   const [submitted, setSubmitted] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isEnrolled, setIsEnrolled] = useState(false);
+  const [checkingEnrollment, setCheckingEnrollment] = useState(true);
 
   useEffect(() => {
     // Use Cookies instead of localStorage (consistent with rest of app)
@@ -49,8 +51,8 @@ export default function QuizPage() {
       return;
     }
 
-    loadQuiz();
-  }, [quizId]);
+    checkEnrollmentAndLoadQuiz();
+  }, [quizId, courseSlug]);
 
   useEffect(() => {
     if (quiz?.time_limit_minutes && !submitted) {
@@ -73,15 +75,61 @@ export default function QuizPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quiz, submitted]);
 
-  const loadQuiz = async () => {
+  const checkEnrollmentAndLoadQuiz = async () => {
     try {
+      setCheckingEnrollment(true);
+      
+      // First, get the course by slug
+      const coursesRes = await fetch(`${getApiBase()}/courses/?slug=${encodeURIComponent(courseSlug)}`, {
+        headers: {
+          'Authorization': `Bearer ${Cookies.get('access_token')}`,
+        },
+      });
+      
+      if (!coursesRes.ok) {
+        throw new Error('Failed to fetch course');
+      }
+      
+      const coursesData = await coursesRes.json();
+      const courseData = Array.isArray(coursesData.results) 
+        ? coursesData.results.find((c: any) => c.slug === courseSlug) || coursesData.results[0]
+        : (coursesData.results && coursesData.results.length > 0 ? coursesData.results[0] : null) || coursesData[0];
+      const courseId = courseData?.id;
+      
+      if (!courseId) {
+        throw new Error('Course not found');
+      }
+
+      // Check enrollment
+      const enrollments = await fetchWithAuth("/enrollments/");
+      const enrollment = (enrollments.results || enrollments || []).find(
+        (e: any) => (e.course?.id === courseId || e.course === courseId) && 
+                     (e.status === 'active' || e.status === 'completed')
+      );
+
+      if (!enrollment) {
+        // Not enrolled - redirect to course page
+        showError("You must be enrolled in this course to access quizzes.");
+        router.push(`/courses/${courseSlug}`);
+        return;
+      }
+
+      setIsEnrolled(true);
+      
+      // Now load the quiz
       const data = await fetchWithAuth(`/quizzes/${quizId}/`);
       setQuiz(data);
     } catch (error: any) {
       console.error("Failed to load quiz:", error);
-      showError(error.message || "Quiz not found. Please check if the quiz exists for this course.");
+      if (error.message && error.message.includes('enrolled')) {
+        showError("You must be enrolled in this course to access quizzes.");
+        router.push(`/courses/${courseSlug}`);
+      } else {
+        showError(error.message || "Quiz not found. Please check if the quiz exists for this course.");
+      }
     } finally {
       setLoading(false);
+      setCheckingEnrollment(false);
     }
   };
 
@@ -171,12 +219,29 @@ export default function QuizPage() {
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-  if (loading) {
+  if (loading || checkingEnrollment) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-gray-200 border-t-[#10B981] rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-[#000F2C]">Loading quiz...</p>
+          <p className="text-[#000F2C]">{checkingEnrollment ? 'Checking enrollment...' : 'Loading quiz...'}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isEnrolled) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center max-w-md px-6">
+          <h2 className="text-2xl font-bold mb-4 text-[#000F2C]">Access Denied</h2>
+          <p className="text-[#6a6f73] mb-6">You must be enrolled in this course to access quizzes.</p>
+          <Link
+            href={`/courses/${courseSlug}`}
+            className="inline-block px-6 py-3 bg-[#10B981] hover:bg-[#10B981] text-white font-semibold rounded-sm transition-colors"
+          >
+            View Course
+          </Link>
         </div>
       </div>
     );
