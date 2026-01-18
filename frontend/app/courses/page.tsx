@@ -126,7 +126,7 @@ export default function CoursesPage() {
   };
 
   return (
-    <div className="min-h-screen pt-16 md:pt-20" style={{ backgroundColor: colors.background.primary, color: colors.text.dark }}>
+    <div className="min-h-screen" style={{ backgroundColor: colors.background.primary, color: colors.text.dark }}>
       <style jsx global>{`
         input::placeholder {
           color: ${colors.text.muted} !important;
@@ -135,7 +135,7 @@ export default function CoursesPage() {
       <PureLogicsNavbar />
 
       {/* Hero Banner */}
-      <section className="relative py-12 md:py-16 lg:py-20 xl:py-24 mb-12">
+      <section className="section-after-header relative pb-12 md:pb-16 lg:pb-20 xl:pb-24 mb-12">
         <div className="max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 text-center relative z-10">
           <div className="inline-block mb-5 md:mb-6">
             <span className="px-4 md:px-5 py-1.5 md:py-2.5 rounded-full text-xs md:text-sm font-black backdrop-blur-sm flex items-center gap-2" style={{ backgroundColor: `${colors.accent.primary}20`, borderColor: `${colors.accent.primary}40`, borderWidth: '1px', borderStyle: 'solid', color: colors.accent.primary }}>

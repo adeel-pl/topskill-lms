@@ -71,7 +71,7 @@ export default function HomePage() {
       <PureLogicsNavbar />
 
       {/* Hero Section - Premium Design */}
-      <section className="relative pt-32 pb-24 overflow-hidden mb-50" style={{ backgroundColor: colors.background.primary }}>
+      <section className="section-after-header relative pb-24 overflow-hidden mb-50" style={{ backgroundColor: colors.background.primary }}>
 
         <div className="max-w-container xl:max-w-container-xl 2xl:max-w-container-2xl mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 relative z-10">
           <div className="text-center">

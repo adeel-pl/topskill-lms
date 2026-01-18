@@ -77,3 +77,6 @@ class Command(BaseCommand):
             missing = total_lectures - total_lectures_with_videos
             self.stdout.write(self.style.WARNING(f'\n⚠️  {missing} lectures still missing video IDs'))
 
+
+
+

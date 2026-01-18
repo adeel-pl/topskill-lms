@@ -69,7 +69,7 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0F172A] text-white pt-16 md:pt-20">
+    <div className="min-h-screen bg-[#0F172A] text-white">
       <PureLogicsNavbar />
 
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
@@ -77,7 +77,7 @@ export default function ForgotPasswordPage() {
         <div className="absolute bottom-20 right-10 w-80 h-80 bg-[#3B82F6] opacity-[0.06] rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
 
-      <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4 sm:px-6 py-12 md:py-16 relative z-10">
+      <div className="section-after-header flex items-center justify-center min-h-[calc(100vh-80px)] px-4 sm:px-6 pb-12 md:pb-16 relative z-10">
         <div className="max-w-[500px] xl:max-w-[600px] mx-auto w-full px-4 sm:px-6">
           <div className="text-center mb-12">
             <div className="inline-block mb-8">

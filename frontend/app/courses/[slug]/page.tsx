@@ -231,10 +231,10 @@ export default function CourseDetailPage() {
   }
 
   return (
-    <div className="min-h-screen pt-20" style={{ backgroundColor: colors.background.primary, color: colors.text.dark }}>
+    <div className="min-h-screen" style={{ backgroundColor: colors.background.primary, color: colors.text.dark }}>
       <PureLogicsNavbar />
 
-      <div className="max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-12 relative z-10">
+      <div className="section-after-header max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 pb-12 relative z-10">
         {/* Course Thumbnail */}
         {course.thumbnail && (
           <motion.div

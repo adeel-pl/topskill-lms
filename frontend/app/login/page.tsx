@@ -77,7 +77,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen pt-16 md:pt-20" style={{ backgroundColor: colors.background.primary, color: colors.text.dark }}>
+    <div className="min-h-screen" style={{ backgroundColor: colors.background.primary, color: colors.text.dark }}>
       <style jsx global>{`
         input::placeholder {
           color: ${colors.text.muted} !important;
@@ -85,7 +85,7 @@ export default function LoginPage() {
       `}</style>
       <PureLogicsNavbar />
 
-      <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4 sm:px-6 py-12 md:py-16 relative z-10">
+      <div className="section-after-header flex items-center justify-center min-h-[calc(100vh-80px)] px-4 sm:px-6 pb-12 md:pb-16 relative z-10">
         <div className="max-w-[500px] xl:max-w-[600px] 2xl:max-w-[700px] mx-auto w-full px-4 sm:px-6">
           {/* Enhanced Header */}
           <div className="text-center mb-12">

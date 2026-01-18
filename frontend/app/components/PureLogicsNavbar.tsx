@@ -93,18 +93,18 @@ export default function PureLogicsNavbar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#0F172A]/95 backdrop-blur-xl border-b border-[#334155] shadow-lg">
-      <div className="max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16">
-        <div className="flex items-center justify-between h-20 gap-4 w-full">
+      <div className="max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto w-full px-3 sm:px-4 md:px-6 lg:px-8 xl:px-10 2xl:px-12">
+        <div className="flex items-center justify-between h-16 sm:h-18 md:h-20 gap-2 sm:gap-3 md:gap-4 w-full">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 flex-shrink-0 group">
+          <Link href="/" className="flex items-center gap-2 sm:gap-3 flex-shrink-0 group min-w-0">
             <motion.div
-              className="w-10 h-10 bg-[#10B981] rounded-xl flex items-center justify-center shadow-lg shadow-[#10B981]/30"
+              className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 bg-[#10B981] rounded-xl flex items-center justify-center shadow-lg shadow-[#10B981]/30 flex-shrink-0"
               whileHover={{ scale: 1.1 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="w-5 h-5 bg-[#0F172A] rounded-lg"></div>
+              <div className="w-4 h-4 sm:w-4.5 sm:h-4.5 md:w-5 md:h-5 bg-[#0F172A] rounded-lg"></div>
             </motion.div>
-            <span className="text-xl font-black text-white">
+            <span className="text-lg sm:text-xl font-black text-white whitespace-nowrap">
               Pure<span className="text-[#10B981]">Logics</span>
             </span>
           </Link>
@@ -112,14 +112,14 @@ export default function PureLogicsNavbar() {
           {/* Explore Link */}
           <Link
             href="/courses"
-            className="text-[#D1D5DB] px-4 py-2 hover:bg-[#1E293B] rounded-lg flex items-center gap-2 text-sm font-medium transition-colors hidden md:flex"
+            className="text-[#D1D5DB] px-3 sm:px-4 py-2 hover:bg-[#1E293B] rounded-lg flex items-center gap-2 text-sm font-medium transition-colors hidden lg:flex flex-shrink-0"
           >
             Explore
             <ChevronDown className="w-4 h-4" />
           </Link>
 
           {/* Search Bar with Predictive Search */}
-          <div ref={searchContainerRef} className="flex-1 max-w-2xl mx-4 hidden md:block relative">
+          <div ref={searchContainerRef} className="flex-1 max-w-2xl mx-2 sm:mx-3 md:mx-4 hidden lg:block relative min-w-0">
             <form 
               onSubmit={(e) => {
                 e.preventDefault();
@@ -206,28 +206,28 @@ export default function PureLogicsNavbar() {
           </div>
 
           {/* Right Side Actions */}
-          <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="navbar-right-actions flex items-center gap-1.5 sm:gap-2 md:gap-3 flex-shrink-0">
             <Link href="/courses" className="text-[#D1D5DB] hover:text-white text-sm font-medium hidden lg:block whitespace-nowrap transition-colors">
               Plans & Pricing
             </Link>
             <Link href="/instructors" className="text-[#D1D5DB] hover:text-white text-sm font-medium hidden lg:block whitespace-nowrap transition-colors">
               Instructors
             </Link>
-            <Link href="/cart" className="text-[#D1D5DB] hover:text-white p-2.5 rounded-lg hover:bg-[#1E293B] transition-colors relative">
-              <ShoppingCart className="w-5 h-5" />
+            <Link href="/cart" className="text-[#D1D5DB] hover:text-white p-2 sm:p-2.5 rounded-lg hover:bg-[#1E293B] transition-colors relative flex-shrink-0">
+              <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
             </Link>
             {/* Globe button removed - no functionality implemented */}
             {isAuthenticated ? (
               <>
                 <Link
                   href="/dashboard/my-courses"
-                  className="text-[#D1D5DB] hover:text-white px-5 py-2.5 border border-[#334155] rounded-lg text-sm font-medium whitespace-nowrap transition-colors hover:bg-[#1E293B] hover:border-[#10B981] hidden sm:block"
+                  className="text-[#D1D5DB] hover:text-white px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 border border-[#334155] rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap transition-colors hover:bg-[#1E293B] hover:border-[#10B981] hidden lg:block"
                 >
                   My Learning
                 </Link>
                 <motion.button
                   onClick={logout}
-                  className="bg-[#10B981] hover:bg-[#10B981] text-white px-5 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap transition-all duration-300 shadow-lg shadow-[#10B981]/20"
+                  className="bg-[#10B981] hover:bg-[#10B981] text-white px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-300 shadow-lg shadow-[#10B981]/20 hidden lg:block"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -238,26 +238,27 @@ export default function PureLogicsNavbar() {
               <>
                 <Link
                   href="/login"
-                  className="text-[#D1D5DB] hover:text-white px-5 py-2.5 border border-[#334155] rounded-lg text-sm font-medium whitespace-nowrap transition-colors hover:bg-[#1E293B] hover:border-[#10B981] hidden sm:block"
+                  className="text-[#D1D5DB] hover:text-white px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 border border-[#334155] rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap transition-colors hover:bg-[#1E293B] hover:border-[#10B981] hidden lg:block"
                 >
                   Log in
                 </Link>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="hidden lg:block">
                   <Link
                     href="/register"
-                    className="bg-[#10B981] hover:bg-[#10B981] text-white px-5 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap transition-all duration-300 shadow-lg shadow-[#10B981]/20 inline-block"
+                    className="bg-[#10B981] hover:bg-[#10B981] text-white px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-300 shadow-lg shadow-[#10B981]/20 inline-block"
                   >
                     Sign up
                   </Link>
                 </motion.div>
               </>
             )}
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Button - Only show when main navigation is hidden (below lg breakpoint) */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden text-white p-2 rounded-lg hover:bg-[#1E293B] transition-colors"
+              className="mobile-menu-toggle block text-white p-2 rounded-lg hover:bg-[#1E293B] transition-colors flex-shrink-0"
+              aria-label="Toggle mobile menu"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
             </button>
           </div>
         </div>
@@ -270,7 +271,7 @@ export default function PureLogicsNavbar() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2 }}
-              className="md:hidden border-t border-[#334155] py-4 overflow-hidden"
+              className="lg:hidden border-t border-[#334155] py-4 overflow-hidden"
             >
               <div className="flex flex-col gap-2">
                 <Link href="/courses" className="text-[#D1D5DB] hover:text-white px-4 py-2 rounded-lg hover:bg-[#1E293B] transition-colors text-sm">

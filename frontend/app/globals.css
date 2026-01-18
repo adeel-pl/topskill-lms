@@ -503,6 +503,23 @@ a:hover {
     padding-left: 2rem;
     padding-right: 2rem;
   }
+  
+  /* Hide mobile menu button on desktop (1024px and above) - Ultra high specificity selectors */
+  header > div > div > div.navbar-right-actions > button.mobile-menu-toggle,
+  header > div > div.flex.items-center.justify-between > div.navbar-right-actions > button.mobile-menu-toggle,
+  header div.navbar-right-actions button.mobile-menu-toggle,
+  header > div > div > div > button.mobile-menu-toggle,
+  header button.mobile-menu-toggle {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
 }
 
 /* Premium Animation Delays */
@@ -607,4 +624,9 @@ a:hover {
 
 .border-purelogics-primary {
   border-color: var(--border-primary) !important;
+}
+
+/* First section after header - consistent padding */
+.section-after-header {
+  padding-top: 10rem !important;
 }

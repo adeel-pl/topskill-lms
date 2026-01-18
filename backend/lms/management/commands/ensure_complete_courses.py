@@ -185,3 +185,6 @@ class Command(BaseCommand):
         else:
             self.stdout.write(self.style.SUCCESS('\n✨ All courses have complete data!'))
 
+
+
+

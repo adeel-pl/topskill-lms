@@ -93,7 +93,7 @@ export default function InstructorsDashboardPage() {
     <div className="min-h-screen bg-[#0F172A] text-white">
       <PureLogicsNavbar />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="section-after-header max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-black text-white mb-2">Instructor Dashboard</h1>
@@ -276,6 +276,9 @@ export default function InstructorsDashboardPage() {
     </div>
   );
 }
+
+
+
 
 
 

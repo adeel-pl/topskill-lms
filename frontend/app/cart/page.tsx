@@ -97,10 +97,10 @@ export default function CartPage() {
   const itemCount = cart?.items?.length || 0;
 
   return (
-    <div className="min-h-screen pt-16 md:pt-20" style={{ backgroundColor: colors.background.primary, color: colors.text.dark }}>
+    <div className="min-h-screen" style={{ backgroundColor: colors.background.primary, color: colors.text.dark }}>
       <PureLogicsNavbar />
 
-      <div className="max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-10 md:py-12 relative z-10">
+      <div className="section-after-header max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 pb-10 md:pb-12 relative z-10">
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-2 md:mb-3" style={{ color: colors.text.dark }}>
           Shopping Cart
         </h1>
