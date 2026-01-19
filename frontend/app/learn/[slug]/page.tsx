@@ -514,7 +514,7 @@ export default function CoursePlayerPage() {
     <div className="flex flex-col h-screen bg-white">
       <PureLogicsNavbar />
 
-      <div className="section-after-header flex flex-1 overflow-hidden" style={{ height: 'calc(100vh - 64px)' }}>
+      <div className="flex flex-1 overflow-hidden" style={{ height: 'calc(100vh - 64px)', paddingTop: '5rem' }}>
         {/* Left Sidebar - Course Content */}
         <div className={`${sidebarOpen ? 'w-80' : 'w-0'} bg-[#000F2C] overflow-y-auto border-r border-[#1a2a4a] transition-all duration-300 flex-shrink-0`} style={{ height: 'calc(100vh - 64px)', overflowY: 'auto' }}>
           <div className="p-4 sticky top-0 bg-[#000F2C] border-b border-[#1a2a4a] z-10 backdrop-blur-sm">

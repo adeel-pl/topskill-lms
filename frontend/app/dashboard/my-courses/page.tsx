@@ -82,9 +82,9 @@ export default function MyCoursesPage() {
   }
 
   return (
-    <div className="min-h-screen pt-16 md:pt-20" style={{ backgroundColor: colors.background.primary, color: colors.text.dark }}>
+    <div className="min-h-screen" style={{ backgroundColor: colors.background.primary, color: colors.text.dark }}>
 
-      <div className="max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-10 md:py-12 relative z-10">
+      <div className="max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 pb-10 md:pb-12 relative z-10">
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-4 mb-6 md:mb-8 lg:mb-12">
           <div>
@@ -154,12 +154,13 @@ export default function MyCoursesPage() {
               return (
                 <div
                   key={enrollment.id}
-                  className="rounded-2xl overflow-hidden transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-2xl"
+                  className="h-full flex flex-col rounded-2xl overflow-hidden transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-2xl"
                   style={{ 
                     backgroundColor: colors.background.card, 
                     borderColor: colors.border.primary, 
                     borderWidth: '1px', 
-                    borderStyle: 'solid'
+                    borderStyle: 'solid',
+                    animationDelay: `${idx * 100}ms`
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.borderColor = colors.accent.primary;
@@ -169,10 +170,24 @@ export default function MyCoursesPage() {
                     e.currentTarget.style.borderColor = colors.border.primary;
                     e.currentTarget.style.boxShadow = '';
                   }}
-                  style={{ animationDelay: `${idx * 100}ms` }}
                 >
+                  {/* Course Image */}
+                  <div className="relative w-full aspect-video overflow-hidden" style={{ backgroundColor: colors.accent.primary }}>
+                    {enrollment.course.thumbnail ? (
+                      <img
+                        src={enrollment.course.thumbnail}
+                        alt={enrollment.course.title}
+                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <span className="text-white text-5xl font-black drop-shadow-lg">{enrollment.course.title.charAt(0)}</span>
+                      </div>
+                    )}
+                  </div>
+
                   {/* Course Header */}
-                  <div className="p-5 md:p-6 lg:p-8">
+                  <div className="flex-1 flex flex-col p-5 md:p-6 lg:p-8">
                     <div className="flex items-start justify-between mb-4 md:mb-5 lg:mb-6">
                       <h3 className="text-lg md:text-xl lg:text-2xl font-black flex-1 transition-colors" style={{ color: colors.text.dark }}>
                         {enrollment.course.title}
@@ -228,24 +243,26 @@ export default function MyCoursesPage() {
                     </div>
 
                     {/* Action Button */}
-                    <Link
-                      href={`/learn/${enrollment.course.slug}`}
-                      className="w-full px-5 md:px-6 py-3 md:py-3.5 lg:py-4 rounded-xl font-black transition-all duration-300 flex items-center justify-center gap-2 md:gap-3 hover:scale-105 hover:shadow-2xl text-sm md:text-base"
-                      style={{ 
-                        backgroundColor: colors.button.primary, 
-                        color: colors.text.white,
-                        boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(16, 185, 129, 0.5)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(16, 185, 129, 0.3)';
-                      }}
-                    >
-                      <FiPlay className="text-lg md:text-xl" />
-                      Continue Learning
-                    </Link>
+                    <div className="mt-auto">
+                      <Link
+                        href={`/learn/${enrollment.course.slug}`}
+                        className="w-full px-5 md:px-6 py-3 md:py-3.5 lg:py-4 rounded-xl font-black transition-all duration-300 flex items-center justify-center gap-2 md:gap-3 hover:scale-105 hover:shadow-2xl text-sm md:text-base"
+                        style={{ 
+                          backgroundColor: colors.button.primary, 
+                          color: colors.text.white,
+                          boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(16, 185, 129, 0.5)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(16, 185, 129, 0.3)';
+                        }}
+                      >
+                        <FiPlay className="text-lg md:text-xl" />
+                        Continue Learning
+                      </Link>
+                    </div>
                   </div>
                 </div>
               );
