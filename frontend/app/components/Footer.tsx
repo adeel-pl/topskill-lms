@@ -11,12 +11,12 @@ export default function Footer() {
           {/* Brand */}
           <div className="sm:col-span-2 md:col-span-1">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg" style={{ backgroundColor: colors.accent.primary }}>
-                <div className="w-6 h-6 rounded-lg" style={{ backgroundColor: colors.background.primary }}></div>
-              </div>
-              <span className="text-2xl font-black" style={{ color: colors.text.dark }}>
-                Pure<span style={{ color: colors.accent.primary }}>Logics</span>
-              </span>
+              <img
+                src="https://purelogics.com/wp-content/themes/PureLogics/images/Final-Logo.svg"
+                alt="PureLogics"
+                className="h-10 md:h-12 w-auto"
+                style={{ maxWidth: '200px' }}
+              />
             </div>
             <p className="leading-relaxed mb-4 pr-4" style={{ color: colors.text.muted }}>
               Learn without limits. Transform your career with world-class courses.

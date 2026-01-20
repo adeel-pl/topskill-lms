@@ -98,15 +98,17 @@ export default function PureLogicsNavbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 sm:gap-3 flex-shrink-0 group min-w-0">
             <motion.div
-              className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 bg-[#10B981] rounded-xl flex items-center justify-center shadow-lg shadow-[#10B981]/30 flex-shrink-0"
-              whileHover={{ scale: 1.1 }}
+              className="flex items-center flex-shrink-0"
+              whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="w-4 h-4 sm:w-4.5 sm:h-4.5 md:w-5 md:h-5 bg-[#0F172A] rounded-lg"></div>
+              <img
+                src="https://purelogics.com/wp-content/uploads/2023/09/Final-Logo-1.svg"
+                alt="PureLogics"
+                className="h-8 sm:h-9 md:h-10 w-auto"
+                style={{ maxWidth: '192px' }}
+              />
             </motion.div>
-            <span className="text-lg sm:text-xl font-black text-white whitespace-nowrap">
-              Pure<span className="text-[#10B981]">Logics</span>
-            </span>
           </Link>
 
           {/* Explore Link */}

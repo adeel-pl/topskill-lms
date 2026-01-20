@@ -137,13 +137,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           {/* Logo & Header */}
           <div className="flex items-center justify-between p-6 border-b border-[#334155]">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#10B981] rounded-lg flex items-center justify-center">
-                <FiLayout className="text-white text-xl" />
-              </div>
-              <div>
-                <h1 className="text-white font-bold text-lg">TopSkill Admin</h1>
-                <p className="text-[#9CA3AF] text-xs">Premium Dashboard</p>
-              </div>
+              <img
+                src="https://purelogics.com/wp-content/uploads/2023/09/Final-Logo-1.svg"
+                alt="PureLogics"
+                className="h-8 w-auto"
+                style={{ maxWidth: '150px' }}
+              />
             </div>
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}

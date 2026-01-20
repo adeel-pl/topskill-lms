@@ -684,20 +684,25 @@ export default function CoursePlayerPage() {
         <div className="flex-1 overflow-y-auto bg-white">
           {/* Video Player - Scrollable with page */}
           <div className="bg-black w-full relative" style={{
-            paddingBottom: '56.25%', // 16:9 aspect ratio (9/16 = 0.5625)
+            position: 'relative',
+            width: '100%',
+            paddingBottom: '56.25%', // 16:9 aspect ratio
             height: 0,
             overflow: 'hidden'
           }}>
             {selectedLecture.youtube_video_id ? (
               <iframe
                 className="absolute top-0 left-0 w-full h-full"
-                src={`https://www.youtube.com/embed/${selectedLecture.youtube_video_id}?start=${Math.floor(watchPosition)}&rel=0&modestbranding=1&controls=1&enablejsapi=1&origin=${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}`}
+                src={`https://www.youtube.com/embed/${selectedLecture.youtube_video_id}?start=${Math.floor(watchPosition)}&rel=0&modestbranding=1&controls=1&enablejsapi=1&origin=${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}&showinfo=0&iv_load_policy=3`}
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
                 title={selectedLecture.title}
                 style={{
-                  objectFit: 'contain'
+                  width: '100%',
+                  height: '100%',
+                  border: 'none',
+                  display: 'block'
                 }}
               />
             ) : selectedLecture.content_url ? (
