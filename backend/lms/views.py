@@ -1,5 +1,5 @@
 from rest_framework import viewsets, status, permissions
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
@@ -1073,6 +1073,19 @@ class NoteViewSet(viewsets.ModelViewSet):
         if enrollment.user != self.request.user and not self.request.user.is_staff:
             raise permissions.PermissionDenied("You can only create notes for your own enrollments")
         serializer.save()
+    
+    def perform_update(self, serializer):
+        note = self.get_object()
+        # Only the note owner can update
+        if note.enrollment.user != self.request.user and not self.request.user.is_staff:
+            raise permissions.PermissionDenied("You can only update your own notes")
+        serializer.save()
+    
+    def perform_destroy(self, instance):
+        # Only the note owner can delete
+        if instance.enrollment.user != self.request.user and not self.request.user.is_staff:
+            raise permissions.PermissionDenied("You can only delete your own notes")
+        instance.delete()
 
 
 class QandAViewSet(viewsets.ModelViewSet):
@@ -1173,4 +1186,72 @@ class AnnouncementViewSet(viewsets.ModelViewSet):
         if not self.request.user.is_staff and instance.course.instructor != self.request.user:
             raise permissions.PermissionDenied("Only course instructors can delete announcements")
         instance.delete()
+
+
+class CertificateViewSet(viewsets.ReadOnlyModelViewSet):
+    """ViewSet for certificates"""
+    serializer_class = CertificateSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        """Return certificates for the current user"""
+        return Certificate.objects.filter(
+            enrollment__user=self.request.user
+        ).select_related('enrollment', 'enrollment__course', 'enrollment__user').order_by('-issued_at')
+    
+    @action(detail=True, methods=['get'])
+    def download(self, request, pk=None):
+        """Generate and download certificate PDF"""
+        from django.http import HttpResponse
+        from django.core.files.base import ContentFile
+        from .certificate_generator import generate_certificate_pdf
+        import os
+        
+        certificate = self.get_object()
+        
+        # Check permission
+        if certificate.enrollment.user != request.user and not request.user.is_staff:
+            return Response(
+                {'error': 'Permission denied'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        # Generate PDF
+        pdf_buffer = generate_certificate_pdf(certificate)
+        
+        # Save PDF to certificate if not already saved
+        if not certificate.pdf_file:
+            filename = f"certificate_{certificate.certificate_number}.pdf"
+            certificate.pdf_file.save(
+                filename,
+                ContentFile(pdf_buffer.read()),
+                save=True
+            )
+        
+        # Prepare response
+        pdf_buffer.seek(0)
+        response = HttpResponse(pdf_buffer.read(), content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="certificate_{certificate.certificate_number}.pdf"'
+        
+        return response
+
+
+@api_view(['GET'])
+@permission_classes([permissions.AllowAny])  # Public endpoint for verification
+def verify_certificate(request, certificate_number):
+    """Public endpoint to verify a certificate by certificate number"""
+    try:
+        certificate = Certificate.objects.select_related(
+            'enrollment', 
+            'enrollment__course', 
+            'enrollment__user'
+        ).get(certificate_number=certificate_number)
+        
+        serializer = CertificateSerializer(certificate)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Certificate.DoesNotExist:
+        return Response(
+            {'error': 'Certificate not found'},
+            status=status.HTTP_404_NOT_FOUND
+        )
 

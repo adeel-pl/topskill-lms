@@ -232,7 +232,9 @@ class CoursePlayerViewSet(viewsets.ViewSet):
                 'content': note.content,
                 'timestamp': note.timestamp,
                 'is_public': note.is_public,
+                'lecture_title': lecture.title,
                 'created_at': note.created_at,
+                'updated_at': note.updated_at,
             }
             for note in notes
         ]
@@ -387,13 +389,20 @@ class CoursePlayerViewSet(viewsets.ViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        note = Note.objects.create(
-            enrollment=enrollment,
-            lecture=lecture,
-            content=content,
-            timestamp=timestamp,
-            is_public=is_public
-        )
+        # Allow multiple notes at same timestamp - unique constraint removed
+        try:
+            note = Note.objects.create(
+                enrollment=enrollment,
+                lecture=lecture,
+                content=content,
+                timestamp=timestamp,
+                is_public=is_public
+            )
+        except Exception as e:
+            return Response(
+                {'error': f'Failed to create note: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
         
         return Response({
             'id': note.id,

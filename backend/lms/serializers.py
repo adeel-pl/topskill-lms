@@ -637,7 +637,7 @@ class NoteSerializer(serializers.ModelSerializer):
         model = Note
         fields = ['id', 'enrollment', 'lecture', 'lecture_title', 'content', 'is_public',
                   'timestamp', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'enrollment', 'lecture', 'created_at', 'updated_at']
     
     def get_lecture_title(self, obj):
         return obj.lecture.title if obj.lecture else None

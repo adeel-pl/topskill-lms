@@ -449,6 +449,11 @@ class Enrollment(TimeStampedModel):
             self.status = 'completed'
             self.completed_at = timezone.now()
             self.save()
+            
+            # Generate certificate (use apps registry to avoid forward reference issue)
+            from django.apps import apps
+            Certificate = apps.get_model('lms', 'Certificate')
+            Certificate.objects.get_or_create(enrollment=self)
 
 
 class LectureProgress(TimeStampedModel):
@@ -790,7 +795,7 @@ class Note(TimeStampedModel):
 
     class Meta:
         ordering = ['-updated_at']
-        unique_together = ['enrollment', 'lecture', 'timestamp']
+        # Removed unique_together to allow multiple notes at same timestamp
 
     def __str__(self):
         return f"{self.enrollment.user.username} - {self.lecture.title}"

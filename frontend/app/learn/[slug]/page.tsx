@@ -5,9 +5,10 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { playerAPI, coursesAPI, reviewsAPI, assignmentSubmissionsAPI, enrollmentsAPI } from '@/lib/api';
 import PureLogicsNavbar from '@/app/components/PureLogicsNavbar';
 import VideoPlayer from '@/app/components/VideoPlayer';
-import { FiPlay, FiCheck, FiClock, FiBook, FiMessageSquare, FiChevronRight, FiChevronLeft, FiBell, FiStar } from 'react-icons/fi';
+import { FiPlay, FiCheck, FiClock, FiBook, FiMessageSquare, FiChevronRight, FiChevronLeft, FiBell, FiStar, FiEdit2, FiTrash2 } from 'react-icons/fi';
 import { useToast } from '@/app/contexts/ToastContext';
 import { useAuthStore } from '@/lib/store';
+import { colors } from '@/lib/colors';
 
 interface Lecture {
   id: number;
@@ -70,6 +71,7 @@ export default function CoursePlayerPage() {
   const [enrollmentId, setEnrollmentId] = useState<number | null>(null);
   const [showNoteModal, setShowNoteModal] = useState(false);
   const [noteText, setNoteText] = useState('');
+  const [editingNote, setEditingNote] = useState<any | null>(null);
 
   useEffect(() => {
     loadCourseContent();
@@ -415,17 +417,101 @@ export default function CoursePlayerPage() {
     
     try {
       const timestamp = watchPosition || 0;
-      const response = await playerAPI.addNote(course.id, selectedLecture.id, {
-        content,
-        timestamp,
-        is_public: false
-      });
+      let updatedNote;
       
-      // Reload lecture to get updated notes
-      await selectLecture(course.id, selectedLecture.id);
-      showSuccess('Note added successfully!');
+      if (editingNote) {
+        // Update existing note
+        const response = await playerAPI.updateNote(editingNote.id, {
+          content,
+          timestamp: editingNote.timestamp || 0,
+          is_public: editingNote.is_public || false
+        });
+        updatedNote = response.data;
+        showSuccess('Note updated successfully!');
+        
+        // Optimistically update the notes list
+        setNotes((prevNotes) =>
+          prevNotes.map((note: any) =>
+            note.id === editingNote.id
+              ? { ...note, content, updated_at: updatedNote.updated_at }
+              : note
+          )
+        );
+      } else {
+        // Create new note
+        const response = await playerAPI.addNote(course.id, selectedLecture.id, {
+          content,
+          timestamp,
+          is_public: false
+        });
+        updatedNote = response.data;
+        showSuccess('Note added successfully!');
+        
+        // Optimistically add the new note to the list
+        const newNote = {
+          id: updatedNote.id,
+          content: updatedNote.content,
+          timestamp: updatedNote.timestamp,
+          is_public: updatedNote.is_public,
+          lecture_title: selectedLecture.title,
+          created_at: updatedNote.created_at,
+          updated_at: updatedNote.created_at
+        };
+        setNotes((prevNotes) => [newNote, ...prevNotes]);
+      }
+      
+      // Also reload lecture to ensure we have the latest data from server
+      try {
+        const lectureRes = await playerAPI.getLecture(course.id, selectedLecture.id);
+        if (lectureRes.data && lectureRes.data.notes) {
+          // Update with server data to ensure consistency
+          setNotes(lectureRes.data.notes || []);
+        }
+      } catch (refreshError) {
+        console.error('Error refreshing notes:', refreshError);
+        // Continue anyway since we've already updated optimistically
+      }
+      
+      // Reset modal state
+      setNoteText('');
+      setEditingNote(null);
+      setShowNoteModal(false);
     } catch (error: any) {
-      showError(error.response?.data?.error || 'Failed to add note');
+      showError(error.response?.data?.error || (editingNote ? 'Failed to update note' : 'Failed to add note'));
+    }
+  };
+
+  const handleEditNote = (note: any) => {
+    setEditingNote(note);
+    setNoteText(note.content);
+    setShowNoteModal(true);
+  };
+
+  const handleDeleteNote = async (noteId: number) => {
+    if (!confirm('Are you sure you want to delete this note?')) return;
+    
+    try {
+      await playerAPI.deleteNote(noteId);
+      showSuccess('Note deleted successfully!');
+      
+      // Optimistically remove the note from the list
+      setNotes((prevNotes) => prevNotes.filter((note: any) => note.id !== noteId));
+      
+      // Also reload lecture to ensure we have the latest data from server
+      if (course && selectedLecture) {
+        try {
+          const lectureRes = await playerAPI.getLecture(course.id, selectedLecture.id);
+          if (lectureRes.data && lectureRes.data.notes) {
+            // Update with server data to ensure consistency
+            setNotes(lectureRes.data.notes || []);
+          }
+        } catch (refreshError) {
+          console.error('Error refreshing notes:', refreshError);
+          // Continue anyway since we've already updated optimistically
+        }
+      }
+    } catch (error: any) {
+      showError(error.response?.data?.error || 'Failed to delete note');
     }
   };
 
@@ -597,37 +683,39 @@ export default function CoursePlayerPage() {
         {/* Right Panel - Video Player and Content - Scrollable like normal page */}
         <div className="flex-1 overflow-y-auto bg-white">
           {/* Video Player - Scrollable with page */}
-          <div className="bg-black w-full" style={{
-            aspectRatio: '16/9',
-            height: 'auto',
-            minHeight: '500px',
-            maxHeight: '700px'
+          <div className="bg-black w-full relative" style={{
+            paddingBottom: '56.25%', // 16:9 aspect ratio (9/16 = 0.5625)
+            height: 0,
+            overflow: 'hidden'
           }}>
             {selectedLecture.youtube_video_id ? (
-              <div className="w-full h-full">
-                <iframe
-                  className="w-full h-full"
-                  src={`https://www.youtube.com/embed/${selectedLecture.youtube_video_id}?start=${Math.floor(watchPosition)}&rel=0&modestbranding=1&controls=1&enablejsapi=1&origin=${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}`}
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                  title={selectedLecture.title}
-                />
-              </div>
-            ) : selectedLecture.content_url ? (
-              <VideoPlayer
-                url={selectedLecture.content_url}
-                width="100%"
-                height="100%"
-                controls
-                playing={false}
-                onProgress={handleProgress}
-                onError={(error: any) => {
-                  console.error('Video player error:', error);
+              <iframe
+                className="absolute top-0 left-0 w-full h-full"
+                src={`https://www.youtube.com/embed/${selectedLecture.youtube_video_id}?start=${Math.floor(watchPosition)}&rel=0&modestbranding=1&controls=1&enablejsapi=1&origin=${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}`}
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                title={selectedLecture.title}
+                style={{
+                  objectFit: 'contain'
                 }}
               />
+            ) : selectedLecture.content_url ? (
+              <div className="absolute top-0 left-0 w-full h-full">
+                <VideoPlayer
+                  url={selectedLecture.content_url}
+                  width="100%"
+                  height="100%"
+                  controls
+                  playing={false}
+                  onProgress={handleProgress}
+                  onError={(error: any) => {
+                    console.error('Video player error:', error);
+                  }}
+                />
+              </div>
             ) : (
-              <div className="flex items-center justify-center h-full">
+              <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
                 <div className="text-center text-gray-400">
                   <p className="text-lg mb-2">No video available</p>
                   <p className="text-sm">Video ID: {selectedLecture.youtube_video_id || 'Not set'}</p>
@@ -997,37 +1085,93 @@ export default function CoursePlayerPage() {
                     </h3>
                     {isEnrolled && selectedLecture && (
                       <button
-                        onClick={() => setShowNoteModal(true)}
-                        className="px-4 py-2 bg-[#10B981] hover:bg-[#10B981] text-white rounded-lg font-semibold transition-colors"
+                        onClick={() => {
+                          setEditingNote(null);
+                          setNoteText('');
+                          setShowNoteModal(true);
+                        }}
+                        className="px-4 py-2 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-2"
+                        style={{ 
+                          backgroundColor: colors.button.primary, 
+                          color: colors.text.white,
+                          boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(16, 185, 129, 0.5)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(16, 185, 129, 0.3)';
+                        }}
                       >
-                        <FiBook className="inline mr-1" />
+                        <FiBook className="inline" />
                         Add Note
                       </button>
                     )}
                   </div>
                   {notes.length === 0 ? (
                     <div className="text-center py-12">
-                      <FiBook className="text-4xl text-gray-300 mx-auto mb-4" />
-                      <p className="text-[#6a6f73] mb-4">No notes yet</p>
+                      <FiBook className="text-4xl mx-auto mb-4" style={{ color: colors.text.muted }} />
+                      <p className="mb-4" style={{ color: colors.text.muted }}>No notes yet</p>
                       {isEnrolled && (
-                        <p className="text-sm text-[#6a6f73]">Add notes while watching lectures to keep track of important points</p>
+                        <p className="text-sm" style={{ color: colors.text.muted }}>Add notes while watching lectures to keep track of important points</p>
                       )}
                     </div>
                   ) : (
                     <div className="space-y-4">
                       {notes.map((note: any) => (
-                        <div key={note.id} className="border border-gray-200 rounded-lg p-4 bg-white">
+                        <div 
+                          key={note.id} 
+                          className="rounded-lg p-4"
+                          style={{ 
+                            borderColor: colors.border.primary, 
+                            borderWidth: '1px', 
+                            borderStyle: 'solid',
+                            backgroundColor: colors.background.card
+                          }}
+                        >
                           <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm text-[#6a6f73]">
-                              {note.lecture_title || 'Lecture Note'}
-                            </span>
-                            {note.timestamp > 0 && (
-                              <span className="text-xs text-[#6a6f73]">
-                                {Math.floor(note.timestamp / 60)}:{(note.timestamp % 60).toString().padStart(2, '0')}
+                            <div className="flex items-center gap-3">
+                              <span className="text-sm" style={{ color: colors.text.muted }}>
+                                {note.lecture_title || 'Lecture Note'}
                               </span>
-                            )}
+                              {note.timestamp > 0 && (
+                                <span className="text-xs px-2 py-1 rounded" style={{ color: colors.text.muted, backgroundColor: colors.background.primary }}>
+                                  {Math.floor(note.timestamp / 60)}:{(note.timestamp % 60).toString().padStart(2, '0')}
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => handleEditNote(note)}
+                                className="p-1.5 rounded transition-colors hover:scale-110"
+                                style={{ color: colors.accent.primary }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.backgroundColor = `${colors.accent.primary}20`;
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.backgroundColor = 'transparent';
+                                }}
+                                title="Edit note"
+                              >
+                                <FiEdit2 className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteNote(note.id)}
+                                className="p-1.5 rounded transition-colors hover:scale-110"
+                                style={{ color: '#EF4444' }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.backgroundColor = '#FEE2E2';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.backgroundColor = 'transparent';
+                                }}
+                                title="Delete note"
+                              >
+                                <FiTrash2 className="w-4 h-4" />
+                              </button>
+                            </div>
                           </div>
-                          <p className="text-[#000F2C] whitespace-pre-wrap">{note.content}</p>
+                          <p className="whitespace-pre-wrap" style={{ color: colors.text.dark }}>{note.content}</p>
                         </div>
                       ))}
                     </div>
@@ -1383,16 +1527,32 @@ export default function CoursePlayerPage() {
 
       {/* Note Modal */}
       {showNoteModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
-            <h3 className="text-xl font-bold text-[#000F2C] mb-4">Add Note</h3>
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+          <div className="rounded-xl p-6 max-w-md w-full shadow-2xl" style={{ backgroundColor: colors.background.card, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
+            <h3 className="text-xl font-bold mb-4" style={{ color: colors.text.dark }}>{editingNote ? 'Edit Note' : 'Add Note'}</h3>
             <textarea
               value={noteText}
               onChange={(e) => setNoteText(e.target.value)}
               placeholder="Enter your note here..."
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#10B981] resize-none text-[#000F2C]"
+              className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 resize-none transition-colors"
+              style={{
+                borderColor: colors.border.primary,
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                backgroundColor: colors.background.secondary,
+                color: colors.text.dark,
+                focusRingColor: colors.accent.primary
+              }}
               rows={6}
               autoFocus
+              onFocus={(e) => {
+                e.target.style.borderColor = colors.accent.primary;
+                e.target.style.boxShadow = `0 0 0 2px ${colors.accent.primary}20`;
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = colors.border.primary;
+                e.target.style.boxShadow = '';
+              }}
             />
             <div className="flex gap-3 mt-4">
               <button
@@ -1403,16 +1563,39 @@ export default function CoursePlayerPage() {
                     setShowNoteModal(false);
                   }
                 }}
-                className="flex-1 px-4 py-2 bg-[#10B981] hover:bg-[#10B981] text-white rounded-lg font-semibold transition-colors"
+                className="flex-1 px-4 py-2 rounded-lg font-semibold transition-all duration-300 hover:scale-105"
+                style={{ 
+                  backgroundColor: colors.button.primary, 
+                  color: colors.text.white,
+                  boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(16, 185, 129, 0.5)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(16, 185, 129, 0.3)';
+                }}
               >
-                Save Note
+                {editingNote ? 'Update Note' : 'Save Note'}
               </button>
               <button
                 onClick={() => {
                   setNoteText('');
+                  setEditingNote(null);
                   setShowNoteModal(false);
                 }}
-                className="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-[#000F2C] rounded-lg font-semibold transition-colors"
+                className="flex-1 px-4 py-2 rounded-lg font-semibold transition-all duration-300 hover:scale-105"
+                style={{ 
+                  backgroundColor: colors.button.primary, 
+                  color: colors.text.white,
+                  boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(16, 185, 129, 0.5)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(16, 185, 129, 0.3)';
+                }}
               >
                 Cancel
               </button>

@@ -11,7 +11,8 @@ from .views import (
     WishlistViewSet, NotificationViewSet, CategoryViewSet, TagViewSet, 
     CourseSectionViewSet, LectureViewSet, QuizViewSet, QuizAttemptViewSet, 
     AssignmentViewSet, AssignmentSubmissionViewSet, LectureProgressViewSet, 
-    ResourceViewSet, NoteViewSet, QandAViewSet, AnnouncementViewSet
+    ResourceViewSet, NoteViewSet, QandAViewSet, AnnouncementViewSet, CertificateViewSet,
+    verify_certificate
 )
 from .auth_views import register, login, logout, profile, update_profile, change_password, forgot_password, reset_password, google_login
 from .cart_views import CartViewSet
@@ -50,6 +51,7 @@ router.register(r'resources', ResourceViewSet, basename='resource')
 router.register(r'notes', NoteViewSet, basename='note')
 router.register(r'qandas', QandAViewSet, basename='qanda')
 router.register(r'announcements', AnnouncementViewSet, basename='announcement')
+router.register(r'certificates', CertificateViewSet, basename='certificate')
 # Course player routes are registered separately below
 
 @api_view(['POST'])
@@ -104,5 +106,7 @@ urlpatterns = [
     path('admin/payments/', admin_payments_list, name='admin-payments'),
     path('admin/users/', admin_users_list, name='admin-users'),
     path('admin/users/<int:user_id>/', admin_user_detail, name='admin-user-detail'),
+    # Certificate verification (public endpoint)
+    path('certificates/verify/<str:certificate_number>/', verify_certificate, name='verify-certificate'),
 ]
 

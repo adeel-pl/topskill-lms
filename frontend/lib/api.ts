@@ -126,6 +126,10 @@ export const playerAPI = {
   
   addNote: (courseId: number, lectureId: number, data: any) =>
     api.post(`/courses/${courseId}/player/lecture/${lectureId}/note/`, data),
+  updateNote: (noteId: number, data: any) =>
+    api.patch(`/notes/${noteId}/`, data),
+  deleteNote: (noteId: number) =>
+    api.delete(`/notes/${noteId}/`),
   
   getForum: (courseId: number) =>
     api.get(`/courses/${courseId}/player/forum/`),
@@ -207,6 +211,14 @@ export const notificationsAPI = {
   getAll: () => api.get('/notifications/'),
   markRead: (id: number) => api.post(`/notifications/${id}/mark_read/`),
   markAllRead: () => api.post('/notifications/mark_all_read/'),
+};
+
+// Certificates API
+export const certificatesAPI = {
+  getAll: () => api.get('/certificates/'),
+  getById: (id: number) => api.get(`/certificates/${id}/`),
+  download: (id: number) => api.get(`/certificates/${id}/download/`, { responseType: 'blob' }),
+  verify: (certificateNumber: string) => api.get(`/certificates/verify/${certificateNumber}/`),
 };
 
 // Batch and Session APIs

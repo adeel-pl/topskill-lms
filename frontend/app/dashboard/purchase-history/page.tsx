@@ -288,7 +288,7 @@ export default function PurchaseHistoryPage() {
                       <div className="mt-auto">
                         <Link
                           href={`/learn/${enrollment.course.slug}`}
-                          className="w-full px-5 md:px-6 py-3 md:py-3.5 lg:py-4 rounded-xl font-black transition-all duration-300 flex items-center justify-center gap-2 md:gap-3 hover:scale-105 hover:shadow-2xl text-sm md:text-base"
+                          className="w-full px-5 md:px-6 py-3 md:py-3.5 lg:py-4 rounded-xl font-black transition-all duration-300 flex items-center justify-center gap-2 md:gap-3 hover:scale-105 hover:shadow-2xl text-sm md:text-base whitespace-nowrap"
                           style={{ 
                             backgroundColor: colors.button.primary, 
                             color: colors.text.white,
@@ -301,8 +301,8 @@ export default function PurchaseHistoryPage() {
                             e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(16, 185, 129, 0.3)';
                           }}
                         >
-                          <FiPlay className="text-lg md:text-xl" />
-                          Continue Learning
+                          <FiPlay className="text-lg md:text-xl flex-shrink-0" />
+                          <span>Continue Learning</span>
                         </Link>
                       </div>
                     </div>
