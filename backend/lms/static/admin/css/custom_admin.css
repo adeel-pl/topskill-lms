@@ -1,0 +1,558 @@
+/* Premium Admin UI - PureLogics Style */
+
+:root {
+    --primary-color: #10B981;
+    --primary-dark: #059669;
+    --accent-blue: #00235A;
+    --text-dark: #00235A;
+    --text-muted: #64748B;
+    --background-primary: #CAFCE5;
+    --background-card: #FFFFFF;
+    --border-color: #E2E8F0;
+    --success-color: #10B981;
+    --error-color: #DC2626;
+    --warning-color: #F59E0B;
+    --info-color: #3B82F6;
+}
+
+/* Header Styling */
+#header {
+    background: linear-gradient(135deg, #00235A 0%, #003D7A 100%);
+    color: white;
+    border-bottom: 3px solid var(--primary-color);
+    box-shadow: 0 4px 12px rgba(0, 35, 90, 0.15);
+    padding: 0;
+}
+
+#header #branding h1,
+#header #branding h1 a:link,
+#header #branding h1 a:visited {
+    color: white;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+#header #branding {
+    padding: 15px 20px;
+}
+
+#user-tools {
+    padding: 15px 20px;
+    font-size: 14px;
+}
+
+#user-tools a {
+    color: rgba(255, 255, 255, 0.9);
+    transition: color 0.3s ease;
+}
+
+#user-tools a:hover {
+    color: var(--primary-color);
+}
+
+#user-tools strong {
+    color: white;
+    font-weight: 600;
+}
+
+/* Breadcrumbs */
+.breadcrumbs {
+    background: #F8FAFC;
+    border-bottom: 1px solid var(--border-color);
+    padding: 12px 20px;
+    font-size: 13px;
+}
+
+.breadcrumbs a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.breadcrumbs a:hover {
+    text-decoration: underline;
+}
+
+/* Content Area */
+#content {
+    padding: 30px;
+    background: #F8FAFC;
+    min-height: calc(100vh - 120px);
+}
+
+#content h1 {
+    color: var(--text-dark);
+    font-weight: 700;
+    font-size: 28px;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid var(--primary-color);
+}
+
+/* Dashboard */
+.dashboard #content {
+    padding: 30px;
+}
+
+.dashboard .module {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.dashboard .module:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+.dashboard .module h2 {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 16px 20px;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    border-bottom: none;
+}
+
+.dashboard .module table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.dashboard .module table th {
+    background: #F8FAFC;
+    color: var(--text-dark);
+    font-weight: 600;
+    padding: 12px 20px;
+    text-align: left;
+    border-bottom: 2px solid var(--border-color);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dashboard .module table td {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-muted);
+}
+
+.dashboard .module table tr:hover {
+    background: #F8FAFC;
+}
+
+.dashboard .module table a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.dashboard .module table a:hover {
+    text-decoration: underline;
+}
+
+/* Forms */
+.form-row {
+    margin-bottom: 20px;
+}
+
+.form-row label {
+    color: var(--text-dark);
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.form-row input[type="text"],
+.form-row input[type="email"],
+.form-row input[type="number"],
+.form-row input[type="url"],
+.form-row input[type="date"],
+.form-row input[type="datetime-local"],
+.form-row textarea,
+.form-row select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.form-row input:focus,
+.form-row textarea:focus,
+.form-row select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Buttons */
+input[type="submit"],
+button,
+.submit-row input,
+a.button {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    text-decoration: none;
+    display: inline-block;
+}
+
+input[type="submit"]:hover,
+button:hover,
+.submit-row input:hover,
+a.button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.button.default,
+input[type="submit"].default,
+.submit-row input.default {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+}
+
+.button,
+input[type="submit"],
+button {
+    margin-right: 10px;
+}
+
+/* Submit Row */
+.submit-row {
+    background: #F8FAFC;
+    border-top: 2px solid var(--border-color);
+    padding: 20px;
+    margin-top: 30px;
+    border-radius: 0 0 12px 12px;
+}
+
+/* Change List (List View) */
+#changelist {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+#changelist-filter {
+    background: #F8FAFC;
+    border-right: 2px solid var(--border-color);
+    padding: 20px;
+}
+
+#changelist-filter h2 {
+    color: var(--text-dark);
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+#changelist-filter h3 {
+    color: var(--text-dark);
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 16px;
+    margin-bottom: 8px;
+}
+
+#changelist-filter a {
+    color: var(--text-muted);
+    text-decoration: none;
+    display: block;
+    padding: 6px 0;
+    transition: color 0.3s ease;
+}
+
+#changelist-filter a:hover,
+#changelist-filter a.selected {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+#changelist-search {
+    padding: 20px;
+    background: white;
+    border-bottom: 2px solid var(--border-color);
+}
+
+#changelist-search input[type="text"] {
+    padding: 10px 14px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    width: 300px;
+}
+
+#changelist-search input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+#changelist-table {
+    width: 100%;
+}
+
+#changelist-table thead th {
+    background: #F8FAFC;
+    color: var(--text-dark);
+    font-weight: 600;
+    padding: 14px;
+    text-align: left;
+    border-bottom: 2px solid var(--border-color);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#changelist-table tbody tr {
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.2s ease;
+}
+
+#changelist-table tbody tr:hover {
+    background: #F8FAFC;
+}
+
+#changelist-table tbody td {
+    padding: 14px;
+    color: var(--text-muted);
+}
+
+#changelist-table tbody td a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+#changelist-table tbody td a:hover {
+    text-decoration: underline;
+}
+
+/* Change Form */
+.change-form {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    padding: 30px;
+}
+
+/* Fieldsets */
+fieldset {
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background: #FAFBFC;
+}
+
+fieldset h2 {
+    color: var(--text-dark);
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+fieldset .description {
+    background: #E0F2FE;
+    border-left: 4px solid var(--info-color);
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    border-radius: 4px;
+    color: var(--text-dark);
+    font-size: 13px;
+}
+
+/* Inlines */
+.inline-group {
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background: white;
+}
+
+.inline-group h2 {
+    color: var(--text-dark);
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+/* Messages */
+.messagelist {
+    margin: 20px 0;
+}
+
+.messagelist li {
+    padding: 14px 20px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.messagelist li.success {
+    background: #D1FAE5;
+    color: #065F46;
+    border-left: 4px solid var(--success-color);
+}
+
+.messagelist li.error {
+    background: #FEE2E2;
+    color: #991B1B;
+    border-left: 4px solid var(--error-color);
+}
+
+.messagelist li.warning {
+    background: #FEF3C7;
+    color: #92400E;
+    border-left: 4px solid var(--warning-color);
+}
+
+.messagelist li.info {
+    background: #DBEAFE;
+    color: #1E40AF;
+    border-left: 4px solid var(--info-color);
+}
+
+/* Error Messages */
+.errorlist {
+    background: #FEE2E2;
+    color: var(--error-color);
+    border: 1px solid #FCA5A5;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    list-style: none;
+}
+
+.errorlist li {
+    margin: 4px 0;
+}
+
+/* Help Text */
+.help {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-top: 6px;
+    font-style: italic;
+}
+
+/* Pagination */
+.paginator {
+    padding: 20px;
+    background: #F8FAFC;
+    border-top: 2px solid var(--border-color);
+    text-align: center;
+}
+
+.paginator a {
+    color: var(--primary-color);
+    text-decoration: none;
+    padding: 8px 12px;
+    margin: 0 4px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.paginator a:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.paginator .this-page {
+    background: var(--primary-color);
+    color: white;
+    font-weight: 600;
+}
+
+/* Actions */
+.actions {
+    padding: 16px 20px;
+    background: #F8FAFC;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.actions select {
+    padding: 8px 12px;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.actions button {
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+/* Related Widget Wrapper */
+.related-widget-wrapper {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.related-widget-wrapper select {
+    min-width: 200px;
+}
+
+/* Select2 (if used) */
+.select2-container {
+    width: 100% !important;
+}
+
+.select2-container--default .select2-selection--single {
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    height: 38px;
+    padding: 4px 8px;
+}
+
+.select2-container--default .select2-selection--single:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #content {
+        padding: 20px;
+    }
+    
+    .dashboard .module {
+        margin-bottom: 15px;
+    }
+    
+    #changelist-filter {
+        display: none;
+    }
+}
+
+

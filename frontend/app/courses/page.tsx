@@ -197,7 +197,7 @@ export default function CoursesPage() {
                     <option value="hybrid" className="bg-[#1E293B]">Hybrid</option>
                   </select>
                 </div>
-                <div className="flex items-center gap-1 md:gap-2 bg-[#0F172A] border border-[#334155] rounded-xl p-0.5 md:p-1">
+                <div className="flex items-center gap-1 md:gap-2 bg-[#0F172A] border border-[#334155] rounded-xl px-0.5 md:px-1 py-2.5 md:py-3">
                   <button
                     onClick={() => setViewMode('grid')}
                     className={`p-2 md:p-2.5 lg:p-3 rounded-xl transition-all duration-300 ${
