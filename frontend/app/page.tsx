@@ -29,108 +29,47 @@ interface Course {
   total_lectures?: number;
 }
 
-// Certification logos data from topskills.pk - All logos from the slider
+// Certification logos data - Using actual URLs from topskills.pk (from network requests)
 const certificationLogos = [
   { 
-    name: 'Coursera', 
-    url: 'https://topskills.pk/wp-content/uploads/2024/01/coursera-logo.png',
-    fallback: 'https://d3njjcbhbojbot.cloudfront.net/api/utilities/v1/imageproxy/https://coursera-university-assets.s3.amazonaws.com/83/ab2000a57211e8b8d5c0b47d3d9fa/Coursera-Logo_landscape_blue.png'
+    name: 'Logo 1', 
+    url: 'https://topskills.pk/wp-content/uploads/2024/08/Group-40489.png'
   },
   { 
-    name: 'Microsoft Azure', 
-    url: 'https://topskills.pk/wp-content/uploads/2024/01/microsoft-azure-logo.png',
-    fallback: 'https://azure.microsoft.com/svghandler/azure/azure-logo.svg'
+    name: 'Logo 2', 
+    url: 'https://topskills.pk/wp-content/uploads/2024/08/Group-40491.png'
   },
   { 
-    name: 'Udemy', 
-    url: 'https://topskills.pk/wp-content/uploads/2024/01/udemy-logo.png',
-    fallback: 'https://www.udemy.com/staticx/udemy/images/v7/logo-udemy.svg'
+    name: 'Logo 3', 
+    url: 'https://topskills.pk/wp-content/uploads/2024/08/Group-40492.png'
   },
   { 
-    name: 'Amazon Web Services', 
-    url: 'https://topskills.pk/wp-content/uploads/2024/01/aws-logo.png',
-    fallback: 'https://a0.awsstatic.com/libra-css/images/logos/aws_logo_smile_1200x630.png'
+    name: 'Logo 4', 
+    url: 'https://topskills.pk/wp-content/uploads/2024/08/Group-40493.png'
   },
   { 
-    name: 'Microsoft Windows', 
-    url: 'https://topskills.pk/wp-content/uploads/2024/01/microsoft-windows-logo.png',
-    fallback: 'https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31'
+    name: 'Logo 5', 
+    url: 'https://topskills.pk/wp-content/uploads/2024/08/Group-40495.png'
   },
   { 
-    name: 'Google Cloud', 
-    url: 'https://topskills.pk/wp-content/uploads/2024/01/google-cloud-logo.png',
-    fallback: 'https://cloud.google.com/images/social-icon-google-cloud-1200-630.png'
+    name: 'Logo 6', 
+    url: 'https://topskills.pk/wp-content/uploads/2024/08/Group-40496.png'
   },
   { 
-    name: 'Oracle', 
-    url: 'https://topskills.pk/wp-content/uploads/2024/01/oracle-logo.png',
-    fallback: 'https://www.oracle.com/a/ocom/img/rc24/oracle-logo-white.svg'
-  },
-  { 
-    name: 'Cisco', 
-    url: 'https://topskills.pk/wp-content/uploads/2024/01/cisco-logo.png',
-    fallback: 'https://www.cisco.com/c/en/us/about/brand-center/assets/img/cisco-logo.png'
-  },
-  { 
-    name: 'CompTIA', 
-    url: 'https://topskills.pk/wp-content/uploads/2024/01/comptia-logo.png',
-    fallback: 'https://www.comptia.org/images/default-source/logos/comptia-logo.png'
-  },
-  { 
-    name: 'Red Hat', 
-    url: 'https://topskills.pk/wp-content/uploads/2024/01/redhat-logo.png',
-    fallback: 'https://www.redhat.com/cms/managed-files/logo-red-hat-841x315.png'
-  },
-  { 
-    name: 'IBM', 
-    url: 'https://topskills.pk/wp-content/uploads/2024/01/ibm-logo.png',
-    fallback: 'https://www.ibm.com/brand/experience-guides/developer/b1db1ae501d522a1a4b49613fe07c9b1/01_8-bar-reverse.svg'
-  },
-  { 
-    name: 'Salesforce', 
-    url: 'https://topskills.pk/wp-content/uploads/2024/01/salesforce-logo.png',
-    fallback: 'https://www.salesforce.com/content/dam/web/en_us/www/images/logo-salesforce.svg'
-  },
-  { 
-    name: 'VMware', 
-    url: 'https://topskills.pk/wp-content/uploads/2024/01/vmware-logo.png',
-    fallback: 'https://www.vmware.com/content/dam/digital-marketing/vmware/en/images/logo/vmware-logo-grey.svg'
-  },
-  { 
-    name: 'Docker', 
-    url: 'https://topskills.pk/wp-content/uploads/2024/01/docker-logo.png',
-    fallback: 'https://www.docker.com/wp-content/uploads/2022/03/vertical-logo-monochromatic.svg'
-  },
-  { 
-    name: 'Kubernetes', 
-    url: 'https://topskills.pk/wp-content/uploads/2024/01/kubernetes-logo.png',
-    fallback: 'https://kubernetes.io/images/kubernetes-logo.svg'
-  },
-  { 
-    name: 'Linux Foundation', 
-    url: 'https://topskills.pk/wp-content/uploads/2024/01/linux-foundation-logo.png',
-    fallback: 'https://www.linuxfoundation.org/wp-content/uploads/2018/09/logo.png'
-  },
-  { 
-    name: 'Adobe', 
-    url: 'https://topskills.pk/wp-content/uploads/2024/01/adobe-logo.png',
-    fallback: 'https://www.adobe.com/content/dam/shared/images/product-icons/svg/adobe-logo.svg'
-  },
-  { 
-    name: 'Meta', 
-    url: 'https://topskills.pk/wp-content/uploads/2024/01/meta-logo.png',
-    fallback: 'https://about.meta.com/wp-content/uploads/sites/3/2021/10/Meta-Logo.svg'
+    name: 'Logo 7', 
+    url: 'https://topskills.pk/wp-content/uploads/2024/08/Group-5-200x85.png'
   },
 ];
 
 export default function HomePage() {
   const [allCourses, setAllCourses] = useState<Course[]>([]);
-  const [displayedCourses, setDisplayedCourses] = useState<Course[]>([]);
+  const [displayedTrendingCourses, setDisplayedTrendingCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'online' | 'physical'>('online');
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const observerTarget = useRef<HTMLDivElement>(null);
-  const coursesPerPage = 8; // Load 8 courses at a time (2 rows of 4)
+  const coursesPerPage = 8; // Load 8 courses at a time for trending section
 
   useEffect(() => {
     loadAllCourses();
@@ -138,61 +77,103 @@ export default function HomePage() {
 
   const loadAllCourses = async () => {
     try {
-      console.log('Loading courses...');
-      const response = await coursesAPI.getAll({ page_size: 100 }); // Load more courses for infinite scroll
-      console.log('API Response:', response);
-      console.log('Response data:', response.data);
-      
-      // Handle paginated response
-      let coursesData: Course[] = [];
-      if (response.data) {
-        if (response.data.results && Array.isArray(response.data.results)) {
-          coursesData = response.data.results;
-        } else if (Array.isArray(response.data)) {
-          coursesData = response.data;
+      console.log('Loading all courses...');
+      // Load all courses - use a large page_size or fetch all pages
+      let allCoursesData: Course[] = [];
+      let page = 1;
+      let hasMorePages = true;
+
+      while (hasMorePages) {
+        const response = await coursesAPI.getAll({ page_size: 100, page });
+        console.log(`Page ${page} Response:`, response);
+        
+        let pageCourses: Course[] = [];
+        if (response.data) {
+          if (response.data.results && Array.isArray(response.data.results)) {
+            pageCourses = response.data.results;
+            // Check if there are more pages
+            hasMorePages = response.data.next !== null && response.data.next !== undefined;
+          } else if (Array.isArray(response.data)) {
+            pageCourses = response.data;
+            hasMorePages = false; // If it's a direct array, no pagination
+          }
+        }
+        
+        allCoursesData = [...allCoursesData, ...pageCourses];
+        
+        // If we got less than page_size, we're done
+        if (pageCourses.length < 100) {
+          hasMorePages = false;
+        } else {
+          page++;
         }
       }
       
-      console.log('Courses data:', coursesData);
-      setAllCourses(coursesData);
-      // Initially display first batch
-      setDisplayedCourses(coursesData.slice(0, coursesPerPage));
-      setHasMore(coursesData.length > coursesPerPage);
+      console.log('All courses loaded:', allCoursesData.length);
+      setAllCourses(allCoursesData);
+      
+      // Set initial trending courses based on active tab
+      updateTrendingCourses(allCoursesData, activeTab, true);
       setLoading(false);
     } catch (error: any) {
       console.error('Error loading courses:', error);
-      console.error('Error message:', error?.message);
-      console.error('Error response:', error?.response);
       setAllCourses([]);
-      setDisplayedCourses([]);
+      setDisplayedTrendingCourses([]);
       setLoading(false);
     }
   };
 
-  const loadMoreCourses = useCallback(() => {
+  // Filter courses by modality
+  const getFilteredCourses = (courses: Course[], tab: 'online' | 'physical') => {
+    return tab === 'online' 
+      ? courses.filter((c: Course) => c.modality === 'online' || !c.modality)
+      : courses.filter((c: Course) => c.modality === 'physical' || c.modality === 'hybrid');
+  };
+
+  // Update trending courses when tab changes or on initial load
+  const updateTrendingCourses = useCallback((courses: Course[], tab: 'online' | 'physical', reset: boolean = false) => {
+    const filtered = getFilteredCourses(courses, tab);
+    if (reset) {
+      setDisplayedTrendingCourses(filtered.slice(0, coursesPerPage));
+      setHasMore(filtered.length > coursesPerPage);
+    } else {
+      setDisplayedTrendingCourses(prev => {
+        const currentLength = prev.length;
+        const nextBatch = filtered.slice(currentLength, currentLength + coursesPerPage);
+        if (nextBatch.length > 0) {
+          const newList = [...prev, ...nextBatch];
+          setHasMore(newList.length < filtered.length);
+          return newList;
+        } else {
+          setHasMore(false);
+          return prev;
+        }
+      });
+    }
+  }, [coursesPerPage]);
+
+  // Handle tab change
+  useEffect(() => {
+    if (allCourses.length > 0) {
+      updateTrendingCourses(allCourses, activeTab, true);
+    }
+  }, [activeTab, allCourses, updateTrendingCourses]);
+
+  const loadMoreTrendingCourses = useCallback(() => {
     if (loadingMore || !hasMore) return;
 
     setLoadingMore(true);
-    // Simulate slight delay for better UX
     setTimeout(() => {
-      const currentLength = displayedCourses.length;
-      const nextBatch = allCourses.slice(currentLength, currentLength + coursesPerPage);
-      
-      if (nextBatch.length > 0) {
-        setDisplayedCourses(prev => [...prev, ...nextBatch]);
-        setHasMore(currentLength + nextBatch.length < allCourses.length);
-      } else {
-        setHasMore(false);
-      }
+      updateTrendingCourses(allCourses, activeTab, false);
       setLoadingMore(false);
     }, 300);
-  }, [displayedCourses.length, allCourses, loadingMore, hasMore]);
+  }, [allCourses, activeTab, loadingMore, hasMore, updateTrendingCourses]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !loadingMore) {
-          loadMoreCourses();
+          loadMoreTrendingCourses();
         }
       },
       { threshold: 0.1 }
@@ -208,7 +189,8 @@ export default function HomePage() {
         observer.unobserve(currentTarget);
       }
     };
-  }, [loadMoreCourses, hasMore, loadingMore]);
+  }, [loadMoreTrendingCourses, hasMore, loadingMore]);
+
 
   return (
     <div className="min-h-screen w-full" style={{ backgroundColor: colors.background.primary, color: colors.text.primary }}>
@@ -286,32 +268,25 @@ export default function HomePage() {
                 className="mt-8 md:mt-12 w-full"
               >
                 <div className="text-center mb-4 md:mb-6">
-                  <h3 className="text-lg md:text-xl font-semibold mb-1 text-white/90">
-                    Our Experienced Trainers are
+                  <h3 className="text-lg md:text-xl font-semibold text-white/90 whitespace-nowrap">
+                    Our Experienced Trainers are <span className="font-bold text-[#10B981]">Certified from</span>
                   </h3>
-                  <h4 className="text-base md:text-lg font-bold text-[#10B981]">
-                    Certified from
-                  </h4>
                 </div>
                 
                 {/* Logos Carousel */}
-                <div className="relative overflow-hidden rounded-xl py-4">
-                  <div className="flex items-center gap-6 md:gap-8 lg:gap-12 animate-scroll-hero">
-                    {/* Render logos twice for seamless infinite scroll */}
-                    {[...certificationLogos, ...certificationLogos].map((logo, index) => (
+                <div className="relative overflow-hidden rounded-xl py-4 w-full">
+                  <div className="flex items-center gap-4 md:gap-6 lg:gap-8 animate-scroll-hero">
+                    {/* Render logos 3 times for seamless infinite loop */}
+                    {/* When animation moves by 33.33% (one set), it resets seamlessly */}
+                    {[...certificationLogos, ...certificationLogos, ...certificationLogos].map((logo, index) => (
                       <div key={`${logo.name}-${index}`} className="flex-shrink-0 flex items-center justify-center h-12 md:h-16 w-24 md:w-32">
                         <img 
                           src={logo.url} 
                           alt={logo.name} 
-                          className="h-full w-auto max-w-full object-contain opacity-80 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert"
+                          className="h-full w-auto max-w-full object-contain opacity-100"
+                          loading="eager"
                           onError={(e) => {
-                            // Try fallback URL if main URL fails
-                            if (logo.fallback && e.currentTarget.src !== logo.fallback) {
-                              e.currentTarget.src = logo.fallback;
-                            } else {
-                              // Hide if both URLs fail
-                              e.currentTarget.style.display = 'none';
-                            }
+                            console.error(`Failed to load logo: ${logo.name} from ${logo.url}`);
                           }}
                         />
                       </div>
@@ -359,18 +334,23 @@ export default function HomePage() {
             transform: translateX(0);
           }
           100% {
-            transform: translateX(-50%);
+            /* Move by exactly 33.33% (one full set since we have 3 identical sets) */
+            /* When animation resets to 0%, it's seamless because set 2 looks identical to set 1 */
+            transform: translateX(calc(-100% / 3));
           }
         }
         .animate-scroll-hero {
-          animation: scroll-hero 40s linear infinite;
+          display: flex;
+          width: max-content;
+          animation: scroll-hero 35s linear infinite;
+          will-change: transform;
         }
         .animate-scroll-hero:hover {
           animation-play-state: paused;
         }
       `}</style>
 
-      {/* Trending Courses Section */}
+      {/* Trending Courses Section with Tabs */}
       <section className="py-20 mb-50" style={{ backgroundColor: colors.background.secondary }}>
         <div className="max-w-container xl:max-w-container-xl 2xl:max-w-container-2xl mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16">
           <motion.div
@@ -378,7 +358,7 @@ export default function HomePage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-16"
+            className="text-center mb-12"
           >
             <h2 className="text-4xl md:text-5xl font-black mb-4" style={{ color: colors.text.dark }}>
               Trending Courses
@@ -386,7 +366,46 @@ export default function HomePage() {
             <p className="text-xl max-w-3xl mx-auto mb-8" style={{ color: colors.text.dark }}>
               Discover the most popular courses loved by thousands of learners
             </p>
+            
+            {/* Tab Buttons */}
+            <div className="flex items-center justify-center gap-4 mb-12">
+              <button
+                onClick={() => setActiveTab('online')}
+                className={`px-6 py-3 rounded-xl font-semibold text-base md:text-lg transition-all duration-300 ${
+                  activeTab === 'online'
+                    ? 'shadow-lg'
+                    : 'hover:opacity-80'
+                }`}
+                style={{
+                  backgroundColor: activeTab === 'online' ? colors.button.primary : colors.background.secondary,
+                  color: activeTab === 'online' ? colors.text.white : colors.text.dark,
+                  borderWidth: activeTab === 'online' ? '0' : '2px',
+                  borderStyle: 'solid',
+                  borderColor: colors.border.primary,
+                }}
+              >
+                Online Courses
+              </button>
+              <button
+                onClick={() => setActiveTab('physical')}
+                className={`px-6 py-3 rounded-xl font-semibold text-base md:text-lg transition-all duration-300 ${
+                  activeTab === 'physical'
+                    ? 'shadow-lg'
+                    : 'hover:opacity-80'
+                }`}
+                style={{
+                  backgroundColor: activeTab === 'physical' ? colors.button.primary : colors.background.secondary,
+                  color: activeTab === 'physical' ? colors.text.white : colors.text.dark,
+                  borderWidth: activeTab === 'physical' ? '0' : '2px',
+                  borderStyle: 'solid',
+                  borderColor: colors.border.primary,
+                }}
+              >
+                Physical Courses
+              </button>
+            </div>
           </motion.div>
+
           {loading ? (
             <div className="text-center py-20">
               <div 
@@ -395,12 +414,14 @@ export default function HomePage() {
               ></div>
               <p className="text-lg" style={{ color: colors.text.muted }}>Loading courses...</p>
             </div>
-          ) : displayedCourses.length === 0 ? (
-            <div className="text-center py-20 text-lg" style={{ color: colors.text.muted }}>No courses available</div>
+          ) : displayedTrendingCourses.length === 0 ? (
+            <div className="text-center py-20 text-lg" style={{ color: colors.text.muted }}>
+              No {activeTab === 'online' ? 'online' : 'physical'} courses available
+            </div>
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                {displayedCourses.map((course, index) => (
+                {displayedTrendingCourses.map((course, index) => (
                   <CompactCourseCard key={course.id} course={course} index={index} />
                 ))}
               </div>
@@ -416,55 +437,11 @@ export default function HomePage() {
                     <p className="text-sm" style={{ color: colors.text.muted }}>Loading more courses...</p>
                   </div>
                 )}
-                {!hasMore && displayedCourses.length > 0 && (
+                {!hasMore && displayedTrendingCourses.length > 0 && (
                   <p className="text-sm" style={{ color: colors.text.muted }}>No more courses to load</p>
                 )}
               </div>
             </>
-          )}
-        </div>
-      </section>
-
-      {/* Physical Courses / Bootcamps Section */}
-      <section className="py-20 mb-50" style={{ backgroundColor: colors.background.primary }}>
-        <div className="max-w-container xl:max-w-container-xl 2xl:max-w-container-2xl mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-black mb-4" style={{ color: colors.text.dark }}>
-              Physical Courses & Bootcamps
-            </h2>
-            <p className="text-xl max-w-3xl mx-auto mb-8" style={{ color: colors.text.dark }}>
-              Join our in-person classes, bootcamps, and internship programs with hands-on learning
-            </p>
-          </motion.div>
-          {loading ? (
-            <div className="text-center py-20">
-              <div 
-                className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4"
-                style={{ borderColor: colors.border.primary, borderTopColor: colors.accent.primary }}
-              ></div>
-              <p className="text-lg" style={{ color: colors.text.dark }}>Loading courses...</p>
-            </div>
-          ) : (
-            (() => {
-              const physicalCourses = allCourses.filter((c: Course) => c.modality === 'physical' || c.modality === 'hybrid');
-              return physicalCourses.length === 0 ? (
-                <div className="text-center py-20 text-lg" style={{ color: colors.text.dark }}>No physical courses or bootcamps available</div>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
-                  {physicalCourses.slice(0, 8).map((course, index) => (
-                    <div key={course.id} className="w-full">
-                      <CourseCard course={course} index={index} />
-                    </div>
-                  ))}
-                </div>
-              );
-            })()
           )}
         </div>
       </section>
