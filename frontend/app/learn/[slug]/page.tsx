@@ -517,13 +517,14 @@ export default function CoursePlayerPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#0F172A]">
+      <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: colors.background.dark }}>
         <div className="text-center">
           <div 
-            className="w-16 h-16 border-4 border-[#334155] rounded-full animate-spin mx-auto mb-4"
+            className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4"
+            style={{ borderColor: colors.border.dark, borderTopColor: colors.accent.primary }}
             style={{ borderTopColor: colors.accent.primary }}
           ></div>
-          <p className="text-[#9CA3AF]">Loading course...</p>
+          <p style={{ color: colors.text.muted }}>Loading course...</p>
         </div>
       </div>
     );
@@ -531,10 +532,10 @@ export default function CoursePlayerPage() {
 
   if (!course) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#0F172A]">
+      <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: colors.background.dark }}>
         <div className="text-center">
           <h2 className="text-3xl font-black mb-4 text-white">Course not found</h2>
-          <p className="text-[#9CA3AF] mb-6">The course you're looking for doesn't exist or you're not enrolled.</p>
+          <p className="mb-6" style={{ color: colors.text.muted }}>The course you're looking for doesn't exist or you're not enrolled.</p>
           <button
             onClick={() => router.push('/')}
             className="text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
@@ -553,10 +554,10 @@ export default function CoursePlayerPage() {
   // Only show "No lectures available" if we're not loading and sections are empty
   if (!loading && !selectedLecture && sections.length === 0) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#0F172A]">
+      <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: colors.background.dark }}>
         <div className="text-center">
           <h2 className="text-3xl font-black mb-4 text-white">No lectures available</h2>
-          <p className="text-[#9CA3AF] mb-6">This course doesn't have any lectures yet.</p>
+          <p className="mb-6" style={{ color: colors.text.muted }}>This course doesn't have any lectures yet.</p>
           <button
             onClick={() => router.push('/')}
             className="text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
@@ -572,13 +573,14 @@ export default function CoursePlayerPage() {
   // If still loading or no lecture selected but sections exist, show loading
   if ((loading || !selectedLecture) && sections.length > 0) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#0F172A]">
+      <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: colors.background.dark }}>
         <div className="text-center">
           <div 
-            className="w-16 h-16 border-4 border-[#334155] rounded-full animate-spin mx-auto mb-4"
+            className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4"
+            style={{ borderColor: colors.border.dark, borderTopColor: colors.accent.primary }}
             style={{ borderTopColor: colors.accent.primary }}
           ></div>
-          <p className="text-[#9CA3AF]">Loading lecture...</p>
+          <p style={{ color: colors.text.muted }}>Loading lecture...</p>
         </div>
       </div>
     );
@@ -587,10 +589,10 @@ export default function CoursePlayerPage() {
   // If no lecture selected and no sections, show error
   if (!selectedLecture && sections.length === 0 && !loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#0F172A]">
+      <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: colors.background.dark }}>
         <div className="text-center">
           <h2 className="text-3xl font-black mb-4 text-white">No lectures available</h2>
-          <p className="text-[#9CA3AF] mb-6">This course doesn't have any lectures yet.</p>
+          <p className="mb-6" style={{ color: colors.text.muted }}>This course doesn't have any lectures yet.</p>
           <button
             onClick={() => router.push('/')}
             className="text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
@@ -611,30 +613,51 @@ export default function CoursePlayerPage() {
 
       <div className="flex flex-1 overflow-hidden" style={{ height: 'calc(100vh - 64px)', paddingTop: '5rem' }}>
         {/* Left Sidebar - Course Content */}
-        <div className={`${sidebarOpen ? 'w-80' : 'w-0'} bg-[#000F2C] overflow-y-auto border-r border-[#1a2a4a] transition-all duration-300 flex-shrink-0`} style={{ height: 'calc(100vh - 64px)', overflowY: 'auto' }}>
-          <div className="p-4 sticky top-0 bg-[#000F2C] border-b border-[#1a2a4a] z-10 backdrop-blur-sm">
+        <div 
+          className={`${sidebarOpen ? 'w-80' : 'w-0'} overflow-y-auto border-r transition-all duration-300 flex-shrink-0`} 
+          style={{ 
+            height: 'calc(100vh - 64px)', 
+            overflowY: 'auto',
+            backgroundColor: colors.accent.primary,
+            borderRightColor: colors.border.primary
+          }}
+        >
+          <div 
+            className="p-4 sticky top-0 z-10 backdrop-blur-sm border-b"
+            style={{
+              backgroundColor: colors.accent.primary,
+              borderBottomColor: 'rgba(255, 255, 255, 0.2)'
+            }}
+          >
             <div className="flex items-center justify-between mb-2">
-              <h2 className="text-base font-bold text-white line-clamp-2">{course.title}</h2>
+              <h2 className="text-base font-bold line-clamp-2" style={{ color: colors.text.white }}>{course.title}</h2>
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="text-white transition-colors p-1"
-                style={{ color: 'white' }}
-                onMouseEnter={(e) => e.currentTarget.style.color = colors.accent.primary}
-                onMouseLeave={(e) => e.currentTarget.style.color = 'white'}
+                className="transition-colors p-1"
+                style={{ color: colors.text.white }}
+                onMouseEnter={(e) => e.currentTarget.style.color = colors.accent.highlight}
+                onMouseLeave={(e) => e.currentTarget.style.color = colors.text.white}
                 aria-label="Close sidebar"
               >
                 ×
               </button>
             </div>
-            <div className="text-xs" style={{ color: colors.accent.primary }}>{totalLectures} lectures</div>
+            <div className="text-xs" style={{ color: colors.accent.highlight }}>{totalLectures} lectures</div>
           </div>
 
           <div className="p-2 pb-4">
             {sections.map((section) => (
               <div key={section.id} className="mb-2">
-                <div className="px-3 py-2 font-semibold text-xs bg-[#1a2a4a] rounded-sm text-white">
+                <div 
+                  className="px-3 py-2 font-semibold text-xs rounded-sm border"
+                  style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                    borderColor: 'rgba(255, 255, 255, 0.3)',
+                    color: colors.text.white
+                  }}
+                >
                   {section.title}
-                  <span className="ml-2" style={{ color: colors.accent.primary }}>
+                  <span className="ml-2" style={{ color: colors.accent.highlight }}>
                     {section.completed_lectures}/{section.total_lectures}
                   </span>
                 </div>
@@ -647,30 +670,55 @@ export default function CoursePlayerPage() {
                       key={lecture.id}
                       onClick={() => !isDisabled && selectLecture(course.id, lecture.id)}
                       disabled={isDisabled}
-                      className={`w-full text-left px-4 py-2.5 text-sm rounded-sm flex items-center justify-between ${
+                      className={`w-full text-left px-4 py-2.5 text-sm rounded-sm flex items-center justify-between transition-all duration-300 ${
                         isDisabled 
-                          ? 'opacity-50 cursor-not-allowed text-[#6B7280]' 
+                          ? 'opacity-50 cursor-not-allowed' 
                           : selectedLecture.id === lecture.id 
-                            ? 'bg-[#1a2a4a] border-l-2 hover:bg-[#1a2a4a]'
-                            : 'text-[#E5E7EB] hover:bg-[#1a2a4a]'
+                            ? 'border-l-2'
+                            : ''
                       }`}
-                      style={selectedLecture.id === lecture.id ? { borderLeftColor: colors.accent.primary } : {}}
+                      style={
+                        isDisabled
+                          ? { color: 'rgba(255, 255, 255, 0.5)' }
+                          : selectedLecture.id === lecture.id
+                            ? { 
+                                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                                borderLeftColor: colors.accent.highlight,
+                                borderLeftWidth: '3px',
+                                color: colors.text.white
+                              }
+                            : { color: colors.text.white }
+                      }
+                      onMouseEnter={(e) => {
+                        if (!isDisabled && selectedLecture.id !== lecture.id) {
+                          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
+                          e.currentTarget.style.borderLeftColor = colors.accent.highlight;
+                          e.currentTarget.style.borderLeftWidth = '3px';
+                          e.currentTarget.style.borderLeftStyle = 'solid';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isDisabled && selectedLecture.id !== lecture.id) {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.borderLeftWidth = '0';
+                        }
+                      }}
                       title={isDisabled ? 'Enroll to access this lecture' : ''}
                     >
                       <div className="flex items-center gap-2 flex-1 min-w-0">
                         {lecture.is_completed ? (
-                          <FiCheck className="flex-shrink-0" style={{ color: colors.accent.primary }} />
+                          <FiCheck className="flex-shrink-0" style={{ color: colors.accent.highlight }} />
                         ) : (
-                          <FiPlay className="flex-shrink-0 text-xs" style={{ color: colors.accent.primary }} />
+                          <FiPlay className="flex-shrink-0 text-xs" style={{ color: colors.accent.highlight }} />
                         )}
                         <span className="truncate text-sm">{lecture.title}</span>
                         {lecture.is_preview && (
-                          <span className="text-xs ml-1" style={{ color: colors.accent.primary }}>Preview</span>
+                          <span className="text-xs ml-1" style={{ color: colors.accent.highlight }}>Preview</span>
                         )}
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-                        <FiClock className="text-xs" style={{ color: colors.accent.primary }} />
-                        <span className="text-xs text-[#E5E7EB]">
+                        <FiClock className="text-xs" style={{ color: colors.accent.highlight }} />
+                        <span className="text-xs" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
                           {lecture.duration_minutes}m
                         </span>
                       </div>
@@ -687,7 +735,20 @@ export default function CoursePlayerPage() {
         {!sidebarOpen && (
           <button
             onClick={() => setSidebarOpen(true)}
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-[#000F2C] text-white p-2 rounded-r-sm z-20"
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 p-2 rounded-r-sm z-20 border-r border-t border-b transition-colors"
+            style={{ 
+              backgroundColor: colors.accent.primary,
+              borderColor: colors.border.primary,
+              color: colors.text.white
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = colors.accent.secondary;
+              e.currentTarget.style.color = colors.text.white;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = colors.accent.primary;
+              e.currentTarget.style.color = colors.text.white;
+            }}
           >
             <FiChevronRight />
           </button>
@@ -734,7 +795,7 @@ export default function CoursePlayerPage() {
               </div>
             ) : (
               <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
-                <div className="text-center text-gray-400">
+                <div className="text-center" style={{ color: colors.text.muted }}>
                   <p className="text-lg mb-2">No video available</p>
                   <p className="text-sm">Video ID: {selectedLecture.youtube_video_id || 'Not set'}</p>
                   <p className="text-xs mt-2">Please add a YouTube Video ID in the admin panel</p>
@@ -745,31 +806,63 @@ export default function CoursePlayerPage() {
 
           {/* Content Area */}
           <div className="max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-6">
-            <h1 className="text-2xl font-bold mb-4 text-[#000F2C]">{selectedLecture.title}</h1>
+            <h1 className="text-2xl font-bold mb-4" style={{ color: colors.text.dark }}>{selectedLecture.title}</h1>
 
             {/* Tabs - Dynamic based on course content */}
-            <div className="border-b border-gray-200 mb-6">
+            <div className="border-b mb-6" style={{ borderBottomColor: colors.border.primary }}>
               <div className="flex gap-6 flex-wrap">
                 <button
                   onClick={() => setActiveTab('overview')}
-                  className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${
+                  className={`px-4 py-2 font-semibold text-sm border-b-2 transition-all duration-300 ${
                     activeTab === 'overview'
-                    ? 'text-[#000F2C]'
-                    : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
+                    ? ''
+                    : 'border-transparent'
                   }`}
-                  style={activeTab === 'overview' ? { borderBottomColor: colors.accent.primary } : {}}
+                  style={
+                    activeTab === 'overview' 
+                      ? { borderBottomColor: colors.accent.primary, color: colors.text.dark }
+                      : { color: colors.text.muted }
+                  }
+                  onMouseEnter={(e) => {
+                    if (activeTab !== 'overview') {
+                      e.currentTarget.style.borderBottomColor = colors.accent.primary + '60';
+                      e.currentTarget.style.color = colors.text.dark;
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (activeTab !== 'overview') {
+                      e.currentTarget.style.borderBottomColor = 'transparent';
+                      e.currentTarget.style.color = colors.text.muted;
+                    }
+                  }}
                 >
                   Overview
                 </button>
                 {reviews.length > 0 && (
                   <button
                     onClick={() => setActiveTab('reviews')}
-                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${
+                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-all duration-300 ${
                       activeTab === 'reviews'
-                      ? 'text-[#000F2C]'
-                      : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
+                      ? ''
+                      : 'border-transparent'
                     }`}
-                    style={activeTab === 'reviews' ? { borderBottomColor: colors.accent.primary } : {}}
+                    style={
+                      activeTab === 'reviews' 
+                        ? { borderBottomColor: colors.accent.primary, color: colors.text.dark }
+                        : { color: colors.text.muted }
+                    }
+                    onMouseEnter={(e) => {
+                      if (activeTab !== 'reviews') {
+                        e.currentTarget.style.borderBottomColor = colors.accent.primary + '60';
+                        e.currentTarget.style.color = colors.text.dark;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (activeTab !== 'reviews') {
+                        e.currentTarget.style.borderBottomColor = 'transparent';
+                        e.currentTarget.style.color = colors.text.muted;
+                      }
+                    }}
                   >
                     Reviews ({reviews.length})
                   </button>
@@ -777,12 +870,28 @@ export default function CoursePlayerPage() {
                 {announcements.length > 0 && (
                   <button
                     onClick={() => setActiveTab('announcements')}
-                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${
+                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-all duration-300 ${
                       activeTab === 'announcements'
-                      ? 'text-[#000F2C]'
-                      : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
+                      ? ''
+                      : 'border-transparent'
                     }`}
-                    style={activeTab === 'announcements' ? { borderBottomColor: colors.accent.primary } : {}}
+                    style={
+                      activeTab === 'announcements' 
+                        ? { borderBottomColor: colors.accent.primary, color: colors.text.dark }
+                        : { color: colors.text.muted }
+                    }
+                    onMouseEnter={(e) => {
+                      if (activeTab !== 'announcements') {
+                        e.currentTarget.style.borderBottomColor = colors.accent.primary + '60';
+                        e.currentTarget.style.color = colors.text.dark;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (activeTab !== 'announcements') {
+                        e.currentTarget.style.borderBottomColor = 'transparent';
+                        e.currentTarget.style.color = colors.text.muted;
+                      }
+                    }}
                   >
                     <FiBell className="inline mr-1" />
                     Announcements ({announcements.length})
@@ -791,12 +900,28 @@ export default function CoursePlayerPage() {
                 {(notes.length > 0 || isEnrolled) && (
                   <button
                     onClick={() => setActiveTab('notes')}
-                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${
+                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-all duration-300 ${
                       activeTab === 'notes'
-                      ? 'text-[#000F2C]'
-                      : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
+                      ? ''
+                      : 'border-transparent'
                     }`}
-                    style={activeTab === 'notes' ? { borderBottomColor: colors.accent.primary } : {}}
+                    style={
+                      activeTab === 'notes' 
+                        ? { borderBottomColor: colors.accent.primary, color: colors.text.dark }
+                        : { color: colors.text.muted }
+                    }
+                    onMouseEnter={(e) => {
+                      if (activeTab !== 'notes') {
+                        e.currentTarget.style.borderBottomColor = colors.accent.primary + '60';
+                        e.currentTarget.style.color = colors.text.dark;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (activeTab !== 'notes') {
+                        e.currentTarget.style.borderBottomColor = 'transparent';
+                        e.currentTarget.style.color = colors.text.muted;
+                      }
+                    }}
                   >
                     <FiBook className="inline mr-1" />
                     Notes {notes.length > 0 && `(${notes.length})`}
@@ -805,12 +930,28 @@ export default function CoursePlayerPage() {
                 {qandas.length > 0 && (
                   <button
                     onClick={() => setActiveTab('questions')}
-                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${
+                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-all duration-300 ${
                       activeTab === 'questions'
-                      ? 'text-[#000F2C]'
-                      : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
+                      ? ''
+                      : 'border-transparent'
                     }`}
-                    style={activeTab === 'questions' ? { borderBottomColor: colors.accent.primary } : {}}
+                    style={
+                      activeTab === 'questions' 
+                        ? { borderBottomColor: colors.accent.primary, color: colors.text.dark }
+                        : { color: colors.text.muted }
+                    }
+                    onMouseEnter={(e) => {
+                      if (activeTab !== 'questions') {
+                        e.currentTarget.style.borderBottomColor = colors.accent.primary + '60';
+                        e.currentTarget.style.color = colors.text.dark;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (activeTab !== 'questions') {
+                        e.currentTarget.style.borderBottomColor = 'transparent';
+                        e.currentTarget.style.color = colors.text.muted;
+                      }
+                    }}
                   >
                     <FiMessageSquare className="inline mr-1" />
                     Q&A ({qandas.length})
@@ -819,12 +960,28 @@ export default function CoursePlayerPage() {
                 {quizzes.length > 0 && (
                   <button
                     onClick={() => setActiveTab('quizzes')}
-                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${
+                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-all duration-300 ${
                       activeTab === 'quizzes'
-                      ? 'text-[#000F2C]'
-                      : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
+                      ? ''
+                      : 'border-transparent'
                     }`}
-                    style={activeTab === 'quizzes' ? { borderBottomColor: colors.accent.primary } : {}}
+                    style={
+                      activeTab === 'quizzes' 
+                        ? { borderBottomColor: colors.accent.primary, color: colors.text.dark }
+                        : { color: colors.text.muted }
+                    }
+                    onMouseEnter={(e) => {
+                      if (activeTab !== 'quizzes') {
+                        e.currentTarget.style.borderBottomColor = colors.accent.primary + '60';
+                        e.currentTarget.style.color = colors.text.dark;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (activeTab !== 'quizzes') {
+                        e.currentTarget.style.borderBottomColor = 'transparent';
+                        e.currentTarget.style.color = colors.text.muted;
+                      }
+                    }}
                   >
                     Quizzes ({quizzes.length})
                   </button>
@@ -832,10 +989,28 @@ export default function CoursePlayerPage() {
                 {assignments.length > 0 && (
                   <button
                     onClick={() => setActiveTab('assignments')}
-                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${activeTab === 'assignments'
-                      ? 'text-[#000F2C]'
-                      : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
-                      }`}
+                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-all duration-300 ${
+                      activeTab === 'assignments'
+                      ? ''
+                      : 'border-transparent'
+                    }`}
+                    style={
+                      activeTab === 'assignments' 
+                        ? { borderBottomColor: colors.accent.primary, color: colors.text.dark }
+                        : { color: colors.text.muted }
+                    }
+                    onMouseEnter={(e) => {
+                      if (activeTab !== 'assignments') {
+                        e.currentTarget.style.borderBottomColor = colors.accent.primary + '60';
+                        e.currentTarget.style.color = colors.text.dark;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (activeTab !== 'assignments') {
+                        e.currentTarget.style.borderBottomColor = 'transparent';
+                        e.currentTarget.style.color = colors.text.muted;
+                      }
+                    }}
                   >
                     Assignments ({assignments.length})
                   </button>
@@ -849,8 +1024,8 @@ export default function CoursePlayerPage() {
                 <div>
                   {selectedLecture.description && (
                     <div className="mb-6">
-                      <h3 className="text-lg font-semibold mb-3 text-[#000F2C]">About this lecture</h3>
-                      <p className="text-[#6a6f73] whitespace-pre-wrap leading-relaxed">
+                      <h3 className="text-lg font-semibold mb-3" style={{ color: colors.text.dark }}>About this lecture</h3>
+                      <p className="whitespace-pre-wrap leading-relaxed" style={{ color: colors.text.muted }}>
                         {selectedLecture.description}
                       </p>
                     </div>
@@ -874,10 +1049,16 @@ export default function CoursePlayerPage() {
                             showError(errorMsg);
                           }
                         }}
-                        className="px-6 py-3 text-white rounded-sm font-semibold transition-colors flex items-center gap-2"
+                        className="px-6 py-3 text-white rounded-sm font-semibold transition-all duration-300 flex items-center gap-2 hover:scale-105"
                         style={{ backgroundColor: colors.accent.primary }}
-                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.accent.primary}
-                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.accent.primary}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = colors.accent.secondary;
+                          e.currentTarget.style.boxShadow = `0 4px 12px ${colors.accent.secondary}40`;
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = colors.accent.primary;
+                          e.currentTarget.style.boxShadow = 'none';
+                        }}
                       >
                         <FiCheck className="w-5 h-5" />
                         Mark as Complete
@@ -886,8 +1067,14 @@ export default function CoursePlayerPage() {
                   )}
 
                   {selectedLecture.is_completed && (
-                    <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-sm">
-                      <div className="flex items-center gap-2 text-green-700">
+                    <div 
+                      className="mb-6 p-4 border rounded-sm"
+                      style={{
+                        backgroundColor: colors.accent.accent + '20',
+                        borderColor: colors.accent.accent
+                      }}
+                    >
+                      <div className="flex items-center gap-2" style={{ color: colors.accent.accent }}>
                         <FiCheck className="w-5 h-5" />
                         <span className="font-semibold">Lecture completed!</span>
                       </div>
@@ -896,7 +1083,7 @@ export default function CoursePlayerPage() {
 
                   {/* Navigation Buttons - Sticky at bottom of scrollable area */}
                   {selectedLecture.navigation && (
-                    <div className="sticky bottom-0 bg-white border-t border-gray-200 mt-8 pt-4 pb-4 -mx-4 sm:-mx-6 md:-mx-8 lg:-mx-10 xl:-mx-12 2xl:-mx-16 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 shadow-lg z-10 backdrop-blur-sm bg-white/95">
+                    <div className="sticky bottom-0 bg-white border-t borderColor: colors.border.primary mt-8 pt-4 pb-4 -mx-4 sm:-mx-6 md:-mx-8 lg:-mx-10 xl:-mx-12 2xl:-mx-16 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 shadow-lg z-10 backdrop-blur-sm bg-white/95">
                       <div className="flex gap-4 justify-between">
                         {selectedLecture.navigation.prev_lecture_id ? (
                           <button
@@ -913,9 +1100,22 @@ export default function CoursePlayerPage() {
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
                               }
                             }}
-                            className="flex items-center gap-2 px-6 py-3 border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition-all text-[#000F2C] font-semibold"
-                            onMouseEnter={(e) => e.currentTarget.style.borderColor = colors.accent.primary}
-                            onMouseLeave={(e) => e.currentTarget.style.borderColor = '#D1D5DB'}
+                            className="flex items-center gap-2 px-6 py-3 border-2 rounded-lg transition-all duration-300 font-semibold hover:scale-105"
+                            style={{ 
+                              borderColor: colors.border.primary,
+                              color: colors.text.dark,
+                              backgroundColor: colors.background.secondary
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.borderColor = colors.accent.primary;
+                              e.currentTarget.style.color = colors.accent.primary;
+                              e.currentTarget.style.backgroundColor = colors.background.secondary;
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.borderColor = colors.border.primary;
+                              e.currentTarget.style.color = colors.text.dark;
+                              e.currentTarget.style.backgroundColor = colors.background.secondary;
+                            }}
                           >
                             <FiChevronLeft className="w-5 h-5" />
                             Previous
@@ -938,8 +1138,16 @@ export default function CoursePlayerPage() {
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
                               }
                             }}
-                            className="flex items-center gap-2 px-6 py-3 text-white rounded-lg font-semibold transition-all shadow-md hover:shadow-lg"
+                            className="flex items-center gap-2 px-6 py-3 text-white rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
                             style={{ backgroundColor: colors.accent.primary }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.backgroundColor = colors.accent.secondary;
+                              e.currentTarget.style.boxShadow = `0 8px 16px ${colors.accent.secondary}40`;
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.backgroundColor = colors.accent.primary;
+                              e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+                            }}
                           >
                             Next
                             <FiChevronRight className="w-5 h-5" />
@@ -954,14 +1162,22 @@ export default function CoursePlayerPage() {
               {activeTab === 'reviews' && (
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-bold text-[#000F2C]">
+                    <h3 className="text-xl font-bold" style={{ color: colors.text.dark }}>
                       Course Reviews ({reviews.length})
                     </h3>
                     {isEnrolled && isAuthenticated && (
                       <button
                         onClick={() => setShowReviewForm(!showReviewForm)}
-                        className="px-4 py-2 text-white rounded-lg font-semibold transition-colors"
+                        className="px-4 py-2 text-white rounded-lg font-semibold transition-all duration-300 hover:scale-105"
                         style={{ backgroundColor: colors.accent.primary }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = colors.accent.secondary;
+                          e.currentTarget.style.boxShadow = `0 4px 12px ${colors.accent.secondary}40`;
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = colors.accent.primary;
+                          e.currentTarget.style.boxShadow = 'none';
+                        }}
                       >
                         {showReviewForm ? 'Cancel' : 'Write a Review'}
                       </button>
@@ -970,10 +1186,16 @@ export default function CoursePlayerPage() {
 
                   {/* Review Form - Only for enrolled users */}
                   {showReviewForm && isEnrolled && isAuthenticated && (
-                    <div className="mb-8 p-6 bg-gray-50 border border-gray-200 rounded-lg">
-                      <h4 className="text-lg font-semibold mb-4 text-[#000F2C]">Write Your Review</h4>
+                    <div 
+                      className="mb-8 p-6 border rounded-lg"
+                      style={{
+                        backgroundColor: colors.background.secondary,
+                        borderColor: colors.border.primary
+                      }}
+                    >
+                      <h4 className="text-lg font-semibold mb-4" style={{ color: colors.text.dark }}>Write Your Review</h4>
                       <div className="mb-4">
-                        <label className="block text-sm font-semibold mb-2 text-[#000F2C]">Rating</label>
+                        <label className="block text-sm font-semibold mb-2" style={{ color: colors.text.dark }}>Rating</label>
                         <div className="flex gap-2">
                           {[1, 2, 3, 4, 5].map((star) => (
                             <button
@@ -982,26 +1204,50 @@ export default function CoursePlayerPage() {
                               className="text-2xl"
                             >
                               <FiStar
-                                className={star <= reviewForm.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}
+                                style={{
+                                  color: star <= reviewForm.rating ? colors.accent.highlight : colors.border.primary,
+                                  fill: star <= reviewForm.rating ? colors.accent.highlight : 'transparent'
+                                }}
                               />
                             </button>
                           ))}
                         </div>
                       </div>
                       <div className="mb-4">
-                        <label className="block text-sm font-semibold mb-2 text-[#000F2C]">Your Review</label>
+                        <label className="block text-sm font-semibold mb-2" style={{ color: colors.text.dark }}>Your Review</label>
                         <textarea
                           value={reviewForm.comment}
                           onChange={(e) => setReviewForm({ ...reviewForm, comment: e.target.value })}
                           placeholder="Share your thoughts about this course..."
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[colors.accent.primary] resize-none"
+                          className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 resize-none"
+                          style={{
+                            borderColor: colors.border.primary,
+                            backgroundColor: colors.background.secondary,
+                            color: colors.text.dark
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.borderColor = colors.accent.primary;
+                            e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.accent.primary}40`;
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.borderColor = colors.border.primary;
+                            e.currentTarget.style.boxShadow = 'none';
+                          }}
                           rows={5}
                         />
                       </div>
                       <button
                         onClick={handleSubmitReview}
-                        className="px-6 py-2 text-white rounded-lg font-semibold transition-colors"
+                        className="px-6 py-2 text-white rounded-lg font-semibold transition-all duration-300 hover:scale-105"
                         style={{ backgroundColor: colors.accent.primary }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = colors.accent.secondary;
+                          e.currentTarget.style.boxShadow = `0 4px 12px ${colors.accent.secondary}40`;
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = colors.accent.primary;
+                          e.currentTarget.style.boxShadow = 'none';
+                        }}
                       >
                         Submit Review
                       </button>
@@ -1011,47 +1257,61 @@ export default function CoursePlayerPage() {
                   {/* Reviews List */}
                   {reviews.length === 0 ? (
                     <div className="text-center py-12">
-                      <FiStar className="text-4xl text-gray-300 mx-auto mb-4" />
-                      <p className="text-[#6a6f73]">No reviews yet for this course</p>
+                      <FiStar className="text-4xl mx-auto mb-4" style={{ color: colors.border.primary }} />
+                      <p style={{ color: colors.text.muted }}>No reviews yet for this course</p>
                       {!isEnrolled && isAuthenticated && (
-                        <p className="text-sm text-[#6a6f73] mt-2">Enroll in this course to leave a review</p>
+                        <p className="text-sm mt-2" style={{ color: colors.text.muted }}>Enroll in this course to leave a review</p>
                       )}
                     </div>
                   ) : (
                     <div className="space-y-6">
                       {reviews.slice(0, reviewsToShow).map((review: any) => (
-                        <div key={review.id} className="border-b border-gray-200 pb-6 last:border-b-0">
+                        <div 
+                          key={review.id} 
+                          className="border-b pb-6 last:border-b-0"
+                          style={{ borderBottomColor: colors.border.primary }}
+                        >
                           <div className="flex items-start gap-4">
                             <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0" style={{ backgroundColor: colors.accent.primary }}>
                               {review.user?.first_name?.charAt(0) || review.user?.username?.charAt(0) || 'U'}
                             </div>
                             <div className="flex-1">
                               <div className="flex items-center gap-3 mb-2">
-                                <h4 className="font-semibold text-[#000F2C]">
+                                <h4 className="font-semibold" style={{ color: colors.text.dark }}>
                                   {review.user?.first_name || review.user?.username || 'Anonymous'}
                                 </h4>
                                 <div className="flex items-center gap-1">
                                   {[1, 2, 3, 4, 5].map((star) => (
                                     <FiStar
                                       key={star}
-                                      className={`text-sm ${star <= review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
+                                      style={{
+                                        color: star <= review.rating ? colors.accent.highlight : colors.border.primary,
+                                        fill: star <= review.rating ? colors.accent.highlight : 'transparent'
+                                      }}
+                                      className="text-sm"
                                     />
                                   ))}
                                 </div>
                                 {review.is_verified_purchase && (
-                                  <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+                                  <span 
+                                    className="text-xs px-2 py-1 rounded"
+                                    style={{
+                                      backgroundColor: colors.accent.accent + '20',
+                                      color: colors.accent.accent
+                                    }}
+                                  >
                                     Verified Purchase
                                   </span>
                                 )}
                               </div>
-                              <p className="text-[#6a6f73] text-sm mb-2">
+                              <p className="text-sm mb-2" style={{ color: colors.text.muted }}>
                                 {new Date(review.created_at).toLocaleDateString('en-US', {
                                   year: 'numeric',
                                   month: 'long',
                                   day: 'numeric'
                                 })}
                               </p>
-                              <p className="text-[#000F2C] leading-relaxed">{review.comment}</p>
+                              <p className="leading-relaxed" style={{ color: colors.text.dark }}>{review.comment}</p>
                             </div>
                           </div>
                         </div>
@@ -1087,30 +1347,40 @@ export default function CoursePlayerPage() {
 
               {activeTab === 'announcements' && (
                 <div>
-                  <h3 className="text-xl font-bold mb-6 text-[#000F2C]">
+                  <h3 className="text-xl font-bold mb-6" style={{ color: colors.text.dark }}>
                     Course Announcements ({announcements.length})
                   </h3>
                   {announcements.length === 0 ? (
                     <div className="text-center py-12">
-                      <FiBell className="text-4xl text-gray-300 mx-auto mb-4" />
-                      <p className="text-[#6a6f73]">No announcements for this course</p>
+                      <FiBell className="text-4xl mx-auto mb-4" style={{ color: colors.border.primary }} />
+                      <p style={{ color: colors.text.muted }}>No announcements for this course</p>
                     </div>
                   ) : (
                     <div className="space-y-4">
                       {announcements.map((announcement: any) => (
                         <div 
                           key={announcement.id} 
-                          className={`border rounded-lg p-6 ${announcement.is_pinned ? 'bg-green-50' : 'border-gray-200 bg-white'}`}
-                          style={announcement.is_pinned ? { borderColor: colors.accent.primary } : {}}
+                          className="border rounded-lg p-6"
+                          style={
+                            announcement.is_pinned
+                              ? {
+                                  borderColor: colors.accent.primary,
+                                  backgroundColor: colors.accent.accent + '20'
+                                }
+                              : {
+                                  borderColor: colors.border.primary,
+                                  backgroundColor: colors.background.secondary
+                                }
+                          }
                         >
                           <div className="flex items-start justify-between mb-3">
                             <div className="flex items-center gap-2">
                               {announcement.is_pinned && (
                                 <FiBell className="flex-shrink-0" style={{ color: colors.accent.primary }} />
                               )}
-                              <h4 className="text-lg font-semibold text-[#000F2C]">{announcement.title}</h4>
+                              <h4 className="text-lg font-semibold" style={{ color: colors.text.dark }}>{announcement.title}</h4>
                             </div>
-                            <span className="text-sm text-[#6a6f73]">
+                            <span className="text-sm" style={{ color: colors.text.muted }}>
                               {new Date(announcement.created_at).toLocaleDateString('en-US', {
                                 year: 'numeric',
                                 month: 'long',
@@ -1119,11 +1389,11 @@ export default function CoursePlayerPage() {
                             </span>
                           </div>
                           {announcement.created_by_name && (
-                            <p className="text-sm text-[#6a6f73] mb-3">
+                            <p className="text-sm mb-3" style={{ color: colors.text.muted }}>
                               By {announcement.created_by_name || announcement.created_by_username}
                             </p>
                           )}
-                          <p className="text-[#000F2C] leading-relaxed whitespace-pre-wrap">{announcement.content}</p>
+                          <p className="leading-relaxed whitespace-pre-wrap" style={{ color: colors.text.dark }}>{announcement.content}</p>
                         </div>
                       ))}
                     </div>
@@ -1134,7 +1404,7 @@ export default function CoursePlayerPage() {
               {activeTab === 'notes' && (
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-bold text-[#000F2C]">
+                    <h3 className="text-xl font-bold" style={{ color: colors.text.dark }}>
                       My Notes ({notes.length})
                     </h3>
                     {isEnrolled && selectedLecture && (
@@ -1235,27 +1505,34 @@ export default function CoursePlayerPage() {
 
               {activeTab === 'questions' && (
                 <div>
-                  <h3 className="text-xl font-bold mb-6 text-[#000F2C]">
+                  <h3 className="text-xl font-bold mb-6" style={{ color: colors.text.dark }}>
                     Frequently Asked Questions ({qandas.length})
                   </h3>
                   {qandas.length === 0 ? (
                     <div className="text-center py-12">
-                      <FiMessageSquare className="text-4xl text-gray-300 mx-auto mb-4" />
-                      <p className="text-[#6a6f73]">No Q&A available for this course</p>
+                      <FiMessageSquare className="text-4xl mx-auto mb-4" style={{ color: colors.border.primary }} />
+                      <p style={{ color: colors.text.muted }}>No Q&A available for this course</p>
                     </div>
                   ) : (
                     <div className="space-y-4">
                       {qandas.map((qa: any, index: number) => (
-                        <div key={qa.id} className="border border-gray-200 rounded-lg p-6 bg-white">
+                        <div 
+                          key={qa.id} 
+                          className="border rounded-lg p-6"
+                          style={{ 
+                            borderColor: colors.border.primary,
+                            backgroundColor: colors.background.card
+                          }}
+                        >
                           <div className="flex items-start gap-4">
                             <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold" style={{ backgroundColor: colors.accent.primary }}>
                               {index + 1}
                             </div>
                             <div className="flex-1">
-                              <h4 className="text-lg font-semibold text-[#000F2C] mb-3">
+                              <h4 className="text-lg font-semibold mb-3" style={{ color: colors.text.dark }}>
                                 {qa.question}
                               </h4>
-                              <p className="text-[#6a6f73] leading-relaxed whitespace-pre-wrap">
+                              <p className="leading-relaxed whitespace-pre-wrap" style={{ color: colors.text.muted }}>
                                 {qa.answer}
                               </p>
                             </div>
@@ -1270,7 +1547,7 @@ export default function CoursePlayerPage() {
               {/* Quizzes and Assignments Tab */}
               {activeTab === 'quizzes' && (
                 <div>
-                  <h3 className="text-lg font-semibold mb-4 text-[#000F2C]">Course Quizzes</h3>
+                  <h3 className="text-lg font-semibold mb-4" style={{ color: colors.text.dark }}>Course Quizzes</h3>
                   {quizzes && quizzes.length > 0 ? (
                     <div className="space-y-4">
                       {quizzes.map((quiz: any) => {
@@ -1282,36 +1559,49 @@ export default function CoursePlayerPage() {
                         const hasCompletedAttempts = attempts.some((a: any) => a.completed_at);
                         
                         return (
-                          <div key={quiz.id} className="border border-gray-200 rounded-sm p-4">
+                          <div 
+                            key={quiz.id} 
+                            className="border rounded-sm p-4"
+                            style={{ borderColor: colors.border.primary }}
+                          >
                             <div className="flex items-center justify-between mb-2">
-                              <h4 className="font-semibold text-[#000F2C]">{quiz.title}</h4>
-                              <span className="text-sm text-[#6a6f73]">{quiz.passing_score}% passing score</span>
+                              <h4 className="font-semibold" style={{ color: colors.text.dark }}>{quiz.title}</h4>
+                              <span className="text-sm" style={{ color: colors.text.muted }}>{quiz.passing_score}% passing score</span>
                             </div>
                             {quiz.description && (
-                              <p className="text-sm text-[#6a6f73] mb-3">{quiz.description}</p>
+                              <p className="text-sm mb-3" style={{ color: colors.text.muted }}>{quiz.description}</p>
                             )}
                             
                             {/* Show best score if available */}
                             {hasCompletedAttempts && bestScore !== null && (
-                              <div className="mb-3 p-3 bg-gray-50 border border-gray-200 rounded-sm">
+                              <div 
+                                className="mb-3 p-3 border rounded-sm"
+                                style={{
+                                  backgroundColor: colors.background.secondary,
+                                  borderColor: colors.border.primary
+                                }}
+                              >
                                 <div className="flex items-center justify-between">
-                                  <span className="text-sm font-medium text-[#000F2C]">Best Score:</span>
-                                  <span className={`text-lg font-bold ${bestPassed ? 'text-green-600' : 'text-red-600'}`}>
+                                  <span className="text-sm font-medium" style={{ color: colors.text.dark }}>Best Score:</span>
+                                  <span 
+                                    className="text-lg font-bold"
+                                    style={{ color: bestPassed ? colors.accent.accent : colors.accent.secondary }}
+                                  >
                                     {bestScore.toFixed(1)}%
                                   </span>
                                 </div>
                                 {bestPassed && (
-                                  <div className="mt-2 text-xs text-green-600 font-medium">
+                                  <div className="mt-2 text-xs font-medium" style={{ color: colors.accent.accent }}>
                                     ✓ Passed
                                   </div>
                                 )}
                                 {!bestPassed && (
-                                  <div className="mt-2 text-xs text-red-600 font-medium">
+                                  <div className="mt-2 text-xs font-medium" style={{ color: colors.accent.secondary }}>
                                     ✗ Failed (Need {quiz.passing_score}% to pass)
                                   </div>
                                 )}
                                 {attempts.length > 0 && (
-                                  <div className="mt-2 text-xs text-[#6a6f73]">
+                                  <div className="mt-2 text-xs" style={{ color: colors.text.muted }}>
                                     Attempts: {attempts.filter((a: any) => a.completed_at).length}
                                     {quiz.max_attempts && ` / ${quiz.max_attempts}`}
                                   </div>
@@ -1322,16 +1612,26 @@ export default function CoursePlayerPage() {
                             {/* Show all attempts */}
                             {hasAttempts && (
                               <div className="mb-3 space-y-2">
-                                <div className="text-xs font-semibold text-[#6a6f73] uppercase">Previous Attempts:</div>
+                                <div className="text-xs font-semibold uppercase" style={{ color: colors.text.muted }}>Previous Attempts:</div>
                                 {attempts.filter((a: any) => a.completed_at).map((attempt: any, idx: number) => (
-                                  <div key={attempt.id} className="text-xs p-2 bg-gray-50 rounded border border-gray-200">
+                                  <div 
+                                    key={attempt.id} 
+                                    className="text-xs p-2 rounded border"
+                                    style={{
+                                      backgroundColor: colors.background.secondary,
+                                      borderColor: colors.border.primary
+                                    }}
+                                  >
                                     <div className="flex items-center justify-between">
-                                      <span>Attempt {attempt.attempt_number || idx + 1}</span>
-                                      <span className={`font-semibold ${attempt.passed ? 'text-green-600' : 'text-red-600'}`}>
+                                      <span style={{ color: colors.text.dark }}>Attempt {attempt.attempt_number || idx + 1}</span>
+                                      <span 
+                                        className="font-semibold"
+                                        style={{ color: attempt.passed ? colors.accent.accent : colors.accent.secondary }}
+                                      >
                                         {attempt.score !== null ? `${attempt.score.toFixed(1)}%` : 'N/A'}
                                       </span>
                                     </div>
-                                    <div className="text-[#6a6f73] mt-1">
+                                    <div className="mt-1" style={{ color: colors.text.muted }}>
                                       {new Date(attempt.completed_at).toLocaleString()}
                                     </div>
                                   </div>
@@ -1343,28 +1643,53 @@ export default function CoursePlayerPage() {
                               {hasCompletedAttempts && bestPassed && canRetake ? (
                                 <button 
                                   onClick={() => router.push(`/courses/${params.slug}/quizzes/${quiz.id}`)}
-                                  className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-sm font-semibold text-sm"
+                                  className="px-4 py-2 text-white rounded-sm font-semibold text-sm transition-all duration-300 hover:scale-105"
+                                  style={{ backgroundColor: colors.accent.accent }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.accent.primary;
+                                    e.currentTarget.style.boxShadow = `0 4px 12px ${colors.accent.primary}40`;
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.accent.accent;
+                                    e.currentTarget.style.boxShadow = 'none';
+                                  }}
                                 >
                                   Retake Quiz
                                 </button>
                               ) : hasCompletedAttempts && !bestPassed && canRetake ? (
                                 <button 
                                   onClick={() => router.push(`/courses/${params.slug}/quizzes/${quiz.id}`)}
-                                  className="px-4 py-2 text-white rounded-sm font-semibold text-sm"
+                                  className="px-4 py-2 text-white rounded-sm font-semibold text-sm transition-all duration-300 hover:scale-105"
                                   style={{ backgroundColor: colors.accent.primary }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.accent.secondary;
+                                    e.currentTarget.style.boxShadow = `0 4px 12px ${colors.accent.secondary}40`;
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.accent.primary;
+                                    e.currentTarget.style.boxShadow = 'none';
+                                  }}
                                 >
                                   Retake Quiz
                                 </button>
                               ) : !hasCompletedAttempts ? (
                                 <button 
                                   onClick={() => router.push(`/courses/${params.slug}/quizzes/${quiz.id}`)}
-                                  className="px-4 py-2 text-white rounded-sm font-semibold text-sm"
+                                  className="px-4 py-2 text-white rounded-sm font-semibold text-sm transition-all duration-300 hover:scale-105"
                                   style={{ backgroundColor: colors.accent.primary }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.accent.secondary;
+                                    e.currentTarget.style.boxShadow = `0 4px 12px ${colors.accent.secondary}40`;
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.accent.primary;
+                                    e.currentTarget.style.boxShadow = 'none';
+                                  }}
                                 >
                                   Start Quiz
                                 </button>
                               ) : (
-                                <span className="text-sm text-[#6a6f73]">Maximum attempts reached</span>
+                                <span className="text-sm" style={{ color: colors.text.muted }}>Maximum attempts reached</span>
                               )}
                             </div>
                           </div>
@@ -1372,14 +1697,14 @@ export default function CoursePlayerPage() {
                       })}
                     </div>
                   ) : (
-                    <p className="text-[#6a6f73]">No quizzes available for this course.</p>
+                    <p style={{ color: colors.text.muted }}>No quizzes available for this course.</p>
                   )}
                 </div>
               )}
 
               {activeTab === 'assignments' && (
                 <div>
-                  <h3 className="text-lg font-semibold mb-4 text-[#000F2C]">Course Assignments</h3>
+                  <h3 className="text-lg font-semibold mb-4" style={{ color: colors.text.dark }}>Course Assignments</h3>
                   {assignments && assignments.length > 0 ? (
                     <div className="space-y-4">
                       {assignments.map((assignment: any) => {
@@ -1389,61 +1714,90 @@ export default function CoursePlayerPage() {
                         const isLate = assignment.due_date && submission && new Date(submission.submitted_at) > new Date(assignment.due_date);
                         
                         return (
-                        <div key={assignment.id} className="border border-gray-200 rounded-sm p-4">
+                        <div 
+                          key={assignment.id} 
+                          className="border rounded-sm p-4"
+                          style={{ borderColor: colors.border.primary }}
+                        >
                           <div className="flex items-center justify-between mb-2">
-                            <h4 className="font-semibold text-[#000F2C]">{assignment.title}</h4>
+                            <h4 className="font-semibold" style={{ color: colors.text.dark }}>{assignment.title}</h4>
                             <div className="flex items-center gap-3">
                               {assignment.due_date && (
-                                <span className={`text-sm ${isLate ? 'text-red-500' : 'text-[#6a6f73]'}`}>
+                                <span 
+                                  className="text-sm"
+                                  style={{ color: isLate ? colors.accent.secondary : colors.text.muted }}
+                                >
                                   Due: {new Date(assignment.due_date).toLocaleDateString()}
                                 </span>
                               )}
                               {isSubmitted && (
-                                <span className={`px-2 py-1 text-xs font-semibold rounded ${
-                                  submission.status === 'graded' ? 'bg-green-100 text-green-800' :
-                                  submission.status === 'returned' ? 'bg-blue-100 text-blue-800' :
-                                  'bg-yellow-100 text-yellow-800'
-                                }`}>
+                                <span 
+                                  className="px-2 py-1 text-xs font-semibold rounded"
+                                  style={{
+                                    backgroundColor: submission.status === 'graded' 
+                                      ? colors.accent.accent + '20'
+                                      : submission.status === 'returned'
+                                      ? colors.accent.primary + '20'
+                                      : colors.accent.highlight + '20',
+                                    color: submission.status === 'graded'
+                                      ? colors.accent.accent
+                                      : submission.status === 'returned'
+                                      ? colors.accent.primary
+                                      : colors.accent.highlight
+                                  }}
+                                >
                                   {submission.status === 'graded' ? 'Graded' :
                                    submission.status === 'returned' ? 'Returned' : 'Submitted'}
                                 </span>
                               )}
                             </div>
                           </div>
-                          <p className="text-sm text-[#6a6f73] mb-3">{assignment.description}</p>
+                          <p className="text-sm mb-3" style={{ color: colors.text.muted }}>{assignment.description}</p>
                           
                           {/* Show submission status and grades */}
                           {isSubmitted && (
-                            <div className="mb-3 p-3 bg-gray-50 border border-gray-200 rounded-sm">
+                              <div 
+                                className="mb-3 p-3 border rounded-sm"
+                                style={{
+                                  backgroundColor: colors.background.secondary,
+                                  borderColor: colors.border.primary
+                                }}
+                              >
                               <div className="space-y-2">
                                 <div className="flex items-center justify-between">
-                                  <span className="text-sm font-medium text-[#000F2C]">Submission Status:</span>
-                                  <span className={`text-sm font-semibold ${
-                                    submission.status === 'graded' ? 'text-green-600' :
-                                    submission.status === 'returned' ? 'text-blue-600' : 'text-yellow-600'
-                                  }`}>
+                                  <span className="text-sm font-medium" style={{ color: colors.text.dark }}>Submission Status:</span>
+                                  <span 
+                                    className="text-sm font-semibold"
+                                    style={{
+                                      color: submission.status === 'graded'
+                                        ? colors.accent.accent
+                                        : submission.status === 'returned'
+                                        ? colors.accent.primary
+                                        : colors.accent.highlight
+                                    }}
+                                  >
                                     {submission.status.charAt(0).toUpperCase() + submission.status.slice(1)}
                                   </span>
                                 </div>
-                                <div className="text-xs text-[#6a6f73]">
+                                <div className="text-xs" style={{ color: colors.text.muted }}>
                                   Submitted: {new Date(submission.submitted_at).toLocaleString()}
                                 </div>
                                 {isGraded && submission.score !== null && (
-                                  <div className="flex items-center justify-between pt-2 border-t border-gray-200">
-                                    <span className="text-sm font-medium text-[#000F2C]">Score:</span>
+                                  <div className="flex items-center justify-between pt-2 border-t" style={{ borderTopColor: colors.border.primary }}>
+                                    <span className="text-sm font-medium" style={{ color: colors.text.dark }}>Score:</span>
                                     <span className="text-lg font-bold" style={{ color: colors.accent.primary }}>
                                       {submission.score} / {assignment.max_score}
                                     </span>
                                   </div>
                                 )}
                                 {isGraded && submission.feedback && (
-                                  <div className="pt-2 border-t border-gray-200">
-                                    <span className="text-sm font-medium text-[#000F2C] block mb-1">Feedback:</span>
-                                    <p className="text-sm text-[#6a6f73] whitespace-pre-wrap">{submission.feedback}</p>
+                                  <div className="pt-2 border-t" style={{ borderTopColor: colors.border.primary }}>
+                                    <span className="text-sm font-medium block mb-1" style={{ color: colors.text.dark }}>Feedback:</span>
+                                    <p className="text-sm whitespace-pre-wrap" style={{ color: colors.text.muted }}>{submission.feedback}</p>
                                   </div>
                                 )}
                                 {submission.submission_file && (
-                                  <div className="pt-2 border-t border-gray-200">
+                                  <div className="pt-2 border-t borderColor: colors.border.primary">
                                     <a 
                                       href={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000'}${submission.submission_file}`}
                                       target="_blank" 
@@ -1466,12 +1820,26 @@ export default function CoursePlayerPage() {
                                 onChange={(e) => setAssignmentSubmissionText(e.target.value)}
                                 placeholder="Enter your submission text here..."
                                 rows={4}
-                                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-sm text-[#000F2C] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[colors.accent.primary]"
+                                className="w-full px-3 py-2 rounded-sm focus:outline-none focus:ring-2 resize-none"
+                                style={{
+                                  backgroundColor: colors.background.secondary,
+                                  borderColor: colors.border.primary,
+                                  color: colors.text.dark
+                                }}
+                                onFocus={(e) => {
+                                  e.currentTarget.style.borderColor = colors.accent.primary;
+                                  e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.accent.primary}40`;
+                                }}
+                                onBlur={(e) => {
+                                  e.currentTarget.style.borderColor = colors.border.primary;
+                                  e.currentTarget.style.boxShadow = 'none';
+                                }}
                               />
                               <input
                                 type="file"
                                 onChange={(e) => setAssignmentSubmissionFile(e.target.files?.[0] || null)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-sm text-sm"
+                                className="w-full px-3 py-2 border rounded-sm text-sm"
+                                style={{ borderColor: colors.border.primary }}
                               />
                               <div className="flex gap-2">
                                 <button
@@ -1517,8 +1885,20 @@ export default function CoursePlayerPage() {
                                     }
                                   }}
                                   disabled={!assignmentSubmissionText && !assignmentSubmissionFile}
-                                  className="px-4 py-2 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-sm font-semibold text-sm"
+                                  className="px-4 py-2 disabled:cursor-not-allowed text-white rounded-sm font-semibold text-sm transition-all duration-300 hover:scale-105"
                                   style={{ backgroundColor: colors.accent.primary }}
+                                  onMouseEnter={(e) => {
+                                    if (!e.currentTarget.disabled) {
+                                      e.currentTarget.style.backgroundColor = colors.accent.secondary;
+                                      e.currentTarget.style.boxShadow = `0 4px 12px ${colors.accent.secondary}40`;
+                                    }
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    if (!e.currentTarget.disabled) {
+                                      e.currentTarget.style.backgroundColor = colors.accent.primary;
+                                      e.currentTarget.style.boxShadow = 'none';
+                                    }
+                                  }}
                                 >
                                   {submission && submission.id ? 'Update' : 'Submit'}
                                 </button>
@@ -1528,7 +1908,17 @@ export default function CoursePlayerPage() {
                                     setAssignmentSubmissionText('');
                                     setAssignmentSubmissionFile(null);
                                   }}
-                                  className="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-[#000F2C] rounded-sm font-semibold text-sm"
+                                  className="px-4 py-2 rounded-sm font-semibold text-sm transition-all duration-300"
+                                  style={{ 
+                                    backgroundColor: colors.border.primary,
+                                    color: colors.text.dark
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.border.dark;
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.border.primary;
+                                  }}
                                 >
                                   Cancel
                                 </button>
@@ -1545,8 +1935,16 @@ export default function CoursePlayerPage() {
                                     }
                                     setSubmittingAssignment(assignment.id);
                                   }}
-                                  className="px-4 py-2 text-white rounded-sm font-semibold text-sm"
+                                  className="px-4 py-2 text-white rounded-sm font-semibold text-sm transition-all duration-300 hover:scale-105"
                                   style={{ backgroundColor: colors.accent.primary }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.accent.secondary;
+                                    e.currentTarget.style.boxShadow = `0 4px 12px ${colors.accent.secondary}40`;
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.accent.primary;
+                                    e.currentTarget.style.boxShadow = 'none';
+                                  }}
                                 >
                                   Submit Assignment
                                 </button>
@@ -1563,7 +1961,16 @@ export default function CoursePlayerPage() {
                                     }
                                     setSubmittingAssignment(assignment.id);
                                   }}
-                                  className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-sm font-semibold text-sm"
+                                  className="px-4 py-2 text-white rounded-sm font-semibold text-sm transition-all duration-300 hover:scale-105"
+                                  style={{ backgroundColor: colors.accent.primary }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.accent.secondary;
+                                    e.currentTarget.style.boxShadow = `0 4px 12px ${colors.accent.secondary}40`;
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.accent.primary;
+                                    e.currentTarget.style.boxShadow = 'none';
+                                  }}
                                 >
                                   Update Submission
                                 </button>
@@ -1575,7 +1982,7 @@ export default function CoursePlayerPage() {
                       })}
                     </div>
                   ) : (
-                    <p className="text-[#6a6f73]">No assignments available for this course.</p>
+                    <p style={{ color: colors.text.muted }}>No assignments available for this course.</p>
                   )}
                 </div>
               )}

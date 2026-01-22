@@ -8,6 +8,7 @@ import { fetchWithAuth } from "@/lib/auth";
 import Cookies from 'js-cookie';
 import PureLogicsNavbar from "@/app/components/PureLogicsNavbar";
 import { useToast } from "@/app/contexts/ToastContext";
+import { colors } from "@/lib/colors";
 
 interface Question {
   id: number;
@@ -221,10 +222,10 @@ export default function QuizPage() {
 
   if (loading || checkingEnrollment) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: colors.background.primary }}>
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-gray-200 border-t-[#048181] rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-[#000F2C]">{checkingEnrollment ? 'Checking enrollment...' : 'Loading quiz...'}</p>
+          <div className="w-12 h-12 border-4 rounded-full animate-spin mx-auto mb-4" style={{ borderColor: colors.border.primary, borderTopColor: colors.accent.primary }}></div>
+          <p style={{ color: colors.text.dark }}>{checkingEnrollment ? 'Checking enrollment...' : 'Loading quiz...'}</p>
         </div>
       </div>
     );
@@ -232,13 +233,16 @@ export default function QuizPage() {
 
   if (!isEnrolled) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: colors.background.primary }}>
         <div className="text-center max-w-md px-6">
-          <h2 className="text-2xl font-bold mb-4 text-[#000F2C]">Access Denied</h2>
-          <p className="text-[#6a6f73] mb-6">You must be enrolled in this course to access quizzes.</p>
+          <h2 className="text-2xl font-bold mb-4" style={{ color: colors.text.dark }}>Access Denied</h2>
+          <p className="mb-6" style={{ color: colors.text.muted }}>You must be enrolled in this course to access quizzes.</p>
           <Link
             href={`/courses/${courseSlug}`}
-            className="inline-block px-6 py-3 bg-[#048181] hover:bg-[#048181] text-white font-semibold rounded-sm transition-colors"
+            className="inline-block px-6 py-3 text-white font-semibold rounded-sm transition-colors"
+            style={{ backgroundColor: colors.accent.primary }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.accent.secondary}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.accent.primary}
           >
             View Course
           </Link>
@@ -249,26 +253,29 @@ export default function QuizPage() {
 
   if (!quiz) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <p className="text-[#000F2C]">Quiz not found</p>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: colors.background.primary }}>
+        <p style={{ color: colors.text.dark }}>Quiz not found</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen" style={{ backgroundColor: colors.background.primary }}>
       <PureLogicsNavbar />
       <main className="section-after-header mx-auto max-w-4xl px-6 pb-8">
         <div className="mb-6">
           <Link
             href={`/learn/${courseSlug}`}
-            className="text-[#048181] hover:text-[#048181] mb-4 inline-block"
+            className="mb-4 inline-block transition-colors"
+            style={{ color: colors.accent.primary }}
+            onMouseEnter={(e) => e.currentTarget.style.color = colors.accent.secondary}
+            onMouseLeave={(e) => e.currentTarget.style.color = colors.accent.primary}
           >
             ← Back to Course
           </Link>
-          <h1 className="text-3xl font-bold mb-2 text-[#000F2C]">{quiz.title}</h1>
-          <p className="text-[#6a6f73] mb-4">{quiz.description}</p>
-          <div className="flex items-center gap-4 text-sm text-[#6a6f73]">
+          <h1 className="text-3xl font-bold mb-2" style={{ color: colors.text.dark }}>{quiz.title}</h1>
+          <p className="mb-4" style={{ color: colors.text.muted }}>{quiz.description}</p>
+          <div className="flex items-center gap-4 text-sm" style={{ color: colors.text.muted }}>
             <span>Passing Score: {quiz.passing_score}%</span>
             {quiz.time_limit_minutes && (
               <span>Time Limit: {quiz.time_limit_minutes} minutes</span>
@@ -276,12 +283,12 @@ export default function QuizPage() {
             <span>Max Attempts: {quiz.max_attempts}</span>
           </div>
           {timeRemaining !== null && !submitted && (
-            <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded-sm">
+            <div className="mt-4 p-3 rounded-sm border" style={{ backgroundColor: colors.background.secondary, borderColor: colors.border.primary }}>
               <div className="flex items-center justify-between">
-                <span className="text-[#000F2C]">Time Remaining:</span>
+                <span style={{ color: colors.text.dark }}>Time Remaining:</span>
                 <span
-                  className={`font-mono text-lg font-bold ${timeRemaining < 60 ? "text-red-500" : "text-[#048181]"
-                    }`}
+                  className="font-mono text-lg font-bold"
+                  style={{ color: timeRemaining < 60 ? colors.accent.secondary : colors.accent.primary }}
                 >
                   {formatTime(timeRemaining)}
                 </span>
@@ -291,22 +298,25 @@ export default function QuizPage() {
         </div>
 
         {submitted && result ? (
-          <div className="rounded-sm border border-gray-200 bg-white p-8 text-center">
+          <div className="rounded-sm border p-8 text-center" style={{ borderColor: colors.border.primary, backgroundColor: colors.background.card }}>
             <div className="text-6xl mb-4">{result.passed ? "🎉" : "📝"}</div>
-            <h2 className="text-2xl font-bold mb-4 text-[#000F2C]">
+            <h2 className="text-2xl font-bold mb-4" style={{ color: colors.text.dark }}>
               {result.passed ? "Congratulations! You Passed!" : "Quiz Completed"}
             </h2>
             <div className="text-4xl font-bold mb-2">
-              <span className={result.passed ? "text-[#048181]" : "text-red-500"}>
+              <span style={{ color: result.passed ? colors.accent.primary : colors.accent.secondary }}>
                 {result.score.toFixed(1)}%
               </span>
             </div>
-            <p className="text-[#6a6f73] mb-6">
+            <p className="mb-6" style={{ color: colors.text.muted }}>
               Passing Score: {quiz.passing_score}%
             </p>
             <Link
               href={`/learn/${courseSlug}`}
-              className="inline-block px-6 py-3 bg-[#048181] hover:bg-[#048181] text-[#000F2C] font-semibold rounded-sm transition-colors"
+              className="inline-block px-6 py-3 text-white font-semibold rounded-sm transition-colors"
+              style={{ backgroundColor: colors.accent.primary }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.accent.secondary}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.accent.primary}
             >
               Back to Course
             </Link>
@@ -318,13 +328,14 @@ export default function QuizPage() {
                 {quiz.questions.map((question, idx) => (
                   <div
                     key={question.id}
-                    className="rounded-sm border border-gray-200 bg-white p-6"
+                    className="rounded-sm border p-6"
+                    style={{ borderColor: colors.border.primary, backgroundColor: colors.background.card }}
                   >
                     <div className="flex items-start justify-between mb-4">
-                      <h3 className="text-lg font-semibold text-[#000F2C]">
+                      <h3 className="text-lg font-semibold" style={{ color: colors.text.dark }}>
                         Question {idx + 1}: {question.question_text}
                       </h3>
-                      <span className="text-sm text-[#6a6f73]">{question.points} points</span>
+                      <span className="text-sm" style={{ color: colors.text.muted }}>{question.points} points</span>
                     </div>
 
                     {question.question_type === "multiple_choice" && question.options && (
@@ -332,7 +343,21 @@ export default function QuizPage() {
                         {question.options.map((option) => (
                           <label
                             key={option.id}
-                            className="flex items-center gap-3 p-3 rounded-sm hover:bg-gray-50 cursor-pointer border border-gray-200"
+                            className="flex items-center gap-3 p-3 rounded-sm cursor-pointer border transition-colors"
+                            style={{ 
+                              borderColor: colors.border.primary,
+                              backgroundColor: answers[question.id] === option.id ? colors.background.secondary : colors.background.card
+                            }}
+                            onMouseEnter={(e) => {
+                              if (answers[question.id] !== option.id) {
+                                e.currentTarget.style.backgroundColor = colors.background.secondary;
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (answers[question.id] !== option.id) {
+                                e.currentTarget.style.backgroundColor = colors.background.card;
+                              }
+                            }}
                           >
                             <input
                               type="radio"
@@ -340,9 +365,10 @@ export default function QuizPage() {
                               value={option.id}
                               checked={answers[question.id] === option.id}
                               onChange={() => handleAnswerChange(question.id, option.id)}
-                              className="w-4 h-4 text-[#048181]"
+                              className="w-4 h-4"
+                              style={{ accentColor: colors.accent.primary }}
                             />
-                            <span className="text-[#000F2C]">{option.option_text}</span>
+                            <span style={{ color: colors.text.dark }}>{option.option_text}</span>
                           </label>
                         ))}
                       </div>
@@ -353,7 +379,21 @@ export default function QuizPage() {
                         {["True", "False"].map((option) => (
                           <label
                             key={option}
-                            className="flex items-center gap-3 p-3 rounded-sm hover:bg-gray-50 cursor-pointer border border-gray-200"
+                            className="flex items-center gap-3 p-3 rounded-sm cursor-pointer border transition-colors"
+                            style={{ 
+                              borderColor: colors.border.primary,
+                              backgroundColor: answers[question.id] === option ? colors.background.secondary : colors.background.card
+                            }}
+                            onMouseEnter={(e) => {
+                              if (answers[question.id] !== option) {
+                                e.currentTarget.style.backgroundColor = colors.background.secondary;
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (answers[question.id] !== option) {
+                                e.currentTarget.style.backgroundColor = colors.background.card;
+                              }
+                            }}
                           >
                             <input
                               type="radio"
@@ -361,9 +401,10 @@ export default function QuizPage() {
                               value={option}
                               checked={answers[question.id] === option}
                               onChange={() => handleAnswerChange(question.id, option)}
-                              className="w-4 h-4 text-[#048181]"
+                              className="w-4 h-4"
+                              style={{ accentColor: colors.accent.primary }}
                             />
-                            <span className="text-[#000F2C]">{option}</span>
+                            <span style={{ color: colors.text.dark }}>{option}</span>
                           </label>
                         ))}
                       </div>
@@ -375,28 +416,56 @@ export default function QuizPage() {
                         onChange={(e) => handleAnswerChange(question.id, e.target.value)}
                         placeholder="Type your answer here..."
                         rows={4}
-                        className="w-full px-4 py-2 bg-white border border-gray-300 rounded-sm text-[#000F2C] focus:outline-none focus:ring-2 focus:ring-[#048181] focus:border-[#048181]"
+                        className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2"
+                        style={{ 
+                          backgroundColor: colors.background.card,
+                          borderColor: colors.border.primary,
+                          color: colors.text.dark,
+                          borderWidth: '1px',
+                          borderStyle: 'solid'
+                        }}
+                        onFocus={(e) => {
+                          e.currentTarget.style.borderColor = colors.accent.primary;
+                          e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.accent.primary}40`;
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.borderColor = colors.border.primary;
+                          e.currentTarget.style.boxShadow = 'none';
+                        }}
                       />
                     )}
                   </div>
                 ))}
 
                 <div className="flex items-center justify-between pt-6">
-                  <p className="text-[#6a6f73]">
+                  <p style={{ color: colors.text.muted }}>
                     Answered: {Object.keys(answers).length} / {quiz.questions.length}
                   </p>
                   <button
                     onClick={handleSubmit}
                     disabled={submitted || Object.keys(answers).length === 0}
-                    className="px-8 py-3 bg-[#048181] hover:bg-[#048181] disabled:bg-gray-300 disabled:cursor-not-allowed text-[#000F2C] font-semibold rounded-sm transition-colors"
+                    className="px-8 py-3 text-white font-semibold rounded-sm transition-colors disabled:cursor-not-allowed"
+                    style={{ 
+                      backgroundColor: (submitted || Object.keys(answers).length === 0) ? colors.border.primary : colors.accent.primary
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!e.currentTarget.disabled) {
+                        e.currentTarget.style.backgroundColor = colors.accent.secondary;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!e.currentTarget.disabled) {
+                        e.currentTarget.style.backgroundColor = colors.accent.primary;
+                      }
+                    }}
                   >
                     Submit Quiz
                   </button>
                 </div>
               </>
             ) : (
-              <div className="rounded-sm border border-gray-200 bg-white p-8 text-center">
-                <p className="text-[#6a6f73]">No questions available for this quiz.</p>
+              <div className="rounded-sm border p-8 text-center" style={{ borderColor: colors.border.primary, backgroundColor: colors.background.card }}>
+                <p style={{ color: colors.text.muted }}>No questions available for this quiz.</p>
               </div>
             )}
           </div>
