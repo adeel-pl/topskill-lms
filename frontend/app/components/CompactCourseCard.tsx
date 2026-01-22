@@ -122,3 +122,5 @@ export default function CompactCourseCard({ course, index = 0 }: CompactCourseCa
   );
 }
 
+
+
