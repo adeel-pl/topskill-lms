@@ -136,7 +136,7 @@ export default function CertificationsPage() {
               <h2 className="text-2xl md:text-3xl font-black mb-4" style={{ color: colors.text.dark }}>No certificates yet</h2>
               <p className="mb-6 md:mb-8" style={{ color: colors.text.muted }}>Complete courses to earn certificates and showcase your achievements!</p>
               <Link
-                href="/courses"
+                href="/"
                 className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-black transition-all duration-300 hover:scale-105 hover:shadow-2xl"
                 style={{ backgroundColor: colors.button.primary, color: colors.text.white, boxShadow: `0 10px 25px -5px ${colors.accent.primary}30` }}
               >

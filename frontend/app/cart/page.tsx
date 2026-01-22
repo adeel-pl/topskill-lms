@@ -115,7 +115,7 @@ export default function CartPage() {
               <h2 className="text-2xl md:text-3xl font-black mb-3 md:mb-4" style={{ color: colors.text.dark }}>Your cart is empty</h2>
               <p className="mb-5 md:mb-6 lg:mb-8 text-sm md:text-base" style={{ color: colors.text.muted }}>Keep shopping to find a course!</p>
               <Link
-                href="/courses"
+                href="/"
                 className="inline-block px-7 md:px-8 py-3.5 md:py-4 rounded-xl font-black transition-all duration-300 hover:scale-105 hover:shadow-2xl text-sm md:text-base"
                 style={{ backgroundColor: colors.button.primary, color: colors.text.white }}
               >
@@ -198,7 +198,7 @@ export default function CartPage() {
                   )}
                 </button>
                 <Link
-                  href="/courses"
+                  href="/"
                   className="block text-center font-bold text-xs md:text-sm transition-colors py-2.5 md:py-3 rounded-xl"
                   style={{ color: colors.text.muted }}
                   onMouseEnter={(e) => {

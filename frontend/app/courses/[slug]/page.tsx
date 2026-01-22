@@ -224,7 +224,7 @@ export default function CourseDetailPage() {
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: colors.background.primary }}>
         <div className="text-center">
           <h2 className="text-3xl font-black mb-4" style={{ color: colors.text.dark }}>Course not found</h2>
-          <Link href="/courses" className="hover:underline font-semibold" style={{ color: colors.accent.primary }}>Browse Courses</Link>
+          <Link href="/" className="hover:underline font-semibold" style={{ color: colors.accent.primary }}>Browse Courses</Link>
         </div>
       </div>
     );

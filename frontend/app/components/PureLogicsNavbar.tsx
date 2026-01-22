@@ -51,7 +51,7 @@ export default function PureLogicsNavbar() {
               Home
             </Link>
             <Link
-              href="/courses"
+              href="/"
               className="text-sm font-medium transition-colors flex items-center gap-1"
               style={{ color: '#1E293B' }}
               onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
@@ -61,7 +61,7 @@ export default function PureLogicsNavbar() {
               <ChevronDown className="w-4 h-4" />
             </Link>
             <Link
-              href="/courses"
+              href="/"
               className="text-gray-900 transition-colors"
               style={{ color: '#1E293B' }}
               onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
@@ -191,7 +191,7 @@ export default function PureLogicsNavbar() {
                   Home
                 </Link>
                 <Link 
-                  href="/courses" 
+                  href="/" 
                   className="px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors text-sm"
                   style={{ color: '#1E293B' }}
                   onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
@@ -200,7 +200,7 @@ export default function PureLogicsNavbar() {
                   Category
                 </Link>
                 <Link 
-                  href="/courses" 
+                  href="/" 
                   className="px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors text-sm"
                   style={{ color: '#1E293B' }}
                   onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}

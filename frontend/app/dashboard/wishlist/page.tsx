@@ -76,7 +76,7 @@ export default function WishlistPage() {
             <h2 className="text-2xl md:text-3xl font-black mb-4 text-white">Your wishlist is empty</h2>
             <p className="text-[#9CA3AF] mb-6 md:mb-8">Add courses to your wishlist to save them for later!</p>
             <Link
-              href="/courses"
+              href="/"
               className="inline-flex items-center gap-2 bg-[#048181] text-white px-8 py-4 rounded-xl font-black transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#048181]/50"
             >
               <FiBookOpen />

@@ -177,7 +177,7 @@ export default function PurchaseHistoryPage() {
               <BookOpen className="w-16 h-16 mx-auto mb-4 opacity-50" style={{ color: colors.accent.primary }} />
               <p className="mb-4 text-lg" style={{ color: colors.text.muted }}>No enrolled courses yet</p>
               <Link
-                href="/courses"
+                href="/"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
                 style={{ backgroundColor: colors.button.primary, color: colors.text.white }}
               >
@@ -325,7 +325,7 @@ export default function PurchaseHistoryPage() {
               <ShoppingCart className="w-16 h-16 mx-auto mb-4 opacity-50" style={{ color: colors.accent.primary }} />
               <p className="mb-4 text-lg" style={{ color: colors.text.muted }}>Your cart is empty</p>
               <Link
-                href="/courses"
+                href="/"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
                 style={{ backgroundColor: colors.button.primary, color: colors.text.white }}
               >
