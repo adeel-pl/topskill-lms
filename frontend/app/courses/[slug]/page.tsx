@@ -55,7 +55,7 @@ export default function CourseDetailPage() {
       
       if (!courseData) {
         console.error('Course not found for slug:', params.slug);
-        router.push('/courses');
+        router.push('/');
         return;
       }
 

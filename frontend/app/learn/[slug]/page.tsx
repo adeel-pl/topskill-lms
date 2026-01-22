@@ -96,7 +96,7 @@ export default function CoursePlayerPage() {
 
       if (!courseData) {
         console.error('Course not found for slug:', params.slug);
-        router.push('/courses');
+        router.push('/');
         return;
       }
 
@@ -216,7 +216,7 @@ export default function CoursePlayerPage() {
           // Not enrolled - redirect to course page
           router.push(`/courses/${params.slug}`);
         } else {
-          router.push('/courses');
+          router.push('/');
         }
         setLoading(false);
       }
@@ -536,7 +536,7 @@ export default function CoursePlayerPage() {
           <h2 className="text-3xl font-black mb-4 text-white">Course not found</h2>
           <p className="text-[#9CA3AF] mb-6">The course you're looking for doesn't exist or you're not enrolled.</p>
           <button
-            onClick={() => router.push('/courses')}
+            onClick={() => router.push('/')}
             className="text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
             style={{ backgroundColor: colors.accent.primary }}
           >
@@ -558,7 +558,7 @@ export default function CoursePlayerPage() {
           <h2 className="text-3xl font-black mb-4 text-white">No lectures available</h2>
           <p className="text-[#9CA3AF] mb-6">This course doesn't have any lectures yet.</p>
           <button
-            onClick={() => router.push('/courses')}
+            onClick={() => router.push('/')}
             className="text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
             style={{ backgroundColor: colors.accent.primary }}
           >
@@ -592,7 +592,7 @@ export default function CoursePlayerPage() {
           <h2 className="text-3xl font-black mb-4 text-white">No lectures available</h2>
           <p className="text-[#9CA3AF] mb-6">This course doesn't have any lectures yet.</p>
           <button
-            onClick={() => router.push('/courses')}
+            onClick={() => router.push('/')}
             className="text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
             style={{ backgroundColor: colors.accent.primary }}
           >
