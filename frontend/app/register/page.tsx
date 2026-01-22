@@ -60,10 +60,10 @@ export default function RegisterPage() {
           <div className="text-center mb-12">
             <div className="inline-block mb-8">
               <div className="relative">
-                <div className="w-20 h-20 bg-[#10B981] rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-[#10B981]/50 transform hover:scale-110 transition-transform duration-300">
+                <div className="w-20 h-20 bg-[#048181] rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-[#048181]/50 transform hover:scale-110 transition-transform duration-300">
                   <div className="w-10 h-10 bg-[#0F172A] rounded-xl"></div>
                 </div>
-                <div className="absolute inset-0 bg-[#10B981] rounded-3xl opacity-20 blur-2xl animate-pulse"></div>
+                <div className="absolute inset-0 bg-[#048181] rounded-3xl opacity-20 blur-2xl animate-pulse"></div>
               </div>
             </div>
             <h2 className="text-5xl md:text-6xl font-black mb-4 leading-tight" style={{ color: colors.text.dark }}>
@@ -139,8 +139,8 @@ export default function RegisterPage() {
               <div>
                 <label className="block text-sm font-bold mb-3" style={{ color: colors.text.dark }}>Username</label>
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-[#10B981]/0 rounded-xl group-focus-within:bg-[#10B981]/10 transition-all duration-300"></div>
-                  <FiUser className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#10B981] transition-colors z-10" />
+                  <div className="absolute inset-0 bg-[#048181]/0 rounded-xl group-focus-within:bg-[#048181]/10 transition-all duration-300"></div>
+                  <FiUser className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#048181] transition-colors z-10" />
                   <input
                     type="text"
                     required
@@ -171,8 +171,8 @@ export default function RegisterPage() {
               <div>
                 <label className="block text-sm font-bold mb-3" style={{ color: colors.text.dark }}>Email</label>
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-[#10B981]/0 rounded-xl group-focus-within:bg-[#10B981]/10 transition-all duration-300"></div>
-                  <FiMail className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#10B981] transition-colors z-10" />
+                  <div className="absolute inset-0 bg-[#048181]/0 rounded-xl group-focus-within:bg-[#048181]/10 transition-all duration-300"></div>
+                  <FiMail className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#048181] transition-colors z-10" />
                   <input
                     type="email"
                     required
@@ -203,8 +203,8 @@ export default function RegisterPage() {
               <div>
                 <label className="block text-sm font-bold mb-3" style={{ color: colors.text.dark }}>Password</label>
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-[#10B981]/0 rounded-xl group-focus-within:bg-[#10B981]/10 transition-all duration-300"></div>
-                  <FiLock className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#10B981] transition-colors z-10" />
+                  <div className="absolute inset-0 bg-[#048181]/0 rounded-xl group-focus-within:bg-[#048181]/10 transition-all duration-300"></div>
+                  <FiLock className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#048181] transition-colors z-10" />
                   <input
                     type="password"
                     required
@@ -235,8 +235,8 @@ export default function RegisterPage() {
               <div>
                 <label className="block text-sm font-bold mb-3" style={{ color: colors.text.dark }}>Confirm Password</label>
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-[#10B981]/0 rounded-xl group-focus-within:bg-[#10B981]/10 transition-all duration-300"></div>
-                  <FiLock className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#10B981] transition-colors z-10" />
+                  <div className="absolute inset-0 bg-[#048181]/0 rounded-xl group-focus-within:bg-[#048181]/10 transition-all duration-300"></div>
+                  <FiLock className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#048181] transition-colors z-10" />
                   <input
                     type="password"
                     required

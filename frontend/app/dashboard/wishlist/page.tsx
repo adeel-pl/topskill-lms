@@ -51,7 +51,7 @@ export default function WishlistPage() {
     return (
       <div className="min-h-screen bg-[#0F172A] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#334155] border-t-[#10B981] rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-[#334155] border-t-[#048181] rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-[#9CA3AF]">Loading...</p>
         </div>
       </div>
@@ -77,7 +77,7 @@ export default function WishlistPage() {
             <p className="text-[#9CA3AF] mb-6 md:mb-8">Add courses to your wishlist to save them for later!</p>
             <Link
               href="/courses"
-              className="inline-flex items-center gap-2 bg-[#10B981] text-white px-8 py-4 rounded-xl font-black transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#10B981]/50"
+              className="inline-flex items-center gap-2 bg-[#048181] text-white px-8 py-4 rounded-xl font-black transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#048181]/50"
             >
               <FiBookOpen />
               Browse Courses
@@ -89,7 +89,7 @@ export default function WishlistPage() {
           {wishlist.map((item, idx) => (
             <div
               key={item.id}
-              className="bg-[#1E293B] border border-[#334155] rounded-2xl p-5 md:p-6 hover:bg-[#334155] hover:border-[#10B981] transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#10B981]/20"
+              className="bg-[#1E293B] border border-[#334155] rounded-2xl p-5 md:p-6 hover:bg-[#334155] hover:border-[#048181] transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#048181]/20"
               style={{ animationDelay: `${idx * 100}ms` }}
             >
               <div className="flex items-start justify-between mb-4">
@@ -104,10 +104,10 @@ export default function WishlistPage() {
               </div>
               <p className="text-[#9CA3AF] mb-5 md:mb-6 text-sm line-clamp-2">{item.course?.description || ''}</p>
               <div className="flex items-center justify-between pt-5 md:pt-6 border-t border-[#334155]">
-                <div className="text-xl md:text-2xl font-black text-[#10B981]">${item.course?.price || 0}</div>
+                <div className="text-xl md:text-2xl font-black text-[#048181]">${item.course?.price || 0}</div>
                 <Link
                   href={`/courses/${item.course?.slug}`}
-                  className="bg-[#10B981] hover:bg-[#10B981] text-white px-4 md:px-5 py-2 md:py-2.5 rounded-xl font-black transition-all duration-300 hover:scale-105 text-sm"
+                  className="bg-[#048181] hover:bg-[#048181] text-white px-4 md:px-5 py-2 md:py-2.5 rounded-xl font-black transition-all duration-300 hover:scale-105 text-sm"
                 >
                   View Course
                 </Link>

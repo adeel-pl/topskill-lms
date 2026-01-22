@@ -85,7 +85,7 @@ export default function AdminStudentsPage() {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              className="w-full pl-10 pr-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white placeholder-[#9CA3AF] focus:outline-none focus:border-[#10B981]"
+              className="w-full pl-10 pr-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white placeholder-[#9CA3AF] focus:outline-none focus:border-[#048181]"
             />
           </div>
         </div>
@@ -94,7 +94,7 @@ export default function AdminStudentsPage() {
         <div className="bg-[#0F172A] border border-[#334155] rounded-xl overflow-hidden">
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="w-12 h-12 border-4 border-[#334155] border-t-[#10B981] rounded-full animate-spin"></div>
+              <div className="w-12 h-12 border-4 border-[#334155] border-t-[#048181] rounded-full animate-spin"></div>
             </div>
           ) : students.length === 0 ? (
             <div className="text-center py-12">
@@ -120,7 +120,7 @@ export default function AdminStudentsPage() {
                       <tr key={student.id} className="hover:bg-[#1E293B]/50 transition-colors">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-[#10B981] rounded-full flex items-center justify-center">
+                            <div className="w-10 h-10 bg-[#048181] rounded-full flex items-center justify-center">
                               <span className="text-white font-bold text-sm">
                                 {student.first_name?.charAt(0) || student.username?.charAt(0) || 'U'}
                               </span>
@@ -149,11 +149,11 @@ export default function AdminStudentsPage() {
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2 text-white">
-                            <FiCheckCircle className="w-4 h-4 text-[#10B981]" />
+                            <FiCheckCircle className="w-4 h-4 text-[#048181]" />
                             <span className="font-semibold">{student.courses_completed}</span>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-[#10B981] font-semibold">
+                        <td className="px-6 py-4 text-[#048181] font-semibold">
                           {formatCurrency(student.total_spent)}
                         </td>
                         <td className="px-6 py-4">
@@ -184,7 +184,7 @@ export default function AdminStudentsPage() {
                     <button
                       onClick={() => setPage(page - 1)}
                       disabled={page === 1}
-                      className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed hover:border-[#10B981] transition-colors"
+                      className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed hover:border-[#048181] transition-colors"
                     >
                       <FiChevronLeft className="w-5 h-5" />
                     </button>
@@ -194,7 +194,7 @@ export default function AdminStudentsPage() {
                     <button
                       onClick={() => setPage(page + 1)}
                       disabled={page >= Math.ceil(total / pageSize)}
-                      className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed hover:border-[#10B981] transition-colors"
+                      className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed hover:border-[#048181] transition-colors"
                     >
                       <FiChevronRight className="w-5 h-5" />
                     </button>

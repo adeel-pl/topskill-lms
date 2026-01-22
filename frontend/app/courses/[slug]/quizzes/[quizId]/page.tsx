@@ -223,7 +223,7 @@ export default function QuizPage() {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-gray-200 border-t-[#10B981] rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-12 h-12 border-4 border-gray-200 border-t-[#048181] rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-[#000F2C]">{checkingEnrollment ? 'Checking enrollment...' : 'Loading quiz...'}</p>
         </div>
       </div>
@@ -238,7 +238,7 @@ export default function QuizPage() {
           <p className="text-[#6a6f73] mb-6">You must be enrolled in this course to access quizzes.</p>
           <Link
             href={`/courses/${courseSlug}`}
-            className="inline-block px-6 py-3 bg-[#10B981] hover:bg-[#10B981] text-white font-semibold rounded-sm transition-colors"
+            className="inline-block px-6 py-3 bg-[#048181] hover:bg-[#048181] text-white font-semibold rounded-sm transition-colors"
           >
             View Course
           </Link>
@@ -262,7 +262,7 @@ export default function QuizPage() {
         <div className="mb-6">
           <Link
             href={`/learn/${courseSlug}`}
-            className="text-[#10B981] hover:text-[#10B981] mb-4 inline-block"
+            className="text-[#048181] hover:text-[#048181] mb-4 inline-block"
           >
             ← Back to Course
           </Link>
@@ -280,7 +280,7 @@ export default function QuizPage() {
               <div className="flex items-center justify-between">
                 <span className="text-[#000F2C]">Time Remaining:</span>
                 <span
-                  className={`font-mono text-lg font-bold ${timeRemaining < 60 ? "text-red-500" : "text-[#10B981]"
+                  className={`font-mono text-lg font-bold ${timeRemaining < 60 ? "text-red-500" : "text-[#048181]"
                     }`}
                 >
                   {formatTime(timeRemaining)}
@@ -297,7 +297,7 @@ export default function QuizPage() {
               {result.passed ? "Congratulations! You Passed!" : "Quiz Completed"}
             </h2>
             <div className="text-4xl font-bold mb-2">
-              <span className={result.passed ? "text-[#10B981]" : "text-red-500"}>
+              <span className={result.passed ? "text-[#048181]" : "text-red-500"}>
                 {result.score.toFixed(1)}%
               </span>
             </div>
@@ -306,7 +306,7 @@ export default function QuizPage() {
             </p>
             <Link
               href={`/learn/${courseSlug}`}
-              className="inline-block px-6 py-3 bg-[#10B981] hover:bg-[#10B981] text-[#000F2C] font-semibold rounded-sm transition-colors"
+              className="inline-block px-6 py-3 bg-[#048181] hover:bg-[#048181] text-[#000F2C] font-semibold rounded-sm transition-colors"
             >
               Back to Course
             </Link>
@@ -340,7 +340,7 @@ export default function QuizPage() {
                               value={option.id}
                               checked={answers[question.id] === option.id}
                               onChange={() => handleAnswerChange(question.id, option.id)}
-                              className="w-4 h-4 text-[#10B981]"
+                              className="w-4 h-4 text-[#048181]"
                             />
                             <span className="text-[#000F2C]">{option.option_text}</span>
                           </label>
@@ -361,7 +361,7 @@ export default function QuizPage() {
                               value={option}
                               checked={answers[question.id] === option}
                               onChange={() => handleAnswerChange(question.id, option)}
-                              className="w-4 h-4 text-[#10B981]"
+                              className="w-4 h-4 text-[#048181]"
                             />
                             <span className="text-[#000F2C]">{option}</span>
                           </label>
@@ -375,7 +375,7 @@ export default function QuizPage() {
                         onChange={(e) => handleAnswerChange(question.id, e.target.value)}
                         placeholder="Type your answer here..."
                         rows={4}
-                        className="w-full px-4 py-2 bg-white border border-gray-300 rounded-sm text-[#000F2C] focus:outline-none focus:ring-2 focus:ring-[#10B981] focus:border-[#10B981]"
+                        className="w-full px-4 py-2 bg-white border border-gray-300 rounded-sm text-[#000F2C] focus:outline-none focus:ring-2 focus:ring-[#048181] focus:border-[#048181]"
                       />
                     )}
                   </div>
@@ -388,7 +388,7 @@ export default function QuizPage() {
                   <button
                     onClick={handleSubmit}
                     disabled={submitted || Object.keys(answers).length === 0}
-                    className="px-8 py-3 bg-[#10B981] hover:bg-[#10B981] disabled:bg-gray-300 disabled:cursor-not-allowed text-[#000F2C] font-semibold rounded-sm transition-colors"
+                    className="px-8 py-3 bg-[#048181] hover:bg-[#048181] disabled:bg-gray-300 disabled:cursor-not-allowed text-[#000F2C] font-semibold rounded-sm transition-colors"
                   >
                     Submit Quiz
                   </button>

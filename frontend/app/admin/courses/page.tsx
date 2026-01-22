@@ -87,7 +87,7 @@ export default function AdminCoursesPage() {
           </div>
           <Link
             href="/admin/courses/new"
-            className="px-6 py-3 bg-[#10B981] text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-[#10B981]/30 transition-all flex items-center gap-2"
+            className="px-6 py-3 bg-[#048181] text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-[#048181]/30 transition-all flex items-center gap-2"
           >
             <FiPlus /> Create Course
           </Link>
@@ -106,7 +106,7 @@ export default function AdminCoursesPage() {
                   setSearch(e.target.value);
                   setPage(1);
                 }}
-                className="w-full pl-10 pr-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white placeholder-[#9CA3AF] focus:outline-none focus:border-[#10B981]"
+                className="w-full pl-10 pr-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white placeholder-[#9CA3AF] focus:outline-none focus:border-[#048181]"
               />
             </div>
             <select
@@ -115,7 +115,7 @@ export default function AdminCoursesPage() {
                 setModality(e.target.value);
                 setPage(1);
               }}
-              className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white focus:outline-none focus:border-[#10B981]"
+              className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white focus:outline-none focus:border-[#048181]"
             >
               <option value="">All Modalities</option>
               <option value="online">Online</option>
@@ -129,7 +129,7 @@ export default function AdminCoursesPage() {
                 setIsActive(value === '' ? null : value === 'true');
                 setPage(1);
               }}
-              className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white focus:outline-none focus:border-[#10B981]"
+              className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white focus:outline-none focus:border-[#048181]"
             >
               <option value="">All Status</option>
               <option value="true">Active</option>
@@ -142,7 +142,7 @@ export default function AdminCoursesPage() {
                 setIsActive(null);
                 setPage(1);
               }}
-              className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white hover:border-[#10B981] transition-colors"
+              className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white hover:border-[#048181] transition-colors"
             >
               Clear Filters
             </button>
@@ -153,14 +153,14 @@ export default function AdminCoursesPage() {
         <div className="bg-[#0F172A] border border-[#334155] rounded-xl overflow-hidden">
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="w-12 h-12 border-4 border-[#334155] border-t-[#10B981] rounded-full animate-spin"></div>
+              <div className="w-12 h-12 border-4 border-[#334155] border-t-[#048181] rounded-full animate-spin"></div>
             </div>
           ) : courses.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-[#9CA3AF] mb-4">No courses found</p>
               <Link
                 href="/admin/courses/new"
-                className="inline-block px-6 py-3 bg-[#10B981] text-white rounded-lg font-semibold"
+                className="inline-block px-6 py-3 bg-[#048181] text-white rounded-lg font-semibold"
               >
                 Create First Course
               </Link>
@@ -199,7 +199,7 @@ export default function AdminCoursesPage() {
                           {formatCurrency(course.price)}
                         </td>
                         <td className="px-6 py-4 text-white">{course.enrollment_count}</td>
-                        <td className="px-6 py-4 text-[#10B981] font-semibold">
+                        <td className="px-6 py-4 text-[#048181] font-semibold">
                           {formatCurrency(course.total_revenue)}
                         </td>
                         <td className="px-6 py-4">
@@ -221,10 +221,10 @@ export default function AdminCoursesPage() {
                           <div className="flex items-center gap-2">
                             <Link
                               href={`/admin/courses/${course.id}`}
-                              className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg hover:border-[#10B981] transition-colors"
+                              className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg hover:border-[#048181] transition-colors"
                               title="Edit"
                             >
-                              <FiEdit className="w-4 h-4 text-[#10B981]" />
+                              <FiEdit className="w-4 h-4 text-[#048181]" />
                             </Link>
                             <Link
                               href={`/courses/${course.slug}`}
@@ -252,7 +252,7 @@ export default function AdminCoursesPage() {
                     <button
                       onClick={() => setPage(page - 1)}
                       disabled={page === 1}
-                      className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed hover:border-[#10B981] transition-colors"
+                      className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed hover:border-[#048181] transition-colors"
                     >
                       <FiChevronLeft className="w-5 h-5" />
                     </button>
@@ -262,7 +262,7 @@ export default function AdminCoursesPage() {
                     <button
                       onClick={() => setPage(page + 1)}
                       disabled={page >= Math.ceil(total / pageSize)}
-                      className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed hover:border-[#10B981] transition-colors"
+                      className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed hover:border-[#048181] transition-colors"
                     >
                       <FiChevronRight className="w-5 h-5" />
                     </button>

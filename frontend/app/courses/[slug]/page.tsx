@@ -252,13 +252,21 @@ export default function CourseDetailPage() {
               />
               {course.modality && (
                 <div className="absolute top-6 right-6">
-                  <span className={`px-4 py-2 rounded-xl text-sm font-black backdrop-blur-md border-2 shadow-xl ${
-                    course.modality === 'online' 
-                      ? 'bg-[#10B981] text-white border-[#10B981]' 
-                      : course.modality === 'hybrid'
-                      ? 'bg-[#8B5CF6] text-white border-[#8B5CF6]'
-                      : 'bg-[#F59E0B] text-white border-[#F59E0B]'
-                  }`}>
+                  <span 
+                    className="px-4 py-2 rounded-xl text-sm font-black backdrop-blur-md border-2 shadow-xl text-white"
+                    style={{
+                      backgroundColor: course.modality === 'online' 
+                        ? colors.accent.primary 
+                        : course.modality === 'hybrid'
+                        ? colors.accent.accent
+                        : colors.accent.secondary,
+                      borderColor: course.modality === 'online' 
+                        ? colors.accent.primary 
+                        : course.modality === 'hybrid'
+                        ? colors.accent.accent
+                        : colors.accent.secondary
+                    }}
+                  >
                     {course.modality === 'online' ? 'ONLINE' : course.modality.toUpperCase()}
                   </span>
                 </div>

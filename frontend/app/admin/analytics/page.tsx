@@ -44,7 +44,7 @@ export default function AdminAnalyticsPage() {
       <AdminLayout>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
-            <div className="w-16 h-16 border-4 border-[#334155] border-t-[#10B981] rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="w-16 h-16 border-4 border-[#334155] border-t-[#048181] rounded-full animate-spin mx-auto mb-4"></div>
             <p className="text-[#9CA3AF]">Loading analytics...</p>
           </div>
         </div>
@@ -75,7 +75,7 @@ export default function AdminAnalyticsPage() {
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className="bg-[#0F172A] border border-[#334155] text-white rounded-lg px-4 py-2 focus:outline-none focus:border-[#10B981]"
+              className="bg-[#0F172A] border border-[#334155] text-white rounded-lg px-4 py-2 focus:outline-none focus:border-[#048181]"
             >
               <option value="all">All Time</option>
               <option value="1day">Last 24 Hours</option>
@@ -84,7 +84,7 @@ export default function AdminAnalyticsPage() {
             </select>
             <button
               onClick={loadAnalytics}
-              className="px-4 py-2 bg-[#10B981] text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-[#10B981]/30 transition-all"
+              className="px-4 py-2 bg-[#048181] text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-[#048181]/30 transition-all"
             >
               Refresh
             </button>
@@ -116,7 +116,7 @@ export default function AdminAnalyticsPage() {
                   return (
                     <div key={course.id} className="flex-1 flex flex-col items-center justify-end gap-2">
                       <div
-                        className="w-full bg-gradient-to-t bg-[#10B981] rounded-t transition-all duration-300 hover:opacity-80"
+                        className="w-full bg-gradient-to-t bg-[#048181] rounded-t transition-all duration-300 hover:opacity-80"
                         style={{ height: `${Math.max(height, 5)}%` }}
                         title={`${course.title}: ${course.enrollment_count} enrollments`}
                       />
@@ -138,7 +138,7 @@ export default function AdminAnalyticsPage() {
                 {analytics.course_by_modality.map((item: any, index: number) => {
                   const total = analytics.course_by_modality.reduce((sum: number, i: any) => sum + i.count, 0);
                   const percent = total > 0 ? (item.count / total) * 100 : 0;
-                  const colors = ['#10B981', '#3B82F6', '#8B5CF6', '#F59E0B', '#EF4444'];
+                  const colors = ['#048181', '#3B82F6', '#8B5CF6', '#F59E0B', '#EF4444'];
                   return (
                     <div key={index} className="text-center">
                       <div className="relative w-32 h-32 mx-auto mb-2">
@@ -195,13 +195,13 @@ export default function AdminAnalyticsPage() {
                 {analytics.top_courses.map((course: any, index: number) => (
                   <tr key={course.id} className="hover:bg-[#1E293B]/50 transition-colors">
                     <td className="px-4 py-3">
-                      <span className="text-[#10B981] font-bold text-lg">#{index + 1}</span>
+                      <span className="text-[#048181] font-bold text-lg">#{index + 1}</span>
                     </td>
                     <td className="px-4 py-3">
                       <p className="text-white font-medium">{course.title}</p>
                     </td>
                     <td className="px-4 py-3 text-white">{course.enrollment_count}</td>
-                    <td className="px-4 py-3 text-[#10B981] font-semibold">
+                    <td className="px-4 py-3 text-[#048181] font-semibold">
                       {new Intl.NumberFormat('en-US', {
                         style: 'currency',
                         currency: 'USD',

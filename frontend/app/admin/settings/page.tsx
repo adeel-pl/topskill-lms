@@ -16,8 +16,8 @@ export default function AdminSettingsPage() {
         {/* Settings Content */}
         <div className="bg-[#0F172A] border border-[#334155] rounded-xl p-6">
           <div className="flex items-center gap-4 mb-6">
-            <div className="p-3 bg-[#10B981]/20 rounded-lg">
-              <FiSettings className="text-2xl text-[#10B981]" />
+            <div className="p-3 bg-[#048181]/20 rounded-lg">
+              <FiSettings className="text-2xl text-[#048181]" />
             </div>
             <div>
               <h2 className="text-xl font-bold text-white">System Settings</h2>
@@ -37,7 +37,7 @@ export default function AdminSettingsPage() {
               <a
                 href="/admin/"
                 target="_blank"
-                className="inline-block mt-4 px-4 py-2 bg-[#10B981] text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-[#10B981]/30 transition-all"
+                className="inline-block mt-4 px-4 py-2 bg-[#048181] text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-[#048181]/30 transition-all"
               >
                 Open Django Admin
               </a>

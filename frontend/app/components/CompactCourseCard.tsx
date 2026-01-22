@@ -105,7 +105,7 @@ export default function CompactCourseCard({ course, index = 0 }: CompactCourseCa
             <h3 
               className="text-sm font-bold mb-1 line-clamp-1 transition-colors duration-300"
               style={{ color: colors.text.dark }}
-              onMouseEnter={(e) => e.currentTarget.style.color = colors.accent.primary}
+              onMouseEnter={(e) => e.currentTarget.style.color = wowColors.primary}
               onMouseLeave={(e) => e.currentTarget.style.color = colors.text.dark}
             >
               {course.title}

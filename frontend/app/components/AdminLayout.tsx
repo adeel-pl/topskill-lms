@@ -101,7 +101,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     return (
       <div className="min-h-screen bg-[#0A0E27] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#334155] border-t-[#10B981] rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-[#334155] border-t-[#048181] rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-[#9CA3AF]">Loading...</p>
         </div>
       </div>
@@ -173,7 +173,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     transition-all duration-200
                     ${
                       active
-                        ? 'bg-[#10B981]/20 text-[#10B981] border-l-4 border-[#10B981]'
+                        ? 'bg-[#048181]/20 text-[#048181] border-l-4 border-[#048181]'
                         : 'text-[#D1D5DB] hover:bg-[#1E293B] hover:text-white'
                     }
                   `}
@@ -191,7 +191,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           {/* User Section */}
           <div className="p-4 border-t border-[#334155]">
             <div className="flex items-center gap-3 mb-3 p-3 rounded-lg bg-[#1E293B]">
-              <div className="w-10 h-10 bg-[#10B981] rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-[#048181] rounded-full flex items-center justify-center">
                 <span className="text-white font-bold text-sm">
                   {user?.username?.charAt(0).toUpperCase() || 'A'}
                 </span>
@@ -230,7 +230,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             <div className="flex items-center gap-4">
               <Link
                 href="/"
-                className="text-[#9CA3AF] hover:text-[#10B981] transition-colors text-sm"
+                className="text-[#9CA3AF] hover:text-[#048181] transition-colors text-sm"
               >
                 View Site
               </Link>

@@ -29,18 +29,8 @@ interface Course {
   total_lectures?: number;
 }
 
-// New Color Palette
-const homePageColors = {
-  primary: '#048181',      // Deep teal - primary accent
-  secondary: '#f45c2c',    // Reddish-orange - secondary accent/CTA
-  accent: '#5a9c7d',       // Sage green - secondary buttons
-  dark: '#366854',         // Dark forest green - text
-  light: '#9fbeb2',        // Pale mint - light background
-  highlight: '#ecca72',    // Pale gold - highlights
-  white: '#FFFFFF',
-  textDark: '#1E293B',
-  textMuted: '#64748B',
-};
+// Using centralized color system from @/lib/colors
+// All colors are now managed in one place for easy updates
 
 // Certification logos data - Using actual URLs from topskills.pk (from network requests)
 const certificationLogos = [
@@ -216,11 +206,11 @@ export default function HomePage() {
 
 
   return (
-    <div className="min-h-screen w-full" style={{ backgroundColor: homePageColors.white, color: homePageColors.dark }}>
+    <div className="min-h-screen w-full" style={{ backgroundColor: colors.text.white, color: colors.text.dark }}>
       <PureLogicsNavbar />
 
       {/* Hero Section - New Color Palette Background with WOW Effects */}
-      <section className="section-after-header relative pb-16 md:pb-20 lg:pb-24 overflow-hidden" style={{ backgroundColor: homePageColors.primary }}>
+      <section className="section-after-header relative pb-16 md:pb-20 lg:pb-24 overflow-hidden" style={{ backgroundColor: colors.accent.primary }}>
         {/* Animated Floating Orbs/Background Particles */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <motion.div
@@ -228,7 +218,7 @@ export default function HomePage() {
             style={{ 
               width: '400px', 
               height: '400px',
-              background: `radial-gradient(circle, ${homePageColors.highlight} 0%, transparent 70%)`,
+              background: `radial-gradient(circle, ${colors.accent.highlight} 0%, transparent 70%)`,
               top: '10%',
               left: '10%',
             }}
@@ -248,7 +238,7 @@ export default function HomePage() {
             style={{ 
               width: '300px', 
               height: '300px',
-              background: `radial-gradient(circle, ${homePageColors.secondary} 0%, transparent 70%)`,
+              background: `radial-gradient(circle, ${colors.accent.secondary} 0%, transparent 70%)`,
               bottom: '20%',
               right: '15%',
             }}
@@ -268,7 +258,7 @@ export default function HomePage() {
             style={{ 
               width: '250px', 
               height: '250px',
-              background: `radial-gradient(circle, ${homePageColors.accent} 0%, transparent 70%)`,
+              background: `radial-gradient(circle, ${colors.accent.accent} 0%, transparent 70%)`,
               top: '50%',
               right: '30%',
             }}
@@ -298,7 +288,7 @@ export default function HomePage() {
               >
                 <span className="relative inline-block">
                   New to{' '}
-                  <span style={{ color: homePageColors.highlight }}>
+                  <span style={{ color: colors.accent.highlight }}>
                     TopSkill?
                   </span>
                 </span>
@@ -350,7 +340,7 @@ export default function HomePage() {
                   <div className="relative backdrop-blur-sm bg-white/5 rounded-xl px-6 py-4 border border-white/10">
                     <motion.div 
                       className="text-3xl md:text-4xl lg:text-5xl font-black mb-1"
-                      style={{ color: homePageColors.highlight }}
+                      style={{ color: colors.accent.highlight }}
                       animate={{
                         scale: [1, 1.05, 1],
                       }}
@@ -375,7 +365,7 @@ export default function HomePage() {
                   <div className="relative backdrop-blur-sm bg-white/5 rounded-xl px-6 py-4 border border-white/10">
                     <motion.div 
                       className="text-3xl md:text-4xl lg:text-5xl font-black mb-1"
-                      style={{ color: homePageColors.secondary }}
+                      style={{ color: colors.accent.secondary }}
                       animate={{
                         scale: [1, 1.05, 1],
                       }}
@@ -401,7 +391,7 @@ export default function HomePage() {
                   <div className="relative backdrop-blur-sm bg-white/5 rounded-xl px-6 py-4 border border-white/10">
                     <motion.div 
                       className="text-3xl md:text-4xl lg:text-5xl font-black mb-1"
-                      style={{ color: homePageColors.accent }}
+                      style={{ color: colors.accent.accent }}
                       animate={{
                         scale: [1, 1.05, 1],
                       }}
@@ -428,7 +418,7 @@ export default function HomePage() {
               >
                 <div className="text-center mb-4 md:mb-6">
                   <h3 className="text-lg md:text-xl font-semibold text-white/90 whitespace-nowrap">
-                    Our Experienced Trainers are <span className="font-bold" style={{ color: homePageColors.highlight }}>Certified from</span>
+                    Our Experienced Trainers are <span className="font-bold" style={{ color: colors.accent.highlight }}>Certified from</span>
                   </h3>
                 </div>
                 
@@ -464,8 +454,8 @@ export default function HomePage() {
             >
               <div className="relative w-full max-w-lg">
                 {/* Decorative shapes */}
-                <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full blur-2xl" style={{ backgroundColor: `${homePageColors.highlight}30` }}></div>
-                <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full blur-3xl" style={{ backgroundColor: `${homePageColors.secondary}30` }}></div>
+                <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full blur-2xl" style={{ backgroundColor: `${colors.accent.highlight}30` }}></div>
+                <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full blur-3xl" style={{ backgroundColor: `${colors.accent.secondary}30` }}></div>
                 
                 {/* Main illustration area with Glassmorphism */}
                 <motion.div 
@@ -533,11 +523,11 @@ export default function HomePage() {
       {/* Trending Courses Section with Tabs - Enhanced with WOW */}
       <section 
         className="pt-20 pb-0 relative overflow-hidden" 
-        style={{ backgroundColor: homePageColors.white }}
+        style={{ backgroundColor: colors.text.white }}
       >
         {/* Subtle background pattern */}
         <div className="absolute inset-0 opacity-3" style={{
-          backgroundImage: `radial-gradient(circle at 2px 2px, ${homePageColors.primary} 1px, transparent 0)`,
+          backgroundImage: `radial-gradient(circle at 2px 2px, ${colors.accent.primary} 1px, transparent 0)`,
           backgroundSize: '40px 40px'
         }}></div>
         <div className="max-w-container xl:max-w-container-xl 2xl:max-w-container-2xl mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16">
@@ -551,7 +541,7 @@ export default function HomePage() {
                   whileInView={{ opacity: 1, y: 0, scale: 1 }}
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ duration: 0.6, ease: "easeOut" }}
-                  style={{ color: homePageColors.dark }}
+                  style={{ color: colors.text.dark }}
                 >
                   Trending Courses
                 </motion.h2>
@@ -561,7 +551,7 @@ export default function HomePage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-                  style={{ color: homePageColors.dark }}
+                  style={{ color: colors.text.dark }}
                 >
                   Discover the most popular courses loved by thousands of learners
                 </motion.p>
@@ -569,7 +559,7 @@ export default function HomePage() {
               
               {/* View Toggle Buttons - Positioned on the right */}
               <div className="flex items-center justify-center md:justify-end">
-                <div className="flex items-center gap-1 bg-white rounded-xl px-1 py-1 shadow-md border" style={{ borderColor: homePageColors.accent + '40' }}>
+                <div className="flex items-center gap-1 bg-white rounded-xl px-1 py-1 shadow-md border" style={{ borderColor: colors.accent.accent + '40' }}>
                   <button
                     onClick={() => setViewMode('grid')}
                     className={`p-2.5 md:p-3 rounded-lg transition-all duration-300 ${
@@ -578,8 +568,8 @@ export default function HomePage() {
                         : 'hover:bg-gray-50'
                     }`}
                     style={{
-                      backgroundColor: viewMode === 'grid' ? homePageColors.primary : 'transparent',
-                      color: viewMode === 'grid' ? homePageColors.white : homePageColors.textMuted,
+                      backgroundColor: viewMode === 'grid' ? colors.accent.primary : 'transparent',
+                      color: viewMode === 'grid' ? colors.text.white : colors.text.muted,
                     }}
                     title="Grid View"
                   >
@@ -593,8 +583,8 @@ export default function HomePage() {
                         : 'hover:bg-gray-50'
                     }`}
                     style={{
-                      backgroundColor: viewMode === 'list' ? homePageColors.primary : 'transparent',
-                      color: viewMode === 'list' ? homePageColors.white : homePageColors.textMuted,
+                      backgroundColor: viewMode === 'list' ? colors.accent.primary : 'transparent',
+                      color: viewMode === 'list' ? colors.text.white : colors.text.muted,
                     }}
                     title="List View"
                   >
@@ -612,19 +602,19 @@ export default function HomePage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 style={{
-                  backgroundColor: activeTab === 'online' ? homePageColors.primary : homePageColors.white,
-                  color: activeTab === 'online' ? homePageColors.white : homePageColors.dark,
+                  backgroundColor: activeTab === 'online' ? colors.accent.primary : colors.text.white,
+                  color: activeTab === 'online' ? colors.text.white : colors.text.dark,
                   borderWidth: activeTab === 'online' ? '0' : '2px',
                   borderStyle: 'solid',
-                  borderColor: homePageColors.primary,
-                  boxShadow: activeTab === 'online' ? `0 10px 25px -5px ${homePageColors.primary}40` : 'none',
+                  borderColor: colors.accent.primary,
+                  boxShadow: activeTab === 'online' ? `0 10px 25px -5px ${colors.accent.primary}40` : 'none',
                 }}
               >
                 {activeTab === 'online' && (
                   <motion.div
                     className="absolute inset-0"
                     style={{
-                      backgroundColor: homePageColors.primary,
+                      backgroundColor: colors.accent.primary,
                     }}
                     layoutId="activeTab"
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -638,19 +628,19 @@ export default function HomePage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 style={{
-                  backgroundColor: activeTab === 'physical' ? homePageColors.primary : homePageColors.white,
-                  color: activeTab === 'physical' ? homePageColors.white : homePageColors.dark,
+                  backgroundColor: activeTab === 'physical' ? colors.accent.primary : colors.text.white,
+                  color: activeTab === 'physical' ? colors.text.white : colors.text.dark,
                   borderWidth: activeTab === 'physical' ? '0' : '2px',
                   borderStyle: 'solid',
-                  borderColor: homePageColors.primary,
-                  boxShadow: activeTab === 'physical' ? `0 10px 25px -5px ${homePageColors.primary}40` : 'none',
+                  borderColor: colors.accent.primary,
+                  boxShadow: activeTab === 'physical' ? `0 10px 25px -5px ${colors.accent.primary}40` : 'none',
                 }}
               >
                 {activeTab === 'physical' && (
                   <motion.div
                     className="absolute inset-0"
                     style={{
-                      backgroundColor: homePageColors.primary,
+                      backgroundColor: colors.accent.primary,
                     }}
                     layoutId="activeTab"
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -665,12 +655,12 @@ export default function HomePage() {
             <div className="text-center py-20">
               <div 
                 className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4"
-                style={{ borderColor: homePageColors.light, borderTopColor: homePageColors.primary }}
+                style={{ borderColor: colors.background.light, borderTopColor: colors.accent.primary }}
               ></div>
-              <p className="text-lg" style={{ color: homePageColors.dark }}>Loading courses...</p>
+              <p className="text-lg" style={{ color: colors.text.dark }}>Loading courses...</p>
             </div>
           ) : displayedTrendingCourses.length === 0 ? (
-            <div className="text-center py-20 text-lg" style={{ color: homePageColors.dark }}>
+            <div className="text-center py-20 text-lg" style={{ color: colors.text.dark }}>
               No {activeTab === 'online' ? 'online' : 'physical'} courses available
             </div>
           ) : viewMode === 'grid' ? (
@@ -687,13 +677,13 @@ export default function HomePage() {
                   <div className="flex items-center gap-2">
                     <div 
                       className="w-6 h-6 border-2 rounded-full animate-spin"
-                      style={{ borderColor: homePageColors.light, borderTopColor: homePageColors.primary }}
+                      style={{ borderColor: colors.background.light, borderTopColor: colors.accent.primary }}
                     ></div>
-                    <p className="text-sm" style={{ color: homePageColors.dark }}>Loading more courses...</p>
+                    <p className="text-sm" style={{ color: colors.text.dark }}>Loading more courses...</p>
                   </div>
                 )}
                 {!hasMore && displayedTrendingCourses.length > 0 && (
-                  <p className="text-sm mb-8" style={{ color: homePageColors.primary }}>No more courses to load</p>
+                  <p className="text-sm mb-8" style={{ color: colors.accent.primary }}>No more courses to load</p>
                 )}
               </div>
             </>
@@ -706,9 +696,9 @@ export default function HomePage() {
                     href={`/courses/${course.slug}`}
                     className="block group"
                   >
-                    <div className="bg-white border rounded-2xl p-4 md:p-5 lg:p-6 shadow-sm hover:shadow-lg transition-all duration-500 hover:scale-[1.01] hover:-translate-y-1" style={{ borderColor: homePageColors.light }}>
+                    <div className="bg-white border rounded-2xl p-4 md:p-5 lg:p-6 shadow-sm hover:shadow-lg transition-all duration-500 hover:scale-[1.01] hover:-translate-y-1" style={{ borderColor: colors.background.light }}>
                       <div className="flex items-start gap-4 md:gap-5 lg:gap-6">
-                        <div className="relative w-28 md:w-40 lg:w-48 h-20 md:h-28 lg:h-32 rounded-xl overflow-hidden flex-shrink-0" style={{ backgroundColor: homePageColors.primary }}>
+                        <div className="relative w-28 md:w-40 lg:w-48 h-20 md:h-28 lg:h-32 rounded-xl overflow-hidden flex-shrink-0" style={{ backgroundColor: colors.accent.primary }}>
                           {course.thumbnail ? (
                             <img
                               src={course.thumbnail}
@@ -722,34 +712,34 @@ export default function HomePage() {
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-lg md:text-xl lg:text-2xl font-black mb-1.5 md:mb-2 transition-colors" style={{ color: homePageColors.dark }}>
+                          <h3 className="text-lg md:text-xl lg:text-2xl font-black mb-1.5 md:mb-2 transition-colors" style={{ color: colors.text.dark }}>
                             {course.title}
                           </h3>
-                          <p className="mb-2 md:mb-3 line-clamp-2 text-sm md:text-base" style={{ color: homePageColors.textMuted }}>{course.description}</p>
-                          <p className="text-xs md:text-sm font-semibold mb-3 md:mb-4" style={{ color: homePageColors.primary }}>{course.instructor_name}</p>
+                          <p className="mb-2 md:mb-3 line-clamp-2 text-sm md:text-base" style={{ color: colors.text.muted }}>{course.description}</p>
+                          <p className="text-xs md:text-sm font-semibold mb-3 md:mb-4" style={{ color: colors.accent.primary }}>{course.instructor_name}</p>
                           <div className="flex items-center gap-3 md:gap-4 lg:gap-6 text-xs md:text-sm flex-wrap">
                             {course.average_rating > 0 ? (
                               <div className="flex items-center gap-1 md:gap-1.5">
-                                <Star className="w-4 h-4" style={{ color: homePageColors.secondary, fill: homePageColors.secondary }} />
-                                <span className="font-bold" style={{ color: homePageColors.dark }}>{course.average_rating.toFixed(1)}</span>
+                                <Star className="w-4 h-4" style={{ color: colors.accent.secondary, fill: colors.accent.secondary }} />
+                                <span className="font-bold" style={{ color: colors.text.dark }}>{course.average_rating.toFixed(1)}</span>
                                 {course.rating_count && (
-                                  <span style={{ color: homePageColors.textMuted }}>({course.rating_count})</span>
+                                  <span style={{ color: colors.text.muted }}>({course.rating_count})</span>
                                 )}
                               </div>
                             ) : (
-                              <span style={{ color: homePageColors.textMuted }}>No ratings yet</span>
+                              <span style={{ color: colors.text.muted }}>No ratings yet</span>
                             )}
-                            <div className="flex items-center gap-1 md:gap-1.5" style={{ color: homePageColors.textMuted }}>
+                            <div className="flex items-center gap-1 md:gap-1.5" style={{ color: colors.text.muted }}>
                               <Users className="w-4 h-4" />
                               <span>{course.enrolled_count || 0} students</span>
                             </div>
-                            <span className="text-lg md:text-xl lg:text-2xl font-black" style={{ color: homePageColors.primary }}>{formatPrice(course.price)}</span>
+                            <span className="text-lg md:text-xl lg:text-2xl font-black" style={{ color: colors.accent.primary }}>{formatPrice(course.price)}</span>
                           </div>
                         </div>
                         <div className="flex-shrink-0">
                           <span className="px-3 md:px-4 py-1.5 md:py-2 rounded-xl text-xs font-black text-white border" style={{ 
-                            backgroundColor: course.modality === 'online' ? homePageColors.primary : homePageColors.accent,
-                            borderColor: course.modality === 'online' ? homePageColors.primary : homePageColors.accent
+                            backgroundColor: course.modality === 'online' ? colors.accent.primary : colors.accent.accent,
+                            borderColor: course.modality === 'online' ? colors.accent.primary : colors.accent.accent
                           }}>
                             {course.modality.toUpperCase()}
                           </span>
@@ -766,13 +756,13 @@ export default function HomePage() {
                   <div className="flex items-center gap-2">
                     <div 
                       className="w-6 h-6 border-2 rounded-full animate-spin"
-                      style={{ borderColor: homePageColors.light, borderTopColor: homePageColors.primary }}
+                      style={{ borderColor: colors.background.light, borderTopColor: colors.accent.primary }}
                     ></div>
-                    <p className="text-sm" style={{ color: homePageColors.dark }}>Loading more courses...</p>
+                    <p className="text-sm" style={{ color: colors.text.dark }}>Loading more courses...</p>
                   </div>
                 )}
                 {!hasMore && displayedTrendingCourses.length > 0 && (
-                  <p className="text-sm mb-8" style={{ color: homePageColors.primary }}>No more courses to load</p>
+                  <p className="text-sm mb-8" style={{ color: colors.accent.primary }}>No more courses to load</p>
                 )}
               </div>
             </>

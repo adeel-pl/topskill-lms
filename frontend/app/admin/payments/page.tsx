@@ -123,7 +123,7 @@ export default function AdminPaymentsPage() {
                   setSearch(e.target.value);
                   setPage(1);
                 }}
-                className="w-full pl-10 pr-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white placeholder-[#9CA3AF] focus:outline-none focus:border-[#10B981]"
+                className="w-full pl-10 pr-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white placeholder-[#9CA3AF] focus:outline-none focus:border-[#048181]"
               />
             </div>
             <select
@@ -132,7 +132,7 @@ export default function AdminPaymentsPage() {
                 setStatus(e.target.value);
                 setPage(1);
               }}
-              className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white focus:outline-none focus:border-[#10B981]"
+              className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white focus:outline-none focus:border-[#048181]"
             >
               <option value="">All Status</option>
               <option value="paid">Paid</option>
@@ -146,7 +146,7 @@ export default function AdminPaymentsPage() {
                 setStartDate(e.target.value);
                 setPage(1);
               }}
-              className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white focus:outline-none focus:border-[#10B981]"
+              className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white focus:outline-none focus:border-[#048181]"
               placeholder="Start Date"
             />
             <input
@@ -156,7 +156,7 @@ export default function AdminPaymentsPage() {
                 setEndDate(e.target.value);
                 setPage(1);
               }}
-              className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white focus:outline-none focus:border-[#10B981]"
+              className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white focus:outline-none focus:border-[#048181]"
               placeholder="End Date"
             />
             <button
@@ -167,7 +167,7 @@ export default function AdminPaymentsPage() {
                 setEndDate('');
                 setPage(1);
               }}
-              className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white hover:border-[#10B981] transition-colors"
+              className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white hover:border-[#048181] transition-colors"
             >
               Clear Filters
             </button>
@@ -178,7 +178,7 @@ export default function AdminPaymentsPage() {
         <div className="bg-[#0F172A] border border-[#334155] rounded-xl overflow-hidden">
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="w-12 h-12 border-4 border-[#334155] border-t-[#10B981] rounded-full animate-spin"></div>
+              <div className="w-12 h-12 border-4 border-[#334155] border-t-[#048181] rounded-full animate-spin"></div>
             </div>
           ) : payments.length === 0 ? (
             <div className="text-center py-12">
@@ -216,7 +216,7 @@ export default function AdminPaymentsPage() {
                           <p className="text-white">{payment.course || 'N/A'}</p>
                         </td>
                         <td className="px-6 py-4">
-                          <p className="text-[#10B981] font-bold text-lg">
+                          <p className="text-[#048181] font-bold text-lg">
                             {formatCurrency(payment.amount)}
                           </p>
                         </td>
@@ -242,7 +242,7 @@ export default function AdminPaymentsPage() {
                     <button
                       onClick={() => setPage(page - 1)}
                       disabled={page === 1}
-                      className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed hover:border-[#10B981] transition-colors"
+                      className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed hover:border-[#048181] transition-colors"
                     >
                       <FiChevronLeft className="w-5 h-5" />
                     </button>
@@ -252,7 +252,7 @@ export default function AdminPaymentsPage() {
                     <button
                       onClick={() => setPage(page + 1)}
                       disabled={page >= Math.ceil(total / pageSize)}
-                      className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed hover:border-[#10B981] transition-colors"
+                      className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed hover:border-[#048181] transition-colors"
                     >
                       <FiChevronRight className="w-5 h-5" />
                     </button>

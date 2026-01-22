@@ -52,7 +52,7 @@ export default function AdminDashboardPage() {
       <AdminLayout>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
-            <div className="w-16 h-16 border-4 border-[#334155] border-t-[#10B981] rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="w-16 h-16 border-4 border-[#334155] border-t-[#048181] rounded-full animate-spin mx-auto mb-4"></div>
             <p className="text-[#9CA3AF]">Loading dashboard...</p>
           </div>
         </div>
@@ -85,7 +85,7 @@ export default function AdminDashboardPage() {
     value,
     change,
     changeType,
-    color = '#10B981',
+    color = '#048181',
   }: {
     icon: any;
     label: string;
@@ -94,13 +94,13 @@ export default function AdminDashboardPage() {
     changeType?: 'up' | 'down';
     color?: string;
   }) => (
-    <div className="bg-[#0F172A] border border-[#334155] rounded-xl p-6 hover:border-[#10B981] transition-all duration-300 hover:shadow-lg hover:shadow-[#10B981]/10">
+    <div className="bg-[#0F172A] border border-[#334155] rounded-xl p-6 hover:border-[#048181] transition-all duration-300 hover:shadow-lg hover:shadow-[#048181]/10">
       <div className="flex items-center justify-between mb-4">
         <div className={`p-3 rounded-lg`} style={{ backgroundColor: `${color}20` }}>
           <Icon className="text-2xl" style={{ color }} />
         </div>
         {change && (
-          <div className={`flex items-center gap-1 text-sm ${changeType === 'up' ? 'text-[#10B981]' : 'text-[#EF4444]'}`}>
+          <div className={`flex items-center gap-1 text-sm ${changeType === 'up' ? 'text-[#048181]' : 'text-[#EF4444]'}`}>
             {changeType === 'up' ? <FiArrowUp /> : <FiArrowDown />}
             <span>{change}</span>
           </div>
@@ -126,7 +126,7 @@ export default function AdminDashboardPage() {
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className="bg-[#0F172A] border border-[#334155] text-white rounded-lg px-4 py-2 focus:outline-none focus:border-[#10B981]"
+              className="bg-[#0F172A] border border-[#334155] text-white rounded-lg px-4 py-2 focus:outline-none focus:border-[#048181]"
             >
               <option value="all">All Time</option>
               <option value="1day">Last 24 Hours</option>
@@ -135,7 +135,7 @@ export default function AdminDashboardPage() {
             </select>
             <button
               onClick={loadAnalytics}
-              className="px-4 py-2 bg-[#10B981] text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-[#10B981]/30 transition-all"
+              className="px-4 py-2 bg-[#048181] text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-[#048181]/30 transition-all"
             >
               Refresh
             </button>
@@ -148,7 +148,7 @@ export default function AdminDashboardPage() {
             icon={FiBook}
             label="Total Courses"
             value={overview.total_courses}
-            color="#10B981"
+            color="#048181"
           />
           <StatCard
             icon={FiUsers}
@@ -206,7 +206,7 @@ export default function AdminDashboardPage() {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-[#9CA3AF]">Paid</span>
-                <span className="text-[#10B981] font-bold">{payment_stats.paid}</span>
+                <span className="text-[#048181] font-bold">{payment_stats.paid}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-[#9CA3AF]">Pending</span>

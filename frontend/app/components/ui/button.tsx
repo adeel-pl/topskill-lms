@@ -1,15 +1,16 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
+import { colors } from "@/lib/colors"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#10B981] disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        default: "bg-[#10B981] text-white hover:bg-[#10B981] shadow-lg shadow-[#10B981]/30 hover:shadow-[#10B981]/50",
-        secondary: "bg-[#1E293B] border-2 border-[#334155] text-white hover:bg-[#334155] hover:border-[#10B981]",
-        outline: "border-2 border-[#334155] bg-transparent text-white hover:bg-[#1E293B] hover:border-[#10B981]",
+        default: "bg-[#048181] text-white hover:bg-[#f45c2c] shadow-lg hover:shadow-xl focus-visible:ring-[#048181]",
+        secondary: "bg-[#1E293B] border-2 border-[#334155] text-white hover:bg-[#334155] hover:border-[#048181]",
+        outline: "border-2 border-[#334155] bg-transparent text-white hover:bg-[#1E293B] hover:border-[#048181]",
         ghost: "text-[#D1D5DB] hover:bg-[#1E293B] hover:text-white",
       },
       size: {

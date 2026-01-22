@@ -81,7 +81,7 @@ export default function InstructorsDashboardPage() {
         <PureLogicsNavbar />
         <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
           <div className="text-center">
-            <div className="w-16 h-16 border-4 border-[#334155] border-t-[#10B981] rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="w-16 h-16 border-4 border-[#334155] border-t-[#048181] rounded-full animate-spin mx-auto mb-4"></div>
             <p className="text-[#9CA3AF]">Loading dashboard...</p>
           </div>
         </div>
@@ -108,7 +108,7 @@ export default function InstructorsDashboardPage() {
                 <p className="text-[#9CA3AF] text-sm mb-1">Total Courses</p>
                 <p className="text-3xl font-bold text-white">{stats.totalCourses}</p>
               </div>
-              <FiBook className="text-4xl text-[#10B981]" />
+              <FiBook className="text-4xl text-[#048181]" />
             </div>
           </div>
           
@@ -118,7 +118,7 @@ export default function InstructorsDashboardPage() {
                 <p className="text-[#9CA3AF] text-sm mb-1">Total Students</p>
                 <p className="text-3xl font-bold text-white">{stats.totalStudents}</p>
               </div>
-              <FiUsers className="text-4xl text-[#10B981]" />
+              <FiUsers className="text-4xl text-[#048181]" />
             </div>
           </div>
           
@@ -128,7 +128,7 @@ export default function InstructorsDashboardPage() {
                 <p className="text-[#9CA3AF] text-sm mb-1">Total Quizzes</p>
                 <p className="text-3xl font-bold text-white">{stats.totalQuizzes}</p>
               </div>
-              <FiFileText className="text-4xl text-[#10B981]" />
+              <FiFileText className="text-4xl text-[#048181]" />
             </div>
           </div>
           
@@ -138,7 +138,7 @@ export default function InstructorsDashboardPage() {
                 <p className="text-[#9CA3AF] text-sm mb-1">Total Assignments</p>
                 <p className="text-3xl font-bold text-white">{stats.totalAssignments}</p>
               </div>
-              <FiFileText className="text-4xl text-[#10B981]" />
+              <FiFileText className="text-4xl text-[#048181]" />
             </div>
           </div>
         </div>
@@ -149,9 +149,9 @@ export default function InstructorsDashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Link
               href="/admin/lms/course/add/"
-              className="flex items-center gap-3 p-4 bg-[#0F172A] border border-[#334155] rounded-lg hover:border-[#10B981] transition-colors"
+              className="flex items-center gap-3 p-4 bg-[#0F172A] border border-[#334155] rounded-lg hover:border-[#048181] transition-colors"
             >
-              <FiPlus className="text-2xl text-[#10B981]" />
+              <FiPlus className="text-2xl text-[#048181]" />
               <div>
                 <p className="font-semibold text-white">Create Course</p>
                 <p className="text-sm text-[#9CA3AF]">Add a new course</p>
@@ -160,9 +160,9 @@ export default function InstructorsDashboardPage() {
             
             <Link
               href="/admin/lms/quiz/add/"
-              className="flex items-center gap-3 p-4 bg-[#0F172A] border border-[#334155] rounded-lg hover:border-[#10B981] transition-colors"
+              className="flex items-center gap-3 p-4 bg-[#0F172A] border border-[#334155] rounded-lg hover:border-[#048181] transition-colors"
             >
-              <FiFileText className="text-2xl text-[#10B981]" />
+              <FiFileText className="text-2xl text-[#048181]" />
               <div>
                 <p className="font-semibold text-white">Create Quiz</p>
                 <p className="text-sm text-[#9CA3AF]">Add a new quiz</p>
@@ -171,9 +171,9 @@ export default function InstructorsDashboardPage() {
             
             <Link
               href="/admin/lms/assignment/add/"
-              className="flex items-center gap-3 p-4 bg-[#0F172A] border border-[#334155] rounded-lg hover:border-[#10B981] transition-colors"
+              className="flex items-center gap-3 p-4 bg-[#0F172A] border border-[#334155] rounded-lg hover:border-[#048181] transition-colors"
             >
-              <FiFileText className="text-2xl text-[#10B981]" />
+              <FiFileText className="text-2xl text-[#048181]" />
               <div>
                 <p className="font-semibold text-white">Create Assignment</p>
                 <p className="text-sm text-[#9CA3AF]">Add a new assignment</p>
@@ -188,7 +188,7 @@ export default function InstructorsDashboardPage() {
             <h2 className="text-xl font-bold text-white">My Courses</h2>
             <Link
               href="/admin/lms/course/add/"
-              className="px-4 py-2 bg-[#10B981] hover:bg-[#10B981] text-white rounded-lg font-semibold text-sm flex items-center gap-2"
+              className="px-4 py-2 bg-[#048181] hover:bg-[#048181] text-white rounded-lg font-semibold text-sm flex items-center gap-2"
             >
               <FiPlus /> Add Course
             </Link>
@@ -199,7 +199,7 @@ export default function InstructorsDashboardPage() {
               <p className="text-[#9CA3AF] mb-4">No courses yet</p>
               <Link
                 href="/admin/lms/course/add/"
-                className="inline-block px-6 py-3 bg-[#10B981] hover:bg-[#10B981] text-white rounded-lg font-semibold"
+                className="inline-block px-6 py-3 bg-[#048181] hover:bg-[#048181] text-white rounded-lg font-semibold"
               >
                 Create Your First Course
               </Link>
@@ -209,7 +209,7 @@ export default function InstructorsDashboardPage() {
               {courses.map((course: any) => (
                 <div
                   key={course.id}
-                  className="bg-[#0F172A] border border-[#334155] rounded-lg p-6 hover:border-[#10B981] transition-colors"
+                  className="bg-[#0F172A] border border-[#334155] rounded-lg p-6 hover:border-[#048181] transition-colors"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -227,15 +227,15 @@ export default function InstructorsDashboardPage() {
                       
                       <div className="flex items-center gap-6 text-sm text-[#9CA3AF]">
                         <div className="flex items-center gap-2">
-                          <FiUsers className="text-[#10B981]" />
+                          <FiUsers className="text-[#048181]" />
                           <span>{course.enrolled_count || 0} students</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <FiFileText className="text-[#10B981]" />
+                          <FiFileText className="text-[#048181]" />
                           <span>{course.quizzes?.length || 0} quizzes</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <FiFileText className="text-[#10B981]" />
+                          <FiFileText className="text-[#048181]" />
                           <span>{course.assignments?.length || 0} assignments</span>
                         </div>
                       </div>
@@ -244,14 +244,14 @@ export default function InstructorsDashboardPage() {
                     <div className="flex items-center gap-2 ml-4">
                       <Link
                         href={`/admin/lms/course/${course.id}/change/`}
-                        className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg hover:border-[#10B981] transition-colors"
+                        className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg hover:border-[#048181] transition-colors"
                         title="Edit Course"
                       >
-                        <FiEdit className="text-[#10B981]" />
+                        <FiEdit className="text-[#048181]" />
                       </Link>
                       <Link
                         href={`/learn/${course.slug}`}
-                        className="px-4 py-2 bg-[#10B981] hover:bg-[#10B981] text-white rounded-lg font-semibold text-sm"
+                        className="px-4 py-2 bg-[#048181] hover:bg-[#048181] text-white rounded-lg font-semibold text-sm"
                       >
                         View Course
                       </Link>
@@ -267,7 +267,7 @@ export default function InstructorsDashboardPage() {
         <div className="mt-8 text-center">
           <Link
             href="/admin/"
-            className="inline-block px-6 py-3 bg-[#1E293B] border border-[#334155] hover:border-[#10B981] text-white rounded-lg font-semibold transition-colors"
+            className="inline-block px-6 py-3 bg-[#1E293B] border border-[#334155] hover:border-[#048181] text-white rounded-lg font-semibold transition-colors"
           >
             Open Django Admin Panel
           </Link>

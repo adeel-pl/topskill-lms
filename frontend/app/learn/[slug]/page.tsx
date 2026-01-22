@@ -519,7 +519,10 @@ export default function CoursePlayerPage() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[#0F172A]">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#334155] border-t-[#10B981] rounded-full animate-spin mx-auto mb-4"></div>
+          <div 
+            className="w-16 h-16 border-4 border-[#334155] rounded-full animate-spin mx-auto mb-4"
+            style={{ borderTopColor: colors.accent.primary }}
+          ></div>
           <p className="text-[#9CA3AF]">Loading course...</p>
         </div>
       </div>
@@ -534,7 +537,8 @@ export default function CoursePlayerPage() {
           <p className="text-[#9CA3AF] mb-6">The course you're looking for doesn't exist or you're not enrolled.</p>
           <button
             onClick={() => router.push('/courses')}
-            className="bg-[#10B981] text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
+            className="text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
+            style={{ backgroundColor: colors.accent.primary }}
           >
             Browse Courses
           </button>
@@ -555,7 +559,8 @@ export default function CoursePlayerPage() {
           <p className="text-[#9CA3AF] mb-6">This course doesn't have any lectures yet.</p>
           <button
             onClick={() => router.push('/courses')}
-            className="bg-[#10B981] text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
+            className="text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
+            style={{ backgroundColor: colors.accent.primary }}
           >
             Browse Courses
           </button>
@@ -569,7 +574,10 @@ export default function CoursePlayerPage() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[#0F172A]">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#334155] border-t-[#10B981] rounded-full animate-spin mx-auto mb-4"></div>
+          <div 
+            className="w-16 h-16 border-4 border-[#334155] rounded-full animate-spin mx-auto mb-4"
+            style={{ borderTopColor: colors.accent.primary }}
+          ></div>
           <p className="text-[#9CA3AF]">Loading lecture...</p>
         </div>
       </div>
@@ -585,7 +593,8 @@ export default function CoursePlayerPage() {
           <p className="text-[#9CA3AF] mb-6">This course doesn't have any lectures yet.</p>
           <button
             onClick={() => router.push('/courses')}
-            className="bg-[#10B981] text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
+            className="text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
+            style={{ backgroundColor: colors.accent.primary }}
           >
             Browse Courses
           </button>
@@ -608,13 +617,16 @@ export default function CoursePlayerPage() {
               <h2 className="text-base font-bold text-white line-clamp-2">{course.title}</h2>
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="text-white hover:text-[#10B981] transition-colors p-1"
+                className="text-white transition-colors p-1"
+                style={{ color: 'white' }}
+                onMouseEnter={(e) => e.currentTarget.style.color = colors.accent.primary}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'white'}
                 aria-label="Close sidebar"
               >
                 ×
               </button>
             </div>
-            <div className="text-xs text-[#10B981]">{totalLectures} lectures</div>
+            <div className="text-xs" style={{ color: colors.accent.primary }}>{totalLectures} lectures</div>
           </div>
 
           <div className="p-2 pb-4">
@@ -622,7 +634,7 @@ export default function CoursePlayerPage() {
               <div key={section.id} className="mb-2">
                 <div className="px-3 py-2 font-semibold text-xs bg-[#1a2a4a] rounded-sm text-white">
                   {section.title}
-                  <span className="ml-2 text-[#10B981]">
+                  <span className="ml-2" style={{ color: colors.accent.primary }}>
                     {section.completed_lectures}/{section.total_lectures}
                   </span>
                 </div>
@@ -639,24 +651,25 @@ export default function CoursePlayerPage() {
                         isDisabled 
                           ? 'opacity-50 cursor-not-allowed text-[#6B7280]' 
                           : selectedLecture.id === lecture.id 
-                            ? 'bg-[#1a2a4a] border-l-2 border-[#10B981] hover:bg-[#1a2a4a]' 
+                            ? 'bg-[#1a2a4a] border-l-2 hover:bg-[#1a2a4a]'
                             : 'text-[#E5E7EB] hover:bg-[#1a2a4a]'
                       }`}
+                      style={selectedLecture.id === lecture.id ? { borderLeftColor: colors.accent.primary } : {}}
                       title={isDisabled ? 'Enroll to access this lecture' : ''}
                     >
                       <div className="flex items-center gap-2 flex-1 min-w-0">
                         {lecture.is_completed ? (
-                          <FiCheck className="text-[#10B981] flex-shrink-0" />
+                          <FiCheck className="flex-shrink-0" style={{ color: colors.accent.primary }} />
                         ) : (
-                          <FiPlay className="text-[#10B981] flex-shrink-0 text-xs" />
+                          <FiPlay className="flex-shrink-0 text-xs" style={{ color: colors.accent.primary }} />
                         )}
                         <span className="truncate text-sm">{lecture.title}</span>
                         {lecture.is_preview && (
-                          <span className="text-xs text-[#10B981] ml-1">Preview</span>
+                          <span className="text-xs ml-1" style={{ color: colors.accent.primary }}>Preview</span>
                         )}
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-                        <FiClock className="text-[#10B981] text-xs" />
+                        <FiClock className="text-xs" style={{ color: colors.accent.primary }} />
                         <span className="text-xs text-[#E5E7EB]">
                           {lecture.duration_minutes}m
                         </span>
@@ -739,20 +752,24 @@ export default function CoursePlayerPage() {
               <div className="flex gap-6 flex-wrap">
                 <button
                   onClick={() => setActiveTab('overview')}
-                  className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${activeTab === 'overview'
-                    ? 'border-[#10B981] text-[#000F2C]'
+                  className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${
+                    activeTab === 'overview'
+                    ? 'text-[#000F2C]'
                     : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
-                    }`}
+                  }`}
+                  style={activeTab === 'overview' ? { borderBottomColor: colors.accent.primary } : {}}
                 >
                   Overview
                 </button>
                 {reviews.length > 0 && (
                   <button
                     onClick={() => setActiveTab('reviews')}
-                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${activeTab === 'reviews'
-                      ? 'border-[#10B981] text-[#000F2C]'
+                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${
+                      activeTab === 'reviews'
+                      ? 'text-[#000F2C]'
                       : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
-                      }`}
+                    }`}
+                    style={activeTab === 'reviews' ? { borderBottomColor: colors.accent.primary } : {}}
                   >
                     Reviews ({reviews.length})
                   </button>
@@ -760,10 +777,12 @@ export default function CoursePlayerPage() {
                 {announcements.length > 0 && (
                   <button
                     onClick={() => setActiveTab('announcements')}
-                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${activeTab === 'announcements'
-                      ? 'border-[#10B981] text-[#000F2C]'
+                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${
+                      activeTab === 'announcements'
+                      ? 'text-[#000F2C]'
                       : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
-                      }`}
+                    }`}
+                    style={activeTab === 'announcements' ? { borderBottomColor: colors.accent.primary } : {}}
                   >
                     <FiBell className="inline mr-1" />
                     Announcements ({announcements.length})
@@ -772,10 +791,12 @@ export default function CoursePlayerPage() {
                 {(notes.length > 0 || isEnrolled) && (
                   <button
                     onClick={() => setActiveTab('notes')}
-                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${activeTab === 'notes'
-                      ? 'border-[#10B981] text-[#000F2C]'
+                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${
+                      activeTab === 'notes'
+                      ? 'text-[#000F2C]'
                       : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
-                      }`}
+                    }`}
+                    style={activeTab === 'notes' ? { borderBottomColor: colors.accent.primary } : {}}
                   >
                     <FiBook className="inline mr-1" />
                     Notes {notes.length > 0 && `(${notes.length})`}
@@ -784,10 +805,12 @@ export default function CoursePlayerPage() {
                 {qandas.length > 0 && (
                   <button
                     onClick={() => setActiveTab('questions')}
-                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${activeTab === 'questions'
-                      ? 'border-[#10B981] text-[#000F2C]'
+                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${
+                      activeTab === 'questions'
+                      ? 'text-[#000F2C]'
                       : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
-                      }`}
+                    }`}
+                    style={activeTab === 'questions' ? { borderBottomColor: colors.accent.primary } : {}}
                   >
                     <FiMessageSquare className="inline mr-1" />
                     Q&A ({qandas.length})
@@ -796,10 +819,12 @@ export default function CoursePlayerPage() {
                 {quizzes.length > 0 && (
                   <button
                     onClick={() => setActiveTab('quizzes')}
-                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${activeTab === 'quizzes'
-                      ? 'border-[#10B981] text-[#000F2C]'
+                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${
+                      activeTab === 'quizzes'
+                      ? 'text-[#000F2C]'
                       : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
-                      }`}
+                    }`}
+                    style={activeTab === 'quizzes' ? { borderBottomColor: colors.accent.primary } : {}}
                   >
                     Quizzes ({quizzes.length})
                   </button>
@@ -808,7 +833,7 @@ export default function CoursePlayerPage() {
                   <button
                     onClick={() => setActiveTab('assignments')}
                     className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors ${activeTab === 'assignments'
-                      ? 'border-[#10B981] text-[#000F2C]'
+                      ? 'text-[#000F2C]'
                       : 'border-transparent text-[#6a6f73] hover:text-[#000F2C]'
                       }`}
                   >
@@ -849,7 +874,10 @@ export default function CoursePlayerPage() {
                             showError(errorMsg);
                           }
                         }}
-                        className="px-6 py-3 bg-[#10B981] hover:bg-[#10B981] text-white rounded-sm font-semibold transition-colors flex items-center gap-2"
+                        className="px-6 py-3 text-white rounded-sm font-semibold transition-colors flex items-center gap-2"
+                        style={{ backgroundColor: colors.accent.primary }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.accent.primary}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.accent.primary}
                       >
                         <FiCheck className="w-5 h-5" />
                         Mark as Complete
@@ -885,7 +913,9 @@ export default function CoursePlayerPage() {
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
                               }
                             }}
-                            className="flex items-center gap-2 px-6 py-3 border-2 border-gray-300 rounded-lg hover:bg-gray-50 hover:border-[#10B981] transition-all text-[#000F2C] font-semibold"
+                            className="flex items-center gap-2 px-6 py-3 border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition-all text-[#000F2C] font-semibold"
+                            onMouseEnter={(e) => e.currentTarget.style.borderColor = colors.accent.primary}
+                            onMouseLeave={(e) => e.currentTarget.style.borderColor = '#D1D5DB'}
                           >
                             <FiChevronLeft className="w-5 h-5" />
                             Previous
@@ -908,7 +938,8 @@ export default function CoursePlayerPage() {
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
                               }
                             }}
-                            className="flex items-center gap-2 px-6 py-3 bg-[#10B981] hover:bg-[#10B981] text-white rounded-lg font-semibold transition-all shadow-md hover:shadow-lg"
+                            className="flex items-center gap-2 px-6 py-3 text-white rounded-lg font-semibold transition-all shadow-md hover:shadow-lg"
+                            style={{ backgroundColor: colors.accent.primary }}
                           >
                             Next
                             <FiChevronRight className="w-5 h-5" />
@@ -929,7 +960,8 @@ export default function CoursePlayerPage() {
                     {isEnrolled && isAuthenticated && (
                       <button
                         onClick={() => setShowReviewForm(!showReviewForm)}
-                        className="px-4 py-2 bg-[#10B981] hover:bg-[#10B981] text-white rounded-lg font-semibold transition-colors"
+                        className="px-4 py-2 text-white rounded-lg font-semibold transition-colors"
+                        style={{ backgroundColor: colors.accent.primary }}
                       >
                         {showReviewForm ? 'Cancel' : 'Write a Review'}
                       </button>
@@ -962,13 +994,14 @@ export default function CoursePlayerPage() {
                           value={reviewForm.comment}
                           onChange={(e) => setReviewForm({ ...reviewForm, comment: e.target.value })}
                           placeholder="Share your thoughts about this course..."
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#10B981] resize-none"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[colors.accent.primary] resize-none"
                           rows={5}
                         />
                       </div>
                       <button
                         onClick={handleSubmitReview}
-                        className="px-6 py-2 bg-[#10B981] hover:bg-[#10B981] text-white rounded-lg font-semibold transition-colors"
+                        className="px-6 py-2 text-white rounded-lg font-semibold transition-colors"
+                        style={{ backgroundColor: colors.accent.primary }}
                       >
                         Submit Review
                       </button>
@@ -989,7 +1022,7 @@ export default function CoursePlayerPage() {
                       {reviews.slice(0, reviewsToShow).map((review: any) => (
                         <div key={review.id} className="border-b border-gray-200 pb-6 last:border-b-0">
                           <div className="flex items-start gap-4">
-                            <div className="w-10 h-10 bg-[#10B981] rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
+                            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0" style={{ backgroundColor: colors.accent.primary }}>
                               {review.user?.first_name?.charAt(0) || review.user?.username?.charAt(0) || 'U'}
                             </div>
                             <div className="flex-1">
@@ -1029,7 +1062,19 @@ export default function CoursePlayerPage() {
                         <div className="text-center pt-4">
                           <button
                             onClick={() => setReviewsToShow(reviewsToShow + 5)}
-                            className="px-6 py-2 border-2 border-[#10B981] text-[#10B981] rounded-lg font-semibold hover:bg-[#10B981] hover:text-white transition-colors"
+                            className="px-6 py-2 border-2 rounded-lg font-semibold hover:text-white transition-colors"
+                            style={{ 
+                              borderColor: colors.accent.primary, 
+                              color: colors.accent.primary 
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.backgroundColor = colors.accent.primary;
+                              e.currentTarget.style.color = 'white';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.backgroundColor = 'transparent';
+                              e.currentTarget.style.color = colors.accent.primary;
+                            }}
                           >
                             Show More ({reviews.length - reviewsToShow} more reviews)
                           </button>
@@ -1053,11 +1098,15 @@ export default function CoursePlayerPage() {
                   ) : (
                     <div className="space-y-4">
                       {announcements.map((announcement: any) => (
-                        <div key={announcement.id} className={`border rounded-lg p-6 ${announcement.is_pinned ? 'border-[#10B981] bg-green-50' : 'border-gray-200 bg-white'}`}>
+                        <div 
+                          key={announcement.id} 
+                          className={`border rounded-lg p-6 ${announcement.is_pinned ? 'bg-green-50' : 'border-gray-200 bg-white'}`}
+                          style={announcement.is_pinned ? { borderColor: colors.accent.primary } : {}}
+                        >
                           <div className="flex items-start justify-between mb-3">
                             <div className="flex items-center gap-2">
                               {announcement.is_pinned && (
-                                <FiBell className="text-[#10B981] flex-shrink-0" />
+                                <FiBell className="flex-shrink-0" style={{ color: colors.accent.primary }} />
                               )}
                               <h4 className="text-lg font-semibold text-[#000F2C]">{announcement.title}</h4>
                             </div>
@@ -1199,7 +1248,7 @@ export default function CoursePlayerPage() {
                       {qandas.map((qa: any, index: number) => (
                         <div key={qa.id} className="border border-gray-200 rounded-lg p-6 bg-white">
                           <div className="flex items-start gap-4">
-                            <div className="flex-shrink-0 w-8 h-8 bg-[#10B981] rounded-full flex items-center justify-center text-white font-bold">
+                            <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold" style={{ backgroundColor: colors.accent.primary }}>
                               {index + 1}
                             </div>
                             <div className="flex-1">
@@ -1301,14 +1350,16 @@ export default function CoursePlayerPage() {
                               ) : hasCompletedAttempts && !bestPassed && canRetake ? (
                                 <button 
                                   onClick={() => router.push(`/courses/${params.slug}/quizzes/${quiz.id}`)}
-                                  className="px-4 py-2 bg-[#10B981] hover:bg-[#10B981] text-white rounded-sm font-semibold text-sm"
+                                  className="px-4 py-2 text-white rounded-sm font-semibold text-sm"
+                                  style={{ backgroundColor: colors.accent.primary }}
                                 >
                                   Retake Quiz
                                 </button>
                               ) : !hasCompletedAttempts ? (
                                 <button 
                                   onClick={() => router.push(`/courses/${params.slug}/quizzes/${quiz.id}`)}
-                                  className="px-4 py-2 bg-[#10B981] hover:bg-[#10B981] text-white rounded-sm font-semibold text-sm"
+                                  className="px-4 py-2 text-white rounded-sm font-semibold text-sm"
+                                  style={{ backgroundColor: colors.accent.primary }}
                                 >
                                   Start Quiz
                                 </button>
@@ -1380,7 +1431,7 @@ export default function CoursePlayerPage() {
                                 {isGraded && submission.score !== null && (
                                   <div className="flex items-center justify-between pt-2 border-t border-gray-200">
                                     <span className="text-sm font-medium text-[#000F2C]">Score:</span>
-                                    <span className="text-lg font-bold text-[#10B981]">
+                                    <span className="text-lg font-bold" style={{ color: colors.accent.primary }}>
                                       {submission.score} / {assignment.max_score}
                                     </span>
                                   </div>
@@ -1397,7 +1448,8 @@ export default function CoursePlayerPage() {
                                       href={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000'}${submission.submission_file}`}
                                       target="_blank" 
                                       rel="noopener noreferrer"
-                                      className="text-sm text-[#10B981] hover:underline"
+                                      className="text-sm hover:underline"
+                                      style={{ color: colors.accent.primary }}
                                     >
                                       View Submitted File →
                                     </a>
@@ -1414,7 +1466,7 @@ export default function CoursePlayerPage() {
                                 onChange={(e) => setAssignmentSubmissionText(e.target.value)}
                                 placeholder="Enter your submission text here..."
                                 rows={4}
-                                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-sm text-[#000F2C] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#10B981]"
+                                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-sm text-[#000F2C] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[colors.accent.primary]"
                               />
                               <input
                                 type="file"
@@ -1465,7 +1517,8 @@ export default function CoursePlayerPage() {
                                     }
                                   }}
                                   disabled={!assignmentSubmissionText && !assignmentSubmissionFile}
-                                  className="px-4 py-2 bg-[#10B981] hover:bg-[#10B981] disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-sm font-semibold text-sm"
+                                  className="px-4 py-2 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-sm font-semibold text-sm"
+                                  style={{ backgroundColor: colors.accent.primary }}
                                 >
                                   {submission && submission.id ? 'Update' : 'Submit'}
                                 </button>
@@ -1492,7 +1545,8 @@ export default function CoursePlayerPage() {
                                     }
                                     setSubmittingAssignment(assignment.id);
                                   }}
-                                  className="px-4 py-2 bg-[#10B981] hover:bg-[#10B981] text-white rounded-sm font-semibold text-sm"
+                                  className="px-4 py-2 text-white rounded-sm font-semibold text-sm"
+                                  style={{ backgroundColor: colors.accent.primary }}
                                 >
                                   Submit Assignment
                                 </button>
