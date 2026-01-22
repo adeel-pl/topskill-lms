@@ -34,45 +34,70 @@ export default function CompactCourseCard({ course, index = 0 }: CompactCourseCa
     }).format(price);
   };
 
+  // Color palette for WOW effects
+  const wowColors = {
+    primary: '#048181',
+    secondary: '#f45c2c',
+    accent: '#5a9c7d',
+    highlight: '#ecca72',
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.05 }}
       className="w-full"
+      whileHover={{ scale: 1.02 }}
     >
       <Link href={`/courses/${course.slug}`} className="block group">
-        <div 
-          className="h-[100px] flex items-center gap-3 rounded-xl overflow-hidden border transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
+        <motion.div 
+          className="h-[100px] flex items-center gap-3 rounded-xl overflow-hidden border relative"
           style={{ 
             backgroundColor: colors.background.card,
             borderColor: colors.border.primary
           }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = colors.accent.primary;
-            e.currentTarget.style.boxShadow = `0 4px 6px -1px ${colors.accent.primary}20`;
+          whileHover={{
+            y: -4,
+            boxShadow: `0 10px 25px -5px ${wowColors.primary}30, 0 0 0 1px ${wowColors.primary}20`,
           }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = colors.border.primary;
-            e.currentTarget.style.boxShadow = '';
-          }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
         >
-          {/* Course Thumbnail - 90x90 */}
-          <div className="relative w-[90px] h-[90px] flex-shrink-0 overflow-hidden" style={{ backgroundColor: colors.accent.primary }}>
+          {/* Animated overlay on hover */}
+          <motion.div
+            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            style={{
+              backgroundColor: `${wowColors.primary}08`,
+            }}
+          />
+          {/* Course Thumbnail - 90x90 with WOW effect */}
+          <motion.div 
+            className="relative w-[90px] h-[90px] flex-shrink-0 overflow-hidden rounded-lg"
+            style={{ backgroundColor: wowColors.primary }}
+            whileHover={{ scale: 1.05, rotate: 2 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
             {course.thumbnail ? (
               <motion.img
                 src={course.thumbnail}
                 alt={course.title}
                 className="w-full h-full object-cover"
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.3 }}
+                whileHover={{ scale: 1.15 }}
+                transition={{ duration: 0.4 }}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
                 <span className="text-white text-2xl font-black drop-shadow-lg">{course.title.charAt(0)}</span>
               </div>
             )}
-          </div>
+            {/* Shine effect overlay */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+              initial={{ x: '-100%' }}
+              whileHover={{ x: '100%' }}
+              transition={{ duration: 0.6 }}
+            />
+          </motion.div>
 
           {/* Course Content */}
           <div className="flex-1 flex flex-col justify-center min-w-0 pr-3">
@@ -110,13 +135,18 @@ export default function CompactCourseCard({ course, index = 0 }: CompactCourseCa
                 )}
               </div>
 
-              {/* Price */}
-              <span className="text-base font-bold whitespace-nowrap" style={{ color: colors.accent.primary }}>
+              {/* Price with color animation */}
+              <motion.span 
+                className="text-base font-bold whitespace-nowrap"
+                style={{ color: wowColors.primary }}
+                whileHover={{ scale: 1.1, color: wowColors.secondary }}
+                transition={{ duration: 0.2 }}
+              >
                 {formatPrice(course.price)}
-              </span>
+              </motion.span>
             </div>
           </div>
-        </div>
+        </motion.div>
       </Link>
     </motion.div>
   );

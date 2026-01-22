@@ -7,6 +7,21 @@ import { Search, BookOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
+// New Color Palette for Search Results
+const searchColors = {
+  primary: '#048181',      // Deep teal - primary accent
+  secondary: '#f45c2c',    // Reddish-orange - secondary accent/CTA
+  accent: '#5a9c7d',       // Sage green - secondary buttons
+  dark: '#366854',         // Dark forest green - text
+  light: '#9fbeb2',        // Pale mint - light background
+  highlight: '#ecca72',    // Pale gold - highlights
+  white: '#FFFFFF',
+  textDark: '#1E293B',
+  textMuted: '#64748B',
+  background: '#FFFFFF',
+  backgroundHover: '#f8f9fa',
+};
+
 interface CourseSuggestion {
   id: number;
   title: string;
@@ -124,7 +139,7 @@ export default function SearchBar({
                 }
               }}
               onFocus={(e) => {
-                e.currentTarget.style.borderColor = '#10B981';
+                e.currentTarget.style.borderColor = searchColors.highlight;
                 e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
                 if (searchSuggestions.length > 0) {
                   setShowSuggestions(true);
@@ -134,11 +149,12 @@ export default function SearchBar({
                 e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
                 e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
               }}
-              className="w-full pl-14 pr-6 py-4 md:py-5 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#10B981] transition-all text-base md:text-lg bg-white/10 backdrop-blur-sm border-2 border-white/20 text-white placeholder-white/70"
+              className="w-full pl-14 pr-6 py-4 md:py-5 rounded-xl focus:outline-none focus:ring-2 transition-all text-base md:text-lg bg-white/10 backdrop-blur-sm border-2 border-white/20 text-white placeholder-white/70"
+              style={{ '--tw-ring-color': searchColors.highlight } as React.CSSProperties}
             />
             {isSearching && (
               <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                <div className="w-4 h-4 border-2 border-[#10B981] border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: searchColors.highlight }}></div>
               </div>
             )}
           </div>
@@ -152,7 +168,8 @@ export default function SearchBar({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-full left-0 right-0 mt-2 bg-[#1E293B] rounded-xl shadow-2xl z-50 border border-[#334155] max-h-96 overflow-y-auto"
+              className="absolute top-full left-0 right-0 mt-2 rounded-xl shadow-2xl z-50 border max-h-96 overflow-y-auto"
+              style={{ backgroundColor: searchColors.background, borderColor: searchColors.light }}
             >
               <div className="py-2">
                 {searchSuggestions.map((course) => (
@@ -163,9 +180,12 @@ export default function SearchBar({
                       setShowSuggestions(false);
                       setSearchQuery('');
                     }}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-[#334155] transition-colors group"
+                    className="flex items-center gap-3 px-4 py-3 transition-colors group"
+                    style={{ backgroundColor: 'transparent' }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = searchColors.backgroundHover}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
-                    <div className="flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden bg-[#10B981] flex items-center justify-center">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden flex items-center justify-center" style={{ backgroundColor: searchColors.primary }}>
                       {course.thumbnail ? (
                         <img
                           src={course.thumbnail}
@@ -177,14 +197,14 @@ export default function SearchBar({
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-white font-semibold text-sm group-hover:text-[#10B981] transition-colors truncate">
+                      <p className="font-semibold text-sm transition-colors truncate" style={{ color: searchColors.dark }} onMouseEnter={(e) => e.currentTarget.style.color = searchColors.primary} onMouseLeave={(e) => e.currentTarget.style.color = searchColors.dark}>
                         {course.title}
                       </p>
-                      <p className="text-[#9CA3AF] text-xs truncate">
+                      <p className="text-xs truncate" style={{ color: searchColors.textMuted }}>
                         {course.instructor_name}
                       </p>
                     </div>
-                    <Search className="w-4 h-4 text-[#9CA3AF] group-hover:text-[#10B981] transition-colors flex-shrink-0" />
+                    <Search className="w-4 h-4 transition-colors flex-shrink-0" style={{ color: searchColors.textMuted }} onMouseEnter={(e) => e.currentTarget.style.color = searchColors.primary} onMouseLeave={(e) => e.currentTarget.style.color = searchColors.textMuted} />
                   </Link>
                 ))}
               </div>
@@ -198,9 +218,14 @@ export default function SearchBar({
   // Header variant styling (default)
   return (
     <div ref={searchContainerRef} className={`flex-1 max-w-2xl mx-2 sm:mx-3 md:mx-4 hidden lg:block relative min-w-0 ${className}`}>
+      <style jsx>{`
+        input::placeholder {
+          color: ${searchColors.textMuted} !important;
+        }
+      `}</style>
       <form onSubmit={handleSubmit}>
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] w-5 h-5" />
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5" style={{ color: searchColors.textMuted }} />
           <input
             type="text"
             placeholder={placeholder}
@@ -211,16 +236,29 @@ export default function SearchBar({
                 setShowSuggestions(true);
               }
             }}
-            onFocus={() => {
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = searchColors.primary;
+              e.currentTarget.style.boxShadow = `0 0 0 2px ${searchColors.primary}30`;
               if (searchSuggestions.length > 0) {
                 setShowSuggestions(true);
               }
             }}
-            className="w-full pl-11 pr-4 py-3 bg-[#1E293B] border border-[#334155] rounded-full text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#10B981] focus:border-transparent transition-all text-sm"
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = searchColors.light;
+              e.currentTarget.style.boxShadow = '';
+            }}
+            className="w-full pl-11 pr-4 py-3 rounded-full focus:outline-none transition-all text-sm"
+            style={{ 
+              backgroundColor: searchColors.background,
+              borderColor: searchColors.light,
+              borderWidth: '1px',
+              borderStyle: 'solid',
+              color: searchColors.dark,
+            }}
           />
           {isSearching && (
             <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-              <div className="w-4 h-4 border-2 border-[#10B981] border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: searchColors.primary }}></div>
             </div>
           )}
         </div>
@@ -234,7 +272,8 @@ export default function SearchBar({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="absolute top-full left-0 right-0 mt-2 bg-[#1E293B] rounded-xl shadow-2xl z-50 border border-[#334155] max-h-96 overflow-y-auto"
+            className="absolute top-full left-0 right-0 mt-2 rounded-xl shadow-2xl z-50 border max-h-96 overflow-y-auto"
+            style={{ backgroundColor: searchColors.background, borderColor: searchColors.light }}
           >
             <div className="py-2">
               {searchSuggestions.map((course) => (
@@ -245,9 +284,12 @@ export default function SearchBar({
                     setShowSuggestions(false);
                     setSearchQuery('');
                   }}
-                  className="flex items-center gap-3 px-4 py-3 hover:bg-[#334155] transition-colors group"
+                  className="flex items-center gap-3 px-4 py-3 transition-colors group"
+                  style={{ backgroundColor: 'transparent' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = searchColors.backgroundHover}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                 >
-                  <div className="flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden bg-[#10B981] flex items-center justify-center">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden flex items-center justify-center" style={{ backgroundColor: searchColors.primary }}>
                     {course.thumbnail ? (
                       <img
                         src={course.thumbnail}
@@ -259,14 +301,14 @@ export default function SearchBar({
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-white font-semibold text-sm group-hover:text-[#10B981] transition-colors truncate">
+                    <p className="font-semibold text-sm transition-colors truncate" style={{ color: searchColors.dark }} onMouseEnter={(e) => e.currentTarget.style.color = searchColors.primary} onMouseLeave={(e) => e.currentTarget.style.color = searchColors.dark}>
                       {course.title}
                     </p>
-                    <p className="text-[#9CA3AF] text-xs truncate">
+                    <p className="text-xs truncate" style={{ color: searchColors.textMuted }}>
                       {course.instructor_name}
                     </p>
                   </div>
-                  <Search className="w-4 h-4 text-[#9CA3AF] group-hover:text-[#10B981] transition-colors flex-shrink-0" />
+                  <Search className="w-4 h-4 transition-colors flex-shrink-0" style={{ color: searchColors.textMuted }} onMouseEnter={(e) => e.currentTarget.style.color = searchColors.primary} onMouseLeave={(e) => e.currentTarget.style.color = searchColors.textMuted} />
                 </Link>
               ))}
             </div>

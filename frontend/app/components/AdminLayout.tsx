@@ -138,8 +138,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <div className="flex items-center justify-between p-6 border-b border-[#334155]">
             <div className="flex items-center gap-3">
               <img
-                src="https://purelogics.com/wp-content/uploads/2023/09/Final-Logo-1.svg"
-                alt="PureLogics"
+                src="https://topskills.pk/wp-content/uploads/2024/08/Group-27515-2048x623.png"
+                alt="TopSkill"
                 className="h-8 w-auto"
                 style={{ maxWidth: '150px' }}
               />

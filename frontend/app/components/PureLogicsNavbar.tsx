@@ -22,8 +22,8 @@ export default function PureLogicsNavbar() {
               transition={{ duration: 0.2 }}
             >
               <img
-                src="https://purelogics.com/wp-content/themes/PureLogics/images/Final-Logo.svg"
-                alt="PureLogics"
+                src="https://topskills.pk/wp-content/uploads/2024/08/Group-27515-2048x623.png"
+                alt="TopSkill"
                 className="h-8 sm:h-9 md:h-10 w-auto"
                 style={{ maxWidth: '200px' }}
               />
