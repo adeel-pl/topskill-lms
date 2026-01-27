@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/store';
+import PureLogicsNavbar from './PureLogicsNavbar';
+import { colors } from '@/lib/colors';
 import {
   FiLayout,
   FiBarChart2,
@@ -14,7 +16,7 @@ import {
   FiMenu,
   FiX,
   FiLogOut,
-  FiChevronRight,
+  FiZap,
 } from 'react-icons/fi';
 
 interface AdminLayoutProps {
@@ -25,7 +27,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout, isAuthenticated, isLoading } = useAuthStore();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -99,10 +100,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   // Show loading state while checking auth
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#0A0E27] flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: colors.background.primary }}>
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#334155] border-t-[#048181] rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-[#9CA3AF]">Loading...</p>
+          <div className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4" style={{ borderColor: colors.border.primary, borderTopColor: colors.accent.primary }}></div>
+          <p style={{ color: colors.text.muted }}>Loading...</p>
         </div>
       </div>
     );
@@ -114,145 +115,176 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0E27] flex">
+    <div className="min-h-screen" style={{ backgroundColor: colors.background.primary }}>
+      <PureLogicsNavbar />
+
+      {/* Subtle Background Pattern */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-40 right-20 w-96 h-96 rounded-full blur-3xl animate-pulse" style={{ backgroundColor: colors.accent.primary, opacity: 0.05 }}></div>
+        <div className="absolute bottom-40 left-20 w-80 h-80 rounded-full blur-3xl animate-pulse delay-1000" style={{ backgroundColor: colors.accent.blue, opacity: 0.05 }}></div>
+      </div>
+
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
 
-      {/* Sidebar */}
-      <aside
-        className={`
-          fixed lg:static inset-y-0 left-0 z-50
-          w-64 bg-[#0F172A] border-r border-[#334155]
-          transform transition-transform duration-300 ease-in-out
-          ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-          ${sidebarOpen ? 'lg:translate-x-0' : 'lg:-translate-x-full'}
-        `}
-      >
-        <div className="flex flex-col h-full">
-          {/* Logo & Header */}
-          <div className="flex items-center justify-between p-6 border-b border-[#334155]">
-            <div className="flex items-center gap-3">
-              <img
-                src="https://topskills.pk/wp-content/uploads/2024/08/Group-27515-2048x623.png"
-                alt="TopSkill"
-                className="h-8 w-auto"
-                style={{ maxWidth: '150px' }}
-              />
-            </div>
-            <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="lg:flex hidden text-[#9CA3AF] hover:text-white transition-colors"
-            >
-              <FiX className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => setMobileMenuOpen(false)}
-              className="lg:hidden text-[#9CA3AF] hover:text-white transition-colors"
-            >
-              <FiX className="w-5 h-5" />
-            </button>
-          </div>
-
-          {/* Navigation */}
-          <nav className="flex-1 overflow-y-auto p-4 space-y-2">
-            {menuItems.map((item) => {
-              const Icon = item.icon;
-              const active = isActive(item.href, item.exact);
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`
-                    flex items-center gap-3 px-4 py-3 rounded-lg
-                    transition-all duration-200
-                    ${
-                      active
-                        ? 'bg-[#048181]/20 text-[#048181] border-l-4 border-[#048181]'
-                        : 'text-[#D1D5DB] hover:bg-[#1E293B] hover:text-white'
-                    }
-                  `}
-                >
-                  <Icon className="w-5 h-5" />
-                  <span className="font-medium">{item.label}</span>
-                  {active && (
-                    <FiChevronRight className="w-4 h-4 ml-auto" />
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* User Section */}
-          <div className="p-4 border-t border-[#334155]">
-            <div className="flex items-center gap-3 mb-3 p-3 rounded-lg bg-[#1E293B]">
-              <div className="w-10 h-10 bg-[#048181] rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-sm">
-                  {user?.username?.charAt(0).toUpperCase() || 'A'}
-                </span>
+      <div className="flex max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 relative z-10" style={{ paddingTop: '10rem' }}>
+        {/* Sidebar */}
+        <aside className={`hidden md:block w-72 min-h-[calc(100vh-10rem)] sticky z-30 ${mobileMenuOpen ? 'md:block' : ''}`} style={{ top: '10rem', backgroundColor: colors.background.card, borderRightColor: colors.border.primary, borderRightWidth: '1px', borderRightStyle: 'solid', backfaceVisibility: 'hidden', transform: 'translateZ(0)' }}>
+          <div className="p-6 relative">
+            <div className="mb-8">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg" style={{ backgroundColor: colors.accent.primary, boxShadow: `0 10px 25px -5px ${colors.accent.primary}50` }}>
+                  <FiZap className="text-xl" style={{ color: colors.text.white }} />
+                </div>
+                <h2 className="text-xl font-black" style={{ color: colors.text.dark }}>Admin Panel</h2>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-white font-medium text-sm truncate">
-                  {user?.username || 'Admin'}
-                </p>
-                <p className="text-[#9CA3AF] text-xs truncate">
-                  {user?.email || 'admin@topskill.com'}
-                </p>
+              <p className="text-sm" style={{ color: colors.text.muted }}>Manage your platform</p>
+            </div>
+            <nav className="space-y-2">
+              {menuItems.map((item) => {
+                const Icon = item.icon;
+                const active = isActive(item.href, item.exact);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`group flex items-center gap-4 px-5 py-4 rounded-xl font-semibold transition-all duration-300 text-sm relative overflow-hidden ${
+                      active ? 'shadow-lg' : ''
+                    }`}
+                    style={active ? {
+                      backgroundColor: colors.accent.primary,
+                      color: colors.text.white
+                    } : {
+                      color: colors.text.dark,
+                      backgroundColor: 'transparent'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!active) {
+                        e.currentTarget.style.backgroundColor = colors.background.secondary;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!active) {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                      }
+                    }}
+                  >
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all`}
+                      style={active ? {
+                        backgroundColor: 'rgba(255, 255, 255, 0.2)'
+                      } : {
+                        backgroundColor: colors.background.secondary
+                      }}>
+                      <Icon className="text-xl" style={{ color: active ? colors.text.white : colors.text.muted }} />
+                    </div>
+                    <span className="relative z-10">{item.label}</span>
+                    {active && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent"></div>
+                    )}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+        </aside>
+
+        {/* Mobile Sidebar */}
+        <aside
+          className={`
+            fixed inset-y-0 left-0 z-50
+            w-72 bg-white border-r
+            transform transition-transform duration-300 ease-in-out
+            ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
+            md:hidden
+          `}
+          style={{ borderRightColor: colors.border.primary, borderRightWidth: '1px', borderRightStyle: 'solid' }}
+        >
+          <div className="flex flex-col h-full">
+            <div className="flex items-center justify-between p-6 border-b" style={{ borderBottomColor: colors.border.primary, borderBottomWidth: '1px', borderBottomStyle: 'solid' }}>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg" style={{ backgroundColor: colors.accent.primary, boxShadow: `0 10px 25px -5px ${colors.accent.primary}50` }}>
+                  <FiZap className="text-xl" style={{ color: colors.text.white }} />
+                </div>
+                <h2 className="text-xl font-black" style={{ color: colors.text.dark }}>Admin Panel</h2>
               </div>
-            </div>
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-4 py-2 text-[#EF4444] hover:bg-[#1E293B] rounded-lg transition-colors"
-            >
-              <FiLogOut className="w-5 h-5" />
-              <span className="font-medium">Logout</span>
-            </button>
-          </div>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Bar */}
-        <header className="bg-[#0F172A] border-b border-[#334155] px-6 py-4">
-          <div className="flex items-center justify-between">
-            <button
-              onClick={() => setMobileMenuOpen(true)}
-              className="lg:hidden text-[#9CA3AF] hover:text-white transition-colors"
-            >
-              <FiMenu className="w-6 h-6" />
-            </button>
-            <div className="flex items-center gap-4">
-              <Link
-                href="/"
-                className="text-[#9CA3AF] hover:text-[#048181] transition-colors text-sm"
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-gray-500 hover:text-gray-700 transition-colors"
               >
-                View Site
-              </Link>
-              <a
-                href={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000'}/admin/`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#9CA3AF] hover:text-[#3B82F6] transition-colors text-sm"
+                <FiX className="w-5 h-5" />
+              </button>
+            </div>
+            <nav className="flex-1 overflow-y-auto p-4 space-y-2">
+              {menuItems.map((item) => {
+                const Icon = item.icon;
+                const active = isActive(item.href, item.exact);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`group flex items-center gap-4 px-5 py-4 rounded-xl font-semibold transition-all duration-300 text-sm relative overflow-hidden ${
+                      active ? 'shadow-lg' : ''
+                    }`}
+                    style={active ? {
+                      backgroundColor: colors.accent.primary,
+                      color: colors.text.white
+                    } : {
+                      color: colors.text.dark,
+                      backgroundColor: 'transparent'
+                    }}
+                  >
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all`}
+                      style={active ? {
+                        backgroundColor: 'rgba(255, 255, 255, 0.2)'
+                      } : {
+                        backgroundColor: colors.background.secondary
+                      }}>
+                      <Icon className="text-xl" style={{ color: active ? colors.text.white : colors.text.muted }} />
+                    </div>
+                    <span className="relative z-10">{item.label}</span>
+                  </Link>
+                );
+              })}
+            </nav>
+            <div className="p-4 border-t" style={{ borderTopColor: colors.border.primary, borderTopWidth: '1px', borderTopStyle: 'solid' }}>
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-3 px-4 py-2 rounded-xl font-semibold transition-all duration-300"
+                style={{ color: colors.accent.secondary, backgroundColor: 'transparent' }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = colors.background.secondary;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }}
               >
-                Django Admin
-              </a>
+                <FiLogOut className="w-5 h-5" />
+                <span>Logout</span>
+              </button>
             </div>
           </div>
-        </header>
+        </aside>
 
-        {/* Page Content */}
-        <main className="flex-1 overflow-y-auto bg-[#0A0E27] p-6">
+        {/* Main Content */}
+        <main className="flex-1 min-h-[calc(100vh-80px)]">
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMobileMenuOpen(true)}
+            className="md:hidden fixed top-20 left-4 z-30 p-3 rounded-xl shadow-lg"
+            style={{ backgroundColor: colors.background.card, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}
+          >
+            <FiMenu className="w-6 h-6" style={{ color: colors.text.dark }} />
+          </button>
           {children}
         </main>
       </div>
     </div>
   );
 }
-
-
