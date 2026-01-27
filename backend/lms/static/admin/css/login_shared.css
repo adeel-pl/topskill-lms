@@ -1,0 +1,483 @@
+/**
+ * SHARED LOGIN STYLES - TopSkill LMS
+ * This file is the SINGLE SOURCE OF TRUTH for login page styling
+ * Used by both frontend (via import) and Django admin (via link)
+ * 
+ * To update login styles: ONLY EDIT THIS FILE
+ */
+
+:root {
+    /* TopSkill Color Palette - Centralized */
+    --ts-primary: #048181;
+    --ts-secondary: #f45c2c;
+    --ts-accent: #5a9c7d;
+    --ts-highlight: #ecca72;
+    --ts-text-dark: #366854;
+    --ts-text-muted: #64748B;
+    --ts-text-white: #FFFFFF;
+    --ts-bg-primary: #FFFFFF;
+    --ts-bg-card: #FFFFFF;
+    --ts-bg-light: #9fbeb2;
+    --ts-border-primary: #CBD5E1;
+    --ts-border-dark: #334155;
+}
+
+/* ============================================
+   CONTAINER - EXACT match frontend
+   max-w-[500px] xl:max-w-[600px] 2xl:max-w-[700px]
+   ============================================ */
+.login-container-main {
+    width: 100%;
+    max-width: 500px;
+    padding: 0 16px;
+    margin: 0 auto;
+}
+
+@media (min-width: 640px) {
+    .login-container-main {
+        padding: 0 24px;
+    }
+}
+
+@media (min-width: 1280px) {
+    .login-container-main {
+        max-width: 600px;
+    }
+}
+
+@media (min-width: 1536px) {
+    .login-container-main {
+        max-width: 700px;
+    }
+}
+
+/* ============================================
+   WELCOME SECTION - EXACT match mb-12 = 48px
+   ============================================ */
+.login-welcome-section {
+    text-align: center;
+    margin-bottom: 48px;
+    width: 100%;
+}
+
+.login-welcome-icon {
+    display: inline-block;
+    margin-bottom: 32px;
+    position: relative;
+    width: 100%;
+    text-align: center;
+}
+
+.login-welcome-icon-inner {
+    width: 80px;
+    height: 80px;
+    background: var(--ts-primary);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    box-shadow: 0 25px 50px -12px rgba(4, 129, 129, 0.5);
+    transition: transform 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.login-welcome-icon-inner:hover {
+    transform: scale(1.1);
+}
+
+.login-welcome-icon-inner::before {
+    content: '';
+    width: 40px;
+    height: 40px;
+    background: #0F172A;
+    border-radius: 12px;
+    display: block;
+}
+
+.login-welcome-icon-glow {
+    position: absolute;
+    inset: 0;
+    background: var(--ts-primary);
+    border-radius: 24px;
+    opacity: 0.2;
+    filter: blur(40px);
+    animation: login-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    z-index: 0;
+    margin: 0 auto;
+    width: 80px;
+    height: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+@keyframes login-pulse {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.3; }
+}
+
+.login-welcome-title {
+    font-size: 48px;
+    font-weight: 900;
+    color: var(--ts-text-dark);
+    margin-bottom: 16px;
+    line-height: 1.2;
+}
+
+@media (min-width: 768px) {
+    .login-welcome-title {
+        font-size: 60px;
+    }
+}
+
+.login-welcome-subtitle {
+    font-size: 18px;
+    color: var(--ts-text-dark);
+    margin: 0;
+}
+
+@media (min-width: 768px) {
+    .login-welcome-subtitle {
+        font-size: 20px;
+    }
+}
+
+/* ============================================
+   LOGIN CARD - EXACT match rounded-3xl = 24px
+   p-8 md:p-10 = 32px/40px, shadow-2xl
+   ============================================ */
+.login-card {
+    background: var(--ts-bg-card);
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--ts-border-primary);
+    width: 100%;
+    transition: all 0.5s ease;
+}
+
+@media (min-width: 768px) {
+    .login-card {
+        padding: 40px;
+    }
+}
+
+/* ============================================
+   FORM - EXACT match space-y-6 = 24px gap
+   ============================================ */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.login-form-group {
+    margin-bottom: 0;
+}
+
+/* ============================================
+   LABELS - EXACT match text-sm = 14px
+   font-bold = 700, mb-3 = 12px
+   ============================================ */
+.login-form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ts-text-dark);
+    margin-bottom: 12px;
+    line-height: 1.5;
+}
+
+/* ============================================
+   INPUT WRAPPER
+   ============================================ */
+.login-input-wrapper {
+    position: relative;
+}
+
+.login-input-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(4, 129, 129, 0);
+    border-radius: 12px;
+    z-index: 0;
+    transition: background 0.3s ease;
+    pointer-events: none;
+}
+
+.login-input-wrapper:focus-within::before {
+    background: rgba(4, 129, 129, 0.1);
+}
+
+/* ============================================
+   INPUT ICON - EXACT match left-5 = 20px
+   ============================================ */
+.login-input-icon {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    color: #9CA3AF;
+    z-index: 10;
+    transition: color 0.3s ease;
+    pointer-events: none;
+    display: block;
+}
+
+.login-input-wrapper:focus-within .login-input-icon {
+    color: var(--ts-primary);
+}
+
+/* ============================================
+   INPUT FIELDS - EXACT match pl-14 = 56px
+   pr-5 = 20px, py-4 = 16px, rounded-xl = 12px
+   ============================================ */
+.login-form-input {
+    position: relative;
+    width: 100%;
+    padding: 16px 20px 16px 56px;
+    border: 2px solid var(--ts-border-primary);
+    border-radius: 12px;
+    font-size: 15px;
+    background: var(--ts-bg-primary);
+    color: var(--ts-text-dark);
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    z-index: 1;
+    line-height: 1.5;
+    margin: 0;
+    font-family: inherit;
+    height: auto;
+    min-height: auto;
+}
+
+.login-form-input:focus {
+    outline: none;
+    border-color: var(--ts-primary);
+    box-shadow: 0 0 0 2px rgba(4, 129, 129, 0.5);
+}
+
+.login-form-input::placeholder {
+    color: var(--ts-text-muted);
+    opacity: 1;
+}
+
+/* ============================================
+   BUTTON - EXACT match py-4 md:py-5 = 16px/20px
+   rounded-xl = 12px, gap-2 = 8px
+   font-black = 900, text-base md:text-lg
+   ============================================ */
+.login-submit-button {
+    width: 100%;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    padding-left: 20px;
+    padding-right: 20px;
+    background: var(--ts-primary);
+    color: var(--ts-text-white);
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 25px -5px rgba(4, 129, 129, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 24px;
+    line-height: 1.5;
+    font-family: inherit;
+}
+
+@media (min-width: 768px) {
+    .login-submit-button {
+        padding-top: 20px;
+        padding-bottom: 20px;
+        font-size: 18px;
+    }
+}
+
+.login-submit-button:hover {
+    transform: scale(1.02);
+    box-shadow: 0 20px 25px -5px rgba(4, 129, 129, 0.5);
+}
+
+.login-submit-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.login-button-arrow {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+}
+
+.login-submit-button:hover .login-button-arrow {
+    transform: translateX(4px);
+}
+
+/* ============================================
+   SOCIAL SECTION - EXACT match mt-8 = 32px
+   pt-8 = 32px
+   ============================================ */
+.login-social-section {
+    margin-top: 32px;
+    padding-top: 32px;
+    border-top: 1px solid var(--ts-border-dark);
+}
+
+.login-social-text {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ts-text-muted);
+    margin-bottom: 24px;
+}
+
+.login-social-buttons-wrapper {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-google-button {
+    width: 100%;
+    padding: 12px 16px;
+    background: #1E293B;
+    color: var(--ts-text-white);
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+    line-height: 1.5;
+    min-height: 48px;
+}
+
+.login-google-button:hover {
+    background: #334155;
+}
+
+.login-google-icon {
+    width: 20px;
+    height: 20px;
+}
+
+/* ============================================
+   FOOTER - EXACT match mt-8 = 32px
+   space-y-4 = 16px
+   ============================================ */
+.login-footer {
+    margin-top: 32px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.login-footer-text {
+    font-size: 14px;
+    color: var(--ts-text-muted);
+    margin: 0;
+}
+
+.login-footer-link {
+    color: var(--ts-primary);
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.3s ease;
+}
+
+.login-footer-link:hover {
+    color: var(--ts-secondary);
+    text-decoration: underline;
+}
+
+.login-forgot-link {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ts-primary);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.login-forgot-link:hover {
+    color: var(--ts-secondary);
+    text-decoration: underline;
+}
+
+/* ============================================
+   ERROR MESSAGES
+   ============================================ */
+.login-error-message {
+    background: linear-gradient(to right, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.2));
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    color: #FCA5A5;
+    padding: 16px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    backdrop-filter: blur(4px);
+}
+
+.login-error-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.login-error-icon {
+    font-size: 18px;
+}
+
+.login-error-text {
+    flex: 1;
+}
+
+.login-error-title {
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .login-welcome-title {
+        font-size: 36px;
+    }
+    
+    .login-welcome-subtitle {
+        font-size: 18px;
+    }
+    
+    .login-card {
+        padding: 24px 20px;
+    }
+    
+    .login-welcome-icon-inner {
+        width: 64px;
+        height: 64px;
+    }
+    
+    .login-welcome-icon-inner::before {
+        width: 32px;
+        height: 32px;
+    }
+}

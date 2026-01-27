@@ -1,27 +1,46 @@
-/* Premium Admin UI - PureLogics Style */
+/* Premium Admin UI - TopSkill Style */
+/* Using centralized TopSkill color palette */
+/* Import shared login variables for consistency */
+
+@import url('login_shared.css');
 
 :root {
-    --primary-color: #10B981;
-    --primary-dark: #059669;
-    --accent-blue: #00235A;
-    --text-dark: #00235A;
-    --text-muted: #64748B;
-    --background-primary: #CAFCE5;
-    --background-card: #FFFFFF;
-    --border-color: #E2E8F0;
-    --success-color: #10B981;
-    --error-color: #DC2626;
-    --warning-color: #F59E0B;
-    --info-color: #3B82F6;
+    /* Use shared login variables - ensures consistency */
+    --primary-color: var(--ts-primary);        /* Deep teal - primary accent */
+    --primary-dark: #036969;                   /* Darker teal for gradients */
+    --secondary-color: var(--ts-secondary);   /* Reddish-orange - secondary accent */
+    --accent-color: var(--ts-accent);         /* Sage green - secondary buttons */
+    --highlight-color: var(--ts-highlight);   /* Pale gold - highlights */
+    
+    /* Text Colors - use shared variables */
+    --text-dark: var(--ts-text-dark);          /* Dark forest green - main text */
+    --text-muted: var(--ts-text-muted);       /* Muted gray text */
+    --text-white: var(--ts-text-white);       /* White text */
+    
+    /* Background Colors - use shared variables */
+    --background-primary: var(--ts-bg-primary);   /* White - main background */
+    --background-secondary: var(--ts-bg-primary); /* White - alternating sections */
+    --background-light: var(--ts-bg-light);     /* Pale mint - light background */
+    --background-card: var(--ts-bg-card);        /* White for cards */
+    
+    /* Border Colors - use shared variables */
+    --border-color: var(--ts-border-primary);   /* Light border */
+    --border-dark: #334155;                     /* Dark border */
+    
+    /* Status Colors - use shared variables */
+    --success-color: var(--ts-success);        /* Deep teal for success */
+    --error-color: var(--ts-error);            /* Red for errors */
+    --warning-color: var(--ts-warning);        /* Orange for warnings */
+    --info-color: var(--ts-primary);           /* Teal for info */
 }
 
-/* Header Styling */
+/* Header Styling - TopSkill Color Scheme */
 #header {
-    background: linear-gradient(135deg, #00235A 0%, #003D7A 100%);
-    color: white;
-    border-bottom: 3px solid var(--primary-color);
-    box-shadow: 0 4px 12px rgba(0, 35, 90, 0.15);
-    padding: 0;
+    background: var(--primary-color) !important; /* #048181 - Deep teal */
+    color: white !important;
+    border-bottom: 3px solid var(--secondary-color) !important; /* #f45c2c - Orange accent */
+    box-shadow: 0 4px 12px rgba(4, 129, 129, 0.15) !important;
+    padding: 0 !important;
 }
 
 #header #branding h1,
@@ -47,7 +66,7 @@
 }
 
 #user-tools a:hover {
-    color: var(--primary-color);
+    color: var(--secondary-color) !important; /* #f45c2c - Orange on hover */
 }
 
 #user-tools strong {
@@ -55,28 +74,29 @@
     font-weight: 600;
 }
 
-/* Breadcrumbs */
+/* Breadcrumbs - TopSkill Color Scheme */
 .breadcrumbs {
-    background: #F8FAFC;
-    border-bottom: 1px solid var(--border-color);
+    background: var(--background-primary) !important; /* #FFFFFF - White */
+    border-bottom: 1px solid var(--border-color) !important; /* #CBD5E1 - Light border */
     padding: 12px 20px;
     font-size: 13px;
 }
 
 .breadcrumbs a {
-    color: var(--primary-color);
+    color: var(--primary-color) !important; /* #048181 - Deep teal */
     text-decoration: none;
     font-weight: 500;
 }
 
 .breadcrumbs a:hover {
+    color: var(--secondary-color) !important; /* #f45c2c - Orange on hover */
     text-decoration: underline;
 }
 
-/* Content Area */
+/* Content Area - TopSkill Color Scheme */
 #content {
     padding: 30px;
-    background: #F8FAFC;
+    background: var(--background-primary) !important; /* #FFFFFF - White */
     min-height: calc(100vh - 120px);
 }
 
@@ -95,12 +115,12 @@
 }
 
 .dashboard .module {
-    background: white;
+    background: var(--background-card) !important; /* #FFFFFF - White */
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     margin-bottom: 20px;
     overflow: hidden;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border-color) !important; /* #CBD5E1 - Light border */
     transition: all 0.3s ease;
 }
 
@@ -110,8 +130,8 @@
 }
 
 .dashboard .module h2 {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-    color: white;
+    background: var(--primary-color) !important; /* #048181 - Deep teal */
+    color: var(--text-white) !important; /* #FFFFFF - White text */
     padding: 16px 20px;
     margin: 0;
     font-size: 16px;
@@ -125,12 +145,12 @@
 }
 
 .dashboard .module table th {
-    background: #F8FAFC;
-    color: var(--text-dark);
+    background: var(--background-primary) !important; /* #FFFFFF - White */
+    color: var(--text-dark) !important; /* #366854 - Dark forest green */
     font-weight: 600;
     padding: 12px 20px;
     text-align: left;
-    border-bottom: 2px solid var(--border-color);
+    border-bottom: 2px solid var(--border-color) !important; /* #CBD5E1 - Light border */
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -138,8 +158,8 @@
 
 .dashboard .module table td {
     padding: 12px 20px;
-    border-bottom: 1px solid var(--border-color);
-    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-color) !important; /* #CBD5E1 - Light border */
+    color: var(--text-muted) !important; /* #64748B - Muted gray */
 }
 
 .dashboard .module table tr:hover {
@@ -147,12 +167,13 @@
 }
 
 .dashboard .module table a {
-    color: var(--primary-color);
+    color: var(--primary-color) !important; /* #048181 - Deep teal */
     text-decoration: none;
     font-weight: 500;
 }
 
 .dashboard .module table a:hover {
+    color: var(--secondary-color) !important; /* #f45c2c - Orange on hover */
     text-decoration: underline;
 }
 
@@ -191,7 +212,7 @@
 .form-row select:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    box-shadow: 0 0 0 3px rgba(4, 129, 129, 0.1);
 }
 
 /* Buttons */
@@ -199,7 +220,7 @@ input[type="submit"],
 button,
 .submit-row input,
 a.button {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    background: var(--primary-color);
     color: white;
     border: none;
     padding: 12px 24px;
@@ -208,7 +229,7 @@ a.button {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 4px 12px rgba(4, 129, 129, 0.3);
     text-decoration: none;
     display: inline-block;
 }
@@ -217,14 +238,15 @@ input[type="submit"]:hover,
 button:hover,
 .submit-row input:hover,
 a.button:hover {
+    background: var(--secondary-color) !important; /* #f45c2c - Orange on hover */
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 6px 20px rgba(244, 92, 44, 0.4) !important;
 }
 
 .button.default,
 input[type="submit"].default,
 .submit-row input.default {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    background: var(--primary-color);
 }
 
 .button,
@@ -307,7 +329,7 @@ button {
 #changelist-search input[type="text"]:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    box-shadow: 0 0 0 3px rgba(4, 129, 129, 0.1);
 }
 
 #changelist-table {

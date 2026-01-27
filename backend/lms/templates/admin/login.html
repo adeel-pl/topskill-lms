@@ -4,136 +4,330 @@
 {% block extrastyle %}
 {{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/custom_admin.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/login_shared.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
+    /* Reset Django admin defaults */
+    .login * {
+        box-sizing: border-box;
+    }
+    
+    .login input,
+    .login label,
+    .login button {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        font: inherit;
+        vertical-align: baseline;
+    }
+    
+    * {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    
+    /* Match frontend exactly - white background */
     .login {
-        background: linear-gradient(135deg, #CAFCE5 0%, #E0F2FE 100%);
+        background: #FFFFFF !important;
         min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 20px;
+        padding-bottom: 48px;
+    }
+    
+    @media (min-width: 768px) {
+        .login {
+            padding-bottom: 64px;
+        }
     }
     
     .login #header {
-        background: transparent;
-        border: none;
-        padding: 0;
-        margin-bottom: 30px;
+        display: none;
     }
     
-    .login #header h1 {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        margin: 0;
-    }
-    
-    .login #header h1 img {
-        height: 40px;
-        width: auto;
-        max-width: 180px;
-    }
-    
-    .login #header h1 a {
-        color: #00235A;
-        font-size: 24px;
-        font-weight: 700;
-        text-decoration: none;
+    .login #container {
+        width: 60em;
     }
     
     .login #content {
-        background: white;
-        border-radius: 16px;
-        box-shadow: 0 20px 60px rgba(0, 35, 90, 0.15);
-        padding: 40px;
-        max-width: 420px;
+        background: transparent !important;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
         width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
     
+    /* Use shared container class */
+    .login .content-main {
+        width: 100%;
+        max-width: 500px;
+        padding: 0 16px;
+        margin: 0 auto;
+    }
+    
+    @media (min-width: 640px) {
+        .login .content-main {
+            padding: 0 24px;
+        }
+    }
+    
+    @media (min-width: 1280px) {
+        .login .content-main {
+            max-width: 600px;
+        }
+    }
+    
+    @media (min-width: 1536px) {
+        .login .content-main {
+            max-width: 700px;
+        }
+    }
+    
+    /* Override Django defaults with !important */
+    .login input[type="text"],
+    .login input[type="password"],
+    .login #id_username,
+    .login #id_password {
+        padding: 16px 20px 16px 56px !important;
+        border: 2px solid #CBD5E1 !important;
+        border-radius: 12px !important;
+        font-size: 15px !important;
+        background: #FFFFFF !important;
+        color: #366854 !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+        line-height: 1.5 !important;
+        font-family: inherit !important;
+        height: auto !important;
+        min-height: auto !important;
+    }
+    
+    .login input[type="text"]:focus,
+    .login input[type="password"]:focus {
+        outline: none !important;
+        border-color: #048181 !important;
+        box-shadow: 0 0 0 2px rgba(4, 129, 129, 0.5) !important;
+    }
+    
+    .login label,
+    .login .form-label {
+        display: block !important;
+        font-size: 14px !important;
+        font-weight: 700 !important;
+        margin-bottom: 12px !important;
+        color: #366854 !important;
+    }
+    
+    .login button:not(.google-button),
+    .login .submit-button,
+    .login input[type="submit"] {
+        width: 100% !important;
+        padding-top: 16px !important;
+        padding-bottom: 16px !important;
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+        background: #048181 !important;
+        color: #FFFFFF !important;
+        border: none !important;
+        border-radius: 12px !important;
+        font-size: 16px !important;
+        font-weight: 900 !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 10px 25px -5px rgba(4, 129, 129, 0.3) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        margin-top: 24px !important;
+        font-family: inherit !important;
+    }
+    
+    @media (min-width: 768px) {
+        .login button:not(.google-button),
+        .login .submit-button,
+        .login input[type="submit"] {
+            padding-top: 20px !important;
+            padding-bottom: 20px !important;
+            font-size: 18px !important;
+        }
+    }
+    
+    .login .google-button {
+        width: 100% !important;
+        padding: 12px 16px !important;
+        background: #1E293B !important;
+        color: #FFFFFF !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-size: 14px !important;
+        font-weight: 500 !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 12px !important;
+        transition: all 0.3s ease !important;
+        line-height: 1.5 !important;
+        min-height: 48px !important;
+    }
+    
+    .login .google-button:hover {
+        background: #334155 !important;
+    }
+    
+    /* Hide Django defaults */
     .login .form-row {
-        margin-bottom: 20px;
-    }
-    
-    .login .form-row label {
-        color: #00235A;
-        font-weight: 600;
-        font-size: 14px;
-        margin-bottom: 8px;
-        display: block;
-    }
-    
-    .login .form-row input[type="text"],
-    .login .form-row input[type="password"] {
-        width: 100%;
-        padding: 12px 16px;
-        border: 2px solid #E2E8F0;
-        border-radius: 8px;
-        font-size: 15px;
-        transition: all 0.3s ease;
-        box-sizing: border-box;
-    }
-    
-    .login .form-row input[type="text"]:focus,
-    .login .form-row input[type="password"]:focus {
-        outline: none;
-        border-color: #10B981;
-        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        margin-bottom: 0 !important;
     }
     
     .login .submit-row {
-        margin-top: 30px;
-        padding: 0;
+        margin: 0 !important;
+        padding: 0 !important;
     }
     
     .login .submit-row input {
-        width: 100%;
-        background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-        color: white;
-        border: none;
-        padding: 14px 24px;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        display: none !important;
     }
     
-    .login .submit-row input:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
-    }
-    
-    .login .errornote {
-        background: #FEE2E2;
-        color: #DC2626;
-        border: 1px solid #FCA5A5;
-        border-radius: 8px;
-        padding: 12px 16px;
-        margin-bottom: 20px;
-        font-size: 14px;
-    }
-    
-    .login .form-row .help {
-        color: #64748B;
-        font-size: 13px;
-        margin-top: 6px;
+    .login input[type="text"]::-ms-clear,
+    .login input[type="password"]::-ms-reveal,
+    .login input[type="text"]::-webkit-search-cancel-button,
+    .login input[type="password"]::-webkit-credentials-auto-fill-button {
+        display: none !important;
+        visibility: hidden !important;
     }
 </style>
 {% endblock %}
 
 {% block branding %}
-<div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
-    <img src="https://purelogics.com/wp-content/uploads/2023/09/Final-Logo-1.svg" 
-         alt="PureLogics" 
-         style="height: 40px; width: auto; max-width: 180px;" />
-    <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #00235A;">
-        Admin Panel
-    </h1>
-</div>
 {% endblock %}
 
+{% block content %}
+<div class="content-main">
+    <div class="login-welcome-section">
+        <div class="login-welcome-icon">
+            <div class="login-welcome-icon-inner"></div>
+            <div class="login-welcome-icon-glow"></div>
+        </div>
+        <h2 class="login-welcome-title">Welcome Back</h2>
+        <p class="login-welcome-subtitle">Log in to continue your learning journey</p>
+    </div>
 
+    <div class="login-card">
+    <form method="post" action="{% url 'admin:login' %}" class="login-form" id="login-form">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        
+        {% if form.errors %}
+        <div class="login-error-message">
+            <div class="login-error-content">
+                <span class="login-error-icon">⚠️</span>
+                <div class="login-error-text">
+                    <p class="login-error-title">Login Failed</p>
+                    <p>{% if form.errors.items|length == 1 %}Please correct the error below.{% else %}Please correct the errors below.{% endif %}</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="login-form-group">
+            <label for="id_username" class="login-form-label">Email or Username</label>
+            <div class="login-input-wrapper">
+                <svg class="login-input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                <input 
+                    type="text" 
+                    name="username" 
+                    id="id_username" 
+                    class="login-form-input" 
+                    placeholder="Enter your email or username"
+                    required
+                    autofocus
+                >
+            </div>
+        </div>
+        
+        <div class="login-form-group">
+            <label for="id_password" class="login-form-label">Password</label>
+            <div class="login-input-wrapper">
+                <svg class="login-input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+                <input 
+                    type="password" 
+                    name="password" 
+                    id="id_password" 
+                    class="login-form-input" 
+                    placeholder="Enter your password"
+                    required
+                >
+            </div>
+        </div>
+        
+        <button type="submit" class="login-submit-button" id="submit-btn">
+            Continue
+            <svg class="login-button-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+            </svg>
+        </button>
+    </form>
+    
+    <div class="login-social-section">
+        <p class="login-social-text">Or continue with</p>
+        <div class="login-social-buttons-wrapper">
+        <button type="button" class="login-google-button" onclick="handleGoogleLogin()">
+            <svg class="login-google-icon" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            Sign in with Google
+        </button>
+        </div>
+    </div>
+    
+    <div class="login-footer">
+        <p class="login-footer-text">
+            Don't have an account? 
+            <a href="/register" class="login-footer-link">Sign up</a>
+        </p>
+        <a href="/forgot-password" class="login-forgot-link">Forgot your password?</a>
+    </div>
+    </div>
+</div>
 
-
+<script>
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+        const btn = document.getElementById('submit-btn');
+        if (!btn.disabled) {
+            btn.disabled = true;
+            btn.innerHTML = `
+                <div style="width: 20px; height: 20px; border: 2px solid white; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; display: inline-block;"></div>
+                Signing in...
+            `;
+        }
+    });
+    
+    function handleGoogleLogin() {
+        window.location.href = '/login?google=true';
+    }
+    
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(style);
+</script>
+{% endblock %}
