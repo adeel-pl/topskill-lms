@@ -3,9 +3,11 @@ Management command to ensure portal has sufficient data
 Assigns instructors to courses that don't have one
 Creates additional data if needed for portal display
 """
+import os
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from datetime import timedelta
 from lms.models import (
     Course, Enrollment, Assignment, AssignmentSubmission, Quiz, QuizAttempt,
@@ -30,7 +32,27 @@ class Command(BaseCommand):
             }
         )
         if created:
-            instructor.set_password('instructor123')
+            # Use environment variable or generate secure random password
+            instructor_password = os.environ.get('INSTRUCTOR_PASSWORD')
+            if not instructor_password:
+                # Generate a secure random password
+                instructor_password = get_random_string(12)
+                self.stdout.write(self.style.WARNING(
+                    f'\n⚠️  Generated secure password for instructor user.'
+                ))
+                self.stdout.write(self.style.SUCCESS(
+                    f'   Username: instructor'
+                ))
+                self.stdout.write(self.style.SUCCESS(
+                    f'   Password: {instructor_password}'
+                ))
+                self.stdout.write(self.style.WARNING(
+                    f'\n💡 To set a custom password, use: INSTRUCTOR_PASSWORD=yourpassword python manage.py ensure_portal_data'
+                ))
+            else:
+                self.stdout.write(self.style.SUCCESS('✅ Using password from INSTRUCTOR_PASSWORD environment variable'))
+            
+            instructor.set_password(instructor_password)
             instructor.save()
             self.stdout.write(self.style.SUCCESS('✅ Created instructor user'))
         else:
