@@ -1,0 +1,228 @@
+/* Premium admin dashboard styles for TopSkill.
+ * Uses the same color tokens as the shared login system.
+ */
+
+:root {
+  --ts-primary: #048181;
+  --ts-secondary: #f45c2c;
+  --ts-accent: #5a9c7d;
+  --ts-highlight: #ecca72;
+  --ts-text-dark: #366854;
+  --ts-text-muted: #64748b;
+  --ts-text-white: #ffffff;
+  --ts-bg-primary: #ffffff;
+  --ts-bg-soft: #f8fafc;
+  --ts-bg-card: #ffffff;
+  --ts-border-soft: #e2e8f0;
+}
+
+body.dashboard-body {
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, #ecfeff 0, #f9fafb 40%, #eff6ff 100%);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Segoe UI", sans-serif;
+}
+
+#dashboard-wrapper {
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.dashboard-sidebar {
+  width: 260px;
+  background: #020617;
+  color: #e5e7eb;
+}
+
+.dashboard-sidebar .brand {
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dashboard-sidebar .brand-logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #22c55e, #22c55e);
+  color: #022c22;
+  font-size: 0.95rem;
+}
+
+.dashboard-sidebar .nav-link {
+  border-radius: 0.75rem;
+  padding: 0.55rem 0.85rem;
+  margin-bottom: 0.25rem;
+  color: #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  transition: all 0.15s ease-in-out;
+}
+
+.dashboard-sidebar .nav-link i {
+  font-size: 0.95rem;
+}
+
+.dashboard-sidebar .nav-link.active,
+.dashboard-sidebar .nav-link:hover {
+  background: linear-gradient(135deg, #048181, #0f766e);
+  color: #ffffff;
+  box-shadow: 0 10px 30px rgba(4, 129, 129, 0.4);
+}
+
+/* Top navbar */
+.dashboard-navbar {
+  backdrop-filter: blur(10px);
+}
+
+.dashboard-badge-premium {
+  background: linear-gradient(135deg, #facc15, #fb923c);
+  color: #1f2937;
+  border-radius: 999px;
+  padding: 0.25rem 0.8rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.dashboard-avatar-sm {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  object-fit: cover;
+}
+
+/* Cards */
+.dashboard-card {
+  border-radius: 1rem;
+  border: 1px solid var(--ts-border-soft);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+  background: var(--ts-bg-card);
+}
+
+.dashboard-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14);
+  transition: all 0.18s ease-out;
+}
+
+.dashboard-card .card-body {
+  padding: 1.2rem 1.4rem;
+}
+
+.dashboard-icon-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+}
+
+.bg-soft-teal {
+  background-color: #ccfbf1;
+  color: #0f766e;
+}
+
+.bg-soft-indigo {
+  background-color: #e0e7ff;
+  color: #4f46e5;
+}
+
+.bg-soft-blue {
+  background-color: #dbeafe;
+  color: #2563eb;
+}
+
+.activity-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+}
+
+/* Dark mode */
+.dashboard-dark {
+  background: #020617;
+  color: #e5e7eb;
+}
+
+.dashboard-dark .navbar,
+.dashboard-dark .card,
+.dashboard-dark footer {
+  background-color: #020617 !important;
+  color: #e5e7eb;
+}
+
+.dashboard-dark .dashboard-card {
+  background-color: #020617;
+  border-color: #1f2937;
+}
+
+.dashboard-dark .table {
+  color: #e5e7eb;
+}
+
+.dashboard-dark .table thead {
+  background-color: #020617;
+}
+
+.dashboard-dark .table-hover tbody tr:hover {
+  background-color: #020617;
+}
+
+.dashboard-dark .form-control,
+.dashboard-dark .form-select {
+  background-color: #020617;
+  border-color: #1f2937;
+  color: #e5e7eb;
+}
+
+.dashboard-dark .form-control:focus,
+.dashboard-dark .form-select:focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 1px #22c55e;
+}
+
+/* Tables */
+.dashboard-table thead {
+  background-color: #f8fafc;
+}
+
+.dashboard-table tbody tr:hover {
+  background-color: #f1f5f9;
+}
+
+/* Analytics page tweaks */
+.analytics-section-title {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ts-text-muted);
+}
+
+/* Responsive sidebar */
+@media (max-width: 767.98px) {
+  .dashboard-sidebar {
+    position: fixed;
+    z-index: 1040;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease-out;
+  }
+
+  .dashboard-sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+
