@@ -1,0 +1,150 @@
+/* Light premium styling for regular admin CRUD screens.
+ * Scoped carefully so analytics and login stay as they are.
+ *
+ * Targets:
+ *  - changelist tables
+ *  - change forms
+ *  - submit/action rows
+ */
+
+:root {
+  --ts-primary: #048181;
+  --ts-secondary: #f45c2c;
+  --ts-text-main: #1f2937;
+  --ts-text-muted: #6b7280;
+  --ts-border-soft: #e5e7eb;
+  --ts-bg-soft: #f9fafb;
+}
+
+/* ======= Changelist (list views) ======= */
+
+body.change-list #changelist {
+  border-radius: 10px;
+  border: 1px solid var(--ts-border-soft);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+  overflow: hidden;
+  background: #ffffff;
+}
+
+body.change-list #changelist table {
+  border-collapse: collapse;
+}
+
+body.change-list #changelist thead th {
+  background: linear-gradient(to bottom, #ffffff, #f3f4f6);
+  font-weight: 600;
+  color: var(--ts-text-main);
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--ts-border-soft);
+}
+
+body.change-list #changelist tbody tr {
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+body.change-list #changelist tbody tr:hover {
+  background: #f9fafb;
+}
+
+body.change-list #changelist tbody td {
+  padding: 8px 12px;
+}
+
+/* Row actions and add button */
+
+.change-list .actions {
+  background: #ffffff;
+  border-bottom: 1px solid var(--ts-border-soft);
+  padding: 10px 12px;
+}
+
+.change-list .actions select {
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--ts-border-soft);
+}
+
+.submit-row input.default,
+.submit-row input[type="submit"],
+input[type="submit"].default {
+  background-color: var(--ts-primary);
+  border-radius: 999px;
+  border: none;
+  padding: 8px 18px;
+  font-weight: 600;
+}
+
+.submit-row input.default:hover,
+.submit-row input[type="submit"]:hover {
+  background-color: #036969;
+}
+
+/* ======= Change form detail pages ======= */
+
+body.change-form #content-main,
+body.change-form #content {
+  background: var(--ts-bg-soft);
+}
+
+.change-form .form-row {
+  padding: 8px 14px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.change-form label {
+  font-weight: 600;
+  color: var(--ts-text-main);
+}
+
+.change-form input[type="text"],
+.change-form input[type="number"],
+.change-form input[type="email"],
+.change-form input[type="url"],
+.change-form input[type="password"],
+.change-form select,
+.change-form textarea {
+  border-radius: 6px;
+  border: 1px solid var(--ts-border-soft);
+  padding: 6px 8px;
+  font-size: 13px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.change-form input:focus,
+.change-form select:focus,
+.change-form textarea:focus {
+  border-color: var(--ts-primary);
+  box-shadow: 0 0 0 2px rgba(4, 129, 129, 0.25);
+  outline: none;
+}
+
+.change-form .help {
+  color: var(--ts-text-muted);
+  font-size: 11px;
+}
+
+/* Inline formsets (tabular/stacked) */
+
+.inline-group {
+  border-radius: 10px;
+  border: 1px solid var(--ts-border-soft);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+}
+
+.inline-group h2 {
+  background: #ffffff;
+  border-bottom: 1px solid var(--ts-border-soft);
+  padding: 10px 12px;
+}
+
+/* Dashboard app list modules – small polish, still default layout */
+
+.dashboard .module {
+  border-radius: 8px;
+  border: 1px solid var(--ts-border-soft);
+}
+
+.dashboard .module caption {
+  background: #ffffff;
+}
+

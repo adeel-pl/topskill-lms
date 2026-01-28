@@ -1,26 +1,11 @@
 {% extends "admin/base.html" %}
 {% load static %}
 
-{% block title %}{{ title }} | TopSkill Admin{% endblock %}
-
-{% block branding %}
-<div style="display: flex; align-items: center; gap: 12px; padding: 10px 0;">
-    <img src="https://topskills.pk/wp-content/uploads/2024/08/Group-27515-2048x623.png" 
-         alt="TopSkill" 
-         style="height: 32px; width: auto; max-width: 150px;" />
-    <h1 id="site-name" style="margin: 0; font-size: 20px; font-weight: 700; color: #366854;">
-        <a href="{% url 'admin:index' %}" style="color: #366854; text-decoration: none;">Admin Panel</a>
-    </h1>
-</div>
-{% endblock %}
-
-{% block nav-global %}{% endblock %}
+{# Keep default Django titles/branding behaviour #}
 
 {% block extrastyle %}
-{{ block.super }}
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/custom_admin.css' %}">
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/operations.css' %}">
 {% endblock %}
-
-
 
 
