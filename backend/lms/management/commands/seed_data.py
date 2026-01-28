@@ -11,7 +11,9 @@ from lms.models import (
     Cart, CartItem, Payment, LectureProgress
 )
 from .video_ids import get_video_id_for_course
+import os
 import random
+from django.utils.crypto import get_random_string
 
 
 def get_course_thumbnail(course_title):
@@ -265,7 +267,9 @@ class Command(BaseCommand):
                 'is_superuser': True,
             }
         )
-        admin_user.set_password('admin123')
+        # Use environment variables or generate secure passwords
+        admin_password = os.environ.get('ADMIN_PASSWORD') or get_random_string(12)
+        admin_user.set_password(admin_password)
         admin_user.is_staff = True
         admin_user.is_superuser = True
         admin_user.save()
@@ -279,7 +283,8 @@ class Command(BaseCommand):
                 'last_name': 'Instructor',
             }
         )
-        instructor.set_password('instructor123')
+        instructor_password = os.environ.get('INSTRUCTOR_PASSWORD') or get_random_string(12)
+        instructor.set_password(instructor_password)
         instructor.save()
 
         # Create test student
@@ -291,7 +296,8 @@ class Command(BaseCommand):
                 'last_name': 'Student',
             }
         )
-        student.set_password('student123')
+        student_password = os.environ.get('STUDENT_PASSWORD') or get_random_string(12)
+        student.set_password(student_password)
         student.save()
 
         # Create additional students for reviews
@@ -305,7 +311,7 @@ class Command(BaseCommand):
                     'last_name': 'User',
                 }
             )
-            stu.set_password('student123')
+            stu.set_password(student_password)  # Use same password for all test students
             stu.save()
             students.append(stu)
 

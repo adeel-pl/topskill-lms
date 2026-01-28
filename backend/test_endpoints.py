@@ -7,9 +7,12 @@ import requests
 import json
 import sys
 
+import os
+
 BASE_URL = "http://localhost:8000/api"
 ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "admin123"
+# Use environment variable for password, fallback to default for testing
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'admin123')
 
 class Colors:
     GREEN = '\033[92m'
