@@ -1,0 +1,145 @@
+{% extends 'portal/shared/base_portal.html' %}
+{% load static %}
+
+{% block title %}{{ user.get_full_name|default:user.username }} - Admin Portal{% endblock %}
+
+{% block sidebar_subtitle %}Manage the entire platform{% endblock %}
+
+{% block sidebar_nav %}
+<a href="{% url 'portal:admin_users' %}" class="nav-link active">
+    <i class="fas fa-users"></i>
+    Users
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- User Info -->
+<div class="portal-card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-user"></i>
+            {{ user.get_full_name|default:user.username }}
+        </h3>
+        <div class="d-flex gap-2">
+            <a href="/admin/auth/user/{{ user.id }}/change/" class="btn-secondary-portal" target="_blank">
+                <i class="fas fa-edit"></i>
+                Edit User
+            </a>
+            <a href="{% url 'portal:admin_users' %}" class="btn-secondary-portal">
+                <i class="fas fa-arrow-left"></i>
+                Back
+            </a>
+        </div>
+    </div>
+    
+    <div class="mb-4">
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Full Name:</strong> {{ user.get_full_name|default:"-" }}</p>
+        <p><strong>Role:</strong> 
+            {% if user.is_staff %}
+                <span class="badge bg-danger">Admin</span>
+            {% elif user.instructed_courses.exists %}
+                <span class="badge bg-info">Instructor</span>
+            {% else %}
+                <span class="badge bg-success">Student</span>
+            {% endif %}
+        </p>
+        <p><strong>Joined:</strong> {{ user.date_joined|date:"M d, Y" }}</p>
+        <p><strong>Last Login:</strong> {{ user.last_login|date:"M d, Y H:i"|default:"Never" }}</p>
+    </div>
+</div>
+
+<!-- Instructed Courses -->
+{% if instructed_courses %}
+<div class="portal-card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-book"></i>
+            Instructed Courses ({{ instructed_courses.count }})
+        </h3>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Course</th>
+                    <th>Modality</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in instructed_courses %}
+                <tr>
+                    <td><strong>{{ course.title }}</strong></td>
+                    <td><span class="badge bg-info">{{ course.get_modality_display }}</span></td>
+                    <td>${{ course.price }}</td>
+                    <td>
+                        {% if course.is_active %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'portal:admin_course_detail' course.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+<!-- Enrollments -->
+{% if enrollments %}
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-user-check"></i>
+            Enrollments ({{ enrollments.count }})
+        </h3>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Course</th>
+                    <th>Enrolled</th>
+                    <th>Progress</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for enrollment in enrollments %}
+                <tr>
+                    <td><strong>{{ enrollment.course.title }}</strong></td>
+                    <td>{{ enrollment.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar" role="progressbar" style="width: {{ enrollment.progress_percent|default:0 }}%; background-color: #048181;">
+                                {{ enrollment.progress_percent|default:0 }}%
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge bg-{{ enrollment.status|lower }}">{{ enrollment.get_status_display }}</span>
+                    </td>
+                    <td>
+                        <a href="/admin/lms/enrollment/{{ enrollment.id }}/change/" class="btn btn-sm btn-outline-primary" target="_blank">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+

@@ -1,0 +1,181 @@
+{% extends 'portal/shared/base_portal.html' %}
+{% load static %}
+
+{% block title %}{{ enrollment.user.get_full_name|default:enrollment.user.username }} - Instructor Portal{% endblock %}
+
+{% block sidebar_subtitle %}Manage your courses and students{% endblock %}
+
+{% block sidebar_nav %}
+<a href="{% url 'portal:instructor_students' %}" class="nav-link active">
+    <i class="fas fa-users"></i>
+    Students
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Student Info -->
+<div class="portal-card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-user"></i>
+            {{ enrollment.user.get_full_name|default:enrollment.user.username }}
+        </h3>
+        <a href="{% url 'portal:instructor_students' %}" class="btn-secondary-portal">
+            <i class="fas fa-arrow-left"></i>
+            Back
+        </a>
+    </div>
+    
+    <div class="mb-4">
+        <p><strong>Email:</strong> {{ enrollment.user.email }}</p>
+        <p><strong>Course:</strong> {{ enrollment.course.title }}</p>
+        <p><strong>Enrolled:</strong> {{ enrollment.created_at|date:"M d, Y" }}</p>
+        <p><strong>Progress:</strong> 
+            <div class="progress" style="height: 25px;">
+                <div class="progress-bar" role="progressbar" style="width: {{ enrollment.progress_percent|default:0 }}%; background-color: #048181;">
+                    {{ enrollment.progress_percent|default:0 }}%
+                </div>
+            </div>
+        </p>
+        <p><strong>Status:</strong> 
+            <span class="badge bg-{{ enrollment.status|lower }}">{{ enrollment.get_status_display }}</span>
+        </p>
+    </div>
+</div>
+
+<!-- Lecture Progress -->
+<div class="portal-card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-play-circle"></i>
+            Lecture Progress
+        </h3>
+    </div>
+    
+    {% if lecture_progress %}
+    <div class="table-responsive">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Lecture</th>
+                    <th>Completed</th>
+                    <th>Watch Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for progress in lecture_progress %}
+                <tr>
+                    <td>{{ progress.lecture.title }}</td>
+                    <td>
+                        {% if progress.completed %}
+                            <span class="badge bg-success">Yes</span>
+                        {% else %}
+                            <span class="badge bg-secondary">No</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ progress.watch_time_seconds|default:0 }}s</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted text-center py-3">No lecture progress yet.</p>
+    {% endif %}
+</div>
+
+<!-- Assignment Submissions -->
+<div class="portal-card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-file-upload"></i>
+            Assignment Submissions
+        </h3>
+    </div>
+    
+    {% if assignment_submissions %}
+    <div class="table-responsive">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Assignment</th>
+                    <th>Submitted At</th>
+                    <th>Status</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for submission in assignment_submissions %}
+                <tr>
+                    <td>{{ submission.assignment.title }}</td>
+                    <td>{{ submission.submitted_at|date:"M d, Y H:i"|default:"-" }}</td>
+                    <td>
+                        <span class="badge bg-{{ submission.status|lower }}">{{ submission.get_status_display }}</span>
+                    </td>
+                    <td>
+                        {% if submission.score %}
+                            {{ submission.score }} / {{ submission.assignment.max_score }}
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted text-center py-3">No assignment submissions yet.</p>
+    {% endif %}
+</div>
+
+<!-- Quiz Attempts -->
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-question-circle"></i>
+            Quiz Attempts
+        </h3>
+    </div>
+    
+    {% if quiz_attempts %}
+    <div class="table-responsive">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Quiz</th>
+                    <th>Started At</th>
+                    <th>Score</th>
+                    <th>Passed</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for attempt in quiz_attempts %}
+                <tr>
+                    <td>{{ attempt.quiz.title }}</td>
+                    <td>{{ attempt.started_at|date:"M d, Y H:i" }}</td>
+                    <td>
+                        {% if attempt.score %}
+                            <strong>{{ attempt.score }}%</strong>
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if attempt.passed %}
+                            <span class="badge bg-success">Passed</span>
+                        {% else %}
+                            <span class="badge bg-danger">Failed</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted text-center py-3">No quiz attempts yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,197 @@
+{% extends 'portal/shared/base_portal.html' %}
+{% load static %}
+
+{% block title %}{{ course.title }} - Admin Portal{% endblock %}
+
+{% block sidebar_subtitle %}Manage the entire platform{% endblock %}
+
+{% block sidebar_nav %}
+<a href="{% url 'portal:admin_courses' %}" class="nav-link active">
+    <i class="fas fa-book"></i>
+    Courses
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Course Info -->
+<div class="portal-card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-book"></i>
+            {{ course.title }}
+        </h3>
+        <div class="d-flex gap-2">
+            <a href="/admin/lms/course/{{ course.id }}/change/" class="btn-secondary-portal" target="_blank">
+                <i class="fas fa-edit"></i>
+                Edit Course
+            </a>
+            <a href="{% url 'portal:admin_courses' %}" class="btn-secondary-portal">
+                <i class="fas fa-arrow-left"></i>
+                Back
+            </a>
+        </div>
+    </div>
+    
+    <div class="mb-4">
+        <p><strong>Instructor:</strong> {{ course.instructor.get_full_name|default:course.instructor.username|default:"No instructor" }}</p>
+        <p><strong>Modality:</strong> <span class="badge bg-info">{{ course.get_modality_display }}</span></p>
+        <p><strong>Price:</strong> ${{ course.price }}</p>
+        <p><strong>Description:</strong> {{ course.description|truncatewords:50 }}</p>
+        <p><strong>Status:</strong> 
+            {% if course.is_active %}
+                <span class="badge bg-success">Active</span>
+            {% else %}
+                <span class="badge bg-secondary">Inactive</span>
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<!-- Enrollments -->
+<div class="portal-card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-user-check"></i>
+            Enrollments ({{ enrollments.count }})
+        </h3>
+    </div>
+    
+    {% if enrollments %}
+    <div class="table-responsive">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Enrolled</th>
+                    <th>Progress</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for enrollment in enrollments %}
+                <tr>
+                    <td>
+                        <strong>{{ enrollment.user.get_full_name|default:enrollment.user.username }}</strong>
+                        <br>
+                        <small class="text-muted">{{ enrollment.user.email }}</small>
+                    </td>
+                    <td>{{ enrollment.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar" role="progressbar" style="width: {{ enrollment.progress_percent|default:0 }}%; background-color: #048181;">
+                                {{ enrollment.progress_percent|default:0 }}%
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge bg-{{ enrollment.status|lower }}">{{ enrollment.get_status_display }}</span>
+                    </td>
+                    <td>
+                        <a href="/admin/lms/enrollment/{{ enrollment.id }}/change/" class="btn btn-sm btn-outline-primary" target="_blank">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted text-center py-3">No enrollments yet.</p>
+    {% endif %}
+</div>
+
+<!-- Assignments -->
+<div class="portal-card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-tasks"></i>
+            Assignments ({{ assignments.count }})
+        </h3>
+    </div>
+    
+    {% if assignments %}
+    <div class="table-responsive">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Due Date</th>
+                    <th>Max Score</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for assignment in assignments %}
+                <tr>
+                    <td><strong>{{ assignment.title }}</strong></td>
+                    <td>{{ assignment.due_date|date:"M d, Y"|default:"-" }}</td>
+                    <td>{{ assignment.max_score }}</td>
+                    <td>
+                        {% if assignment.is_active %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/admin/lms/assignment/{{ assignment.id }}/change/" class="btn btn-sm btn-outline-primary" target="_blank">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted text-center py-3">No assignments yet.</p>
+    {% endif %}
+</div>
+
+<!-- Quizzes -->
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-question-circle"></i>
+            Quizzes ({{ quizzes.count }})
+        </h3>
+    </div>
+    
+    {% if quizzes %}
+    <div class="table-responsive">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Questions</th>
+                    <th>Passing Score</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for quiz in quizzes %}
+                <tr>
+                    <td><strong>{{ quiz.title }}</strong></td>
+                    <td>{{ quiz.questions.count }}</td>
+                    <td>{{ quiz.passing_score }}%</td>
+                    <td>
+                        {% if quiz.is_active %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/admin/lms/quiz/{{ quiz.id }}/change/" class="btn btn-sm btn-outline-primary" target="_blank">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted text-center py-3">No quizzes yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

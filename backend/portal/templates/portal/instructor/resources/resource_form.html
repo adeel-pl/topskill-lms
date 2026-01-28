@@ -1,0 +1,99 @@
+{% extends 'portal/shared/base_portal.html' %}
+{% load static %}
+
+{% block title %}{% if form_type == 'create' %}Create{% else %}Edit{% endif %} Resource - Instructor Portal{% endblock %}
+
+{% block sidebar_subtitle %}Manage your courses and students{% endblock %}
+
+{% block sidebar_nav %}
+<a href="{% url 'portal:instructor_courses' %}" class="nav-link active">
+    <i class="fas fa-book"></i>
+    My Courses
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-{% if form_type == 'create' %}plus{% else %}edit{% endif %}"></i>
+            {% if form_type == 'create' %}Add Resource{% else %}Edit Resource{% endif %}
+        </h3>
+        <a href="{% url 'portal:instructor_course_detail' course.id %}" class="btn-secondary-portal">
+            <i class="fas fa-arrow-left"></i>
+            Back to Course
+        </a>
+    </div>
+    
+    <form method="post" class="mt-4" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+            <input type="text" name="title" id="title" class="form-control" required 
+                   value="{% if resource %}{{ resource.title }}{% endif %}" 
+                   placeholder="e.g., Course Slides PDF">
+        </div>
+        
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea name="description" id="description" class="form-control" rows="3" 
+                      placeholder="Resource description...">{% if resource %}{{ resource.description }}{% endif %}</textarea>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="resource_type" class="form-label">Resource Type <span class="text-danger">*</span></label>
+                <select name="resource_type" id="resource_type" class="form-control" required>
+                    <option value="pdf" {% if resource and resource.resource_type == 'pdf' %}selected{% endif %}>PDF</option>
+                    <option value="video" {% if resource and resource.resource_type == 'video' %}selected{% endif %}>Video</option>
+                    <option value="code" {% if resource and resource.resource_type == 'code' %}selected{% endif %}>Code File</option>
+                    <option value="image" {% if resource and resource.resource_type == 'image' %}selected{% endif %}>Image</option>
+                    <option value="other" {% if not resource or resource.resource_type == 'other' %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <label for="order" class="form-label">Order</label>
+                <input type="number" name="order" id="order" class="form-control" 
+                       value="{% if resource %}{{ resource.order }}{% else %}1{% endif %}" 
+                       min="1" required>
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <label for="file" class="form-label">Upload File</label>
+            <input type="file" name="file" id="file" class="form-control" accept=".pdf,.doc,.docx,.zip,.txt,.py,.js,.html,.css">
+            {% if resource and resource.file %}
+                <small class="text-muted">Current: <a href="{{ resource.file.url }}" target="_blank">{{ resource.file.name }}</a></small>
+            {% endif %}
+        </div>
+        
+        <div class="mb-3">
+            <label for="external_url" class="form-label">External URL (if not uploading file)</label>
+            <input type="url" name="external_url" id="external_url" class="form-control" 
+                   value="{% if resource %}{{ resource.external_url }}{% endif %}" 
+                   placeholder="https://...">
+        </div>
+        
+        <div class="mb-3">
+            <div class="form-check">
+                <input type="checkbox" name="is_active" id="is_active" class="form-check-input" 
+                       {% if not resource or resource.is_active %}checked{% endif %}>
+                <label for="is_active" class="form-check-label">Active</label>
+            </div>
+        </div>
+        
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn-primary-portal">
+                <i class="fas fa-save"></i>
+                {% if form_type == 'create' %}Add Resource{% else %}Update Resource{% endif %}
+            </button>
+            <a href="{% url 'portal:instructor_course_detail' course.id %}" class="btn-secondary-portal">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

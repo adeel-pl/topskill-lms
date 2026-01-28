@@ -1,0 +1,106 @@
+{% extends 'portal/shared/base_portal.html' %}
+{% load static %}
+
+{% block title %}Analytics - Instructor Portal{% endblock %}
+
+{% block sidebar_subtitle %}Manage your courses and students{% endblock %}
+
+{% block sidebar_nav %}
+<a href="{% url 'portal:instructor_dashboard' %}" class="nav-link">
+    <i class="fas fa-tachometer-alt"></i>
+    Dashboard
+</a>
+<a href="{% url 'portal:instructor_courses' %}" class="nav-link">
+    <i class="fas fa-book"></i>
+    My Courses
+</a>
+<a href="{% url 'portal:instructor_students' %}" class="nav-link">
+    <i class="fas fa-users"></i>
+    Students
+</a>
+<a href="{% url 'portal:instructor_assignments' %}" class="nav-link">
+    <i class="fas fa-tasks"></i>
+    Assignments
+</a>
+<a href="{% url 'portal:instructor_quizzes' %}" class="nav-link">
+    <i class="fas fa-question-circle"></i>
+    Quizzes
+</a>
+<a href="{% url 'portal:instructor_attendance' %}" class="nav-link">
+    <i class="fas fa-calendar-check"></i>
+    Attendance
+</a>
+<a href="{% url 'portal:instructor_analytics' %}" class="nav-link active">
+    <i class="fas fa-chart-line"></i>
+    Analytics
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Overall Stats -->
+<div class="stats-grid mb-4">
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-user-check"></i>
+        </div>
+        <p class="stat-label">Total Enrollments</p>
+        <h3 class="stat-value">{{ total_enrollments }}</h3>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-chart-line"></i>
+        </div>
+        <p class="stat-label">Average Progress</p>
+        <h3 class="stat-value">{{ avg_progress_all }}%</h3>
+    </div>
+</div>
+
+<!-- Course Statistics -->
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-chart-bar"></i>
+            Course Statistics
+        </h3>
+    </div>
+    
+    {% if course_stats %}
+    <div class="table-responsive">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Course</th>
+                    <th>Enrollments</th>
+                    <th>Average Progress</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stat in course_stats %}
+                <tr>
+                    <td><strong>{{ stat.course.title }}</strong></td>
+                    <td>{{ stat.enrollments }}</td>
+                    <td>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar" role="progressbar" style="width: {{ stat.avg_progress }}%; background-color: #048181;">
+                                {{ stat.avg_progress }}%
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <a href="{% url 'portal:instructor_course_detail' stat.course.id %}" class="btn btn-sm btn-outline-primary">
+                            View
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted text-center py-3">No course statistics available.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

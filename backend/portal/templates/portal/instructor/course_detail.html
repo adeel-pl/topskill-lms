@@ -1,0 +1,453 @@
+{% extends 'portal/shared/base_portal.html' %}
+{% load static %}
+
+{% block title %}{{ course.title }} - TopSkill{% endblock %}
+
+{% block sidebar_subtitle %}Manage your courses and students{% endblock %}
+
+{% block sidebar_nav %}
+<a href="{% url 'portal:instructor_dashboard' %}" class="nav-link">
+    <i class="fas fa-tachometer-alt"></i>
+    Dashboard
+</a>
+<a href="{% url 'portal:instructor_courses' %}" class="nav-link">
+    <i class="fas fa-book"></i>
+    My Courses
+</a>
+<a href="{% url 'portal:instructor_students' %}" class="nav-link">
+    <i class="fas fa-users"></i>
+    Students
+</a>
+<a href="{% url 'portal:instructor_assignments' %}" class="nav-link">
+    <i class="fas fa-tasks"></i>
+    Assignments
+</a>
+<a href="{% url 'portal:instructor_quizzes' %}" class="nav-link">
+    <i class="fas fa-question-circle"></i>
+    Quizzes
+</a>
+<a href="{% url 'portal:instructor_attendance' %}" class="nav-link">
+    <i class="fas fa-calendar-check"></i>
+    Attendance
+</a>
+<a href="{% url 'portal:instructor_analytics' %}" class="nav-link">
+    <i class="fas fa-chart-line"></i>
+    Analytics
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Course Header -->
+<div class="portal-card">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+            <h2 class="mb-2">{{ course.title }}</h2>
+            <p class="text-muted">{{ course.description|truncatewords:30 }}</p>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+            <span class="badge bg-info me-2">{{ course.get_modality_display }}</span>
+            {% if course.is_active %}
+                <span class="badge bg-success">Active</span>
+            {% else %}
+                <span class="badge bg-secondary">Inactive</span>
+            {% endif %}
+            <a href="{% url 'portal:instructor_course_edit' course.id %}" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-edit"></i>
+                Edit
+            </a>
+            <a href="{% url 'portal:instructor_course_delete' course.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');">
+                <i class="fas fa-trash"></i>
+                Delete
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Stats -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-users"></i>
+        </div>
+        <p class="stat-label">Total Students</p>
+        <h3 class="stat-value">{{ total_students }}</h3>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-user-check"></i>
+        </div>
+        <p class="stat-label">Active Students</p>
+        <h3 class="stat-value">{{ active_students }}</h3>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-clipboard-check"></i>
+        </div>
+        <p class="stat-label">Pending Submissions</p>
+        <h3 class="stat-value">{{ pending_submissions }}</h3>
+    </div>
+</div>
+
+<!-- Recent Enrollments -->
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-user-plus"></i>
+            Recent Enrollments
+        </h3>
+    </div>
+    
+    {% if recent_enrollments %}
+    <div class="table-responsive">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Enrolled Date</th>
+                    <th>Status</th>
+                    <th>Progress</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for enrollment in recent_enrollments %}
+                <tr>
+                    <td>
+                        <strong>{{ enrollment.user.get_full_name|default:enrollment.user.username }}</strong>
+                        <br>
+                        <small class="text-muted">{{ enrollment.user.email }}</small>
+                    </td>
+                    <td>{{ enrollment.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        <span class="badge bg-{{ enrollment.status|lower }}">{{ enrollment.get_status_display }}</span>
+                    </td>
+                    <td>{{ enrollment.progress_percent|default:0 }}%</td>
+                    <td>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted text-center py-3">No enrollments yet.</p>
+    {% endif %}
+</div>
+
+<!-- Assignments -->
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-tasks"></i>
+            Assignments
+        </h3>
+        <a href="{% url 'portal:instructor_assignment_create' %}?course={{ course.id }}" class="btn-primary-portal">
+            <i class="fas fa-plus"></i>
+            Create Assignment
+        </a>
+    </div>
+    
+    {% if assignments %}
+    <div class="table-responsive">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Due Date</th>
+                    <th>Max Score</th>
+                    <th>Submissions</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for assignment in assignments %}
+                <tr>
+                    <td><strong>{{ assignment.title }}</strong></td>
+                    <td>{{ assignment.due_date|date:"M d, Y" }}</td>
+                    <td>{{ assignment.max_score }}</td>
+                    <td>{{ assignment.submissions.count }}</td>
+                    <td>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted text-center py-3">No assignments yet.</p>
+    {% endif %}
+</div>
+
+<!-- Quizzes -->
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-question-circle"></i>
+            Quizzes
+        </h3>
+        <a href="{% url 'portal:instructor_quiz_create' %}?course={{ course.id }}" class="btn-primary-portal">
+            <i class="fas fa-plus"></i>
+            Create Quiz
+        </a>
+    </div>
+    
+    {% if quizzes %}
+    <div class="table-responsive">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Questions</th>
+                    <th>Passing Score</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for quiz in quizzes %}
+                <tr>
+                    <td><strong>{{ quiz.title }}</strong></td>
+                    <td>{{ quiz.questions.count }}</td>
+                    <td>{{ quiz.passing_score }}%</td>
+                    <td>
+                        {% if quiz.is_active %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'portal:instructor_quiz_detail' quiz.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted text-center py-3">No quizzes yet.</p>
+    {% endif %}
+</div>
+
+<!-- Course Content (Sections & Lectures) -->
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-list"></i>
+            Course Content ({{ sections.count }} sections)
+        </h3>
+        <a href="{% url 'portal:instructor_section_create' course.id %}" class="btn-primary-portal">
+            <i class="fas fa-plus"></i>
+            Add Section
+        </a>
+    </div>
+    
+    {% if sections %}
+    <div class="accordion" id="sectionsAccordion">
+        {% for section in sections %}
+        <div class="accordion-item mb-3">
+            <h2 class="accordion-header" id="heading{{ section.id }}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ section.id }}">
+                    <strong>Section {{ section.order }}: {{ section.title }}</strong>
+                    <span class="badge bg-info ms-2">{{ section.lectures.count }} lectures</span>
+                    {% if section.is_preview %}<span class="badge bg-warning ms-2">Preview</span>{% endif %}
+                </button>
+            </h2>
+            <div id="collapse{{ section.id }}" class="accordion-collapse collapse" data-bs-parent="#sectionsAccordion">
+                <div class="accordion-body">
+                    <div class="d-flex justify-content-end mb-3">
+                        <a href="{% url 'portal:instructor_section_edit' course.id section.id %}" class="btn btn-sm btn-outline-secondary me-2">
+                            <i class="fas fa-edit"></i> Edit Section
+                        </a>
+                        <a href="{% url 'portal:instructor_lecture_create' course.id section.id %}" class="btn btn-sm btn-primary me-2">
+                            <i class="fas fa-plus"></i> Add Lecture
+                        </a>
+                        <a href="{% url 'portal:instructor_section_delete' course.id section.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');">
+                            <i class="fas fa-trash"></i> Delete
+                        </a>
+                    </div>
+                    
+                    {% if section.lectures.all %}
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Order</th>
+                                <th>Title</th>
+                                <th>Duration</th>
+                                <th>Video Type</th>
+                                <th>Preview</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for lecture in section.lectures.all %}
+                            <tr>
+                                <td>{{ lecture.order }}</td>
+                                <td><strong>{{ lecture.title }}</strong></td>
+                                <td>{{ lecture.duration_minutes }}m</td>
+                                <td><span class="badge bg-info">{{ lecture.get_video_type_display }}</span></td>
+                                <td>{% if lecture.is_preview %}<span class="badge bg-warning">Yes</span>{% else %}<span class="text-muted">No</span>{% endif %}</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="{% url 'portal:instructor_lecture_edit' course.id section.id lecture.id %}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{% url 'portal:instructor_lecture_delete' course.id section.id lecture.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p class="text-muted">No lectures in this section yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-muted text-center py-3">No sections yet. Add your first section to start building course content.</p>
+    {% endif %}
+</div>
+
+<!-- Announcements -->
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-bullhorn"></i>
+            Announcements ({{ announcements.count }})
+        </h3>
+        <a href="{% url 'portal:instructor_announcement_create' course.id %}" class="btn-primary-portal">
+            <i class="fas fa-plus"></i>
+            Create Announcement
+        </a>
+    </div>
+    
+    {% if announcements %}
+    <div class="list-group">
+        {% for announcement in announcements %}
+        <div class="list-group-item">
+            <div class="d-flex justify-content-between align-items-start">
+                <div class="flex-grow-1">
+                    <h5 class="mb-1">
+                        {% if announcement.is_pinned %}<i class="fas fa-thumbtack text-warning"></i>{% endif %}
+                        {{ announcement.title }}
+                    </h5>
+                    <p class="mb-1 text-muted">{{ announcement.content|truncatewords:30 }}</p>
+                    <small class="text-muted">{{ announcement.created_at|date:"M d, Y" }}</small>
+                </div>
+                <div class="btn-group" role="group">
+                    <a href="{% url 'portal:instructor_announcement_edit' course.id announcement.id %}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="{% url 'portal:instructor_announcement_delete' course.id announcement.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-muted text-center py-3">No announcements yet.</p>
+    {% endif %}
+</div>
+
+<!-- Resources -->
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-file"></i>
+            Resources ({{ resources.count }})
+        </h3>
+        <a href="{% url 'portal:instructor_resource_create' course.id %}" class="btn-primary-portal">
+            <i class="fas fa-plus"></i>
+            Add Resource
+        </a>
+    </div>
+    
+    {% if resources %}
+    <div class="table-responsive">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for resource in resources %}
+                <tr>
+                    <td><strong>{{ resource.title }}</strong></td>
+                    <td><span class="badge bg-info">{{ resource.get_resource_type_display }}</span></td>
+                    <td>{% if resource.is_active %}<span class="badge bg-success">Active</span>{% else %}<span class="badge bg-secondary">Inactive</span>{% endif %}</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a href="{% url 'portal:instructor_resource_edit' course.id resource.id %}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'portal:instructor_resource_delete' course.id resource.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted text-center py-3">No resources yet.</p>
+    {% endif %}
+</div>
+
+<!-- Q&A -->
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-question-circle"></i>
+            Q&A ({{ qandas.count }})
+        </h3>
+        <a href="{% url 'portal:instructor_qa_create' course.id %}" class="btn-primary-portal">
+            <i class="fas fa-plus"></i>
+            Add Q&A
+        </a>
+    </div>
+    
+    {% if qandas %}
+    <div class="list-group">
+        {% for qa in qandas %}
+        <div class="list-group-item">
+            <div class="d-flex justify-content-between align-items-start">
+                <div class="flex-grow-1">
+                    <h5 class="mb-1"><strong>Q:</strong> {{ qa.question }}</h5>
+                    <p class="mb-1"><strong>A:</strong> {{ qa.answer|truncatewords:30 }}</p>
+                </div>
+                <div class="btn-group" role="group">
+                    <a href="{% url 'portal:instructor_qa_edit' course.id qa.id %}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="{% url 'portal:instructor_qa_delete' course.id qa.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-muted text-center py-3">No Q&A yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

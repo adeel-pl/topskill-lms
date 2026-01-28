@@ -1,0 +1,136 @@
+{% extends 'portal/shared/base_portal.html' %}
+{% load static %}
+
+{% block title %}{% if form_type == 'create' %}Create{% else %}Edit{% endif %} Lecture - Instructor Portal{% endblock %}
+
+{% block sidebar_subtitle %}Manage your courses and students{% endblock %}
+
+{% block sidebar_nav %}
+<a href="{% url 'portal:instructor_courses' %}" class="nav-link active">
+    <i class="fas fa-book"></i>
+    My Courses
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-{% if form_type == 'create' %}plus{% else %}edit{% endif %}"></i>
+            {% if form_type == 'create' %}Create New Lecture{% else %}Edit Lecture{% endif %}
+        </h3>
+        <a href="{% url 'portal:instructor_course_detail' course.id %}" class="btn-secondary-portal">
+            <i class="fas fa-arrow-left"></i>
+            Back to Course
+        </a>
+    </div>
+    
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="title" class="form-label">Lecture Title <span class="text-danger">*</span></label>
+            <input type="text" name="title" id="title" class="form-control" required 
+                   value="{% if lecture %}{{ lecture.title }}{% endif %}" 
+                   placeholder="e.g., Introduction to Variables">
+        </div>
+        
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea name="description" id="description" class="form-control" rows="3" 
+                      placeholder="Lecture description...">{% if lecture %}{{ lecture.description }}{% endif %}</textarea>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="video_type" class="form-label">Video Type <span class="text-danger">*</span></label>
+                <select name="video_type" id="video_type" class="form-control" required onchange="updateVideoFields()">
+                    <option value="youtube" {% if not lecture or lecture.video_type == 'youtube' %}selected{% endif %}>YouTube</option>
+                    <option value="vimeo" {% if lecture and lecture.video_type == 'vimeo' %}selected{% endif %}>Vimeo</option>
+                    <option value="direct" {% if lecture and lecture.video_type == 'direct' %}selected{% endif %}>Direct URL</option>
+                    <option value="uploaded" {% if lecture and lecture.video_type == 'uploaded' %}selected{% endif %}>Uploaded File</option>
+                </select>
+            </div>
+            
+            <div class="col-md-4 mb-3">
+                <label for="youtube_video_id" class="form-label" id="videoIdLabel">YouTube Video ID</label>
+                <input type="text" name="youtube_video_id" id="youtube_video_id" class="form-control" 
+                       value="{% if lecture %}{{ lecture.youtube_video_id }}{% endif %}" 
+                       placeholder="e.g., dQw4w9WgXcQ">
+                <small class="text-muted">Extract from YouTube URL: youtube.com/watch?v=<strong>VIDEO_ID</strong></small>
+            </div>
+            
+            <div class="col-md-4 mb-3">
+                <label for="duration_minutes" class="form-label">Duration (minutes)</label>
+                <input type="number" name="duration_minutes" id="duration_minutes" class="form-control" 
+                       value="{% if lecture %}{{ lecture.duration_minutes }}{% else %}0{% endif %}" 
+                       min="0" required>
+            </div>
+        </div>
+        
+        <div class="mb-3" id="contentUrlField" style="display: none;">
+            <label for="content_url" class="form-label">Video URL</label>
+            <input type="url" name="content_url" id="content_url" class="form-control" 
+                   value="{% if lecture %}{{ lecture.content_url }}{% endif %}" 
+                   placeholder="https://...">
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="order" class="form-label">Order</label>
+                <input type="number" name="order" id="order" class="form-control" 
+                       value="{% if lecture %}{{ lecture.order }}{% else %}1{% endif %}" 
+                       min="1" required>
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <div class="form-check">
+                <input type="checkbox" name="is_preview" id="is_preview" class="form-check-input" 
+                       {% if lecture and lecture.is_preview %}checked{% endif %}>
+                <label for="is_preview" class="form-check-label">Allow Preview (students can watch without enrollment)</label>
+            </div>
+        </div>
+        
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn-primary-portal">
+                <i class="fas fa-save"></i>
+                {% if form_type == 'create' %}Create Lecture{% else %}Update Lecture{% endif %}
+            </button>
+            <a href="{% url 'portal:instructor_course_detail' course.id %}" class="btn-secondary-portal">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+function updateVideoFields() {
+    const videoType = document.getElementById('video_type').value;
+    const videoIdField = document.getElementById('youtube_video_id');
+    const contentUrlField = document.getElementById('contentUrlField');
+    const label = document.getElementById('videoIdLabel');
+    
+    if (videoType === 'youtube') {
+        videoIdField.style.display = 'block';
+        videoIdField.parentElement.style.display = 'block';
+        label.textContent = 'YouTube Video ID';
+        contentUrlField.style.display = 'none';
+    } else if (videoType === 'vimeo') {
+        videoIdField.style.display = 'block';
+        videoIdField.parentElement.style.display = 'block';
+        label.textContent = 'Vimeo Video ID';
+        contentUrlField.style.display = 'none';
+    } else {
+        videoIdField.style.display = 'none';
+        videoIdField.parentElement.style.display = 'none';
+        contentUrlField.style.display = 'block';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    updateVideoFields();
+});
+</script>
+{% endblock %}
+

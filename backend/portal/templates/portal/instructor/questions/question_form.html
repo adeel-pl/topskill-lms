@@ -1,0 +1,200 @@
+{% extends 'portal/shared/base_portal.html' %}
+{% load static %}
+
+{% block title %}{% if form_type == 'create' %}Create{% else %}Edit{% endif %} Question - Instructor Portal{% endblock %}
+
+{% block sidebar_subtitle %}Manage your courses and students{% endblock %}
+
+{% block sidebar_nav %}
+<a href="{% url 'portal:instructor_quizzes' %}" class="nav-link active">
+    <i class="fas fa-question-circle"></i>
+    Quizzes
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-{% if form_type == 'create' %}plus{% else %}edit{% endif %}"></i>
+            {% if form_type == 'create' %}Create New Question{% else %}Edit Question{% endif %}
+        </h3>
+        <a href="{% url 'portal:instructor_quiz_detail' quiz.id %}" class="btn-secondary-portal">
+            <i class="fas fa-arrow-left"></i>
+            Back to Quiz
+        </a>
+    </div>
+    
+    <form method="post" class="mt-4" id="questionForm">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="question_text" class="form-label">Question Text <span class="text-danger">*</span></label>
+            <textarea name="question_text" id="question_text" class="form-control" rows="3" required 
+                      placeholder="Enter your question...">{% if question %}{{ question.question_text }}{% endif %}</textarea>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="question_type" class="form-label">Question Type <span class="text-danger">*</span></label>
+                <select name="question_type" id="question_type" class="form-control" required onchange="updateQuestionForm()">
+                    <option value="multiple_choice" {% if question and question.question_type == 'multiple_choice' %}selected{% endif %}>Multiple Choice</option>
+                    <option value="true_false" {% if question and question.question_type == 'true_false' %}selected{% endif %}>True/False</option>
+                    <option value="short_answer" {% if question and question.question_type == 'short_answer' %}selected{% endif %}>Short Answer</option>
+                </select>
+            </div>
+            
+            <div class="col-md-3 mb-3">
+                <label for="points" class="form-label">Points</label>
+                <input type="number" name="points" id="points" class="form-control" 
+                       value="{% if question %}{{ question.points }}{% else %}1{% endif %}" 
+                       min="0" step="0.1" required>
+            </div>
+            
+            <div class="col-md-3 mb-3">
+                <label for="order" class="form-label">Order</label>
+                <input type="number" name="order" id="order" class="form-control" 
+                       value="{% if question %}{{ question.order }}{% else %}1{% endif %}" 
+                       min="1" required>
+            </div>
+        </div>
+        
+        <!-- Multiple Choice Options -->
+        <div id="multipleChoiceOptions" style="display: none;">
+            <h5 class="mb-3">Options</h5>
+            <div id="optionsContainer">
+                {% if question and question.question_type == 'multiple_choice' %}
+                    {% for option in question.options.all %}
+                    <div class="option-row mb-3">
+                        <div class="input-group">
+                            <div class="input-group-text">
+                                <input type="checkbox" name="is_correct" value="{{ forloop.counter0 }}" 
+                                       {% if option.is_correct %}checked{% endif %}>
+                            </div>
+                            <input type="text" name="option_text" class="form-control" 
+                                   value="{{ option.option_text }}" placeholder="Option text" required>
+                            <button type="button" class="btn btn-outline-danger" onclick="removeOption(this)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="option-row mb-3">
+                        <div class="input-group">
+                            <div class="input-group-text">
+                                <input type="checkbox" name="is_correct" value="0">
+                            </div>
+                            <input type="text" name="option_text" class="form-control" placeholder="Option 1" required>
+                            <button type="button" class="btn btn-outline-danger" onclick="removeOption(this)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="option-row mb-3">
+                        <div class="input-group">
+                            <div class="input-group-text">
+                                <input type="checkbox" name="is_correct" value="1">
+                            </div>
+                            <input type="text" name="option_text" class="form-control" placeholder="Option 2" required>
+                            <button type="button" class="btn btn-outline-danger" onclick="removeOption(this)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            <button type="button" class="btn btn-outline-primary" onclick="addOption()">
+                <i class="fas fa-plus"></i> Add Option
+            </button>
+        </div>
+        
+        <!-- True/False Options -->
+        <div id="trueFalseOptions" style="display: none;">
+            <div class="mb-3">
+                <label class="form-label">Correct Answer</label>
+                <div class="form-check">
+                    <input type="radio" name="true_false_answer" value="true" id="true_answer" 
+                           class="form-check-input" {% if question and question.question_type == 'true_false' and question.options.first.is_correct %}checked{% endif %}>
+                    <label for="true_answer" class="form-check-label">True</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" name="true_false_answer" value="false" id="false_answer" 
+                           class="form-check-input" {% if question and question.question_type == 'true_false' and not question.options.first.is_correct %}checked{% endif %}>
+                    <label for="false_answer" class="form-check-label">False</label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Short Answer -->
+        <div id="shortAnswerOptions" style="display: none;">
+            <div class="mb-3">
+                <label for="short_answer_text" class="form-label">Correct Answer</label>
+                <input type="text" name="short_answer_text" id="short_answer_text" class="form-control" 
+                       value="{% if question and question.question_type == 'short_answer' %}{{ question.correct_answer }}{% endif %}" 
+                       placeholder="Enter the correct answer...">
+            </div>
+        </div>
+        
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn-primary-portal">
+                <i class="fas fa-save"></i>
+                {% if form_type == 'create' %}Create Question{% else %}Update Question{% endif %}
+            </button>
+            <a href="{% url 'portal:instructor_quiz_detail' quiz.id %}" class="btn-secondary-portal">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+function updateQuestionForm() {
+    const questionType = document.getElementById('question_type').value;
+    document.getElementById('multipleChoiceOptions').style.display = 'none';
+    document.getElementById('trueFalseOptions').style.display = 'none';
+    document.getElementById('shortAnswerOptions').style.display = 'none';
+    
+    if (questionType === 'multiple_choice') {
+        document.getElementById('multipleChoiceOptions').style.display = 'block';
+    } else if (questionType === 'true_false') {
+        document.getElementById('trueFalseOptions').style.display = 'block';
+    } else if (questionType === 'short_answer') {
+        document.getElementById('shortAnswerOptions').style.display = 'block';
+    }
+}
+
+function addOption() {
+    const container = document.getElementById('optionsContainer');
+    const optionCount = container.children.length;
+    const newOption = document.createElement('div');
+    newOption.className = 'option-row mb-3';
+    newOption.innerHTML = `
+        <div class="input-group">
+            <div class="input-group-text">
+                <input type="checkbox" name="is_correct" value="${optionCount}">
+            </div>
+            <input type="text" name="option_text" class="form-control" placeholder="Option ${optionCount + 1}" required>
+            <button type="button" class="btn btn-outline-danger" onclick="removeOption(this)">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    `;
+    container.appendChild(newOption);
+}
+
+function removeOption(btn) {
+    if (document.getElementById('optionsContainer').children.length > 1) {
+        btn.closest('.option-row').remove();
+    } else {
+        alert('At least one option is required');
+    }
+}
+
+// Initialize form on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateQuestionForm();
+});
+</script>
+{% endblock %}
+

@@ -1,0 +1,134 @@
+{% extends 'portal/shared/base_portal.html' %}
+{% load static %}
+
+{% block title %}{{ assignment.title }} - Instructor Portal{% endblock %}
+
+{% block sidebar_subtitle %}Manage your courses and students{% endblock %}
+
+{% block sidebar_nav %}
+<a href="{% url 'portal:instructor_dashboard' %}" class="nav-link">
+    <i class="fas fa-tachometer-alt"></i>
+    Dashboard
+</a>
+<a href="{% url 'portal:instructor_courses' %}" class="nav-link">
+    <i class="fas fa-book"></i>
+    My Courses
+</a>
+<a href="{% url 'portal:instructor_students' %}" class="nav-link">
+    <i class="fas fa-users"></i>
+    Students
+</a>
+<a href="{% url 'portal:instructor_assignments' %}" class="nav-link active">
+    <i class="fas fa-tasks"></i>
+    Assignments
+</a>
+<a href="{% url 'portal:instructor_quizzes' %}" class="nav-link">
+    <i class="fas fa-question-circle"></i>
+    Quizzes
+</a>
+<a href="{% url 'portal:instructor_attendance' %}" class="nav-link">
+    <i class="fas fa-calendar-check"></i>
+    Attendance
+</a>
+<a href="{% url 'portal:instructor_analytics' %}" class="nav-link">
+    <i class="fas fa-chart-line"></i>
+    Analytics
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Assignment Info -->
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-tasks"></i>
+            {{ assignment.title }}
+        </h3>
+        <div class="d-flex gap-2">
+            <a href="{% url 'portal:instructor_assignment_edit' assignment.id %}" class="btn-secondary-portal">
+                <i class="fas fa-edit"></i>
+                Edit
+            </a>
+            <a href="{% url 'portal:instructor_assignment_delete' assignment.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">
+                <i class="fas fa-trash"></i>
+                Delete
+            </a>
+        </div>
+    </div>
+    
+    <div class="mb-4">
+        <p><strong>Course:</strong> {{ assignment.course.title }}</p>
+        <p><strong>Description:</strong> {{ assignment.description|linebreaks }}</p>
+        <p><strong>Due Date:</strong> {% if assignment.due_date %}{{ assignment.due_date|date:"M d, Y H:i" }}{% else %}No due date{% endif %}</p>
+        <p><strong>Max Score:</strong> {{ assignment.max_score }}</p>
+        <p><strong>Status:</strong> 
+            {% if assignment.is_active %}
+                <span class="badge bg-success">Active</span>
+            {% else %}
+                <span class="badge bg-secondary">Inactive</span>
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<!-- Submissions -->
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-file-upload"></i>
+            Submissions ({{ submissions.count }})
+        </h3>
+    </div>
+    
+    {% if submissions %}
+    <div class="table-responsive">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Submitted At</th>
+                    <th>Status</th>
+                    <th>Score</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for submission in submissions %}
+                <tr>
+                    <td>
+                        <strong>{{ submission.enrollment.user.get_full_name|default:submission.enrollment.user.username }}</strong>
+                    </td>
+                    <td>
+                        {% if submission.submitted_at %}
+                            {{ submission.submitted_at|date:"M d, Y H:i" }}
+                        {% else %}
+                            <span class="text-muted">Not submitted</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge bg-{{ submission.status|lower }}">{{ submission.get_status_display }}</span>
+                    </td>
+                    <td>
+                        {% if submission.score %}
+                            {{ submission.score }} / {{ assignment.max_score }}
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'portal:instructor_submission_grade' submission.id %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-check"></i>
+                            {% if submission.status == 'submitted' %}Grade{% else %}View/Edit{% endif %}
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted text-center py-3">No submissions yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

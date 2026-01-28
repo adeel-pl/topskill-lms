@@ -1,0 +1,67 @@
+{% extends 'portal/shared/base_portal.html' %}
+{% load static %}
+
+{% block title %}{% if form_type == 'create' %}Create{% else %}Edit{% endif %} Section - Instructor Portal{% endblock %}
+
+{% block sidebar_subtitle %}Manage your courses and students{% endblock %}
+
+{% block sidebar_nav %}
+<a href="{% url 'portal:instructor_courses' %}" class="nav-link active">
+    <i class="fas fa-book"></i>
+    My Courses
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-{% if form_type == 'create' %}plus{% else %}edit{% endif %}"></i>
+            {% if form_type == 'create' %}Create New Section{% else %}Edit Section{% endif %}
+        </h3>
+        <a href="{% url 'portal:instructor_course_detail' course.id %}" class="btn-secondary-portal">
+            <i class="fas fa-arrow-left"></i>
+            Back to Course
+        </a>
+    </div>
+    
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="title" class="form-label">Section Title <span class="text-danger">*</span></label>
+            <input type="text" name="title" id="title" class="form-control" required 
+                   value="{% if section %}{{ section.title }}{% endif %}" 
+                   placeholder="e.g., Introduction to Python">
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="order" class="form-label">Order</label>
+                <input type="number" name="order" id="order" class="form-control" 
+                       value="{% if section %}{{ section.order }}{% else %}1{% endif %}" 
+                       min="1" required>
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <div class="form-check">
+                <input type="checkbox" name="is_preview" id="is_preview" class="form-check-input" 
+                       {% if section and section.is_preview %}checked{% endif %}>
+                <label for="is_preview" class="form-check-label">Allow Preview (students can view without enrollment)</label>
+            </div>
+        </div>
+        
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn-primary-portal">
+                <i class="fas fa-save"></i>
+                {% if form_type == 'create' %}Create Section{% else %}Update Section{% endif %}
+            </button>
+            <a href="{% url 'portal:instructor_course_detail' course.id %}" class="btn-secondary-portal">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

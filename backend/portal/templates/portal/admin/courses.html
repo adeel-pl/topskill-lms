@@ -1,0 +1,111 @@
+{% extends 'portal/shared/base_portal.html' %}
+{% load static %}
+
+{% block title %}Courses - Admin Portal{% endblock %}
+
+{% block sidebar_subtitle %}Manage the entire platform{% endblock %}
+
+{% block sidebar_nav %}
+<a href="{% url 'portal:admin_dashboard' %}" class="nav-link">
+    <i class="fas fa-tachometer-alt"></i>
+    Dashboard
+</a>
+<a href="/admin/" class="nav-link">
+    <i class="fas fa-cog"></i>
+    Django Admin
+</a>
+<a href="{% url 'portal:admin_models' %}" class="nav-link">
+    <i class="fas fa-database"></i>
+    All Models
+</a>
+<a href="{% url 'portal:admin_users' %}" class="nav-link">
+    <i class="fas fa-users"></i>
+    Users
+</a>
+<a href="{% url 'portal:admin_courses' %}" class="nav-link active">
+    <i class="fas fa-book"></i>
+    Courses
+</a>
+<a href="#" class="nav-link">
+    <i class="fas fa-dollar-sign"></i>
+    Payments
+</a>
+<a href="#" class="nav-link">
+    <i class="fas fa-chart-line"></i>
+    Analytics
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-book"></i>
+            All Courses
+        </h3>
+        <a href="/admin/lms/course/add/" class="btn-primary-portal" target="_blank">
+            <i class="fas fa-plus"></i>
+            Create Course
+        </a>
+    </div>
+    
+    {% if courses %}
+    <div class="table-responsive">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Instructor</th>
+                    <th>Modality</th>
+                    <th>Students</th>
+                    <th>Enrollments</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in courses %}
+                <tr>
+                    <td>
+                        <strong>{{ course.title }}</strong>
+                    </td>
+                    <td>{{ course.instructor.get_full_name|default:course.instructor.username|default:"No instructor" }}</td>
+                    <td>
+                        <span class="badge bg-info">{{ course.get_modality_display }}</span>
+                    </td>
+                    <td>
+                        <span class="badge bg-secondary">{{ course.student_count }}</span>
+                    </td>
+                    <td>
+                        <span class="badge bg-info">{{ course.enrollment_count }}</span>
+                    </td>
+                    <td>${{ course.price }}</td>
+                    <td>
+                        {% if course.is_active %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a href="{% url 'portal:admin_course_detail' course.id %}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="/admin/lms/course/{{ course.id }}/change/" class="btn btn-sm btn-outline-secondary" target="_blank">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted text-center py-3">No courses found.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,117 @@
+{% extends 'portal/shared/base_portal.html' %}
+{% load static %}
+
+{% block title %}Quizzes - Instructor Portal{% endblock %}
+
+{% block sidebar_subtitle %}Manage your courses and students{% endblock %}
+
+{% block sidebar_nav %}
+<a href="{% url 'portal:instructor_dashboard' %}" class="nav-link">
+    <i class="fas fa-tachometer-alt"></i>
+    Dashboard
+</a>
+<a href="{% url 'portal:instructor_courses' %}" class="nav-link">
+    <i class="fas fa-book"></i>
+    My Courses
+</a>
+<a href="{% url 'portal:instructor_students' %}" class="nav-link">
+    <i class="fas fa-users"></i>
+    Students
+</a>
+<a href="{% url 'portal:instructor_assignments' %}" class="nav-link">
+    <i class="fas fa-tasks"></i>
+    Assignments
+</a>
+<a href="{% url 'portal:instructor_quizzes' %}" class="nav-link active">
+    <i class="fas fa-question-circle"></i>
+    Quizzes
+</a>
+<a href="{% url 'portal:instructor_attendance' %}" class="nav-link">
+    <i class="fas fa-calendar-check"></i>
+    Attendance
+</a>
+<a href="{% url 'portal:instructor_analytics' %}" class="nav-link">
+    <i class="fas fa-chart-line"></i>
+    Analytics
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-question-circle"></i>
+            All Quizzes
+        </h3>
+        <a href="{% url 'portal:instructor_quiz_create' %}" class="btn-primary-portal">
+            <i class="fas fa-plus"></i>
+            Create Quiz
+        </a>
+    </div>
+    
+    {% if quizzes %}
+    <div class="table-responsive">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Course</th>
+                    <th>Questions</th>
+                    <th>Attempts</th>
+                    <th>Passing Score</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for quiz in quizzes %}
+                <tr>
+                    <td>
+                        <strong>{{ quiz.title }}</strong>
+                    </td>
+                    <td>{{ quiz.course.title }}</td>
+                    <td>
+                        <span class="badge bg-info">{{ quiz.question_count }}</span>
+                    </td>
+                    <td>
+                        <span class="badge bg-secondary">{{ quiz.attempt_count }}</span>
+                    </td>
+                    <td>{{ quiz.passing_score }}%</td>
+                    <td>
+                        {% if quiz.is_active %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a href="{% url 'portal:instructor_quiz_detail' quiz.id %}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{% url 'portal:instructor_quiz_edit' quiz.id %}" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'portal:instructor_quiz_delete' quiz.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-question-circle fa-3x text-muted mb-3"></i>
+        <p class="text-muted">No quizzes yet.</p>
+        <a href="{% url 'portal:instructor_quiz_create' %}" class="btn-primary-portal">
+            <i class="fas fa-plus"></i>
+            Create Your First Quiz
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

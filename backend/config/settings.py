@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'drf_yasg',  # Swagger documentation
     # Local apps
     'lms',
+    'portal',
 ]
 
 MIDDLEWARE = [

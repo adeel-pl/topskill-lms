@@ -1,0 +1,131 @@
+{% extends 'portal/shared/base_portal.html' %}
+{% load static %}
+
+{% block title %}Attendance - Instructor Portal{% endblock %}
+
+{% block sidebar_subtitle %}Manage your courses and students{% endblock %}
+
+{% block sidebar_nav %}
+<a href="{% url 'portal:instructor_dashboard' %}" class="nav-link">
+    <i class="fas fa-tachometer-alt"></i>
+    Dashboard
+</a>
+<a href="{% url 'portal:instructor_courses' %}" class="nav-link">
+    <i class="fas fa-book"></i>
+    My Courses
+</a>
+<a href="{% url 'portal:instructor_students' %}" class="nav-link">
+    <i class="fas fa-users"></i>
+    Students
+</a>
+<a href="{% url 'portal:instructor_assignments' %}" class="nav-link">
+    <i class="fas fa-tasks"></i>
+    Assignments
+</a>
+<a href="{% url 'portal:instructor_quizzes' %}" class="nav-link">
+    <i class="fas fa-question-circle"></i>
+    Quizzes
+</a>
+<a href="{% url 'portal:instructor_attendance' %}" class="nav-link active">
+    <i class="fas fa-calendar-check"></i>
+    Attendance
+</a>
+<a href="{% url 'portal:instructor_analytics' %}" class="nav-link">
+    <i class="fas fa-chart-line"></i>
+    Analytics
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Sessions -->
+<div class="portal-card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-calendar"></i>
+            Upcoming Sessions
+        </h3>
+    </div>
+    
+    {% if sessions %}
+    <div class="table-responsive">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Session</th>
+                    <th>Batch</th>
+                    <th>Course</th>
+                    <th>Date & Time</th>
+                    <th>Location</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for session in sessions %}
+                <tr>
+                    <td><strong>{{ session.title }}</strong></td>
+                    <td>{{ session.batch.name }}</td>
+                    <td>{{ session.batch.course.title }}</td>
+                    <td>{{ session.start_datetime|date:"M d, Y H:i" }}</td>
+                    <td>{{ session.location|default:"-" }}</td>
+                    <td>
+                        <a href="{% url 'portal:instructor_attendance_mark' %}?session_id={{ session.id }}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-check"></i>
+                            Mark Attendance
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted text-center py-3">No sessions scheduled.</p>
+    {% endif %}
+</div>
+
+<!-- Attendance Records -->
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-check-circle"></i>
+            Attendance Records
+        </h3>
+    </div>
+    
+    {% if attendance_records %}
+    <div class="table-responsive">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Session</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Checked In</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in attendance_records %}
+                <tr>
+                    <td>{{ record.enrollment.user.get_full_name|default:record.enrollment.user.username }}</td>
+                    <td>{{ record.session.title }}</td>
+                    <td>{{ record.session.start_datetime|date:"M d, Y" }}</td>
+                    <td>
+                        {% if record.present %}
+                            <span class="badge bg-success">Present</span>
+                        {% else %}
+                            <span class="badge bg-danger">Absent</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ record.checked_in_at|date:"M d, Y H:i"|default:"-" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted text-center py-3">No attendance records yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

@@ -37,7 +37,11 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
+    # Django Admin (for superusers only - will be moved to /dj-admin/ later)
     path('admin/', admin.site.urls),
+    # Portal URLs (Instructor & Admin Premium Dashboards)
+    path('portal/', include('portal.urls')),
+    # API
     path('api/', include('lms.urls')),
     # Swagger/OpenAPI
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),

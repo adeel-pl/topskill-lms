@@ -1,0 +1,135 @@
+{% extends 'portal/shared/base_portal.html' %}
+{% load static %}
+
+{% block title %}{% if form_type == 'create' %}Create{% else %}Edit{% endif %} Assignment - Instructor Portal{% endblock %}
+
+{% block sidebar_subtitle %}Manage your courses and students{% endblock %}
+
+{% block sidebar_nav %}
+<a href="{% url 'portal:instructor_dashboard' %}" class="nav-link">
+    <i class="fas fa-tachometer-alt"></i>
+    Dashboard
+</a>
+<a href="{% url 'portal:instructor_courses' %}" class="nav-link">
+    <i class="fas fa-book"></i>
+    My Courses
+</a>
+<a href="{% url 'portal:instructor_students' %}" class="nav-link">
+    <i class="fas fa-users"></i>
+    Students
+</a>
+<a href="{% url 'portal:instructor_assignments' %}" class="nav-link active">
+    <i class="fas fa-tasks"></i>
+    Assignments
+</a>
+<a href="{% url 'portal:instructor_quizzes' %}" class="nav-link">
+    <i class="fas fa-question-circle"></i>
+    Quizzes
+</a>
+<a href="{% url 'portal:instructor_attendance' %}" class="nav-link">
+    <i class="fas fa-calendar-check"></i>
+    Attendance
+</a>
+<a href="{% url 'portal:instructor_analytics' %}" class="nav-link">
+    <i class="fas fa-chart-line"></i>
+    Analytics
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-{% if form_type == 'create' %}plus{% else %}edit{% endif %}"></i>
+            {% if form_type == 'create' %}Create New Assignment{% else %}Edit Assignment{% endif %}
+        </h3>
+        <a href="{% url 'portal:instructor_assignments' %}" class="btn-secondary-portal">
+            <i class="fas fa-arrow-left"></i>
+            Back to Assignments
+        </a>
+    </div>
+    
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="course" class="form-label">Course <span class="text-danger">*</span></label>
+            <select name="course" id="course" class="form-control" required {% if form_type == 'edit' %}disabled{% endif %}>
+                <option value="">Select a course</option>
+                {% for course in courses %}
+                <option value="{{ course.id }}" {% if assignment and assignment.course.id == course.id or selected_course_id|add:0 == course.id %}selected{% endif %}>
+                    {{ course.title }}
+                </option>
+                {% endfor %}
+            </select>
+            {% if form_type == 'edit' %}
+                <input type="hidden" name="course" value="{{ assignment.course.id }}">
+            {% endif %}
+        </div>
+        
+        <div class="mb-3">
+            <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+            <input type="text" name="title" id="title" class="form-control" required 
+                   value="{% if assignment %}{{ assignment.title }}{% endif %}" 
+                   placeholder="e.g., Final Project">
+        </div>
+        
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea name="description" id="description" class="form-control" rows="5" 
+                      placeholder="Assignment description and instructions...">{% if assignment %}{{ assignment.description }}{% endif %}</textarea>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="due_date" class="form-label">Due Date</label>
+                <input type="datetime-local" name="due_date" id="due_date" class="form-control"
+                       value="{% if assignment and assignment.due_date %}{{ assignment.due_date|date:'Y-m-d\TH:i' }}{% endif %}">
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <label for="max_score" class="form-label">Max Score</label>
+                <input type="number" name="max_score" id="max_score" class="form-control" 
+                       value="{% if assignment %}{{ assignment.max_score }}{% else %}100{% endif %}" 
+                       min="0" step="0.01" required>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="order" class="form-label">Order</label>
+                <input type="number" name="order" id="order" class="form-control" 
+                       value="{% if assignment %}{{ assignment.order }}{% else %}1{% endif %}" 
+                       min="1" required>
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <div class="form-check">
+                <input type="checkbox" name="is_active" id="is_active" class="form-check-input" 
+                       {% if not assignment or assignment.is_active %}checked{% endif %}>
+                <label for="is_active" class="form-check-label">Active</label>
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <div class="form-check">
+                <input type="checkbox" name="allow_late_submission" id="allow_late_submission" class="form-check-input" 
+                       {% if assignment and assignment.allow_late_submission %}checked{% endif %}>
+                <label for="allow_late_submission" class="form-check-label">Allow Late Submission</label>
+            </div>
+        </div>
+        
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn-primary-portal">
+                <i class="fas fa-save"></i>
+                {% if form_type == 'create' %}Create Assignment{% else %}Update Assignment{% endif %}
+            </button>
+            <a href="{% url 'portal:instructor_assignments' %}" class="btn-secondary-portal">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

@@ -1,0 +1,234 @@
+{% extends 'portal/shared/base_portal.html' %}
+{% load static %}
+
+{% block title %}All Models - Admin Portal{% endblock %}
+
+{% block sidebar_subtitle %}Manage the entire platform{% endblock %}
+
+{% block sidebar_nav %}
+<a href="{% url 'portal:admin_dashboard' %}" class="nav-link">
+    <i class="fas fa-tachometer-alt"></i>
+    Dashboard
+</a>
+<a href="/admin/" class="nav-link">
+    <i class="fas fa-cog"></i>
+    Django Admin
+</a>
+<a href="{% url 'portal:admin_models' %}" class="nav-link active">
+    <i class="fas fa-database"></i>
+    All Models
+</a>
+<a href="#" class="nav-link">
+    <i class="fas fa-book"></i>
+    All Courses
+</a>
+<a href="#" class="nav-link">
+    <i class="fas fa-users"></i>
+    All Students
+</a>
+<a href="#" class="nav-link">
+    <i class="fas fa-dollar-sign"></i>
+    Payments
+</a>
+<a href="#" class="nav-link">
+    <i class="fas fa-chart-line"></i>
+    Analytics
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-database"></i>
+            All Models - Quick Access
+        </h3>
+        <p class="text-muted mb-0">Access all Django admin models from here</p>
+    </div>
+    
+    <div class="row g-3 mt-2">
+        <!-- Auth & Users -->
+        <div class="col-md-6">
+            <div class="card border">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="fas fa-users-cog me-2"></i>Authentication & Authorization</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="/admin/auth/user/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user me-2"></i>Users
+                    </a>
+                    <a href="/admin/auth/group/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-users me-2"></i>Groups
+                    </a>
+                    <a href="/admin/authtoken/token/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-key me-2"></i>Tokens
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Course Management -->
+        <div class="col-md-6">
+            <div class="card border">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="fas fa-book me-2"></i>Course Management</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="/admin/lms/course/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-graduation-cap me-2"></i>Courses
+                    </a>
+                    <a href="/admin/lms/coursesection/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-list me-2"></i>Course Sections
+                    </a>
+                    <a href="/admin/lms/lecture/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-video me-2"></i>Lectures
+                    </a>
+                    <a href="/admin/lms/category/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-folder me-2"></i>Categories
+                    </a>
+                    <a href="/admin/lms/tag/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-tags me-2"></i>Tags
+                    </a>
+                    <a href="/admin/lms/prerequisite/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-link me-2"></i>Prerequisites
+                    </a>
+                    <a href="/admin/lms/resource/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-file-download me-2"></i>Resources
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Enrollment & Students -->
+        <div class="col-md-6">
+            <div class="card border">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="fas fa-user-graduate me-2"></i>Enrollment & Students</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="/admin/lms/enrollment/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user-check me-2"></i>Enrollments
+                    </a>
+                    <a href="/admin/lms/lectureprogress/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-chart-line me-2"></i>Lecture Progress
+                    </a>
+                    <a href="/admin/lms/certificate/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-certificate me-2"></i>Certificates
+                    </a>
+                    <a href="/admin/lms/note/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-sticky-note me-2"></i>Notes
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Batches & Sessions -->
+        <div class="col-md-6">
+            <div class="card border">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Batches & Sessions</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="/admin/lms/batch/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-users me-2"></i>Batches
+                    </a>
+                    <a href="/admin/lms/batchsession/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-calendar me-2"></i>Batch Sessions
+                    </a>
+                    <a href="/admin/lms/sessionregistration/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user-plus me-2"></i>Session Registrations
+                    </a>
+                    <a href="/admin/lms/attendance/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-check-circle me-2"></i>Attendance
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Assessments -->
+        <div class="col-md-6">
+            <div class="card border">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="fas fa-clipboard-check me-2"></i>Assessments</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="/admin/lms/quiz/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-question-circle me-2"></i>Quizzes
+                    </a>
+                    <a href="/admin/lms/question/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-question me-2"></i>Questions
+                    </a>
+                    <a href="/admin/lms/questionoption/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-list-ul me-2"></i>Question Options
+                    </a>
+                    <a href="/admin/lms/quizattempt/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-file-alt me-2"></i>Quiz Attempts
+                    </a>
+                    <a href="/admin/lms/assignment/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-tasks me-2"></i>Assignments
+                    </a>
+                    <a href="/admin/lms/assignmentsubmission/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-upload me-2"></i>Assignment Submissions
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- E-commerce -->
+        <div class="col-md-6">
+            <div class="card border">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="fas fa-shopping-cart me-2"></i>E-commerce</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="/admin/lms/cart/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-shopping-bag me-2"></i>Carts
+                    </a>
+                    <a href="/admin/lms/cartitem/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-shopping-basket me-2"></i>Cart Items
+                    </a>
+                    <a href="/admin/lms/payment/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-dollar-sign me-2"></i>Payments
+                    </a>
+                    <a href="/admin/lms/wishlist/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-heart me-2"></i>Wishlists
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Community & Communication -->
+        <div class="col-md-6">
+            <div class="card border">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="fas fa-comments me-2"></i>Community & Communication</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="/admin/lms/forum/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-comments me-2"></i>Forums
+                    </a>
+                    <a href="/admin/lms/post/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-comment-dots me-2"></i>Posts
+                    </a>
+                    <a href="/admin/lms/reply/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-reply me-2"></i>Replies
+                    </a>
+                    <a href="/admin/lms/qanda/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-question-circle me-2"></i>Q&As
+                    </a>
+                    <a href="/admin/lms/announcement/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-bullhorn me-2"></i>Announcements
+                    </a>
+                    <a href="/admin/lms/notification/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-bell me-2"></i>Notifications
+                    </a>
+                    <a href="/admin/lms/review/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-star me-2"></i>Reviews
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,221 @@
+{% extends 'portal/shared/base_portal.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard - TopSkill{% endblock %}
+
+{% block sidebar_subtitle %}Manage the entire platform{% endblock %}
+
+{% block sidebar_nav %}
+<a href="{% url 'portal:admin_dashboard' %}" class="nav-link active">
+    <i class="fas fa-tachometer-alt"></i>
+    Dashboard
+</a>
+<a href="/admin/" class="nav-link">
+    <i class="fas fa-cog"></i>
+    Django Admin
+</a>
+<a href="{% url 'portal:admin_models' %}" class="nav-link">
+    <i class="fas fa-database"></i>
+    All Models
+</a>
+<a href="/admin/lms/course/" class="nav-link">
+    <i class="fas fa-book"></i>
+    All Courses
+</a>
+<a href="{% url 'portal:admin_users' %}" class="nav-link">
+    <i class="fas fa-users"></i>
+    Users
+</a>
+<a href="{% url 'portal:admin_courses' %}" class="nav-link">
+    <i class="fas fa-book"></i>
+    Courses
+</a>
+<a href="/admin/lms/payment/" class="nav-link" target="_blank">
+    <i class="fas fa-dollar-sign"></i>
+    Payments
+</a>
+<a href="/admin/analytics/" class="nav-link" target="_blank">
+    <i class="fas fa-chart-line"></i>
+    Analytics
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Stats Cards -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-book"></i>
+        </div>
+        <p class="stat-label">Total Courses</p>
+        <h3 class="stat-value">{{ total_courses }}</h3>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-users"></i>
+        </div>
+        <p class="stat-label">Total Students</p>
+        <h3 class="stat-value">{{ total_students }}</h3>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-user-check"></i>
+        </div>
+        <p class="stat-label">Total Enrollments</p>
+        <h3 class="stat-value">{{ total_enrollments }}</h3>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-dollar-sign"></i>
+        </div>
+        <p class="stat-label">Total Revenue</p>
+        <h3 class="stat-value">${{ total_revenue|floatformat:0 }}</h3>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-chalkboard-teacher"></i>
+        </div>
+        <p class="stat-label">Instructors</p>
+        <h3 class="stat-value">{{ total_instructors }}</h3>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <p class="stat-label">Active Courses</p>
+        <h3 class="stat-value">{{ active_courses }}</h3>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-tasks"></i>
+        </div>
+        <p class="stat-label">Total Assignments</p>
+        <h3 class="stat-value">{{ total_assignments }}</h3>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-question-circle"></i>
+        </div>
+        <p class="stat-label">Total Quizzes</p>
+        <h3 class="stat-value">{{ total_quizzes }}</h3>
+    </div>
+</div>
+
+<!-- Recent Courses -->
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-book-open"></i>
+            Recent Courses
+        </h3>
+        <a href="/admin/lms/course/" class="btn-secondary-portal">
+            View All
+            <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+    
+    {% if recent_courses %}
+    <div class="table-responsive">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Course Title</th>
+                    <th>Instructor</th>
+                    <th>Modality</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in recent_courses %}
+                <tr>
+                    <td>
+                        <strong>{{ course.title }}</strong>
+                    </td>
+                    <td>{{ course.instructor.get_full_name|default:course.instructor.username|default:"N/A" }}</td>
+                    <td>
+                        <span class="badge bg-info">{{ course.get_modality_display }}</span>
+                    </td>
+                    <td>${{ course.price }}</td>
+                    <td>
+                        {% if course.is_active %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/admin/lms/course/{{ course.id }}/change/" class="btn btn-sm btn-outline-primary">
+                            View
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted text-center py-3">No courses yet.</p>
+    {% endif %}
+</div>
+
+<!-- Recent Enrollments -->
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-user-plus"></i>
+            Recent Enrollments
+        </h3>
+        <a href="/admin/lms/enrollment/" class="btn-secondary-portal">
+            View All
+            <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+    
+    {% if recent_enrollments %}
+    <div class="table-responsive">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Course</th>
+                    <th>Enrolled Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for enrollment in recent_enrollments %}
+                <tr>
+                    <td>
+                        <strong>{{ enrollment.user.get_full_name|default:enrollment.user.username }}</strong>
+                    </td>
+                    <td>{{ enrollment.course.title }}</td>
+                    <td>{{ enrollment.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        <span class="badge bg-{{ enrollment.status|lower }}">{{ enrollment.get_status_display }}</span>
+                    </td>
+                    <td>
+                        <a href="/admin/lms/enrollment/{{ enrollment.id }}/change/" class="btn btn-sm btn-outline-primary">
+                            View
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted text-center py-3">No enrollments yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

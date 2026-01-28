@@ -1,0 +1,83 @@
+{% extends 'portal/shared/base_portal.html' %}
+{% load static %}
+
+{% block title %}Grade Submission - Instructor Portal{% endblock %}
+
+{% block sidebar_subtitle %}Manage your courses and students{% endblock %}
+
+{% block sidebar_nav %}
+<a href="{% url 'portal:instructor_assignments' %}" class="nav-link active">
+    <i class="fas fa-tasks"></i>
+    Assignments
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-check-circle"></i>
+            Grade Submission
+        </h3>
+        <a href="{% url 'portal:instructor_assignment_detail' submission.assignment.id %}" class="btn-secondary-portal">
+            <i class="fas fa-arrow-left"></i>
+            Back
+        </a>
+    </div>
+    
+    <div class="mb-4">
+        <p><strong>Student:</strong> {{ submission.enrollment.user.get_full_name|default:submission.enrollment.user.username }}</p>
+        <p><strong>Assignment:</strong> {{ submission.assignment.title }}</p>
+        <p><strong>Course:</strong> {{ submission.assignment.course.title }}</p>
+        <p><strong>Submitted At:</strong> {{ submission.submitted_at|date:"M d, Y H:i" }}</p>
+        <p><strong>Max Score:</strong> {{ submission.assignment.max_score }}</p>
+    </div>
+    
+    {% if submission.submission_text %}
+    <div class="mb-4">
+        <h5>Submission Text:</h5>
+        <div class="p-3 bg-light rounded">
+            {{ submission.submission_text|linebreaks }}
+        </div>
+    </div>
+    {% endif %}
+    
+    {% if submission.submission_file %}
+    <div class="mb-4">
+        <h5>Submission File:</h5>
+        <a href="{{ submission.submission_file.url }}" target="_blank" class="btn btn-outline-primary">
+            <i class="fas fa-download"></i>
+            Download File
+        </a>
+    </div>
+    {% endif %}
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="score" class="form-label">Score (out of {{ submission.assignment.max_score }}) <span class="text-danger">*</span></label>
+            <input type="number" name="score" id="score" class="form-control" 
+                   value="{% if submission.score %}{{ submission.score }}{% endif %}" 
+                   min="0" max="{{ submission.assignment.max_score }}" step="0.01" required>
+        </div>
+        
+        <div class="mb-3">
+            <label for="feedback" class="form-label">Feedback</label>
+            <textarea name="feedback" id="feedback" class="form-control" rows="5" 
+                      placeholder="Provide feedback to the student...">{% if submission.feedback %}{{ submission.feedback }}{% endif %}</textarea>
+        </div>
+        
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn-primary-portal">
+                <i class="fas fa-save"></i>
+                Save Grade
+            </button>
+            <a href="{% url 'portal:instructor_assignment_detail' submission.assignment.id %}" class="btn-secondary-portal">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
