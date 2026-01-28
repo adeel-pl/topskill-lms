@@ -8,10 +8,10 @@ Complete credentials and access URLs for all 4 portals.
 
 | Portal | Username | Password | URL |
 |--------|----------|----------|-----|
-| **Student Portal** | `student` | `student123` | http://localhost:3000/login |
-| **Instructor Portal** | `instructor` | `instructor123` | http://localhost:8000/portal/login |
-| **Admin Portal** | `admin` | `admin123` | http://localhost:8000/portal/login |
-| **Django Admin** | `admin` | `admin123` | http://localhost:8000/admin |
+| **Student Portal** | `student` | Set via `STUDENT_PASSWORD` env var | http://localhost:3000/login |
+| **Instructor Portal** | `instructor` | Set via `INSTRUCTOR_PASSWORD` env var | http://localhost:8000/portal/login |
+| **Admin Portal** | `admin` | Set via `ADMIN_PASSWORD` env var | http://localhost:8000/portal/login |
+| **Django Admin** | `admin` | Set via `ADMIN_PASSWORD` env var | http://localhost:8000/admin |
 
 ---
 
@@ -19,7 +19,7 @@ Complete credentials and access URLs for all 4 portals.
 
 **URL:** http://localhost:3000/login  
 **Username:** `student`  
-**Password:** `student123`  
+**Password:** Set via `STUDENT_PASSWORD` environment variable (or generated randomly by seed_data command)  
 **Email:** `student@topskill.com`
 
 ### Access:
@@ -48,7 +48,7 @@ The student account is pre-enrolled in 12 courses with varying progress.
 
 **URL:** http://localhost:8000/portal/login  
 **Username:** `instructor`  
-**Password:** `instructor123`  
+**Password:** Set via `INSTRUCTOR_PASSWORD` environment variable (or generated randomly by seed_data/ensure_portal_data commands)  
 **Email:** `instructor@topskill.com`
 
 ### Access:
@@ -79,7 +79,7 @@ The student account is pre-enrolled in 12 courses with varying progress.
 
 **URL:** http://localhost:8000/portal/login  
 **Username:** `admin`  
-**Password:** `admin123`  
+**Password:** Set via `ADMIN_PASSWORD` environment variable (or generated randomly by seed_data command)  
 **Email:** `admin@topskill.com`
 
 ### Access:
@@ -108,7 +108,7 @@ The student account is pre-enrolled in 12 courses with varying progress.
 
 **URL:** http://localhost:8000/admin  
 **Username:** `admin`  
-**Password:** `admin123`  
+**Password:** Set via `ADMIN_PASSWORD` environment variable (or generated randomly by seed_data command)  
 **Email:** `admin@topskill.com`
 
 ### Access:
@@ -134,7 +134,7 @@ The student account is pre-enrolled in 12 courses with varying progress.
 
 ### Admin User
 - **Username:** `admin`
-- **Password:** `admin123`
+- **Password:** Set via `ADMIN_PASSWORD` environment variable (or generated randomly)
 - **Email:** `admin@topskill.com`
 - **Access:** Full access to all portals + Django admin
 - **is_staff:** ✅ Yes
@@ -142,7 +142,7 @@ The student account is pre-enrolled in 12 courses with varying progress.
 
 ### Instructor User
 - **Username:** `instructor`
-- **Password:** `instructor123`
+- **Password:** Set via `INSTRUCTOR_PASSWORD` environment variable (or generated randomly)
 - **Email:** `instructor@topskill.com`
 - **Access:** Instructor Portal + Student Portal (can browse courses)
 - **is_staff:** ❌ No
@@ -150,7 +150,7 @@ The student account is pre-enrolled in 12 courses with varying progress.
 
 ### Student User
 - **Username:** `student`
-- **Password:** `student123`
+- **Password:** Set via `STUDENT_PASSWORD` environment variable (or generated randomly)
 - **Email:** `student@topskill.com`
 - **Access:** Student Portal only
 - **is_staff:** ❌ No
@@ -162,24 +162,24 @@ The student account is pre-enrolled in 12 courses with varying progress.
 
 ### Test Student Portal:
 1. Go to: http://localhost:3000/login
-2. Login: `student` / `student123`
+2. Login: `student` / (password from `STUDENT_PASSWORD` env var or seed_data output)
 3. Navigate to: `/dashboard/my-courses`
 
 ### Test Instructor Portal:
 1. Go to: http://localhost:8000/portal/login
-2. Login: `instructor` / `instructor123`
+2. Login: `instructor` / (password from `INSTRUCTOR_PASSWORD` env var or seed_data output)
 3. You'll be redirected to: `/portal/instructor/`
 4. View dashboard, courses, students
 
 ### Test Admin Portal:
 1. Go to: http://localhost:8000/portal/login
-2. Login: `admin` / `admin123`
+2. Login: `admin` / (password from `ADMIN_PASSWORD` env var or seed_data output)
 3. You'll be redirected to: `/portal/admin-portal/`
 4. View platform statistics and access all models
 
 ### Test Django Admin:
 1. Go to: http://localhost:8000/admin
-2. Login: `admin` / `admin123`
+2. Login: `admin` / (password from `ADMIN_PASSWORD` env var or seed_data output)
 3. Full CRUD access to all models
 
 ---

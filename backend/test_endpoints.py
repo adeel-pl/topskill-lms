@@ -10,9 +10,11 @@ import sys
 import os
 
 BASE_URL = "http://localhost:8000/api"
-ADMIN_USERNAME = "admin"
-# Use environment variable for password, fallback to default for testing
-ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'admin123')
+ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'admin')
+# Use environment variable for password - no fallback for security
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD')
+if not ADMIN_PASSWORD:
+    raise ValueError("ADMIN_PASSWORD environment variable must be set for testing")
 
 class Colors:
     GREEN = '\033[92m'

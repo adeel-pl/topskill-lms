@@ -5,7 +5,7 @@
 **URL**: http://localhost:8000/admin/
 
 **Username**: `admin`  
-**Password**: `admin123`
+**Password**: Set via environment variable `ADMIN_PASSWORD` or run `python manage.py changepassword admin`
 
 ## Change Password
 
@@ -32,14 +32,14 @@ To test the API:
    ```bash
    curl -X POST http://localhost:8000/api/auth/register/ \
      -H "Content-Type: application/json" \
-     -d '{"username":"testuser","email":"test@test.com","password":"test123","password2":"test123"}'
+     -d '{"username":"testuser","email":"test@test.com","password":"YOUR_PASSWORD","password2":"YOUR_PASSWORD"}'
    ```
 
 2. **Login to get token**:
    ```bash
    curl -X POST http://localhost:8000/api/auth/login/ \
      -H "Content-Type: application/json" \
-     -d '{"username":"testuser","password":"test123"}'
+     -d '{"username":"testuser","password":"YOUR_PASSWORD"}'
    ```
 
 3. **Use token in API calls**:

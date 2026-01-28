@@ -80,6 +80,20 @@ logs/
 *.temp
 .cache/
 
+# Sensitive credential files (keep locally for reference, but don't commit)
+# Files with actual passwords/credentials should be added here
+USER_CREDENTIALS_UPDATED.md
+
+# Pattern-based exclusions for sensitive files (be careful - these are broad patterns)
+# Uncomment if you have files matching these patterns with actual secrets:
+# *_CREDENTIALS*.md
+# *_PASSWORD*.md
+# *_SECRET*.md
+# *_KEY*.md
+
+# Note: ADMIN_CREDENTIALS.md, PORTAL_CREDENTIALS.md, USER_CREDENTIALS.md are intentionally
+# NOT ignored as they contain only placeholders and documentation, not actual passwords
+
 
 
 

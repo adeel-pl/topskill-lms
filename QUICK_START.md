@@ -5,7 +5,7 @@
 **URL**: http://localhost:8000/admin/
 
 - **Username**: `admin`
-- **Password**: `admin123`
+- **Password**: Set via `ADMIN_PASSWORD` environment variable or run `python manage.py changepassword admin`
 
 ## 🐳 Option 1: Docker (Recommended - Easiest!)
 
@@ -20,7 +20,7 @@ docker-compose exec backend python manage.py changepassword admin
 Then access:
 - Frontend: http://localhost:3000
 - Backend: http://localhost:8000
-- Admin: http://localhost:8000/admin/ (admin/admin123)
+- Admin: http://localhost:8000/admin/ (username: admin, password: set via environment or changepassword command)
 
 ## 💻 Option 2: Manual Setup
 
@@ -29,7 +29,7 @@ Then access:
 cd backend
 python manage.py runserver
 ```
-✅ Backend: http://localhost:8000/admin/ (admin/admin123)
+✅ Backend: http://localhost:8000/admin/ (username: admin, password: set via environment or changepassword command)
 
 ### Frontend
 ```bash
@@ -55,7 +55,7 @@ Or use the **frontend** - it handles authentication automatically!
 ## 🎯 Current Status
 
 ✅ **Backend**: Running on port 8000
-✅ **Admin**: http://localhost:8000/admin/ (admin/admin123)
+✅ **Admin**: http://localhost:8000/admin/ (username: admin, password: set via environment or changepassword command)
 ⏳ **Frontend**: Starting on port 3000 (wait 30 seconds)
 
 ## 🔧 If Frontend Doesn't Start
