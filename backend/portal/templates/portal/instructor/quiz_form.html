@@ -6,9 +6,37 @@
 {% block sidebar_subtitle %}Manage your courses and students{% endblock %}
 
 {% block sidebar_nav %}
+<a href="{% url 'portal:instructor_dashboard' %}" class="nav-link">
+    <i class="fas fa-tachometer-alt"></i>
+    Dashboard
+</a>
+<a href="{% url 'portal:instructor_courses' %}" class="nav-link">
+    <i class="fas fa-book"></i>
+    My Courses
+</a>
+<a href="{% url 'portal:instructor_students' %}" class="nav-link">
+    <i class="fas fa-users"></i>
+    Students
+</a>
+<a href="{% url 'portal:instructor_assignments' %}" class="nav-link">
+    <i class="fas fa-tasks"></i>
+    Assignments
+</a>
 <a href="{% url 'portal:instructor_quizzes' %}" class="nav-link active">
     <i class="fas fa-question-circle"></i>
     Quizzes
+</a>
+<a href="{% url 'portal:instructor_attendance' %}" class="nav-link">
+    <i class="fas fa-calendar-check"></i>
+    Attendance
+</a>
+<a href="{% url 'portal:instructor_analytics' %}" class="nav-link">
+    <i class="fas fa-chart-line"></i>
+    Analytics
+</a>
+<a href="{% url 'portal:instructor_reviews' %}" class="nav-link">
+    <i class="fas fa-star"></i>
+    Reviews
 </a>
 {% endblock %}
 

@@ -25,6 +25,7 @@ from .admin_api_views import (
     admin_questions_list, admin_question_detail,
     admin_users_list, admin_user_detail
 )
+from .instructor_views import instructors_list, instructor_detail
 
 router = DefaultRouter()
 router.register(r'courses', CourseViewSet, basename='course')
@@ -108,5 +109,8 @@ urlpatterns = [
     path('admin/users/<int:user_id>/', admin_user_detail, name='admin-user-detail'),
     # Certificate verification (public endpoint)
     path('certificates/verify/<str:certificate_number>/', verify_certificate, name='verify-certificate'),
+    # Instructor listing (public endpoints)
+    path('instructors/', instructors_list, name='instructors-list'),
+    path('instructors/<int:instructor_id>/', instructor_detail, name='instructor-detail'),
 ]
 

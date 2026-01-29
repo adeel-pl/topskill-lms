@@ -8,3 +8,5 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('TopSkill Portal loaded');
 });
 
+
+

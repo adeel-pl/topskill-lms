@@ -5,84 +5,71 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/store';
 import PureLogicsNavbar from '@/app/components/PureLogicsNavbar';
-import { coursesAPI } from '@/lib/api';
-import { FiBook, FiUsers, FiFileText, FiClock, FiCheckCircle, FiXCircle, FiEdit, FiPlus } from 'react-icons/fi';
+import { colors } from '@/lib/colors';
+import { FiUser, FiBook, FiUsers, FiStar, FiArrowRight } from 'react-icons/fi';
+import { api } from '@/lib/api';
 
-export default function InstructorsDashboardPage() {
+interface Instructor {
+  id: number;
+  username: string;
+  full_name: string;
+  email: string;
+  course_count: number;
+  total_students: number;
+  avg_rating: number;
+  courses: Course[];
+}
+
+interface Course {
+  id: number;
+  title: string;
+  slug: string;
+  short_description: string;
+  price: number;
+  modality: string;
+  thumbnail: string;
+  enrolled_count: number;
+  avg_rating: number;
+  review_count: number;
+}
+
+export default function InstructorsPage() {
   const router = useRouter();
   const { user, isAuthenticated } = useAuthStore();
-  const [courses, setCourses] = useState<any[]>([]);
+  const [instructors, setInstructors] = useState<Instructor[]>([]);
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({
-    totalCourses: 0,
-    totalStudents: 0,
-    totalQuizzes: 0,
-    totalAssignments: 0,
-  });
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push('/login');
-      return;
-    }
+    loadInstructors();
+  }, []);
 
-    // Check if user is instructor or staff
-    if (!user?.is_staff) {
-      router.push('/dashboard/my-courses');
-      return;
-    }
-
-    loadInstructorData();
-  }, [isAuthenticated, user]);
-
-  const loadInstructorData = async () => {
+  const loadInstructors = async () => {
     try {
-      // Get courses where user is instructor
-      const response = await coursesAPI.getAll();
-      let coursesData = [];
+      setLoading(true);
+      const response = await api.get('/instructors/');
       if (response.data?.results) {
-        coursesData = response.data.results;
+        setInstructors(response.data.results);
       } else if (Array.isArray(response.data)) {
-        coursesData = response.data;
+        setInstructors(response.data);
       }
-
-      // Filter courses where user is instructor (for now, show all if staff)
-      // In production, filter by instructor field
-      setCourses(coursesData);
-      
-      // Calculate stats
-      let totalStudents = 0;
-      let totalQuizzes = 0;
-      let totalAssignments = 0;
-      
-      coursesData.forEach((course: any) => {
-        totalStudents += course.enrolled_count || 0;
-        totalQuizzes += course.quizzes?.length || 0;
-        totalAssignments += course.assignments?.length || 0;
-      });
-
-      setStats({
-        totalCourses: coursesData.length,
-        totalStudents,
-        totalQuizzes,
-        totalAssignments,
-      });
-      
-      setLoading(false);
-    } catch (error) {
-      console.error('Error loading instructor data:', error);
+      setError('');
+    } catch (err: any) {
+      console.error('Error loading instructors:', err);
+      setError('Failed to load instructors. Please try again later.');
+    } finally {
       setLoading(false);
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0F172A] text-white">
+      <div className="min-h-screen" style={{ backgroundColor: colors.background.primary }}>
         <PureLogicsNavbar />
         <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
           <div className="text-center">
-            <div className="w-16 h-16 border-4 border-[#334155] border-t-[#048181] rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-[#9CA3AF]">Loading dashboard...</p>
+            <div className="w-16 h-16 border-4 border-gray-300 border-t-[#048181] rounded-full animate-spin mx-auto mb-4"></div>
+            <p style={{ color: colors.text.muted }}>Loading instructors...</p>
           </div>
         </div>
       </div>
@@ -90,207 +77,151 @@ export default function InstructorsDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0F172A] text-white">
+    <div className="min-h-screen" style={{ backgroundColor: colors.background.primary }}>
       <PureLogicsNavbar />
       
-      <div className="section-after-header max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+      <div className="section-after-header max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-black text-white mb-2">Instructor Dashboard</h1>
-          <p className="text-[#9CA3AF]">Manage your courses, quizzes, assignments, and students</p>
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-black mb-4" style={{ color: colors.text.dark }}>
+            Our Instructors
+          </h1>
+          <p className="text-xl" style={{ color: colors.text.muted }}>
+            Learn from the best instructors in their fields
+          </p>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-[#1E293B] border border-[#334155] rounded-xl p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-[#9CA3AF] text-sm mb-1">Total Courses</p>
-                <p className="text-3xl font-bold text-white">{stats.totalCourses}</p>
-              </div>
-              <FiBook className="text-4xl text-[#048181]" />
-            </div>
+        {error && (
+          <div className="mb-8 p-4 rounded-lg bg-red-50 border border-red-200">
+            <p className="text-red-800">{error}</p>
           </div>
-          
-          <div className="bg-[#1E293B] border border-[#334155] rounded-xl p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-[#9CA3AF] text-sm mb-1">Total Students</p>
-                <p className="text-3xl font-bold text-white">{stats.totalStudents}</p>
-              </div>
-              <FiUsers className="text-4xl text-[#048181]" />
-            </div>
-          </div>
-          
-          <div className="bg-[#1E293B] border border-[#334155] rounded-xl p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-[#9CA3AF] text-sm mb-1">Total Quizzes</p>
-                <p className="text-3xl font-bold text-white">{stats.totalQuizzes}</p>
-              </div>
-              <FiFileText className="text-4xl text-[#048181]" />
-            </div>
-          </div>
-          
-          <div className="bg-[#1E293B] border border-[#334155] rounded-xl p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-[#9CA3AF] text-sm mb-1">Total Assignments</p>
-                <p className="text-3xl font-bold text-white">{stats.totalAssignments}</p>
-              </div>
-              <FiFileText className="text-4xl text-[#048181]" />
-            </div>
-          </div>
-        </div>
+        )}
 
-        {/* Quick Actions */}
-        <div className="bg-[#1E293B] border border-[#334155] rounded-xl p-6 mb-8">
-          <h2 className="text-xl font-bold text-white mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Link
-              href="/admin/lms/course/add/"
-              className="flex items-center gap-3 p-4 bg-[#0F172A] border border-[#334155] rounded-lg hover:border-[#048181] transition-colors"
-            >
-              <FiPlus className="text-2xl text-[#048181]" />
-              <div>
-                <p className="font-semibold text-white">Create Course</p>
-                <p className="text-sm text-[#9CA3AF]">Add a new course</p>
-              </div>
-            </Link>
-            
-            <Link
-              href="/admin/lms/quiz/add/"
-              className="flex items-center gap-3 p-4 bg-[#0F172A] border border-[#334155] rounded-lg hover:border-[#048181] transition-colors"
-            >
-              <FiFileText className="text-2xl text-[#048181]" />
-              <div>
-                <p className="font-semibold text-white">Create Quiz</p>
-                <p className="text-sm text-[#9CA3AF]">Add a new quiz</p>
-              </div>
-            </Link>
-            
-            <Link
-              href="/admin/lms/assignment/add/"
-              className="flex items-center gap-3 p-4 bg-[#0F172A] border border-[#334155] rounded-lg hover:border-[#048181] transition-colors"
-            >
-              <FiFileText className="text-2xl text-[#048181]" />
-              <div>
-                <p className="font-semibold text-white">Create Assignment</p>
-                <p className="text-sm text-[#9CA3AF]">Add a new assignment</p>
-              </div>
-            </Link>
+        {instructors.length === 0 && !loading ? (
+          <div className="text-center py-12">
+            <FiUser className="text-6xl mx-auto mb-4" style={{ color: colors.text.muted }} />
+            <p className="text-xl" style={{ color: colors.text.muted }}>No instructors found</p>
           </div>
-        </div>
-
-        {/* Courses List */}
-        <div className="bg-[#1E293B] border border-[#334155] rounded-xl p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-white">My Courses</h2>
-            <Link
-              href="/admin/lms/course/add/"
-              className="px-4 py-2 bg-[#048181] hover:bg-[#048181] text-white rounded-lg font-semibold text-sm flex items-center gap-2"
-            >
-              <FiPlus /> Add Course
-            </Link>
-          </div>
-
-          {courses.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-[#9CA3AF] mb-4">No courses yet</p>
-              <Link
-                href="/admin/lms/course/add/"
-                className="inline-block px-6 py-3 bg-[#048181] hover:bg-[#048181] text-white rounded-lg font-semibold"
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {instructors.map((instructor) => (
+              <div
+                key={instructor.id}
+                className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow border border-gray-200"
               >
-                Create Your First Course
-              </Link>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {courses.map((course: any) => (
-                <div
-                  key={course.id}
-                  className="bg-[#0F172A] border border-[#334155] rounded-lg p-6 hover:border-[#048181] transition-colors"
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-lg font-bold text-white">{course.title}</h3>
-                        <span className={`px-2 py-1 text-xs font-semibold rounded ${
-                          course.modality === 'online' ? 'bg-blue-100 text-blue-800' :
-                          course.modality === 'physical' ? 'bg-green-100 text-green-800' :
-                          'bg-purple-100 text-purple-800'
-                        }`}>
-                          {course.modality?.toUpperCase() || 'ONLINE'}
-                        </span>
-                      </div>
-                      <p className="text-sm text-[#9CA3AF] mb-4 line-clamp-2">{course.description || course.short_description}</p>
-                      
-                      <div className="flex items-center gap-6 text-sm text-[#9CA3AF]">
-                        <div className="flex items-center gap-2">
-                          <FiUsers className="text-[#048181]" />
-                          <span>{course.enrolled_count || 0} students</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <FiFileText className="text-[#048181]" />
-                          <span>{course.quizzes?.length || 0} quizzes</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <FiFileText className="text-[#048181]" />
-                          <span>{course.assignments?.length || 0} assignments</span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-2 ml-4">
-                      <Link
-                        href={`/admin/lms/course/${course.id}/change/`}
-                        className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg hover:border-[#048181] transition-colors"
-                        title="Edit Course"
-                      >
-                        <FiEdit className="text-[#048181]" />
-                      </Link>
-                      <Link
-                        href={`/learn/${course.slug}`}
-                        className="px-4 py-2 bg-[#048181] hover:bg-[#048181] text-white rounded-lg font-semibold text-sm"
-                      >
-                        View Course
-                      </Link>
-                    </div>
+                {/* Instructor Header */}
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#048181] to-[#036969] flex items-center justify-center text-white text-2xl font-bold">
+                    {instructor.full_name.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold mb-1" style={{ color: colors.text.dark }}>
+                      {instructor.full_name}
+                    </h3>
+                    <p className="text-sm" style={{ color: colors.text.muted }}>
+                      @{instructor.username}
+                    </p>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
 
-        {/* Admin Panel Link */}
-        <div className="mt-8 text-center">
-          <Link
-            href="/admin/"
-            className="inline-block px-6 py-3 bg-[#1E293B] border border-[#334155] hover:border-[#048181] text-white rounded-lg font-semibold transition-colors"
-          >
-            Open Django Admin Panel
-          </Link>
-        </div>
+                {/* Instructor Stats */}
+                <div className="grid grid-cols-3 gap-4 mb-4 pb-4 border-b border-gray-200">
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-1 mb-1">
+                      <FiBook className="text-[#048181]" />
+                      <span className="text-lg font-bold" style={{ color: colors.text.dark }}>
+                        {instructor.course_count}
+                      </span>
+                    </div>
+                    <p className="text-xs" style={{ color: colors.text.muted }}>Courses</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-1 mb-1">
+                      <FiUsers className="text-[#048181]" />
+                      <span className="text-lg font-bold" style={{ color: colors.text.dark }}>
+                        {instructor.total_students}
+                      </span>
+                    </div>
+                    <p className="text-xs" style={{ color: colors.text.muted }}>Students</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-1 mb-1">
+                      <FiStar className="text-yellow-500" />
+                      <span className="text-lg font-bold" style={{ color: colors.text.dark }}>
+                        {instructor.avg_rating.toFixed(1)}
+                      </span>
+                    </div>
+                    <p className="text-xs" style={{ color: colors.text.muted }}>Rating</p>
+                  </div>
+                </div>
+
+                {/* Courses Preview */}
+                {instructor.courses && instructor.courses.length > 0 && (
+                  <div className="mb-4">
+                    <h4 className="text-sm font-semibold mb-2" style={{ color: colors.text.dark }}>
+                      Recent Courses
+                    </h4>
+                    <div className="space-y-2">
+                      {instructor.courses.slice(0, 3).map((course) => (
+                        <Link
+                          key={course.id}
+                          href={`/courses/${course.slug}`}
+                          className="block p-2 rounded-lg hover:bg-gray-50 transition-colors group"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium truncate group-hover:text-[#048181] transition-colors" style={{ color: colors.text.dark }}>
+                                {course.title}
+                              </p>
+                              <div className="flex items-center gap-2 mt-1">
+                                <span className="text-xs" style={{ color: colors.text.muted }}>
+                                  ${course.price}
+                                </span>
+                                {course.avg_rating > 0 && (
+                                  <>
+                                    <span className="text-xs" style={{ color: colors.text.muted }}>•</span>
+                                    <div className="flex items-center gap-1">
+                                      <FiStar className="text-yellow-500 text-xs" />
+                                      <span className="text-xs" style={{ color: colors.text.muted }}>
+                                        {course.avg_rating.toFixed(1)}
+                                      </span>
+                                    </div>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                            <FiArrowRight className="text-gray-400 group-hover:text-[#048181] transition-colors ml-2" />
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* View All Courses Button */}
+                {instructor.courses && instructor.courses.length > 0 && (
+                  <Link
+                    href={`/instructors/${instructor.id}`}
+                    className="block w-full text-center py-2 rounded-lg font-semibold text-sm transition-colors"
+                    style={{
+                      backgroundColor: colors.accent.primary,
+                      color: 'white',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = colors.accent.highlight;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = colors.accent.primary;
+                    }}
+                  >
+                    View All Courses
+                  </Link>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

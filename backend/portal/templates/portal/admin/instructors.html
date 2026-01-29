@@ -1,0 +1,83 @@
+{% extends 'portal/shared/base_portal.html' %}
+{% load static %}
+
+{% block title %}Instructors - Admin Portal{% endblock %}
+
+{% block sidebar_subtitle %}Manage the entire platform{% endblock %}
+
+{% block sidebar_nav %}
+<a href="{% url 'portal:admin_dashboard' %}" class="nav-link">
+    <i class="fas fa-tachometer-alt"></i>
+    Dashboard
+</a>
+<a href="{% url 'portal:admin_users' %}" class="nav-link">
+    <i class="fas fa-users"></i>
+    Users
+</a>
+<a href="{% url 'portal:admin_courses' %}" class="nav-link">
+    <i class="fas fa-book"></i>
+    Courses
+</a>
+<a href="{% url 'portal:admin_instructors' %}" class="nav-link active">
+    <i class="fas fa-chalkboard-teacher"></i>
+    Instructors
+</a>
+<a href="{% url 'portal:admin_enrollments' %}" class="nav-link">
+    <i class="fas fa-user-check"></i>
+    Enrollments
+</a>
+<a href="{% url 'portal:admin_payments' %}" class="nav-link">
+    <i class="fas fa-dollar-sign"></i>
+    Payments
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-chalkboard-teacher"></i>
+            All Instructors
+        </h3>
+    </div>
+    
+    {% if instructors %}
+    <div class="table-responsive">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Courses</th>
+                    <th>Total Students</th>
+                    <th>Total Revenue</th>
+                    <th>Joined</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for instructor in instructors %}
+                <tr>
+                    <td><strong>{{ instructor.get_full_name|default:instructor.username }}</strong></td>
+                    <td>{{ instructor.email }}</td>
+                    <td><span class="badge bg-info">{{ instructor.course_count }}</span></td>
+                    <td><span class="badge bg-secondary">{{ instructor.total_students|default:0 }}</span></td>
+                    <td>${{ instructor.total_revenue|default:0|floatformat:0 }}</td>
+                    <td>{{ instructor.date_joined|date:"M d, Y" }}</td>
+                    <td>
+                        <a href="{% url 'portal:admin_instructor_detail' instructor.id %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-eye"></i>
+                            View
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted text-center py-3">No instructors found.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Count, Sum, Avg, Q
 from django.utils import timezone
+from django.utils.text import slugify
 from django.http import JsonResponse
 from datetime import timedelta
 from django.forms import modelform_factory
@@ -16,7 +17,7 @@ from django.contrib.auth.models import User
 from lms.models import (
     Course, Enrollment, Payment, Quiz, Assignment, AssignmentSubmission,
     Batch, BatchSession, Attendance, LectureProgress, QuizAttempt,
-    Question, QuestionOption, BatchSession
+    Question, QuestionOption, Review
 )
 from lms.permissions import is_admin, is_instructor
 
@@ -601,6 +602,90 @@ def instructor_analytics(request):
 
 
 # ============================================
+# INSTRUCTOR PORTAL - REVIEWS
+# ============================================
+
+@login_required
+def instructor_reviews(request):
+    """Instructor Reviews List - All reviews for instructor's courses"""
+    if not is_instructor(request.user):
+        messages.error(request, "Access denied. Instructor access required.")
+        return redirect('portal:portal_login')
+    
+    # Get all reviews for instructor's courses
+    reviews = Review.objects.filter(
+        course__instructor=request.user
+    ).select_related('user', 'course').order_by('-created_at')
+    
+    # Statistics
+    total_reviews = reviews.count()
+    avg_rating = reviews.aggregate(avg=Avg('rating'))['avg'] or 0
+    rating_distribution = reviews.values('rating').annotate(count=Count('id')).order_by('-rating')
+    
+    context = {
+        'reviews': reviews,
+        'total_reviews': total_reviews,
+        'avg_rating': round(avg_rating, 1),
+        'rating_distribution': rating_distribution,
+    }
+    
+    return render(request, 'portal/instructor/reviews.html', context)
+
+
+@login_required
+def instructor_review_detail(request, review_id):
+    """Instructor Review Detail - View individual review"""
+    if not is_instructor(request.user):
+        messages.error(request, "Access denied. Instructor access required.")
+        return redirect('portal:portal_login')
+    
+    review = get_object_or_404(
+        Review,
+        id=review_id,
+        course__instructor=request.user
+    )
+    
+    # Get student enrollment info
+    enrollment = Enrollment.objects.filter(
+        user=review.user,
+        course=review.course
+    ).first()
+    
+    context = {
+        'review': review,
+        'enrollment': enrollment,
+    }
+    
+    return render(request, 'portal/instructor/review_detail.html', context)
+
+
+@login_required
+def instructor_review_delete(request, review_id):
+    """Delete review (instructor can delete inappropriate reviews)"""
+    if not is_instructor(request.user):
+        messages.error(request, "Access denied. Instructor access required.")
+        return redirect('portal:portal_login')
+    
+    review = get_object_or_404(
+        Review,
+        id=review_id,
+        course__instructor=request.user
+    )
+    
+    if request.method == 'POST':
+        course = review.course
+        review.delete()
+        messages.success(request, "Review deleted successfully!")
+        return redirect('portal:instructor_reviews')
+    
+    context = {
+        'review': review,
+    }
+    
+    return render(request, 'portal/instructor/review_delete.html', context)
+
+
+# ============================================
 # ADMIN PORTAL - FULL CRUD
 # ============================================
 
@@ -686,6 +771,301 @@ def admin_course_detail(request, course_id):
     return render(request, 'portal/admin/course_detail.html', context)
 
 
+@login_required
+def admin_course_create(request):
+    """Admin Create Course"""
+    if not is_admin(request.user):
+        messages.error(request, "Access denied. Admin access required.")
+        return redirect('portal:portal_login')
+    
+    if request.method == 'POST':
+        from django.utils.text import slugify
+        
+        instructor_id = request.POST.get('instructor')
+        instructor = None
+        if instructor_id:
+            try:
+                instructor = User.objects.get(id=instructor_id)
+            except User.DoesNotExist:
+                messages.error(request, "Invalid instructor selected.")
+                return redirect('portal:admin_course_create')
+        
+        course = Course.objects.create(
+            title=request.POST.get('title'),
+            slug=slugify(request.POST.get('title')),
+            description=request.POST.get('description', ''),
+            short_description=request.POST.get('short_description', ''),
+            modality=request.POST.get('modality', 'online'),
+            price=request.POST.get('price', 0),
+            instructor=instructor,
+            is_active=request.POST.get('is_active') == 'on',
+            language=request.POST.get('language', 'English'),
+            level=request.POST.get('level', 'all'),
+        )
+        
+        messages.success(request, f"Course '{course.title}' created successfully!")
+        return redirect('portal:admin_course_detail', course_id=course.id)
+    
+    instructors = User.objects.filter(instructed_courses__isnull=False).distinct()
+    
+    context = {
+        'instructors': instructors,
+        'form_type': 'create',
+    }
+    
+    return render(request, 'portal/admin/course_form.html', context)
+
+
+@login_required
+def admin_course_edit(request, course_id):
+    """Admin Edit Course"""
+    if not is_admin(request.user):
+        messages.error(request, "Access denied. Admin access required.")
+        return redirect('portal:portal_login')
+    
+    course = get_object_or_404(Course, id=course_id)
+    
+    if request.method == 'POST':
+        from django.utils.text import slugify
+        
+        instructor_id = request.POST.get('instructor')
+        instructor = None
+        if instructor_id:
+            try:
+                instructor = User.objects.get(id=instructor_id)
+            except User.DoesNotExist:
+                pass
+        
+        course.title = request.POST.get('title')
+        course.slug = slugify(request.POST.get('title'))
+        course.description = request.POST.get('description', '')
+        course.short_description = request.POST.get('short_description', '')
+        course.modality = request.POST.get('modality', 'online')
+        course.price = request.POST.get('price', 0)
+        course.instructor = instructor
+        course.is_active = request.POST.get('is_active') == 'on'
+        course.language = request.POST.get('language', 'English')
+        course.level = request.POST.get('level', 'all')
+        course.save()
+        
+        messages.success(request, f"Course '{course.title}' updated successfully!")
+        return redirect('portal:admin_course_detail', course_id=course.id)
+    
+    instructors = User.objects.filter(instructed_courses__isnull=False).distinct()
+    
+    context = {
+        'course': course,
+        'instructors': instructors,
+        'form_type': 'edit',
+    }
+    
+    return render(request, 'portal/admin/course_form.html', context)
+
+
+@login_required
+def admin_course_delete(request, course_id):
+    """Admin Delete Course"""
+    if not is_admin(request.user):
+        messages.error(request, "Access denied. Admin access required.")
+        return redirect('portal:portal_login')
+    
+    course = get_object_or_404(Course, id=course_id)
+    
+    if request.method == 'POST':
+        title = course.title
+        course.delete()
+        messages.success(request, f"Course '{title}' deleted successfully!")
+        return redirect('portal:admin_courses')
+    
+    context = {
+        'course': course,
+    }
+    
+    return render(request, 'portal/admin/course_delete.html', context)
+
+
+@login_required
+def admin_instructors(request):
+    """Admin Instructors List"""
+    if not is_admin(request.user):
+        messages.error(request, "Access denied. Admin access required.")
+        return redirect('portal:portal_login')
+    
+    instructors = User.objects.filter(
+        instructed_courses__isnull=False
+    ).distinct().annotate(
+        course_count=Count('instructed_courses'),
+        total_students=Count('instructed_courses__enrollments', distinct=True),
+        total_revenue=Sum('instructed_courses__payments__amount', filter=Q(instructed_courses__payments__status='paid'))
+    ).order_by('-date_joined')
+    
+    context = {
+        'instructors': instructors,
+    }
+    
+    return render(request, 'portal/admin/instructors.html', context)
+
+
+@login_required
+def admin_instructor_detail(request, instructor_id):
+    """Admin Instructor Detail"""
+    if not is_admin(request.user):
+        messages.error(request, "Access denied. Admin access required.")
+        return redirect('portal:portal_login')
+    
+    instructor = get_object_or_404(User, id=instructor_id)
+    
+    courses = Course.objects.filter(instructor=instructor).annotate(
+        enrollment_count=Count('enrollments'),
+        total_revenue=Sum('payments__amount', filter=Q(payments__status='paid'))
+    )
+    
+    total_students = Enrollment.objects.filter(
+        course__instructor=instructor
+    ).values('user').distinct().count()
+    
+    context = {
+        'instructor': instructor,
+        'courses': courses,
+        'total_students': total_students,
+    }
+    
+    return render(request, 'portal/admin/instructor_detail.html', context)
+
+
+@login_required
+def admin_enrollments(request):
+    """Admin Enrollments List"""
+    if not is_admin(request.user):
+        messages.error(request, "Access denied. Admin access required.")
+        return redirect('portal:portal_login')
+    
+    enrollments = Enrollment.objects.select_related('user', 'course').annotate(
+        payment_count=Count('payments'),
+        total_paid=Sum('payments__amount', filter=Q(payments__status='paid'))
+    ).order_by('-created_at')
+    
+    context = {
+        'enrollments': enrollments,
+    }
+    
+    return render(request, 'portal/admin/enrollments.html', context)
+
+
+@login_required
+def admin_enrollment_detail(request, enrollment_id):
+    """Admin Enrollment Detail"""
+    if not is_admin(request.user):
+        messages.error(request, "Access denied. Admin access required.")
+        return redirect('portal:portal_login')
+    
+    enrollment = get_object_or_404(Enrollment, id=enrollment_id)
+    
+    payments = Payment.objects.filter(enrollment=enrollment).order_by('-created_at')
+    lecture_progress = LectureProgress.objects.filter(enrollment=enrollment)
+    assignment_submissions = AssignmentSubmission.objects.filter(enrollment=enrollment)
+    quiz_attempts = QuizAttempt.objects.filter(enrollment=enrollment)
+    
+    context = {
+        'enrollment': enrollment,
+        'payments': payments,
+        'lecture_progress': lecture_progress,
+        'assignment_submissions': assignment_submissions,
+        'quiz_attempts': quiz_attempts,
+    }
+    
+    return render(request, 'portal/admin/enrollment_detail.html', context)
+
+
+@login_required
+def admin_enrollment_edit(request, enrollment_id):
+    """Admin Edit Enrollment"""
+    if not is_admin(request.user):
+        messages.error(request, "Access denied. Admin access required.")
+        return redirect('portal:portal_login')
+    
+    enrollment = get_object_or_404(Enrollment, id=enrollment_id)
+    
+    if request.method == 'POST':
+        enrollment.status = request.POST.get('status', enrollment.status)
+        enrollment.progress_percent = request.POST.get('progress_percent', enrollment.progress_percent) or 0
+        enrollment.save()
+        
+        messages.success(request, "Enrollment updated successfully!")
+        return redirect('portal:admin_enrollment_detail', enrollment_id=enrollment.id)
+    
+    context = {
+        'enrollment': enrollment,
+    }
+    
+    return render(request, 'portal/admin/enrollment_form.html', context)
+
+
+@login_required
+def admin_payments(request):
+    """Admin Payments List"""
+    if not is_admin(request.user):
+        messages.error(request, "Access denied. Admin access required.")
+        return redirect('portal:portal_login')
+    
+    payments = Payment.objects.select_related('user', 'course', 'enrollment').order_by('-created_at')
+    
+    # Statistics
+    total_revenue = payments.filter(status='paid').aggregate(total=Sum('amount'))['total'] or 0
+    pending_payments = payments.filter(status='pending').count()
+    paid_payments = payments.filter(status='paid').count()
+    
+    context = {
+        'payments': payments,
+        'total_revenue': total_revenue,
+        'pending_payments': pending_payments,
+        'paid_payments': paid_payments,
+    }
+    
+    return render(request, 'portal/admin/payments.html', context)
+
+
+@login_required
+def admin_payment_detail(request, payment_id):
+    """Admin Payment Detail"""
+    if not is_admin(request.user):
+        messages.error(request, "Access denied. Admin access required.")
+        return redirect('portal:portal_login')
+    
+    payment = get_object_or_404(Payment, id=payment_id)
+    
+    context = {
+        'payment': payment,
+    }
+    
+    return render(request, 'portal/admin/payment_detail.html', context)
+
+
+@login_required
+def admin_payment_update(request, payment_id):
+    """Admin Update Payment Status"""
+    if not is_admin(request.user):
+        messages.error(request, "Access denied. Admin access required.")
+        return redirect('portal:portal_login')
+    
+    payment = get_object_or_404(Payment, id=payment_id)
+    
+    if request.method == 'POST':
+        payment.status = request.POST.get('status', payment.status)
+        if payment.status == 'paid' and not payment.paid_at:
+            payment.paid_at = timezone.now()
+        payment.save()
+        
+        messages.success(request, "Payment status updated successfully!")
+        return redirect('portal:admin_payment_detail', payment_id=payment.id)
+    
+    context = {
+        'payment': payment,
+    }
+    
+    return render(request, 'portal/admin/payment_form.html', context)
+
+
 # ============================================
 # INSTRUCTOR PORTAL - COURSES CRUD
 # ============================================
@@ -729,8 +1109,6 @@ def instructor_course_edit(request, course_id):
     course = get_object_or_404(Course, id=course_id, instructor=request.user)
     
     if request.method == 'POST':
-        from django.utils.text import slugify
-        
         course.title = request.POST.get('title')
         course.slug = slugify(request.POST.get('title'))
         course.description = request.POST.get('description', '')

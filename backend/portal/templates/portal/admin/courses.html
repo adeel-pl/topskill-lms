@@ -26,11 +26,19 @@
     <i class="fas fa-book"></i>
     Courses
 </a>
-<a href="#" class="nav-link">
+<a href="{% url 'portal:admin_instructors' %}" class="nav-link">
+    <i class="fas fa-chalkboard-teacher"></i>
+    Instructors
+</a>
+<a href="{% url 'portal:admin_enrollments' %}" class="nav-link">
+    <i class="fas fa-user-check"></i>
+    Enrollments
+</a>
+<a href="{% url 'portal:admin_payments' %}" class="nav-link">
     <i class="fas fa-dollar-sign"></i>
     Payments
 </a>
-<a href="#" class="nav-link">
+<a href="/admin/analytics/" class="nav-link" target="_blank">
     <i class="fas fa-chart-line"></i>
     Analytics
 </a>
@@ -43,7 +51,7 @@
             <i class="fas fa-book"></i>
             All Courses
         </h3>
-        <a href="/admin/lms/course/add/" class="btn-primary-portal" target="_blank">
+        <a href="{% url 'portal:admin_course_create' %}" class="btn-primary-portal">
             <i class="fas fa-plus"></i>
             Create Course
         </a>
@@ -92,9 +100,15 @@
                         <div class="btn-group" role="group">
                             <a href="{% url 'portal:admin_course_detail' course.id %}" class="btn btn-sm btn-outline-primary">
                                 <i class="fas fa-eye"></i>
+                                View
                             </a>
-                            <a href="/admin/lms/course/{{ course.id }}/change/" class="btn btn-sm btn-outline-secondary" target="_blank">
+                            <a href="{% url 'portal:admin_course_edit' course.id %}" class="btn btn-sm btn-outline-secondary">
                                 <i class="fas fa-edit"></i>
+                                Edit
+                            </a>
+                            <a href="{% url 'portal:admin_course_delete' course.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');">
+                                <i class="fas fa-trash"></i>
+                                Delete
                             </a>
                         </div>
                     </td>
@@ -108,4 +122,6 @@
     {% endif %}
 </div>
 {% endblock %}
+
+
 

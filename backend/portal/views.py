@@ -31,10 +31,16 @@ from .views_crud import (
     instructor_attendance, instructor_attendance_mark,
     # Instructor - Analytics
     instructor_analytics,
+    # Instructor - Reviews
+    instructor_reviews, instructor_review_detail, instructor_review_delete,
     # Instructor - Courses CRUD
     instructor_course_create, instructor_course_edit, instructor_course_delete,
     # Admin - Full CRUD
     admin_users, admin_user_detail, admin_courses, admin_course_detail,
+    admin_course_create, admin_course_edit, admin_course_delete,
+    admin_instructors, admin_instructor_detail,
+    admin_enrollments, admin_enrollment_detail, admin_enrollment_edit,
+    admin_payments, admin_payment_detail, admin_payment_update,
 )
 
 

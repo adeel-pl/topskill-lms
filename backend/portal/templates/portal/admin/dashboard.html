@@ -30,7 +30,15 @@
     <i class="fas fa-book"></i>
     Courses
 </a>
-<a href="/admin/lms/payment/" class="nav-link" target="_blank">
+<a href="{% url 'portal:admin_instructors' %}" class="nav-link">
+    <i class="fas fa-chalkboard-teacher"></i>
+    Instructors
+</a>
+<a href="{% url 'portal:admin_enrollments' %}" class="nav-link">
+    <i class="fas fa-user-check"></i>
+    Enrollments
+</a>
+<a href="{% url 'portal:admin_payments' %}" class="nav-link">
     <i class="fas fa-dollar-sign"></i>
     Payments
 </a>
@@ -115,10 +123,16 @@
             <i class="fas fa-book-open"></i>
             Recent Courses
         </h3>
-        <a href="/admin/lms/course/" class="btn-secondary-portal">
-            View All
-            <i class="fas fa-arrow-right"></i>
-        </a>
+        <div class="d-flex gap-2">
+            <a href="{% url 'portal:admin_courses' %}" class="btn-secondary-portal">
+                View All
+                <i class="fas fa-arrow-right"></i>
+            </a>
+            <a href="{% url 'portal:admin_course_create' %}" class="btn-primary-portal">
+                <i class="fas fa-plus"></i>
+                Create Course
+            </a>
+        </div>
     </div>
     
     {% if recent_courses %}
@@ -153,9 +167,16 @@
                         {% endif %}
                     </td>
                     <td>
-                        <a href="/admin/lms/course/{{ course.id }}/change/" class="btn btn-sm btn-outline-primary">
-                            View
-                        </a>
+                        <div class="btn-group" role="group">
+                            <a href="{% url 'portal:admin_course_detail' course.id %}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-eye"></i>
+                                View
+                            </a>
+                            <a href="{% url 'portal:admin_course_edit' course.id %}" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-edit"></i>
+                                Edit
+                            </a>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}
@@ -174,7 +195,7 @@
             <i class="fas fa-user-plus"></i>
             Recent Enrollments
         </h3>
-        <a href="/admin/lms/enrollment/" class="btn-secondary-portal">
+        <a href="{% url 'portal:admin_enrollments' %}" class="btn-secondary-portal">
             View All
             <i class="fas fa-arrow-right"></i>
         </a>
@@ -204,7 +225,8 @@
                         <span class="badge bg-{{ enrollment.status|lower }}">{{ enrollment.get_status_display }}</span>
                     </td>
                     <td>
-                        <a href="/admin/lms/enrollment/{{ enrollment.id }}/change/" class="btn btn-sm btn-outline-primary">
+                        <a href="{% url 'portal:admin_enrollment_detail' enrollment.id %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-eye"></i>
                             View
                         </a>
                     </td>

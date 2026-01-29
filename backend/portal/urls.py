@@ -73,15 +73,31 @@ urlpatterns = [
     # Instructor - Analytics
     path('instructor/analytics/', views.instructor_analytics, name='instructor_analytics'),
     
+    # Instructor - Reviews
+    path('instructor/reviews/', views.instructor_reviews, name='instructor_reviews'),
+    path('instructor/reviews/<int:review_id>/', views.instructor_review_detail, name='instructor_review_detail'),
+    path('instructor/reviews/<int:review_id>/delete/', views.instructor_review_delete, name='instructor_review_delete'),
+    
     # Admin Portal
     path('admin-portal/', views.admin_dashboard, name='admin_dashboard'),
     path('admin-portal/models/', views.admin_models_list, name='admin_models'),
     
-    # Admin - Full CRUD (will add more as needed)
+    # Admin - Full CRUD
     path('admin-portal/users/', views.admin_users, name='admin_users'),
     path('admin-portal/users/<int:user_id>/', views.admin_user_detail, name='admin_user_detail'),
     path('admin-portal/courses/', views.admin_courses, name='admin_courses'),
+    path('admin-portal/courses/create/', views.admin_course_create, name='admin_course_create'),
     path('admin-portal/courses/<int:course_id>/', views.admin_course_detail, name='admin_course_detail'),
+    path('admin-portal/courses/<int:course_id>/edit/', views.admin_course_edit, name='admin_course_edit'),
+    path('admin-portal/courses/<int:course_id>/delete/', views.admin_course_delete, name='admin_course_delete'),
+    path('admin-portal/instructors/', views.admin_instructors, name='admin_instructors'),
+    path('admin-portal/instructors/<int:instructor_id>/', views.admin_instructor_detail, name='admin_instructor_detail'),
+    path('admin-portal/enrollments/', views.admin_enrollments, name='admin_enrollments'),
+    path('admin-portal/enrollments/<int:enrollment_id>/', views.admin_enrollment_detail, name='admin_enrollment_detail'),
+    path('admin-portal/enrollments/<int:enrollment_id>/edit/', views.admin_enrollment_edit, name='admin_enrollment_edit'),
+    path('admin-portal/payments/', views.admin_payments, name='admin_payments'),
+    path('admin-portal/payments/<int:payment_id>/', views.admin_payment_detail, name='admin_payment_detail'),
+    path('admin-portal/payments/<int:payment_id>/update/', views.admin_payment_update, name='admin_payment_update'),
     
     # Login/Logout
     path('login/', views.portal_login, name='portal_login'),

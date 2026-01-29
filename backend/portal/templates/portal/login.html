@@ -6,151 +6,265 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal Login - TopSkill</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/login_shared.css' %}">
     <style>
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
         
         body {
-            font-family: 'Inter', sans-serif;
             background: #FFFFFF;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Navbar Styles - Matching student login */
+        .portal-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background: white;
+            border-bottom: 1px solid #E5E7EB;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .portal-navbar-container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 80px;
+        }
+        
+        .portal-navbar-logo {
+            height: 40px;
+            width: auto;
+            max-width: 200px;
+        }
+        
+        .portal-navbar-links {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        
+        .portal-navbar-link {
+            color: #1E293B;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+        
+        .portal-navbar-link:hover {
+            color: #048181;
+        }
+        
+        .portal-navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .portal-navbar-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .portal-navbar-btn-login {
+            color: #1E293B;
+        }
+        
+        .portal-navbar-btn-login:hover {
+            background: #F3F4F6;
+        }
+        
+        .portal-navbar-btn-signup {
+            background: #048181;
+            color: white;
+        }
+        
+        .portal-navbar-btn-signup:hover {
+            background: #036969;
+        }
+        
+        /* Main content with navbar offset */
+        .login-main-content {
+            padding-top: 80px;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 80px 20px 48px;
         }
         
-        .login-container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            padding: 3rem;
-            width: 100%;
-            max-width: 450px;
+        @media (min-width: 768px) {
+            .login-main-content {
+                padding-bottom: 64px;
+            }
         }
         
-        .login-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        
-        .login-header h1 {
-            color: #048181;
-            font-size: 2rem;
-            font-weight: 900;
-            margin-bottom: 0.5rem;
-        }
-        
-        .login-header p {
-            color: #64748B;
-            font-size: 0.9rem;
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-group label {
-            display: block;
-            color: #366854;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-        
-        .form-group input {
-            width: 100%;
-            padding: 0.875rem 1rem;
-            border: 2px solid #CBD5E1;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-        }
-        
-        .form-group input:focus {
-            outline: none;
-            border-color: #048181;
-            box-shadow: 0 0 0 4px rgba(4, 129, 129, 0.1);
-        }
-        
-        .btn-login {
-            width: 100%;
-            background: linear-gradient(135deg, #048181 0%, #036969 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.875rem;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(4, 129, 129, 0.3);
-        }
-        
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(4, 129, 129, 0.4);
-        }
-        
-        .alert {
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-        }
-        
-        .alert-error {
-            background: #fee2e2;
-            color: #991b1b;
-            border-left: 4px solid #ef4444;
+        @media (max-width: 768px) {
+            .portal-navbar-links {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-header">
-            <h1>
-                <i class="fas fa-graduation-cap"></i>
-                TopSkill Portal
-            </h1>
-            <p>Sign in to access your dashboard</p>
+    <!-- Navbar Header - Matching student login -->
+    <header class="portal-navbar">
+        <div class="portal-navbar-container">
+            <a href="/" style="text-decoration: none;">
+                <img 
+                    src="https://topskills.pk/wp-content/uploads/2024/08/Group-27515-2048x623.png" 
+                    alt="TopSkill" 
+                    class="portal-navbar-logo"
+                />
+            </a>
+            
+            <nav class="portal-navbar-links">
+                <a href="/" class="portal-navbar-link">Home</a>
+                <a href="/" class="portal-navbar-link">Category</a>
+                <a href="/" class="portal-navbar-link">Product</a>
+                <a href="/instructors" class="portal-navbar-link">Community</a>
+                <a href="/instructors" class="portal-navbar-link">Teach</a>
+            </nav>
+            
+            <div class="portal-navbar-actions">
+                <a href="/login" class="portal-navbar-btn portal-navbar-btn-login">Login</a>
+                <a href="/register" class="portal-navbar-btn portal-navbar-btn-signup">Sign up</a>
+            </div>
         </div>
-        
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-error">
-                    {{ message }}
+    </header>
+
+    <!-- Main Login Content -->
+    <div class="login-main-content">
+        <div class="login-container-main">
+            <div class="login-welcome-section">
+                <div class="login-welcome-icon">
+                    <div class="login-welcome-icon-inner"></div>
+                    <div class="login-welcome-icon-glow"></div>
                 </div>
-            {% endfor %}
-        {% endif %}
-        
-        <form method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="username">
-                    <i class="fas fa-user me-2"></i>
-                    Username
-                </label>
-                <input type="text" id="username" name="username" required autofocus>
+                <h2 class="login-welcome-title">Welcome Back</h2>
+                <p class="login-welcome-subtitle">Log in to continue your learning journey</p>
             </div>
-            
-            <div class="form-group">
-                <label for="password">
-                    <i class="fas fa-lock me-2"></i>
-                    Password
-                </label>
-                <input type="password" id="password" name="password" required>
+
+            <div class="login-card">
+                <form method="post" class="login-form" id="login-form">
+                    {% csrf_token %}
+                    
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="login-error-message">
+                                <div class="login-error-content">
+                                    <span class="login-error-icon">⚠️</span>
+                                    <div class="login-error-text">
+                                        <p class="login-error-title">Login Failed</p>
+                                        <p>{{ message }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <div class="login-form-group">
+                        <label for="id_username" class="login-form-label">Email or Username</label>
+                        <div class="login-input-wrapper">
+                            <svg class="login-input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                            <input 
+                                type="text" 
+                                name="username" 
+                                id="id_username" 
+                                class="login-form-input" 
+                                placeholder="Enter your email or username"
+                                required
+                                autofocus
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="login-form-group">
+                        <label for="id_password" class="login-form-label">Password</label>
+                        <div class="login-input-wrapper">
+                            <svg class="login-input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                            </svg>
+                            <input 
+                                type="password" 
+                                name="password" 
+                                id="id_password" 
+                                class="login-form-input" 
+                                placeholder="Enter your password"
+                                required
+                            >
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="login-submit-button" id="submit-btn">
+                        Continue
+                        <svg class="login-button-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                        </svg>
+                    </button>
+                </form>
+                
+                <!-- Social Login Section - Matching student login -->
+                <div class="login-social-section">
+                    <p class="login-social-text">Or continue with</p>
+                    <div class="login-social-buttons-wrapper">
+                        <a href="/login?google=true" class="login-google-button">
+                            <svg class="login-google-icon" viewBox="0 0 24 24">
+                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                            </svg>
+                            Sign in with Google
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Footer Links - Matching student login -->
+                <div class="login-footer">
+                    <p class="login-footer-text">
+                        Don't have an account? 
+                        <a href="/register" class="login-footer-link">Sign up</a>
+                    </p>
+                    <a href="/forgot-password" class="login-forgot-link">Forgot your password?</a>
+                </div>
             </div>
-            
-            <button type="submit" class="btn-login">
-                <i class="fas fa-sign-in-alt me-2"></i>
-                Sign In
-            </button>
-        </form>
+        </div>
     </div>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            const btn = document.getElementById('submit-btn');
+            if (!btn.disabled) {
+                btn.disabled = true;
+                btn.innerHTML = `
+                    <div style="width: 20px; height: 20px; border: 2px solid white; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; display: inline-block;"></div>
+                    Signing in...
+                `;
+            }
+        });
+        
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes spin {
+                to { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>
-
