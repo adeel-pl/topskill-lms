@@ -7,7 +7,7 @@ import { useAuthStore } from '@/lib/store';
 import PureLogicsNavbar from '@/app/components/PureLogicsNavbar';
 import { colors } from '@/lib/colors';
 import { FiUser, FiBook, FiUsers, FiStar, FiArrowRight } from 'react-icons/fi';
-import { api } from '@/lib/api';
+import api from '@/lib/api';
 
 interface Instructor {
   id: number;
