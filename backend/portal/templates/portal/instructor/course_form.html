@@ -75,6 +75,21 @@
                       placeholder="Full course description...">{% if course %}{{ course.description }}{% endif %}</textarea>
         </div>
         
+        <div class="mb-3">
+            <label for="thumbnail" class="form-label">Course Thumbnail Image URL</label>
+            <input type="url" name="thumbnail" id="thumbnail" class="form-control" 
+                   value="{% if course %}{{ course.thumbnail }}{% endif %}" 
+                   placeholder="https://images.unsplash.com/photo-...">
+            <small class="form-text text-muted">
+                Enter a URL to an image (e.g., from Unsplash, your CDN, etc.). This image will be displayed on course cards.
+            </small>
+            {% if course and course.thumbnail %}
+            <div class="mt-2">
+                <img src="{{ course.thumbnail }}" alt="Current thumbnail" class="img-thumbnail" style="max-width: 200px; max-height: 150px;">
+            </div>
+            {% endif %}
+        </div>
+        
         <div class="row">
             <div class="col-md-4 mb-3">
                 <label for="modality" class="form-label">Modality <span class="text-danger">*</span></label>

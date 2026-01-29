@@ -795,6 +795,7 @@ def admin_course_create(request):
             slug=slugify(request.POST.get('title')),
             description=request.POST.get('description', ''),
             short_description=request.POST.get('short_description', ''),
+            thumbnail=request.POST.get('thumbnail', ''),
             modality=request.POST.get('modality', 'online'),
             price=request.POST.get('price', 0),
             instructor=instructor,
@@ -840,6 +841,7 @@ def admin_course_edit(request, course_id):
         course.slug = slugify(request.POST.get('title'))
         course.description = request.POST.get('description', '')
         course.short_description = request.POST.get('short_description', '')
+        course.thumbnail = request.POST.get('thumbnail', '')
         course.modality = request.POST.get('modality', 'online')
         course.price = request.POST.get('price', 0)
         course.instructor = instructor
@@ -1085,6 +1087,7 @@ def instructor_course_create(request):
             slug=slugify(request.POST.get('title')),
             description=request.POST.get('description', ''),
             short_description=request.POST.get('short_description', ''),
+            thumbnail=request.POST.get('thumbnail', ''),
             modality=request.POST.get('modality', 'online'),
             price=request.POST.get('price', 0),
             instructor=request.user,
@@ -1113,6 +1116,7 @@ def instructor_course_edit(request, course_id):
         course.slug = slugify(request.POST.get('title'))
         course.description = request.POST.get('description', '')
         course.short_description = request.POST.get('short_description', '')
+        course.thumbnail = request.POST.get('thumbnail', '')
         course.modality = request.POST.get('modality', 'online')
         course.price = request.POST.get('price', 0)
         course.is_active = request.POST.get('is_active') == 'on'
