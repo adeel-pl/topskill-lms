@@ -47,16 +47,31 @@ export default function InstructorsPage() {
   const loadInstructors = async () => {
     try {
       setLoading(true);
+      setError('');
+      console.log('Loading instructors from:', '/instructors/');
       const response = await api.get('/instructors/');
-      if (response.data?.results) {
+      console.log('Instructors API response:', response.data);
+      
+      if (response.data?.results && Array.isArray(response.data.results)) {
         setInstructors(response.data.results);
+        console.log('Set instructors:', response.data.results.length);
       } else if (Array.isArray(response.data)) {
         setInstructors(response.data);
+        console.log('Set instructors (array):', response.data.length);
+      } else {
+        console.warn('Unexpected response format:', response.data);
+        setError('Unexpected response format from server.');
       }
-      setError('');
     } catch (err: any) {
       console.error('Error loading instructors:', err);
-      setError('Failed to load instructors. Please try again later.');
+      console.error('Error details:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+        statusText: err.response?.statusText,
+      });
+      const errorMessage = err.response?.data?.detail || err.response?.data?.error || err.message || 'Failed to load instructors. Please try again later.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -97,12 +112,12 @@ export default function InstructorsPage() {
           </div>
         )}
 
-        {instructors.length === 0 && !loading ? (
+        {instructors.length === 0 && !loading && !error ? (
           <div className="text-center py-12">
             <FiUser className="text-6xl mx-auto mb-4" style={{ color: colors.text.muted }} />
             <p className="text-xl" style={{ color: colors.text.muted }}>No instructors found</p>
           </div>
-        ) : (
+        ) : instructors.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {instructors.map((instructor) => (
               <div
@@ -148,7 +163,7 @@ export default function InstructorsPage() {
                     <div className="flex items-center justify-center gap-1 mb-1">
                       <FiStar className="text-yellow-500" />
                       <span className="text-lg font-bold" style={{ color: colors.text.dark }}>
-                        {instructor.avg_rating.toFixed(1)}
+                        {(instructor.avg_rating || 0).toFixed(1)}
                       </span>
                     </div>
                     <p className="text-xs" style={{ color: colors.text.muted }}>Rating</p>
@@ -220,7 +235,7 @@ export default function InstructorsPage() {
               </div>
             ))}
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   );
