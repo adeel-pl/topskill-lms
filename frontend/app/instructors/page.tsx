@@ -223,7 +223,7 @@ export default function InstructorsPage() {
                       color: 'white',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = colors.accent.highlight;
+                      e.currentTarget.style.backgroundColor = '#036969';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.backgroundColor = colors.accent.primary;
