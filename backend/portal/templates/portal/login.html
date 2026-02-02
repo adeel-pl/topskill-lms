@@ -158,7 +158,7 @@
             </div>
 
             <div class="login-card">
-                <form method="post" class="login-form" id="login-form">
+                <form method="post" action="{% url 'portal:portal_login' %}" class="login-form" id="login-form">
                     {% csrf_token %}
                     
                     {% if messages %}
@@ -238,7 +238,7 @@
                 <div class="login-footer">
                     <p class="login-footer-text">
                         Don't have an account? 
-                        <a href="/register" class="login-footer-link">Sign up</a>
+                        <a href="{% url 'portal:portal_register' %}" class="login-footer-link">Register as Instructor</a>
                     </p>
                     <a href="/forgot-password" class="login-forgot-link">Forgot your password?</a>
                 </div>

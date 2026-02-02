@@ -285,6 +285,10 @@ class EnrollmentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         
+        # Check if user is authenticated (prevents AnonymousUser errors in API docs)
+        if not user.is_authenticated:
+            return Enrollment.objects.none()
+        
         # Students see only their enrollments
         if not user.is_staff:
             return Enrollment.objects.filter(user=user).select_related('course', 'batch')
@@ -352,6 +356,10 @@ class PaymentViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         user = self.request.user
+        
+        # Check if user is authenticated (prevents AnonymousUser errors in API docs)
+        if not user.is_authenticated:
+            return Payment.objects.none()
         
         # Users see only their payments
         if not user.is_staff:
@@ -499,6 +507,10 @@ class SessionRegistrationViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         
+        # Check if user is authenticated (prevents AnonymousUser errors in API docs)
+        if not user.is_authenticated:
+            return SessionRegistration.objects.none()
+        
         # Students see only their registrations
         if not user.is_staff:
             return SessionRegistration.objects.filter(
@@ -532,6 +544,10 @@ class AttendanceViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         user = self.request.user
+        
+        # Check if user is authenticated (prevents AnonymousUser errors in API docs)
+        if not user.is_authenticated:
+            return Attendance.objects.none()
         
         # Students see only their attendance
         if not user.is_staff:
@@ -614,7 +630,13 @@ class WishlistViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     
     def get_queryset(self):
-        return Wishlist.objects.filter(user=self.request.user).select_related('course')
+        user = self.request.user
+        
+        # Check if user is authenticated (prevents AnonymousUser errors in API docs)
+        if not user.is_authenticated:
+            return Wishlist.objects.none()
+        
+        return Wishlist.objects.filter(user=user).select_related('course')
     
     def get_serializer_class(self):
         if self.action == 'create':
@@ -628,7 +650,13 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     
     def get_queryset(self):
-        return Notification.objects.filter(user=self.request.user).select_related('related_course')
+        user = self.request.user
+        
+        # Check if user is authenticated (prevents AnonymousUser errors in API docs)
+        if not user.is_authenticated:
+            return Notification.objects.none()
+        
+        return Notification.objects.filter(user=user).select_related('related_course')
     
     @action(detail=True, methods=['post'])
     def mark_read(self, request, pk=None):
@@ -781,6 +809,10 @@ class QuizAttemptViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         
+        # Check if user is authenticated (prevents AnonymousUser errors in API docs)
+        if not user.is_authenticated:
+            return QuizAttempt.objects.none()
+        
         # Students see only their attempts
         if not user.is_staff:
             return QuizAttempt.objects.filter(
@@ -911,6 +943,10 @@ class AssignmentSubmissionViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         
+        # Check if user is authenticated (prevents AnonymousUser errors in API docs)
+        if not user.is_authenticated:
+            return AssignmentSubmission.objects.none()
+        
         # Students see only their submissions
         if not user.is_staff:
             return AssignmentSubmission.objects.filter(
@@ -970,6 +1006,10 @@ class LectureProgressViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         user = self.request.user
+        
+        # Check if user is authenticated (prevents AnonymousUser errors in API docs)
+        if not user.is_authenticated:
+            return LectureProgress.objects.none()
         
         # Students see only their progress
         if not user.is_staff:
@@ -1041,6 +1081,10 @@ class NoteViewSet(viewsets.ModelViewSet):
         self.serializer_class = NoteSerializer
         
         user = self.request.user
+        
+        # Check if user is authenticated (prevents AnonymousUser errors in API docs)
+        if not user.is_authenticated:
+            return Note.objects.none()
         
         # Students see only their notes
         if not user.is_staff:
@@ -1195,8 +1239,14 @@ class CertificateViewSet(viewsets.ReadOnlyModelViewSet):
     
     def get_queryset(self):
         """Return certificates for the current user"""
+        user = self.request.user
+        
+        # Check if user is authenticated (prevents AnonymousUser errors in API docs)
+        if not user.is_authenticated:
+            return Certificate.objects.none()
+        
         return Certificate.objects.filter(
-            enrollment__user=self.request.user
+            enrollment__user=user
         ).select_related('enrollment', 'enrollment__course', 'enrollment__user').order_by('-issued_at')
     
     @action(detail=True, methods=['get'])

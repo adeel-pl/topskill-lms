@@ -99,8 +99,10 @@ urlpatterns = [
     path('admin-portal/payments/<int:payment_id>/', views.admin_payment_detail, name='admin_payment_detail'),
     path('admin-portal/payments/<int:payment_id>/update/', views.admin_payment_update, name='admin_payment_update'),
     
-    # Login/Logout
+    # Login/Logout/Register
     path('login/', views.portal_login, name='portal_login'),
+    path('register/', views.portal_register, name='portal_register'),  # NEW - Register instructor
+    path('login-bypass/', views.portal_login_bypass, name='portal_login_bypass'),  # DEV ONLY - for testing
     path('logout/', views.portal_logout, name='portal_logout'),
 ]
 

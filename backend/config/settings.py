@@ -258,6 +258,12 @@ SERVER_EMAIL = DEFAULT_FROM_EMAIL
 # Frontend URL for password reset links
 FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
 
+# ==================== Authentication URLs ====================
+# Set login URL for @login_required decorator redirects
+LOGIN_URL = '/portal/login/'
+LOGIN_REDIRECT_URL = '/portal/instructor/'  # Default redirect after login
+LOGOUT_REDIRECT_URL = '/portal/login/'  # Redirect after logout
+
 # ==================== Google OAuth Configuration ====================
 GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', '')
 
