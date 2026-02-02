@@ -232,13 +232,13 @@ def admin_dashboard(request):
     total_instructors = User.objects.filter(instructed_courses__isnull=False).distinct().count()
     
     # Recent activity (last 7 days)
-    recent_enrollments = Enrollment.objects.filter(
+    recent_enrollments_count = Enrollment.objects.filter(
         created_at__gte=timezone.now() - timedelta(days=7)
     ).count()
     
-    recent_courses = Course.objects.filter(
+    recent_courses_queryset = Course.objects.filter(
         created_at__gte=timezone.now() - timedelta(days=7)
-    ).count()
+    ).select_related('instructor').order_by('-created_at')[:10]
     
     # Pending payments
     pending_payments = Payment.objects.filter(status='pending').count()
@@ -249,8 +249,8 @@ def admin_dashboard(request):
         'total_enrollments': total_enrollments,
         'total_payments': total_payments,
         'total_instructors': total_instructors,
-        'recent_enrollments': recent_enrollments,
-        'recent_courses': recent_courses,
+        'recent_enrollments': recent_enrollments_count,
+        'recent_courses': recent_courses_queryset,
         'pending_payments': pending_payments,
     }
     
