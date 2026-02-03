@@ -1,0 +1,16 @@
+version: '3.8'
+
+# Local Development Docker Compose Override
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.local.yml up -d
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api
+      - NEXT_PUBLIC_GOOGLE_CLIENT_ID=370863717645-duhkahlagvn68fguvndire3dhvbu363e.apps.googleusercontent.com
+      - NODE_ENV=development
+    # Use dev command for hot-reload
+    command: npm run dev

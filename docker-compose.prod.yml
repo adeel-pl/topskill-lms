@@ -1,0 +1,28 @@
+version: '3.8'
+
+# Production Docker Compose Override
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        - NEXT_PUBLIC_API_URL=https://topskill-lms.server3.purelogics.net/api
+        - NEXT_PUBLIC_GOOGLE_CLIENT_ID=370863717645-duhkahlagvn68fguvndire3dhvbu363e.apps.googleusercontent.com
+        - NODE_ENV=production
+    environment:
+      - NEXT_PUBLIC_API_URL=https://topskill-lms.server3.purelogics.net/api
+      - NEXT_PUBLIC_GOOGLE_CLIENT_ID=370863717645-duhkahlagvn68fguvndire3dhvbu363e.apps.googleusercontent.com
+      - NODE_ENV=production
+    # Remove volumes in production for better performance
+    volumes: []
+
+  backend:
+    environment:
+      - DEBUG=False
+    # Remove volumes in production for better performance
+    volumes:
+      - backend_static:/app/staticfiles
+      - backend_media:/app/media
+
