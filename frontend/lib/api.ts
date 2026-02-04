@@ -8,10 +8,7 @@ export function getApiBase(): string {
   return API_BASE_URL;
 }
 
-// Log API URL for debugging
-if (typeof window !== 'undefined') {
-  console.log('API Base URL:', API_BASE_URL);
-}
+// API URL is available via getApiBase() function
 
 const api = axios.create({
   baseURL: API_BASE_URL,

@@ -59,9 +59,7 @@ export default function InstructorDetailPage() {
     try {
       setLoading(true);
       setError('');
-      console.log('Loading instructor:', instructorId);
       const response = await api.get(`/instructors/${instructorId}/`);
-      console.log('Instructor API response:', response.data);
       setInstructor(response.data);
     } catch (err: any) {
       console.error('Error loading instructor:', err);

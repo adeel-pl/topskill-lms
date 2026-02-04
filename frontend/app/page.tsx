@@ -13,7 +13,8 @@ import { Container } from '@/app/components/ui/container';
 import { Section } from '@/app/components/ui/section';
 import { Heading } from '@/app/components/ui/heading';
 import { Text } from '@/app/components/ui/text';
-import { Button } from '@/app/components/ui/button';
+import { Button, buttonVariants } from '@/app/components/ui/button';
+import { cn } from '@/lib/utils';
 import { colors } from '@/lib/colors';
 
 interface Course {
@@ -86,7 +87,6 @@ export default function HomePage() {
 
   const loadAllCourses = async () => {
     try {
-      console.log('Loading all courses...');
       // Load all courses - use a large page_size or fetch all pages
       let allCoursesData: Course[] = [];
       let page = 1;
@@ -94,7 +94,6 @@ export default function HomePage() {
 
       while (hasMorePages) {
         const response = await coursesAPI.getAll({ page_size: 100, page });
-        console.log(`Page ${page} Response:`, response);
         
         let pageCourses: Course[] = [];
         if (response.data) {
@@ -118,7 +117,6 @@ export default function HomePage() {
         }
       }
       
-      console.log('All courses loaded:', allCoursesData.length);
       setAllCourses(allCoursesData);
       
       // Set initial trending courses based on active tab
@@ -363,21 +361,17 @@ export default function HomePage() {
                 transition={{ duration: 0.6, delay: 0.6 }}
                 className="flex flex-wrap gap-4 mb-8 md:mb-10"
               >
-                <Button variant="default" size="lg" className="text-white" asChild>
-                  <Link href="/register">
-                    Learn With Us
-                    <ArrowRight className="w-5 h-5" />
-                  </Link>
-                </Button>
-                <Button variant="outline" size="lg" className="text-white border-white/30 hover:bg-white/10" asChild>
-                  <Link href="#">
-                    Watch Demo
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </Link>
-                </Button>
+                <Link href="/register" className={cn(buttonVariants({ variant: "default", size: "lg" }), "text-white")}>
+                  Learn With Us
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
+                <Link href="#" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "text-white border-white/30 hover:bg-white/10")}>
+                  Watch Demo
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </Link>
               </motion.div>
               
               {/* Search Bar */}

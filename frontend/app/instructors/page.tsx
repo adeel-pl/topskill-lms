@@ -48,28 +48,17 @@ export default function InstructorsPage() {
     try {
       setLoading(true);
       setError('');
-      console.log('Loading instructors from:', '/instructors/');
       const response = await api.get('/instructors/');
-      console.log('Instructors API response:', response.data);
       
       if (response.data?.results && Array.isArray(response.data.results)) {
         setInstructors(response.data.results);
-        console.log('Set instructors:', response.data.results.length);
       } else if (Array.isArray(response.data)) {
         setInstructors(response.data);
-        console.log('Set instructors (array):', response.data.length);
       } else {
-        console.warn('Unexpected response format:', response.data);
         setError('Unexpected response format from server.');
       }
     } catch (err: any) {
       console.error('Error loading instructors:', err);
-      console.error('Error details:', {
-        message: err.message,
-        response: err.response?.data,
-        status: err.response?.status,
-        statusText: err.response?.statusText,
-      });
       const errorMessage = err.response?.data?.detail || err.response?.data?.error || err.message || 'Failed to load instructors. Please try again later.';
       setError(errorMessage);
     } finally {
