@@ -185,7 +185,7 @@ export default function InstructorDetailPage() {
               <div className="flex items-center justify-center gap-2 mb-2">
                 <FiStar className="text-2xl text-yellow-500" />
                 <span className="text-3xl font-black" style={{ color: colors.text.dark }}>
-                  {instructor.statistics.avg_rating.toFixed(1)}
+                  {instructor.statistics?.avg_rating && typeof instructor.statistics.avg_rating === 'number' ? instructor.statistics.avg_rating.toFixed(1) : '0.0'}
                 </span>
               </div>
               <p className="text-sm" style={{ color: colors.text.muted }}>Rating</p>

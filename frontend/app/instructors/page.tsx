@@ -162,7 +162,7 @@ export default function InstructorsPage() {
                 {/* Instructor Header */}
                 <div className="flex items-start gap-4 mb-4">
                   <div className="w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl font-bold" style={{ backgroundColor: colors.primary }}>
-                    {instructor.full_name.charAt(0).toUpperCase()}
+                    {instructor.full_name && typeof instructor.full_name === 'string' && instructor.full_name.length > 0 ? instructor.full_name.charAt(0).toUpperCase() : '?'}
                   </div>
                   <div className="flex-1">
                     <h3 className="text-lg md:text-xl font-bold mb-1" style={{ color: colors.text.dark }}>
@@ -227,13 +227,13 @@ export default function InstructorsPage() {
                                 <span className="text-xs md:text-sm" style={{ color: colors.text.muted }}>
                                   ${course.price}
                                 </span>
-                                {course.avg_rating > 0 && (
+                                {course.avg_rating && course.avg_rating > 0 && (
                                   <>
                                     <span className="text-xs" style={{ color: colors.text.muted }}>•</span>
                                     <div className="flex items-center gap-1">
                                       <FiStar className="text-yellow-500 text-xs" />
                                       <span className="text-xs" style={{ color: colors.text.muted }}>
-                                        {course.avg_rating.toFixed(1)}
+                                        {typeof course.avg_rating === 'number' ? course.avg_rating.toFixed(1) : '0.0'}
                                       </span>
                                     </div>
                                   </>

@@ -126,12 +126,7 @@ export default function HomePage() {
       // Better error logging
       const errorMessage = error?.response?.data?.detail || error?.message || 'Unknown error';
       const errorStatus = error?.response?.status;
-      console.error('Error loading courses:', {
-        message: errorMessage,
-        status: errorStatus,
-        url: error?.config?.url,
-        fullError: error
-      });
+      // Error logged silently - user sees empty state
       setAllCourses([]);
       setDisplayedTrendingCourses([]);
       setLoading(false);

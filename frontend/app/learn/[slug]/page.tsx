@@ -633,14 +633,14 @@ export default function CoursePlayerPage() {
                 onClick={() => setSidebarOpen(false)}
                 className="transition-colors p-1"
                 style={{ color: colors.text.white }}
-                onMouseEnter={(e) => e.currentTarget.style.color = colors.accent.highlight}
+                onMouseEnter={(e) => e.currentTarget.style.color = colors.accent.primary}
                 onMouseLeave={(e) => e.currentTarget.style.color = colors.text.white}
                 aria-label="Close sidebar"
               >
                 ×
               </button>
             </div>
-            <div className="text-xs" style={{ color: colors.accent.highlight }}>{totalLectures} lectures</div>
+            <div className="text-xs" style={{ color: colors.accent.primary }}>{totalLectures} lectures</div>
           </div>
 
           <div className="p-2 pb-4">
@@ -655,7 +655,7 @@ export default function CoursePlayerPage() {
                   }}
                 >
                   {section.title}
-                  <span className="ml-2" style={{ color: colors.accent.highlight }}>
+                  <span className="ml-2" style={{ color: colors.accent.primary }}>
                     {section.completed_lectures}/{section.total_lectures}
                   </span>
                 </div>
@@ -681,7 +681,7 @@ export default function CoursePlayerPage() {
                           : selectedLecture?.id === lecture.id
                             ? { 
                                 backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                                borderLeftColor: colors.accent.highlight,
+                                borderLeftColor: colors.accent.primary,
                                 borderLeftWidth: '3px',
                                 color: colors.text.white
                               }
@@ -690,7 +690,7 @@ export default function CoursePlayerPage() {
                       onMouseEnter={(e) => {
                         if (!isDisabled && selectedLecture?.id !== lecture.id) {
                           e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
-                          e.currentTarget.style.borderLeftColor = colors.accent.highlight;
+                          e.currentTarget.style.borderLeftColor = colors.accent.primary;
                           e.currentTarget.style.borderLeftWidth = '3px';
                           e.currentTarget.style.borderLeftStyle = 'solid';
                         }
@@ -705,17 +705,17 @@ export default function CoursePlayerPage() {
                     >
                       <div className="flex items-center gap-2 flex-1 min-w-0">
                         {lecture.is_completed ? (
-                          <FiCheck className="flex-shrink-0" style={{ color: colors.accent.highlight }} />
+                          <FiCheck className="flex-shrink-0" style={{ color: colors.accent.primary }} />
                         ) : (
-                          <FiPlay className="flex-shrink-0 text-xs" style={{ color: colors.accent.highlight }} />
+                          <FiPlay className="flex-shrink-0 text-xs" style={{ color: colors.accent.primary }} />
                         )}
                         <span className="truncate text-sm">{lecture.title}</span>
                         {lecture.is_preview && (
-                          <span className="text-xs ml-1" style={{ color: colors.accent.highlight }}>Preview</span>
+                          <span className="text-xs ml-1" style={{ color: colors.accent.primary }}>Preview</span>
                         )}
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-                        <FiClock className="text-xs" style={{ color: colors.accent.highlight }} />
+                        <FiClock className="text-xs" style={{ color: colors.accent.primary }} />
                         <span className="text-xs" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
                           {lecture.duration_minutes}m
                         </span>
@@ -1203,8 +1203,8 @@ export default function CoursePlayerPage() {
                             >
                               <FiStar
                                 style={{
-                                  color: star <= reviewForm.rating ? colors.accent.highlight : colors.border.primary,
-                                  fill: star <= reviewForm.rating ? colors.accent.highlight : 'transparent'
+                                  color: star <= reviewForm.rating ? colors.accent.primary : colors.border.primary,
+                                  fill: star <= reviewForm.rating ? colors.accent.primary : 'transparent'
                                 }}
                               />
                             </button>
@@ -1283,8 +1283,8 @@ export default function CoursePlayerPage() {
                                     <FiStar
                                       key={star}
                                       style={{
-                                        color: star <= review.rating ? colors.accent.highlight : colors.border.primary,
-                                        fill: star <= review.rating ? colors.accent.highlight : 'transparent'
+                                        color: star <= review.rating ? colors.accent.primary : colors.border.primary,
+                                        fill: star <= review.rating ? colors.accent.primary : 'transparent'
                                       }}
                                       className="text-sm"
                                     />
@@ -1736,12 +1736,12 @@ export default function CoursePlayerPage() {
                                       ? colors.accent.secondary + '20'
                                       : submission.status === 'returned'
                                       ? colors.accent.primary + '20'
-                                      : colors.accent.highlight + '20',
+                                      : colors.accent.primary + '20',
                                     color: submission.status === 'graded'
                                       ? colors.accent.secondary
                                       : submission.status === 'returned'
                                       ? colors.accent.primary
-                                      : colors.accent.highlight
+                                      : colors.accent.primary
                                   }}
                                 >
                                   {submission.status === 'graded' ? 'Graded' :
@@ -1771,7 +1771,7 @@ export default function CoursePlayerPage() {
                                         ? colors.accent.secondary
                                         : submission.status === 'returned'
                                         ? colors.accent.primary
-                                        : colors.accent.highlight
+                                        : colors.accent.primary
                                     }}
                                   >
                                     {submission.status.charAt(0).toUpperCase() + submission.status.slice(1)}

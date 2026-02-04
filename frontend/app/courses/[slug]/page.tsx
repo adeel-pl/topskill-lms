@@ -435,7 +435,7 @@ export default function CourseDetailPage() {
                           <span className="text-sm" style={{ color: colors.text.muted }}>{section.total_lectures} lectures</span>
                         </div>
                         <div style={{ borderTopColor: colors.border.primary, borderTopWidth: '1px', borderTopStyle: 'solid' }}>
-                          {section.lectures.map((lecture: any, lectureIdx: number) => {
+                          {Array.isArray(section.lectures) && section.lectures.map((lecture: any, lectureIdx: number) => {
                             // Preview lectures work for everyone (logged in or not)
                             // Full lectures only work if enrolled (after checkout), not just in cart
                             const isPreviewLecture = lecture.is_preview;
