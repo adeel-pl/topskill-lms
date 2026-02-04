@@ -417,7 +417,7 @@ export default function CoursePlayerPage() {
     
     try {
       const timestamp = watchPosition || 0;
-      let updatedNote;
+      let updatedNote: any;
       
       if (editingNote) {
         // Update existing note
@@ -522,7 +522,6 @@ export default function CoursePlayerPage() {
           <div 
             className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4"
             style={{ borderColor: colors.border.dark, borderTopColor: colors.accent.primary }}
-            style={{ borderTopColor: colors.accent.primary }}
           ></div>
           <p style={{ color: colors.text.muted }}>Loading course...</p>
         </div>
@@ -578,7 +577,6 @@ export default function CoursePlayerPage() {
           <div 
             className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4"
             style={{ borderColor: colors.border.dark, borderTopColor: colors.accent.primary }}
-            style={{ borderTopColor: colors.accent.primary }}
           ></div>
           <p style={{ color: colors.text.muted }}>Loading lecture...</p>
         </div>
