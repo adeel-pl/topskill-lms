@@ -403,10 +403,10 @@ export default function HomePage() {
                   transition={{ type: "spring", stiffness: 300 }}
                 >
                   <div className="absolute -inset-2 bg-white/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="relative backdrop-blur-sm bg-white/5 rounded-xl px-6 py-4 border border-white/10">
+                  <div className="relative backdrop-blur-sm bg-white/10 rounded-xl px-6 py-4 border border-white/20">
                     <motion.div 
                       className="text-3xl md:text-4xl lg:text-5xl font-black mb-1"
-                      style={{ color: colors.highlight }}
+                      style={{ color: '#FFFFFF' }}
                       animate={{
                         scale: [1, 1.05, 1],
                       }}
@@ -418,7 +418,7 @@ export default function HomePage() {
                     >
                       10M
                     </motion.div>
-                    <div className="text-sm md:text-base text-white">HAPPY CUSTOMER</div>
+                    <div className="text-sm md:text-base font-semibold text-white">HAPPY CUSTOMER</div>
                   </div>
                 </motion.div>
                 <div className="hidden sm:block w-px bg-white/30"></div>
@@ -428,10 +428,10 @@ export default function HomePage() {
                   transition={{ type: "spring", stiffness: 300 }}
                 >
                   <div className="absolute -inset-2 bg-white/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="relative backdrop-blur-sm bg-white/5 rounded-xl px-6 py-4 border border-white/10">
+                  <div className="relative backdrop-blur-sm bg-white/10 rounded-xl px-6 py-4 border border-white/20">
                     <motion.div 
                       className="text-3xl md:text-4xl lg:text-5xl font-black mb-1"
-                      style={{ color: colors.secondary }}
+                      style={{ color: '#FFFFFF' }}
                       animate={{
                         scale: [1, 1.05, 1],
                       }}
@@ -444,7 +444,7 @@ export default function HomePage() {
                     >
                       25K
                     </motion.div>
-                    <div className="text-sm md:text-base text-white">POPULAR COURSE</div>
+                    <div className="text-sm md:text-base font-semibold text-white">POPULAR COURSE</div>
                   </div>
                 </motion.div>
                 <div className="hidden sm:block w-px bg-white/30"></div>
@@ -454,10 +454,10 @@ export default function HomePage() {
                   transition={{ type: "spring", stiffness: 300 }}
                 >
                   <div className="absolute -inset-2 bg-white/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="relative backdrop-blur-sm bg-white/5 rounded-xl px-6 py-4 border border-white/10">
+                  <div className="relative backdrop-blur-sm bg-white/10 rounded-xl px-6 py-4 border border-white/20">
                     <motion.div 
                       className="text-3xl md:text-4xl lg:text-5xl font-black mb-1"
-                      style={{ color: colors.accentColor }}
+                      style={{ color: '#FFFFFF' }}
                       animate={{
                         scale: [1, 1.05, 1],
                       }}
@@ -470,7 +470,7 @@ export default function HomePage() {
                     >
                       10+
                     </motion.div>
-                    <div className="text-sm md:text-base text-white">YEARS EXPERIENCES</div>
+                    <div className="text-sm md:text-base font-semibold text-white">YEARS EXPERIENCES</div>
                   </div>
                 </motion.div>
               </motion.div>

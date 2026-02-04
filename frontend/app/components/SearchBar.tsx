@@ -149,7 +149,7 @@ export default function SearchBar({
                 e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
                 e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
               }}
-              className="w-full pl-14 pr-6 py-4 md:py-5 rounded-xl focus:outline-none focus:ring-2 transition-all text-base md:text-lg bg-white/10 backdrop-blur-sm border-2 border-white/20 text-white placeholder-white/70"
+              className="w-full pl-14 pr-6 py-4 md:py-5 rounded-xl focus:outline-none focus:ring-2 transition-all text-base md:text-lg bg-white/10 backdrop-blur-sm border-2 border-white/20 text-white placeholder-white/90"
               style={{ '--tw-ring-color': searchColors.highlight } as React.CSSProperties}
             />
             {isSearching && (
