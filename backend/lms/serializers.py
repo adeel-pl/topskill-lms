@@ -236,6 +236,9 @@ class CourseDetailSerializer(serializers.ModelSerializer):
             return sum(r.rating for r in reviews) / len(reviews)
         return None
     
+    def get_rating_count(self, obj):
+        return obj.reviews.count()
+    
     def get_total_sections(self, obj):
         return obj.sections.count()
     
