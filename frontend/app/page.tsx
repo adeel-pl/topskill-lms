@@ -347,7 +347,7 @@ export default function HomePage() {
                     transition={{ duration: 0.4, delay: 0.4 + idx * 0.1 }}
                     className="flex items-center gap-3 text-white"
                   >
-                    <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: colors.highlight }}>
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: colors.primaryLight }}>
                       <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                       </svg>
@@ -484,7 +484,7 @@ export default function HomePage() {
               >
                 <div className="text-center mb-4 md:mb-6">
                   <h3 className="text-lg md:text-xl font-semibold text-white whitespace-nowrap">
-                    Our Experienced Trainers are <span className="font-bold" style={{ color: colors.highlight }}>Certified from</span>
+                    Our Experienced Trainers are <span className="font-bold" style={{ color: colors.primaryLight }}>Certified from</span>
                   </h3>
                 </div>
                 
@@ -528,7 +528,7 @@ export default function HomePage() {
             >
               <div className="relative w-full max-w-lg">
                 {/* Decorative shapes */}
-                <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full blur-2xl" style={{ backgroundColor: `${colors.highlight}30` }}></div>
+                <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full blur-2xl" style={{ backgroundColor: `${colors.primaryLight}30` }}></div>
                 <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full blur-3xl" style={{ backgroundColor: `${colors.secondary}30` }}></div>
                 
                 {/* Main illustration area with Glassmorphism */}
