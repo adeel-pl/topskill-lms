@@ -258,12 +258,12 @@ export default function CourseDetailPage() {
                       backgroundColor: course.modality === 'online' 
                         ? colors.accent.primary 
                         : course.modality === 'hybrid'
-                        ? colors.accent.accent
+                        ? colors.accent.secondary
                         : colors.accent.secondary,
                       borderColor: course.modality === 'online' 
                         ? colors.accent.primary 
                         : course.modality === 'hybrid'
-                        ? colors.accent.accent
+                        ? colors.accent.secondary
                         : colors.accent.secondary
                     }}
                   >

@@ -1068,11 +1068,11 @@ export default function CoursePlayerPage() {
                     <div 
                       className="mb-6 p-4 border rounded-sm"
                       style={{
-                        backgroundColor: colors.accent.accent + '20',
-                        borderColor: colors.accent.accent
+                        backgroundColor: colors.accent.secondary + '20',
+                        borderColor: colors.accent.secondary
                       }}
                     >
-                      <div className="flex items-center gap-2" style={{ color: colors.accent.accent }}>
+                      <div className="flex items-center gap-2" style={{ color: colors.accent.secondary }}>
                         <FiCheck className="w-5 h-5" />
                         <span className="font-semibold">Lecture completed!</span>
                       </div>
@@ -1294,8 +1294,8 @@ export default function CoursePlayerPage() {
                                   <span 
                                     className="text-xs px-2 py-1 rounded"
                                     style={{
-                                      backgroundColor: colors.accent.accent + '20',
-                                      color: colors.accent.accent
+                                      backgroundColor: colors.accent.secondary + '20',
+                                      color: colors.accent.secondary
                                     }}
                                   >
                                     Verified Purchase
@@ -1363,7 +1363,7 @@ export default function CoursePlayerPage() {
                             announcement.is_pinned
                               ? {
                                   borderColor: colors.accent.primary,
-                                  backgroundColor: colors.accent.accent + '20'
+                                  backgroundColor: colors.accent.secondary + '20'
                                 }
                               : {
                                   borderColor: colors.border.primary,
@@ -1583,13 +1583,13 @@ export default function CoursePlayerPage() {
                                   <span className="text-sm font-medium" style={{ color: colors.text.dark }}>Best Score:</span>
                                   <span 
                                     className="text-lg font-bold"
-                                    style={{ color: bestPassed ? colors.accent.accent : colors.accent.secondary }}
+                                    style={{ color: bestPassed ? colors.accent.secondary : colors.accent.secondary }}
                                   >
                                     {bestScore.toFixed(1)}%
                                   </span>
                                 </div>
                                 {bestPassed && (
-                                  <div className="mt-2 text-xs font-medium" style={{ color: colors.accent.accent }}>
+                                  <div className="mt-2 text-xs font-medium" style={{ color: colors.accent.secondary }}>
                                     ✓ Passed
                                   </div>
                                 )}
@@ -1624,7 +1624,7 @@ export default function CoursePlayerPage() {
                                       <span style={{ color: colors.text.dark }}>Attempt {attempt.attempt_number || idx + 1}</span>
                                       <span 
                                         className="font-semibold"
-                                        style={{ color: attempt.passed ? colors.accent.accent : colors.accent.secondary }}
+                                        style={{ color: attempt.passed ? colors.accent.secondary : colors.accent.secondary }}
                                       >
                                         {attempt.score !== null ? `${attempt.score.toFixed(1)}%` : 'N/A'}
                                       </span>
@@ -1642,13 +1642,13 @@ export default function CoursePlayerPage() {
                                 <button 
                                   onClick={() => router.push(`/courses/${params.slug}/quizzes/${quiz.id}`)}
                                   className="px-4 py-2 text-white rounded-sm font-semibold text-sm transition-all duration-300 hover:scale-105"
-                                  style={{ backgroundColor: colors.accent.accent }}
+                                  style={{ backgroundColor: colors.accent.secondary }}
                                   onMouseEnter={(e) => {
                                     e.currentTarget.style.backgroundColor = colors.accent.primary;
                                     e.currentTarget.style.boxShadow = `0 4px 12px ${colors.accent.primary}40`;
                                   }}
                                   onMouseLeave={(e) => {
-                                    e.currentTarget.style.backgroundColor = colors.accent.accent;
+                                    e.currentTarget.style.backgroundColor = colors.accent.secondary;
                                     e.currentTarget.style.boxShadow = 'none';
                                   }}
                                 >
@@ -1733,12 +1733,12 @@ export default function CoursePlayerPage() {
                                   className="px-2 py-1 text-xs font-semibold rounded"
                                   style={{
                                     backgroundColor: submission.status === 'graded' 
-                                      ? colors.accent.accent + '20'
+                                      ? colors.accent.secondary + '20'
                                       : submission.status === 'returned'
                                       ? colors.accent.primary + '20'
                                       : colors.accent.highlight + '20',
                                     color: submission.status === 'graded'
-                                      ? colors.accent.accent
+                                      ? colors.accent.secondary
                                       : submission.status === 'returned'
                                       ? colors.accent.primary
                                       : colors.accent.highlight
@@ -1768,7 +1768,7 @@ export default function CoursePlayerPage() {
                                     className="text-sm font-semibold"
                                     style={{
                                       color: submission.status === 'graded'
-                                        ? colors.accent.accent
+                                        ? colors.accent.secondary
                                         : submission.status === 'returned'
                                         ? colors.accent.primary
                                         : colors.accent.highlight

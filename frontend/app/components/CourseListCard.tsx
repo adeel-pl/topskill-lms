@@ -97,8 +97,8 @@ export default function CourseListCard({ course, index = 0 }: CourseListCardProp
               <span 
                 className="px-3 md:px-4 py-1.5 md:py-2 rounded-xl text-xs font-black backdrop-blur-md border text-white"
                 style={{
-                  backgroundColor: course.modality === 'online' ? colors.accent.primary : colors.accent.accent,
-                  borderColor: course.modality === 'online' ? colors.accent.primary : colors.accent.accent
+                  backgroundColor: course.modality === 'online' ? colors.accent.primary : colors.accent.secondary,
+                  borderColor: course.modality === 'online' ? colors.accent.primary : colors.accent.secondary
                 }}
               >
                 {course.modality?.toUpperCase() || 'COURSE'}
