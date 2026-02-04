@@ -211,12 +211,13 @@ export default function MyCoursesPage() {
 
                     {/* Action Button */}
                     <div className="mt-auto">
-                      <Button asChild variant="default" className="w-full text-white" size="default">
-                        <Link href={`/learn/${enrollment.course.slug}`} className="flex items-center justify-center gap-2">
-                          <FiPlay className="text-lg flex-shrink-0" />
-                          <span>Continue Learning</span>
-                        </Link>
-                      </Button>
+                      <Link 
+                        href={`/learn/${enrollment.course.slug}`}
+                        className="inline-flex items-center justify-center gap-2 w-full px-6 py-3 text-base font-semibold text-white bg-[#366854] hover:bg-[#2a5242] rounded-[0.875rem] transition-all duration-300 shadow-md hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#366854] focus-visible:ring-offset-2"
+                      >
+                        <FiPlay className="text-lg flex-shrink-0" />
+                        <span>Continue Learning</span>
+                      </Link>
                     </div>
                   </div>
                 </Card>
