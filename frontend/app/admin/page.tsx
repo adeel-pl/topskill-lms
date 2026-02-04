@@ -17,6 +17,10 @@ import {
 } from 'react-icons/fi';
 import EnrollmentChart from '@/app/components/charts/EnrollmentChart';
 import RevenueChart from '@/app/components/charts/RevenueChart';
+import { Button } from '@/app/components/ui/button';
+import { Card } from '@/app/components/ui/card';
+import { Heading } from '@/app/components/ui/heading';
+import { Text } from '@/app/components/ui/text';
 
 export default function AdminDashboardPage() {
   const router = useRouter();
@@ -128,8 +132,8 @@ export default function AdminDashboardPage() {
         )}
       </div>
       <div>
-        <p className="text-sm mb-1 font-medium" style={{ color: colors.text.muted }}>{label}</p>
-        <p className="text-3xl font-black" style={{ color: colors.text.dark }}>{value}</p>
+        <Text size="sm" variant="muted" className="mb-1 font-medium">{label}</Text>
+        <Heading as="p" size="h1" style={{ color: colors.text.dark }}>{value}</Heading>
       </div>
     </div>
   );
@@ -141,10 +145,10 @@ export default function AdminDashboardPage() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-4 mb-6 md:mb-8 lg:mb-12">
             <div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-2" style={{ color: colors.text.dark }}>
+              <Heading as="h1" size="display" className="mb-2" style={{ color: colors.text.dark }}>
                 Admin Dashboard
-              </h1>
-              <p className="text-sm md:text-base lg:text-lg" style={{ color: colors.text.muted }}>{overview.date_label}</p>
+              </Heading>
+              <Text size="lg" variant="muted">{overview.date_label}</Text>
             </div>
             <div className="flex items-center gap-3">
               <select
@@ -170,25 +174,16 @@ export default function AdminDashboardPage() {
                 <option value="1week">Last 7 Days</option>
                 <option value="1month">Last 30 Days</option>
               </select>
-              <button
+              <Button
                 onClick={loadAnalytics}
                 disabled={refreshing}
-                className="flex items-center gap-2 px-4 md:px-5 lg:px-6 py-2.5 md:py-3 rounded-xl font-black transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base whitespace-nowrap"
-                style={{ 
-                  backgroundColor: colors.button.primary, 
-                  color: colors.text.white,
-                  boxShadow: `0 10px 25px -5px ${colors.primary}30`
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = `0 20px 25px -5px ${colors.primary}50`;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = `0 10px 25px -5px ${colors.primary}30`;
-                }}
+                variant="default"
+                size="lg"
+                className="whitespace-nowrap"
               >
                 <FiRefreshCw className={`text-lg md:text-xl ${refreshing ? 'animate-spin' : ''}`} />
                 <span className="hidden sm:inline">Refresh</span>
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -223,15 +218,7 @@ export default function AdminDashboardPage() {
           {/* Charts Row */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6 lg:gap-8 mb-8 md:mb-12">
             {/* Enrollment Trends */}
-            <div 
-              className="rounded-2xl p-6 transition-all duration-300"
-              style={{ 
-                backgroundColor: colors.background.card, 
-                borderColor: colors.border.primary, 
-                borderWidth: '1px', 
-                borderStyle: 'solid'
-              }}
-            >
+            <Card variant="outlined" className="p-6">
               <h3 className="text-xl md:text-2xl font-black mb-6" style={{ color: colors.text.dark }}>Enrollment Trends</h3>
               <EnrollmentChart data={trends.enrollments} />
             </div>
@@ -253,75 +240,51 @@ export default function AdminDashboardPage() {
 
           {/* Additional Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 lg:gap-8">
-            <div 
-              className="rounded-2xl p-6 transition-all duration-300"
-              style={{ 
-                backgroundColor: colors.background.card, 
-                borderColor: colors.border.primary, 
-                borderWidth: '1px', 
-                borderStyle: 'solid'
-              }}
-            >
-              <h3 className="text-lg md:text-xl font-black mb-4" style={{ color: colors.text.dark }}>Enrollment Status</h3>
+            <Card variant="outlined" className="p-6">
+              <Heading as="h3" size="h4" className="mb-4" style={{ color: colors.text.dark }}>Enrollment Status</Heading>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span style={{ color: colors.text.muted }}>Active</span>
-                  <span className="font-black" style={{ color: colors.text.dark }}>{overview.active_enrollments}</span>
+                  <Text variant="muted">Active</Text>
+                  <Text className="font-black" style={{ color: colors.text.dark }}>{overview.active_enrollments}</Text>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span style={{ color: colors.text.muted }}>Completed</span>
-                  <span className="font-black" style={{ color: colors.text.dark }}>{overview.completed_enrollments}</span>
+                  <Text variant="muted">Completed</Text>
+                  <Text className="font-black" style={{ color: colors.text.dark }}>{overview.completed_enrollments}</Text>
                 </div>
               </div>
-            </div>
+            </Card>
 
-            <div 
-              className="rounded-2xl p-6 transition-all duration-300"
-              style={{ 
-                backgroundColor: colors.background.card, 
-                borderColor: colors.border.primary, 
-                borderWidth: '1px', 
-                borderStyle: 'solid'
-              }}
-            >
-              <h3 className="text-lg md:text-xl font-black mb-4" style={{ color: colors.text.dark }}>Payment Status</h3>
+            <Card variant="outlined" className="p-6">
+              <Heading as="h3" size="h4" className="mb-4" style={{ color: colors.text.dark }}>Payment Status</Heading>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span style={{ color: colors.text.muted }}>Paid</span>
-                  <span className="font-black" style={{ color: colors.accent.primary }}>{payment_stats.paid}</span>
+                  <Text variant="muted">Paid</Text>
+                  <Text className="font-black" style={{ color: colors.accent.primary }}>{payment_stats.paid}</Text>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span style={{ color: colors.text.muted }}>Pending</span>
-                  <span className="font-black" style={{ color: colors.accent.secondary }}>{payment_stats.pending}</span>
+                  <Text variant="muted">Pending</Text>
+                  <Text className="font-black" style={{ color: colors.accent.secondary }}>{payment_stats.pending}</Text>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span style={{ color: colors.text.muted }}>Failed</span>
-                  <span className="font-black" style={{ color: colors.accent.secondary }}>{payment_stats.failed}</span>
+                  <Text variant="muted">Failed</Text>
+                  <Text className="font-black" style={{ color: colors.accent.secondary }}>{payment_stats.failed}</Text>
                 </div>
               </div>
-            </div>
+            </Card>
 
-            <div 
-              className="rounded-2xl p-6 transition-all duration-300"
-              style={{ 
-                backgroundColor: colors.background.card, 
-                borderColor: colors.border.primary, 
-                borderWidth: '1px', 
-                borderStyle: 'solid'
-              }}
-            >
-              <h3 className="text-lg md:text-xl font-black mb-4" style={{ color: colors.text.dark }}>Top Courses</h3>
+            <Card variant="outlined" className="p-6">
+              <Heading as="h3" size="h4" className="mb-4" style={{ color: colors.text.dark }}>Top Courses</Heading>
               <div className="space-y-2">
                 {top_courses.slice(0, 3).map((course: any, index: number) => (
                   <div key={course.id} className="flex items-center justify-between">
-                    <span className="text-sm truncate flex-1" style={{ color: colors.text.muted }}>
+                    <Text size="sm" variant="muted" className="truncate flex-1">
                       {index + 1}. {course.title}
-                    </span>
-                    <span className="font-black ml-2" style={{ color: colors.text.dark }}>{course.enrollment_count}</span>
+                    </Text>
+                    <Text className="font-black ml-2" style={{ color: colors.text.dark }}>{course.enrollment_count}</Text>
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
           </div>
         </div>
       </div>

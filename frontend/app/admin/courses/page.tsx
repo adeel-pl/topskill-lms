@@ -15,6 +15,12 @@ import {
   FiChevronLeft,
   FiChevronRight,
 } from 'react-icons/fi';
+import { Button } from '@/app/components/ui/button';
+import { Card } from '@/app/components/ui/card';
+import { Heading } from '@/app/components/ui/heading';
+import { Text } from '@/app/components/ui/text';
+import { FormInput } from '@/app/components/ui/form-input';
+import { colors } from '@/lib/colors';
 
 export default function AdminCoursesPage() {
   const router = useRouter();
@@ -82,40 +88,40 @@ export default function AdminCoursesPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Course Management</h1>
-            <p className="text-[#9CA3AF]">Manage all courses in the system</p>
+            <Heading as="h1" size="h1" className="mb-2 text-white">Course Management</Heading>
+            <Text variant="muted" className="text-white/70">Manage all courses in the system</Text>
           </div>
-          <Link
-            href="/admin/courses/new"
-            className="px-6 py-3 bg-[#048181] text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-[#048181]/30 transition-all flex items-center gap-2"
-          >
-            <FiPlus /> Create Course
-          </Link>
+          <Button asChild variant="default">
+            <Link href="/admin/courses/new">
+              <FiPlus /> Create Course
+            </Link>
+          </Button>
         </div>
 
         {/* Filters */}
-        <div className="bg-[#0F172A] border border-[#334155] rounded-xl p-6">
+        <Card variant="outlined" className="p-6" style={{ backgroundColor: colors.background.dark, borderColor: colors.border.dark }}>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="relative">
-              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Search courses..."
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setPage(1);
-                }}
-                className="w-full pl-10 pr-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white placeholder-[#9CA3AF] focus:outline-none focus:border-[#048181]"
-              />
-            </div>
+            <FormInput
+              type="text"
+              placeholder="Search courses..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
+              icon={<FiSearch className="w-5 h-5" />}
+              className="bg-[#1E293B] text-white"
+            />
             <select
               value={modality}
               onChange={(e) => {
                 setModality(e.target.value);
                 setPage(1);
               }}
-              className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white focus:outline-none focus:border-[#048181]"
+              className="px-4 py-2 rounded-lg text-white focus:outline-none"
+              style={{ backgroundColor: '#1E293B', borderColor: colors.border.dark, borderWidth: '1px', borderStyle: 'solid' }}
+              onFocus={(e) => e.currentTarget.style.borderColor = colors.primary}
+              onBlur={(e) => e.currentTarget.style.borderColor = colors.border.dark}
             >
               <option value="">All Modalities</option>
               <option value="online">Online</option>
@@ -129,41 +135,44 @@ export default function AdminCoursesPage() {
                 setIsActive(value === '' ? null : value === 'true');
                 setPage(1);
               }}
-              className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white focus:outline-none focus:border-[#048181]"
+              className="px-4 py-2 rounded-lg text-white focus:outline-none"
+              style={{ backgroundColor: '#1E293B', borderColor: colors.border.dark, borderWidth: '1px', borderStyle: 'solid' }}
+              onFocus={(e) => e.currentTarget.style.borderColor = colors.primary}
+              onBlur={(e) => e.currentTarget.style.borderColor = colors.border.dark}
             >
               <option value="">All Status</option>
               <option value="true">Active</option>
               <option value="false">Inactive</option>
             </select>
-            <button
+            <Button
+              variant="outline"
               onClick={() => {
                 setSearch('');
                 setModality('');
                 setIsActive(null);
                 setPage(1);
               }}
-              className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white hover:border-[#048181] transition-colors"
+              className="text-white border-white/20 hover:border-white/40"
             >
               Clear Filters
-            </button>
+            </Button>
           </div>
-        </div>
+        </Card>
 
         {/* Courses Table */}
-        <div className="bg-[#0F172A] border border-[#334155] rounded-xl overflow-hidden">
+        <Card variant="outlined" className="overflow-hidden" style={{ backgroundColor: colors.background.dark, borderColor: colors.border.dark }}>
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="w-12 h-12 border-4 border-[#334155] border-t-[#048181] rounded-full animate-spin"></div>
+              <div className="w-12 h-12 border-4 rounded-full animate-spin" style={{ borderColor: colors.border.dark, borderTopColor: colors.primary }}></div>
             </div>
           ) : courses.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-[#9CA3AF] mb-4">No courses found</p>
-              <Link
-                href="/admin/courses/new"
-                className="inline-block px-6 py-3 bg-[#048181] text-white rounded-lg font-semibold"
-              >
-                Create First Course
-              </Link>
+              <Text variant="muted" className="mb-4 text-white/70">No courses found</Text>
+              <Button asChild variant="default">
+                <Link href="/admin/courses/new">
+                  Create First Course
+                </Link>
+              </Button>
             </div>
           ) : (
             <>
@@ -186,8 +195,8 @@ export default function AdminCoursesPage() {
                       <tr key={course.id} className="hover:bg-[#1E293B]/50 transition-colors">
                         <td className="px-6 py-4">
                           <div>
-                            <p className="text-white font-medium">{course.title}</p>
-                            <p className="text-[#9CA3AF] text-sm">{course.slug}</p>
+                            <Text className="font-medium text-white">{course.title}</Text>
+                            <Text size="sm" variant="muted" className="text-white/70">{course.slug}</Text>
                           </div>
                         </td>
                         <td className="px-6 py-4">
@@ -195,17 +204,21 @@ export default function AdminCoursesPage() {
                             {course.modality?.toUpperCase() || 'N/A'}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-white font-semibold">
-                          {formatCurrency(course.price)}
+                        <td className="px-6 py-4">
+                          <Text className="font-semibold text-white">{formatCurrency(course.price)}</Text>
                         </td>
-                        <td className="px-6 py-4 text-white">{course.enrollment_count}</td>
-                        <td className="px-6 py-4 text-[#048181] font-semibold">
-                          {formatCurrency(course.total_revenue)}
+                        <td className="px-6 py-4">
+                          <Text className="text-white">{course.enrollment_count}</Text>
+                        </td>
+                        <td className="px-6 py-4">
+                          <Text className="font-semibold" style={{ color: colors.primary }}>
+                            {formatCurrency(course.total_revenue)}
+                          </Text>
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2">
-                            <span className="text-white font-semibold">{course.rating.toFixed(1)}</span>
-                            <span className="text-[#9CA3AF] text-sm">⭐</span>
+                            <Text className="font-semibold text-white">{course.rating.toFixed(1)}</Text>
+                            <span style={{ color: colors.status.warning }}>⭐</span>
                           </div>
                         </td>
                         <td className="px-6 py-4">
@@ -221,18 +234,24 @@ export default function AdminCoursesPage() {
                           <div className="flex items-center gap-2">
                             <Link
                               href={`/admin/courses/${course.id}`}
-                              className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg hover:border-[#048181] transition-colors"
+                              className="p-2 rounded-lg transition-colors"
+                              style={{ backgroundColor: '#1E293B', borderColor: colors.border.dark, borderWidth: '1px', borderStyle: 'solid' }}
+                              onMouseEnter={(e) => e.currentTarget.style.borderColor = colors.primary}
+                              onMouseLeave={(e) => e.currentTarget.style.borderColor = colors.border.dark}
                               title="Edit"
                             >
-                              <FiEdit className="w-4 h-4 text-[#048181]" />
+                              <FiEdit className="w-4 h-4" style={{ color: colors.primary }} />
                             </Link>
                             <Link
                               href={`/courses/${course.slug}`}
                               target="_blank"
-                              className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg hover:border-[#3B82F6] transition-colors"
+                              className="p-2 rounded-lg transition-colors"
+                              style={{ backgroundColor: '#1E293B', borderColor: colors.border.dark, borderWidth: '1px', borderStyle: 'solid' }}
+                              onMouseEnter={(e) => e.currentTarget.style.borderColor = colors.status.info}
+                              onMouseLeave={(e) => e.currentTarget.style.borderColor = colors.border.dark}
                               title="View"
                             >
-                              <FiEye className="w-4 h-4 text-[#3B82F6]" />
+                              <FiEye className="w-4 h-4" style={{ color: colors.status.info }} />
                             </Link>
                           </div>
                         </td>
@@ -244,34 +263,38 @@ export default function AdminCoursesPage() {
 
               {/* Pagination */}
               {total > pageSize && (
-                <div className="px-6 py-4 border-t border-[#334155] flex items-center justify-between">
-                  <p className="text-[#9CA3AF] text-sm">
+                <div className="px-6 py-4 flex items-center justify-between" style={{ borderTopColor: colors.border.dark, borderTopWidth: '1px', borderTopStyle: 'solid' }}>
+                  <Text size="sm" variant="muted" className="text-white/70">
                     Showing {(page - 1) * pageSize + 1} to {Math.min(page * pageSize, total)} of {total} courses
-                  </p>
+                  </Text>
                   <div className="flex items-center gap-2">
-                    <button
+                    <Button
+                      variant="outline"
+                      size="icon"
                       onClick={() => setPage(page - 1)}
                       disabled={page === 1}
-                      className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed hover:border-[#048181] transition-colors"
+                      className="text-white border-white/20 hover:border-white/40"
                     >
                       <FiChevronLeft className="w-5 h-5" />
-                    </button>
-                    <span className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white">
+                    </Button>
+                    <Text size="sm" className="px-4 py-2 text-white" style={{ backgroundColor: '#1E293B', borderColor: colors.border.dark, borderWidth: '1px', borderStyle: 'solid', borderRadius: '0.5rem' }}>
                       Page {page} of {Math.ceil(total / pageSize)}
-                    </span>
-                    <button
+                    </Text>
+                    <Button
+                      variant="outline"
+                      size="icon"
                       onClick={() => setPage(page + 1)}
                       disabled={page >= Math.ceil(total / pageSize)}
-                      className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed hover:border-[#048181] transition-colors"
+                      className="text-white border-white/20 hover:border-white/40"
                     >
                       <FiChevronRight className="w-5 h-5" />
-                    </button>
+                    </Button>
                   </div>
                 </div>
               )}
             </>
           )}
-        </div>
+        </Card>
       </div>
     </AdminLayout>
   );

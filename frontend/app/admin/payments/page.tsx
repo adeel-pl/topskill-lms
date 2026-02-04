@@ -14,6 +14,12 @@ import {
   FiClock,
   FiXCircle,
 } from 'react-icons/fi';
+import { Button } from '@/app/components/ui/button';
+import { Card } from '@/app/components/ui/card';
+import { Heading } from '@/app/components/ui/heading';
+import { Text } from '@/app/components/ui/text';
+import { FormInput } from '@/app/components/ui/form-input';
+import { colors } from '@/lib/colors';
 
 export default function AdminPaymentsPage() {
   const router = useRouter();
@@ -105,34 +111,35 @@ export default function AdminPaymentsPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Payment Management</h1>
-            <p className="text-[#9CA3AF]">View and manage all payment transactions</p>
+            <Heading as="h1" size="h1" className="mb-2 text-white">Payment Management</Heading>
+            <Text variant="muted" className="text-white/70">View and manage all payment transactions</Text>
           </div>
         </div>
 
         {/* Filters */}
-        <div className="bg-[#0F172A] border border-[#334155] rounded-xl p-6">
+        <Card variant="outlined" className="p-6" style={{ backgroundColor: colors.background.dark, borderColor: colors.border.dark }}>
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            <div className="relative">
-              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Search payments..."
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setPage(1);
-                }}
-                className="w-full pl-10 pr-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white placeholder-[#9CA3AF] focus:outline-none focus:border-[#048181]"
-              />
-            </div>
+            <FormInput
+              type="text"
+              placeholder="Search payments..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
+              icon={<FiSearch className="w-5 h-5" />}
+              className="bg-[#1E293B] text-white"
+            />
             <select
               value={status}
               onChange={(e) => {
                 setStatus(e.target.value);
                 setPage(1);
               }}
-              className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white focus:outline-none focus:border-[#048181]"
+              className="px-4 py-2 rounded-lg text-white focus:outline-none"
+              style={{ backgroundColor: '#1E293B', borderColor: colors.border.dark, borderWidth: '1px', borderStyle: 'solid' }}
+              onFocus={(e) => e.currentTarget.style.borderColor = colors.primary}
+              onBlur={(e) => e.currentTarget.style.borderColor = colors.border.dark}
             >
               <option value="">All Status</option>
               <option value="paid">Paid</option>
@@ -146,7 +153,10 @@ export default function AdminPaymentsPage() {
                 setStartDate(e.target.value);
                 setPage(1);
               }}
-              className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white focus:outline-none focus:border-[#048181]"
+              className="px-4 py-2 rounded-lg text-white focus:outline-none"
+              style={{ backgroundColor: '#1E293B', borderColor: colors.border.dark, borderWidth: '1px', borderStyle: 'solid' }}
+              onFocus={(e) => e.currentTarget.style.borderColor = colors.primary}
+              onBlur={(e) => e.currentTarget.style.borderColor = colors.border.dark}
               placeholder="Start Date"
             />
             <input
@@ -156,10 +166,14 @@ export default function AdminPaymentsPage() {
                 setEndDate(e.target.value);
                 setPage(1);
               }}
-              className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white focus:outline-none focus:border-[#048181]"
+              className="px-4 py-2 rounded-lg text-white focus:outline-none"
+              style={{ backgroundColor: '#1E293B', borderColor: colors.border.dark, borderWidth: '1px', borderStyle: 'solid' }}
+              onFocus={(e) => e.currentTarget.style.borderColor = colors.primary}
+              onBlur={(e) => e.currentTarget.style.borderColor = colors.border.dark}
               placeholder="End Date"
             />
-            <button
+            <Button
+              variant="outline"
               onClick={() => {
                 setSearch('');
                 setStatus('');
@@ -167,22 +181,22 @@ export default function AdminPaymentsPage() {
                 setEndDate('');
                 setPage(1);
               }}
-              className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white hover:border-[#048181] transition-colors"
+              className="text-white border-white/20 hover:border-white/40"
             >
               Clear Filters
-            </button>
+            </Button>
           </div>
-        </div>
+        </Card>
 
         {/* Payments Table */}
-        <div className="bg-[#0F172A] border border-[#334155] rounded-xl overflow-hidden">
+        <Card variant="outlined" className="overflow-hidden" style={{ backgroundColor: colors.background.dark, borderColor: colors.border.dark }}>
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="w-12 h-12 border-4 border-[#334155] border-t-[#048181] rounded-full animate-spin"></div>
+              <div className="w-12 h-12 border-4 rounded-full animate-spin" style={{ borderColor: colors.border.dark, borderTopColor: colors.primary }}></div>
             </div>
           ) : payments.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-[#9CA3AF]">No payments found</p>
+              <Text variant="muted" className="text-white/70">No payments found</Text>
             </div>
           ) : (
             <>
@@ -208,23 +222,25 @@ export default function AdminPaymentsPage() {
                         </td>
                         <td className="px-6 py-4">
                           <div>
-                            <p className="text-white font-medium">{payment.user}</p>
-                            <p className="text-[#9CA3AF] text-sm">{payment.user_email}</p>
+                            <Text className="font-medium text-white">{payment.user}</Text>
+                            <Text size="sm" variant="muted" className="text-white/70">{payment.user_email}</Text>
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <p className="text-white">{payment.course || 'N/A'}</p>
+                          <Text className="text-white">{payment.course || 'N/A'}</Text>
                         </td>
                         <td className="px-6 py-4">
-                          <p className="text-[#048181] font-bold text-lg">
+                          <Text size="lg" className="font-bold" style={{ color: colors.primary }}>
                             {formatCurrency(payment.amount)}
-                          </p>
+                          </Text>
                         </td>
                         <td className="px-6 py-4">
                           {getStatusBadge(payment.status)}
                         </td>
-                        <td className="px-6 py-4 text-[#9CA3AF] text-sm">
-                          {new Date(payment.created_at).toLocaleString()}
+                        <td className="px-6 py-4">
+                          <Text size="sm" variant="muted" className="text-white/70">
+                            {new Date(payment.created_at).toLocaleString()}
+                          </Text>
                         </td>
                       </tr>
                     ))}
@@ -234,28 +250,32 @@ export default function AdminPaymentsPage() {
 
               {/* Pagination */}
               {total > pageSize && (
-                <div className="px-6 py-4 border-t border-[#334155] flex items-center justify-between">
-                  <p className="text-[#9CA3AF] text-sm">
+                <div className="px-6 py-4 flex items-center justify-between" style={{ borderTopColor: colors.border.dark, borderTopWidth: '1px', borderTopStyle: 'solid' }}>
+                  <Text size="sm" variant="muted" className="text-white/70">
                     Showing {(page - 1) * pageSize + 1} to {Math.min(page * pageSize, total)} of {total} payments
-                  </p>
+                  </Text>
                   <div className="flex items-center gap-2">
-                    <button
+                    <Button
+                      variant="outline"
+                      size="icon"
                       onClick={() => setPage(page - 1)}
                       disabled={page === 1}
-                      className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed hover:border-[#048181] transition-colors"
+                      className="text-white border-white/20 hover:border-white/40"
                     >
                       <FiChevronLeft className="w-5 h-5" />
-                    </button>
-                    <span className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white">
+                    </Button>
+                    <Text size="sm" className="px-4 py-2 text-white" style={{ backgroundColor: '#1E293B', borderColor: colors.border.dark, borderWidth: '1px', borderStyle: 'solid', borderRadius: '0.5rem' }}>
                       Page {page} of {Math.ceil(total / pageSize)}
-                    </span>
-                    <button
+                    </Text>
+                    <Button
+                      variant="outline"
+                      size="icon"
                       onClick={() => setPage(page + 1)}
                       disabled={page >= Math.ceil(total / pageSize)}
-                      className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed hover:border-[#048181] transition-colors"
+                      className="text-white border-white/20 hover:border-white/40"
                     >
                       <FiChevronRight className="w-5 h-5" />
-                    </button>
+                    </Button>
                   </div>
                 </div>
               )}
