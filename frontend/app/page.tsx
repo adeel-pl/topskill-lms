@@ -143,13 +143,22 @@ export default function HomePage() {
       : courses.filter((c: Course) => c && (c.modality === 'physical' || c.modality === 'hybrid'));
   };
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
+  const formatPrice = (price: number | string) => {
+    try {
+      // Convert string to number if needed
+      const numPrice = typeof price === 'string' ? parseFloat(price) : price;
+      if (typeof numPrice !== 'number' || isNaN(numPrice) || numPrice < 0) {
+        return '$0';
+      }
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      }).format(numPrice);
+    } catch (error) {
+      return '$0';
+    }
   };
 
   // Update trending courses when tab changes or on initial load - with defensive checks
