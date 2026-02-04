@@ -104,75 +104,63 @@ export default function CourseCardNew({ course, index = 0 }: CourseCardNewProps)
             )}
           </div>
 
-          {/* Course Content */}
+          {/* Course Content - EXACT spacing from reference site */}
           <CardContent className="flex-1 flex flex-col !p-5 !pt-4">
-            {/* Title */}
-            <Heading 
-              as="h3" 
-              size="h5" 
-              className="mb-1.5 line-clamp-2 min-h-[2.75rem] transition-colors group-hover:text-[#048181]"
+            {/* Title - EXACT font size from reference: text-base sm:text-lg md:text-xl */}
+            <h3 
+              className="text-base sm:text-lg md:text-xl font-semibold mb-1.5 line-clamp-2 min-h-[2.75rem] transition-colors group-hover:text-[#048181] leading-[1.5]"
               style={{ color: colors.text.dark }}
             >
               {courseTitle}
-            </Heading>
+            </h3>
             
-            {/* Instructor */}
-            <Text variant="muted" size="sm" className="mb-2 line-clamp-1">
+            {/* Instructor - EXACT from reference */}
+            <p className="text-sm mb-2 line-clamp-1" style={{ color: colors.text.muted }}>
               {instructorName}
-            </Text>
+            </p>
             
-            {/* Description */}
+            {/* Description - EXACT from reference */}
             {(course.short_description || course.description) && (
-              <Text variant="muted" size="sm" className="mb-3 line-clamp-2 flex-1 leading-relaxed">
+              <p className="text-sm mb-3 line-clamp-2 flex-1 leading-relaxed" style={{ color: colors.text.muted }}>
                 {course.short_description || course.description}
-              </Text>
+              </p>
             )}
             
-            {/* Metadata Row */}
+            {/* Metadata Row - EXACT from reference */}
             <div className="flex items-center gap-3 mb-3 flex-wrap">
               {/* Rating */}
               {course.average_rating && course.average_rating > 0 ? (
                 <div className="flex items-center gap-1">
                   <Star className="w-4 h-4" style={{ color: colors.status.warning, fill: colors.status.warning }} />
-                  <Text size="sm" className="font-semibold">
+                  <span className="text-sm font-semibold" style={{ color: colors.text.dark }}>
                     {course.average_rating.toFixed(1)}
-                  </Text>
+                  </span>
                   {course.rating_count && course.rating_count > 0 && (
-                    <Text variant="muted" size="xs">
+                    <span className="text-xs" style={{ color: colors.text.muted }}>
                       ({course.rating_count > 1000 ? `${(course.rating_count / 1000).toFixed(1)}K` : course.rating_count})
-                    </Text>
+                    </span>
                   )}
                 </div>
               ) : (
-                <Text variant="muted" size="xs">No ratings yet</Text>
+                <span className="text-xs" style={{ color: colors.text.muted }}>No ratings yet</span>
               )}
               
-              {/* Students */}
-              {course.enrolled_count !== undefined && course.enrolled_count > 0 && (
-                <div className="flex items-center gap-1">
-                  <Users className="w-4 h-4" style={{ color: colors.text.muted }} />
-                  <Text variant="muted" size="xs">
-                    {course.enrolled_count > 1000 ? `${(course.enrolled_count / 1000).toFixed(1)}K` : course.enrolled_count} students
-                  </Text>
-                </div>
-              )}
-              
-              {/* Duration */}
+              {/* Duration - EXACT from reference */}
               {course.total_duration_hours && (
                 <div className="flex items-center gap-1">
                   <Clock className="w-4 h-4" style={{ color: colors.text.muted }} />
-                  <Text variant="muted" size="xs">
+                  <span className="text-xs" style={{ color: colors.text.muted }}>
                     {course.total_duration_hours}h
-                  </Text>
+                  </span>
                 </div>
               )}
             </div>
             
-            {/* Price and CTA */}
+            {/* Price and Badge - EXACT from reference */}
             <div className="flex items-center justify-between pt-3 mt-auto" style={{ borderTopColor: colors.border.primary, borderTopWidth: '1px', borderTopStyle: 'solid' }}>
-              <Text size="lg" className="font-bold" style={{ color: colors.primary }}>
+              <span className="text-lg font-bold" style={{ color: colors.primary }}>
                 {formatPrice(coursePrice)}
-              </Text>
+              </span>
               {course.modality && typeof course.modality === 'string' && (
                 <span 
                   className="px-3 py-1 rounded-lg text-xs font-semibold"

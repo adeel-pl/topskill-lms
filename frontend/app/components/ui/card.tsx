@@ -22,7 +22,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={cn(
-          "rounded-[1.125rem] p-5",
+          "rounded-[1.125rem] p-5", // EXACT from reference: 1.125rem border-radius, p-5 padding
           variantClasses[variant],
           hoverClasses,
           className
