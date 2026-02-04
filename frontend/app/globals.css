@@ -48,12 +48,11 @@ html, body {
 }
 
 body {
-  font-family: var(--font-jakarta), -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Inter', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: CameraPlainVariable, "CameraPlainVariable Fallback", -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #FFFFFF;
-  color: #366854;
+  color: #1F2937;
   line-height: 1.6;
   margin: 0;
   padding: 0;
@@ -172,7 +171,7 @@ html {
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: 1rem;
+  border-radius: 1.125rem;
   padding: 2px;
   background: rgba(4, 129, 129, 0.15);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -188,9 +187,9 @@ html {
 
 .card:hover,
 .card-purelogics:hover {
-  transform: translateY(-4px) !important;
-  box-shadow: 0 20px 40px rgba(4, 129, 129, 0.15) !important;
-  border-color: #048181 !important;
+  transform: translateY(-0.5px) !important;
+  box-shadow: 0 8px 12px -2px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.08) !important;
+  border-color: #E5E7EB !important;
 }
 
 /* Premium Button Styles - Higher Specificity */
@@ -255,7 +254,7 @@ button[class*="bg-green"]:hover:not(:disabled):not([class*="tailwind"]),
 /* Secondary Button - Premium */
 .btn-secondary {
   background: #FFFFFF;
-  color: #366854;
+  color: #1F2937;
   border: 1.5px solid #CBD5E1;
   backdrop-filter: blur(10px);
 }
@@ -281,7 +280,7 @@ select {
   line-height: 1.25rem;
   background: #FFFFFF;
   backdrop-filter: blur(10px);
-  color: #366854;
+  color: #1F2937;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
 }
@@ -304,7 +303,7 @@ select:focus {
 
 /* Premium Link Styles - Updated to use new color palette */
 a {
-  color: #366854;
+  color: #1F2937;
   text-decoration: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -368,11 +367,11 @@ a:hover {
 
 /* Premium Text Utilities - Updated to use new color palette */
 .text-primary {
-  color: #366854;
+  color: #1F2937;
 }
 
 .text-secondary {
-  color: #366854;
+  color: #1F2937;
 }
 
 .text-tertiary {
@@ -548,8 +547,8 @@ a:hover {
 @layer base {
   /* Ensure our custom styles override Tailwind */
   body {
-    background-color: #FFFFFF !important;
-    color: #366854 !important;
+  background-color: #FFFFFF !important;
+  color: #1F2937 !important;
   }
 }
 

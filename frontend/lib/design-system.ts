@@ -7,23 +7,23 @@
 export const designTokens = {
   // Color System
   colors: {
-    // Primary Brand Colors (from actual logo)
+    // Primary Brand Colors (EXACT from reference site)
     primary: {
-      DEFAULT: '#366854',      // Dark green - "TOP" text in logo
-      hover: '#2a5242',        // Darker green on hover
-      light: '#4a7a66',        // Lighter green variant
-      '50': '#f0f7f4',
-      '100': '#d4e8df',
-      '500': '#366854',
-      '600': '#2a5242',
-      '700': '#1e3d30',
+      DEFAULT: '#048181',      // Deep teal - hero bg, primary buttons
+      hover: '#036969',        // Darker teal on hover
+      light: '#5a9c7d',        // Sage green - accent
+      '50': '#f0fdfa',
+      '100': '#ccfbf1',
+      '500': '#048181',
+      '600': '#036969',
+      '700': '#024d4d',
     },
     
-    // Secondary/Accent Colors (from actual logo)
+    // Secondary/Accent Colors (EXACT from reference site)
     secondary: {
-      DEFAULT: '#0F3A62',      // Dark blue - "SKILLS" text in logo
-      hover: '#0c2d4a',
-      light: '#1a5a8a',
+      DEFAULT: '#f45c2c',      // Reddish-orange - logo accent, secondary CTAs
+      hover: '#d94a1f',
+      light: '#ff7a5c',
     },
     
     // Background Colors
@@ -43,11 +43,11 @@ export const designTokens = {
       white: '#FFFFFF',        // White text
     },
     
-    // Border Colors
+    // Border Colors (EXACT from reference site)
     border: {
       DEFAULT: '#E5E7EB',       // Light border
       muted: '#F3F4F6',        // Very light border
-      accent: '#366854',       // Accent border (dark green from logo)
+      accent: '#048181',       // Accent border (deep teal from reference)
     },
     
     // Status Colors
@@ -60,8 +60,8 @@ export const designTokens = {
   // Typography System
   typography: {
     fontFamily: {
-      sans: ['var(--font-jakarta)', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-      heading: ['var(--font-jakarta)', 'sans-serif'],
+      sans: ['CameraPlainVariable', '"CameraPlainVariable Fallback"', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+      heading: ['CameraPlainVariable', '"CameraPlainVariable Fallback"', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
     },
     fontSize: {
       // Display/Hero

@@ -111,6 +111,7 @@ export default function CourseCardNew({ course, index = 0 }: CourseCardNewProps)
               as="h3" 
               size="h5" 
               className="mb-1.5 line-clamp-2 min-h-[2.75rem] transition-colors group-hover:text-[#048181]"
+              style={{ color: colors.text.dark }}
             >
               {courseTitle}
             </Heading>
