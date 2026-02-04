@@ -244,7 +244,7 @@ export default function HomePage() {
             style={{ 
               width: '400px', 
               height: '400px',
-              backgroundColor: colors.highlight,
+              backgroundColor: colors.primaryLight,
               top: '10%',
               left: '10%',
             }}
@@ -284,7 +284,7 @@ export default function HomePage() {
             style={{ 
               width: '250px', 
               height: '250px',
-              backgroundColor: colors.accentColor,
+              backgroundColor: colors.primaryLight,
               top: '50%',
               right: '30%',
             }}
@@ -799,7 +799,7 @@ export default function HomePage() {
                             <span 
                               className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white"
                               style={{ 
-                                backgroundColor: course.modality.toLowerCase() === 'online' ? colors.primary : colors.accentColor,
+                                backgroundColor: course.modality.toLowerCase() === 'online' ? colors.primary : colors.secondary,
                               }}
                             >
                               {course.modality.toUpperCase()}
