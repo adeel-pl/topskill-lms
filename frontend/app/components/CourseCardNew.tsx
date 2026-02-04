@@ -1,11 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { Star, Users, Clock } from 'lucide-react';
+import { Star, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Card, CardContent } from './ui/card';
-import { Heading } from './ui/heading';
-import { Text } from './ui/text';
 import { colors } from '@/lib/colors';
 
 interface CourseCardNewProps {
