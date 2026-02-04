@@ -248,7 +248,7 @@ button[class*="bg-green"]:hover:not(:disabled):not([class*="tailwind"]),
 .btn-primary-purelogics:hover:not(:disabled) {
   background: #0F3A62 !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 8px 25px rgba(244, 92, 44, 0.5) !important;
+  box-shadow: 0 8px 25px rgba(15, 58, 98, 0.5) !important;
 }
 
 /* Secondary Button - Premium */
