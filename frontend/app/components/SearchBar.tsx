@@ -7,19 +7,19 @@ import { Search, BookOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
-// New Color Palette for Search Results
+// Color Palette (EXACT from reference site)
 const searchColors = {
-  primary: '#048181',      // Deep teal - primary accent
-  secondary: '#f45c2c',    // Reddish-orange - secondary accent/CTA
-  accent: '#5a9c7d',       // Sage green - secondary buttons
-  dark: '#366854',         // Dark forest green - text
-  light: '#9fbeb2',        // Pale mint - light background
-  highlight: '#ecca72',    // Pale gold - highlights
+  primary: '#048181',      // Deep teal - primary accent (from reference)
+  secondary: '#f45c2c',    // Reddish-orange - secondary accent/CTA (from reference)
+  accent: '#5a9c7d',       // Sage green - secondary buttons (from reference)
+  dark: '#1F2937',         // Dark gray - text (from reference)
+  light: '#E5E7EB',        // Light border (from reference)
+  highlight: '#ecca72',    // Pale gold - highlights (from reference)
   white: '#FFFFFF',
-  textDark: '#1E293B',
-  textMuted: '#64748B',
+  textDark: '#1F2937',     // Dark gray (from reference)
+  textMuted: '#6B7280',    // Muted gray (from reference)
   background: '#FFFFFF',
-  backgroundHover: '#f8f9fa',
+  backgroundHover: '#F9FAFB',
 };
 
 interface CourseSuggestion {
