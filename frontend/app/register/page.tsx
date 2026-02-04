@@ -66,10 +66,10 @@ export default function RegisterPage() {
                 <div className="absolute inset-0 rounded-3xl opacity-20 blur-2xl animate-pulse" style={{ backgroundColor: colors.primary }}></div>
               </div>
             </div>
-            <h2 className="text-5xl md:text-6xl font-black mb-4 leading-tight" style={{ color: colors.text.dark }}>
-              Start Learning Today
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 leading-tight" style={{ color: colors.text.dark }}>
+              Create an account
             </h2>
-            <p className="text-lg md:text-xl" style={{ color: colors.text.dark }}>Sign up and unlock unlimited learning</p>
+            <p className="text-base md:text-lg" style={{ color: colors.text.muted }}>Start your learning journey today</p>
           </div>
 
           {/* Premium Form Card */}

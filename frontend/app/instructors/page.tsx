@@ -85,12 +85,58 @@ export default function InstructorsPage() {
       <PureLogicsNavbar />
       
       <div className="section-after-header max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Hero Section */}
+        <div className="relative mb-16 rounded-2xl overflow-hidden" style={{ backgroundColor: colors.secondary, minHeight: '400px' }}>
+          <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200")', backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
+          <div className="relative z-10 flex items-center justify-center min-h-[400px] px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-3xl">
+              <div className="inline-block px-4 py-2 rounded-full mb-6" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(10px)' }}>
+                <span className="text-sm font-semibold text-white">Our Experts</span>
+              </div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white">
+                Learn From Industry Leaders
+              </h1>
+              <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
+                Our instructors bring real-world experience from top tech companies like Google, Microsoft, Meta, and Amazon.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats Section */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
+          <div className="text-center">
+            <div className="text-4xl md:text-5xl font-bold mb-2" style={{ color: colors.text.dark }}>
+              {instructors.length}+
+            </div>
+            <div className="text-sm md:text-base" style={{ color: colors.text.muted }}>Expert Instructors</div>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl md:text-5xl font-bold mb-2" style={{ color: colors.text.dark }}>
+              10+
+            </div>
+            <div className="text-sm md:text-base" style={{ color: colors.text.muted }}>Years Avg Experience</div>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl md:text-5xl font-bold mb-2" style={{ color: colors.text.dark }}>
+              4.8
+            </div>
+            <div className="text-sm md:text-base" style={{ color: colors.text.muted }}>Average Rating</div>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl md:text-5xl font-bold mb-2" style={{ color: colors.text.dark }}>
+              7.4K+
+            </div>
+            <div className="text-sm md:text-base" style={{ color: colors.text.muted }}>Students Taught</div>
+          </div>
+        </div>
+
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-black mb-4" style={{ color: colors.text.dark }}>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: colors.text.dark }}>
             Our Instructors
-          </h1>
-          <p className="text-xl" style={{ color: colors.text.muted }}>
+          </h2>
+          <p className="text-base md:text-lg" style={{ color: colors.text.muted }}>
             Learn from the best instructors in their fields
           </p>
         </div>
@@ -119,10 +165,10 @@ export default function InstructorsPage() {
                     {instructor.full_name.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold mb-1" style={{ color: colors.text.dark }}>
+                    <h3 className="text-lg md:text-xl font-bold mb-1" style={{ color: colors.text.dark }}>
                       {instructor.full_name}
                     </h3>
-                    <p className="text-sm" style={{ color: colors.text.muted }}>
+                    <p className="text-xs md:text-sm" style={{ color: colors.text.muted }}>
                       @{instructor.username}
                     </p>
                   </div>
@@ -133,36 +179,36 @@ export default function InstructorsPage() {
                   <div className="text-center">
                     <div className="flex items-center justify-center gap-1 mb-1">
                       <FiBook style={{ color: colors.primary }} />
-                      <span className="text-lg font-bold" style={{ color: colors.text.dark }}>
+                      <span className="text-base md:text-lg font-bold" style={{ color: colors.text.dark }}>
                         {instructor.course_count}
                       </span>
                     </div>
-                    <p className="text-xs" style={{ color: colors.text.muted }}>Courses</p>
+                    <p className="text-xs md:text-sm" style={{ color: colors.text.muted }}>Courses</p>
                   </div>
                   <div className="text-center">
                     <div className="flex items-center justify-center gap-1 mb-1">
                       <FiUsers style={{ color: colors.primary }} />
-                      <span className="text-lg font-bold" style={{ color: colors.text.dark }}>
+                      <span className="text-base md:text-lg font-bold" style={{ color: colors.text.dark }}>
                         {instructor.total_students}
                       </span>
                     </div>
-                    <p className="text-xs" style={{ color: colors.text.muted }}>Students</p>
+                    <p className="text-xs md:text-sm" style={{ color: colors.text.muted }}>Students</p>
                   </div>
                   <div className="text-center">
                     <div className="flex items-center justify-center gap-1 mb-1">
                       <FiStar className="text-yellow-500" />
-                      <span className="text-lg font-bold" style={{ color: colors.text.dark }}>
+                      <span className="text-base md:text-lg font-bold" style={{ color: colors.text.dark }}>
                         {(instructor.avg_rating || 0).toFixed(1)}
                       </span>
                     </div>
-                    <p className="text-xs" style={{ color: colors.text.muted }}>Rating</p>
+                    <p className="text-xs md:text-sm" style={{ color: colors.text.muted }}>Rating</p>
                   </div>
                 </div>
 
                 {/* Courses Preview */}
                 {instructor.courses && instructor.courses.length > 0 && (
                   <div className="mb-4">
-                    <h4 className="text-sm font-semibold mb-2" style={{ color: colors.text.dark }}>
+                    <h4 className="text-xs md:text-sm font-semibold mb-2" style={{ color: colors.text.dark }}>
                       Recent Courses
                     </h4>
                     <div className="space-y-2">
@@ -174,11 +220,11 @@ export default function InstructorsPage() {
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium truncate transition-colors" style={{ color: colors.text.dark }} onMouseEnter={(e) => e.currentTarget.style.color = colors.primary} onMouseLeave={(e) => e.currentTarget.style.color = colors.text.dark}>
+                              <p className="text-xs md:text-sm font-medium truncate transition-colors" style={{ color: colors.text.dark }} onMouseEnter={(e) => e.currentTarget.style.color = colors.primary} onMouseLeave={(e) => e.currentTarget.style.color = colors.text.dark}>
                                 {course.title}
                               </p>
                               <div className="flex items-center gap-2 mt-1">
-                                <span className="text-xs" style={{ color: colors.text.muted }}>
+                                <span className="text-xs md:text-sm" style={{ color: colors.text.muted }}>
                                   ${course.price}
                                 </span>
                                 {course.avg_rating > 0 && (
