@@ -21,10 +21,12 @@ COPY . .
 ARG NEXT_PUBLIC_API_URL
 ARG NEXT_PUBLIC_GOOGLE_CLIENT_ID
 ARG NODE_ENV=production
+ARG BACKEND_URL=http://backend:8000
 
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 ENV NEXT_PUBLIC_GOOGLE_CLIENT_ID=${NEXT_PUBLIC_GOOGLE_CLIENT_ID}
 ENV NODE_ENV=${NODE_ENV}
+ENV BACKEND_URL=${BACKEND_URL}
 
 # Build the application with production configuration
 RUN npm run build
@@ -35,6 +37,9 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+# BACKEND_URL is set from build arg above, keep it available at runtime
+ARG BACKEND_URL
+ENV BACKEND_URL=${BACKEND_URL}
 
 # Create non-root user
 RUN addgroup --system --gid 1001 nodejs

@@ -58,6 +58,7 @@ services:
         - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000/api}
         - NEXT_PUBLIC_GOOGLE_CLIENT_ID=370863717645-duhkahlagvn68fguvndire3dhvbu363e.apps.googleusercontent.com
         - NODE_ENV=${NODE_ENV:-production}
+        - BACKEND_URL=${BACKEND_URL:-http://backend:8000}
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -68,6 +69,7 @@ services:
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000/api}
       - NEXT_PUBLIC_GOOGLE_CLIENT_ID=370863717645-duhkahlagvn68fguvndire3dhvbu363e.apps.googleusercontent.com
       - NODE_ENV=${NODE_ENV:-production}
+      - BACKEND_URL=${BACKEND_URL:-http://backend:8000}
     depends_on:
       - backend
     restart: unless-stopped

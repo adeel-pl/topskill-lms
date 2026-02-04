@@ -133,3 +133,4 @@ def instructor_detail(request, instructor_id):
         } for course in active_courses]
     }, status=status.HTTP_200_OK)
 
+

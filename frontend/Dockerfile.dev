@@ -18,3 +18,4 @@ EXPOSE 3000
 # Start development server (will be overridden by docker-compose command)
 CMD ["npm", "run", "dev"]
 
+

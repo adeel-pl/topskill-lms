@@ -11,10 +11,12 @@ services:
         - NEXT_PUBLIC_API_URL=https://topskill-lms.server3.purelogics.net/api
         - NEXT_PUBLIC_GOOGLE_CLIENT_ID=370863717645-duhkahlagvn68fguvndire3dhvbu363e.apps.googleusercontent.com
         - NODE_ENV=production
+        - BACKEND_URL=http://backend:8000
     environment:
       - NEXT_PUBLIC_API_URL=https://topskill-lms.server3.purelogics.net/api
       - NEXT_PUBLIC_GOOGLE_CLIENT_ID=370863717645-duhkahlagvn68fguvndire3dhvbu363e.apps.googleusercontent.com
       - NODE_ENV=production
+      - BACKEND_URL=http://backend:8000
     # Remove volumes in production for better performance
     volumes: []
 
@@ -25,4 +27,5 @@ services:
     volumes:
       - backend_static:/app/staticfiles
       - backend_media:/app/media
+
 

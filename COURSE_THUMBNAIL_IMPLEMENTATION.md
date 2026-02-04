@@ -127,3 +127,4 @@
 
 **Student frontend already displays images correctly** - no changes needed!
 
+

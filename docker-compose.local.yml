@@ -12,5 +12,6 @@ services:
       - NEXT_PUBLIC_API_URL=http://localhost:8000/api
       - NEXT_PUBLIC_GOOGLE_CLIENT_ID=370863717645-duhkahlagvn68fguvndire3dhvbu363e.apps.googleusercontent.com
       - NODE_ENV=development
+      - BACKEND_URL=http://backend:8000
     # Use dev command for hot-reload
     command: npm run dev
