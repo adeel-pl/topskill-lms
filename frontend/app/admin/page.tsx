@@ -199,13 +199,13 @@ export default function AdminDashboardPage() {
               icon={FiUsers}
               label="Total Students"
               value={overview.total_students}
-              color={colors.accent.blue}
+              color={colors.secondary}
             />
             <StatCard
               icon={FiTrendingUp}
               label="Total Enrollments"
               value={overview.total_enrollments}
-              color={colors.accent.accent}
+              color={colors.primary}
             />
             <StatCard
               icon={FiDollarSign}

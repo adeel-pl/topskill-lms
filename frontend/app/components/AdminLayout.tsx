@@ -121,7 +121,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       {/* Subtle Background Pattern */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-40 right-20 w-96 h-96 rounded-full blur-3xl animate-pulse" style={{ backgroundColor: colors.accent.primary, opacity: 0.05 }}></div>
-        <div className="absolute bottom-40 left-20 w-80 h-80 rounded-full blur-3xl animate-pulse delay-1000" style={{ backgroundColor: colors.accent.blue, opacity: 0.05 }}></div>
+        <div className="absolute bottom-40 left-20 w-80 h-80 rounded-full blur-3xl animate-pulse delay-1000" style={{ backgroundColor: colors.secondary, opacity: 0.05 }}></div>
       </div>
 
       {/* Mobile Menu Overlay */}
