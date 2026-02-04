@@ -73,3 +73,5 @@ After deployment, test these URLs on **https://topskill-lms.server3.purelogics.n
    - Ensure nginx is routing to Next.js frontend (port 3000)
    - Next.js will handle the rewrite to Django backend
 
+
+

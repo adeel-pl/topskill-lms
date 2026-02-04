@@ -251,3 +251,5 @@ After setup, verify:
 - [ ] Courses are visible
 - [ ] API endpoints work at `/api/courses/`
 
+
+

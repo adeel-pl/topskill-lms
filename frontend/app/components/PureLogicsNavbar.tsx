@@ -40,17 +40,7 @@ export default function PureLogicsNavbar() {
               onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
               onMouseLeave={(e) => e.currentTarget.style.color = colors.text.dark}
             >
-              Home
-            </Link>
-            <Link
-              href="/"
-              className="text-sm font-medium transition-colors flex items-center gap-1"
-              style={{ color: colors.text.dark }}
-              onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
-              onMouseLeave={(e) => e.currentTarget.style.color = colors.text.dark}
-            >
-              Category
-              <ChevronDown className="w-4 h-4" />
+              Course
             </Link>
             <Link
               href="/"
@@ -59,7 +49,7 @@ export default function PureLogicsNavbar() {
               onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
               onMouseLeave={(e) => e.currentTarget.style.color = colors.text.dark}
             >
-              Product
+              About
             </Link>
             <Link
               href="/instructors"
@@ -68,16 +58,16 @@ export default function PureLogicsNavbar() {
               onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
               onMouseLeave={(e) => e.currentTarget.style.color = colors.text.dark}
             >
-              Community
+              Instructor
             </Link>
             <Link
-              href="/instructors"
+              href="/"
               className="text-gray-900 transition-colors"
               style={{ color: colors.text.dark }}
               onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
               onMouseLeave={(e) => e.currentTarget.style.color = colors.text.dark}
             >
-              Instructors
+              Contact
             </Link>
           </div>
 
