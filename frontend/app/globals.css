@@ -254,7 +254,7 @@ button[class*="bg-green"]:hover:not(:disabled):not([class*="tailwind"]),
 /* Secondary Button - Premium */
 .btn-secondary {
   background: #FFFFFF;
-  color: #1F2937;
+  color: #366854;
   border: 1.5px solid #CBD5E1;
   backdrop-filter: blur(10px);
 }
@@ -280,7 +280,7 @@ select {
   line-height: 1.25rem;
   background: #FFFFFF;
   backdrop-filter: blur(10px);
-  color: #1F2937;
+  color: #366854;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
 }
@@ -303,7 +303,7 @@ select:focus {
 
 /* Premium Link Styles - Updated to use new color palette */
 a {
-  color: #1F2937;
+  color: #366854;
   text-decoration: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -367,11 +367,11 @@ a:hover {
 
 /* Premium Text Utilities - Updated to use new color palette */
 .text-primary {
-  color: #1F2937;
+  color: #366854;
 }
 
 .text-secondary {
-  color: #1F2937;
+  color: #366854;
 }
 
 .text-tertiary {
@@ -548,7 +548,7 @@ a:hover {
   /* Ensure our custom styles override Tailwind */
   body {
   background-color: #FFFFFF !important;
-  color: #1F2937 !important;
+  color: #366854 !important;
   }
 }
 
