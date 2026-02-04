@@ -7,17 +7,17 @@ import { Search, BookOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
-// Color Palette (EXACT from reference site)
+// Color Palette (EXACT from LOGO ONLY)
 const searchColors = {
-  primary: '#366854',      // Deep teal - primary accent (from reference)
-  secondary: '#0F3A62',    // Reddish-orange - secondary accent/CTA (from reference)
-  accent: '#366854',       // Sage green - secondary buttons (from reference)
-  dark: '#366854',         // Dark gray - text (from reference)
-  light: '#E5E7EB',        // Light border (from reference)
-  highlight: '#0F3A62',    // Pale gold - highlights (from reference)
+  primary: '#366854',      // Dark green - from "TOP" in logo
+  secondary: '#0F3A62',    // Dark blue - from "SKILLS" in logo
+  accent: '#366854',       // Dark green - from logo
+  dark: '#366854',         // Dark green - text (from logo)
+  light: '#E5E7EB',        // Light border
+  highlight: '#0F3A62',    // Dark blue - highlights (from logo)
   white: '#FFFFFF',
-  textDark: '#366854',     // Dark gray (from reference)
-  textMuted: '#64748B',    // Muted gray (from reference)
+  textDark: '#366854',     // Dark green (from logo)
+  textMuted: '#64748B',    // Muted gray
   background: '#FFFFFF',
   backgroundHover: '#F9FAFB',
 };
