@@ -400,6 +400,69 @@ body {
    RESPONSIVE
    ============================================ */
 
+/* ============================================
+   BOOTSTRAP OVERRIDES - Logo Colors
+   ============================================ */
+
+/* Badge Colors - Logo Colors */
+.badge.bg-info {
+    background-color: var(--ts-secondary) !important;
+    color: white;
+}
+
+.badge.bg-success {
+    background-color: var(--ts-primary) !important;
+    color: white;
+}
+
+.badge.bg-secondary {
+    background-color: var(--ts-text-muted) !important;
+    color: white;
+}
+
+.badge.bg-danger {
+    background-color: #EF4444 !important;
+    color: white;
+}
+
+/* Button Outline Colors - Logo Colors */
+.btn-outline-primary {
+    border-color: var(--ts-primary) !important;
+    color: var(--ts-primary) !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--ts-primary) !important;
+    border-color: var(--ts-primary) !important;
+    color: white !important;
+}
+
+.btn-outline-secondary {
+    border-color: var(--ts-border) !important;
+    color: var(--ts-text-main) !important;
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--ts-bg-light) !important;
+    border-color: var(--ts-primary) !important;
+    color: var(--ts-primary) !important;
+}
+
+.btn-outline-danger {
+    border-color: #EF4444 !important;
+    color: #EF4444 !important;
+}
+
+.btn-outline-danger:hover {
+    background-color: #EF4444 !important;
+    border-color: #EF4444 !important;
+    color: white !important;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
 @media (max-width: 768px) {
     .portal-sidebar {
         transform: translateX(-100%);

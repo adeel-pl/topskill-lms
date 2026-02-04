@@ -90,6 +90,21 @@
             {% endif %}
         </div>
         
+        <div class="mb-3">
+            <label for="featured_image" class="form-label">Featured Image URL (Preferred)</label>
+            <input type="url" name="featured_image" id="featured_image" class="form-control" 
+                   value="{% if course %}{{ course.featured_image }}{% endif %}" 
+                   placeholder="https://images.unsplash.com/photo-...">
+            <small class="form-text text-muted">
+                Featured image takes priority over thumbnail on course cards. Enter a URL to an image (e.g., from Unsplash, your CDN, etc.).
+            </small>
+            {% if course and course.featured_image %}
+            <div class="mt-2">
+                <img src="{{ course.featured_image }}" alt="Current featured image" class="img-thumbnail" style="max-width: 200px; max-height: 150px;">
+            </div>
+            {% endif %}
+        </div>
+        
         <div class="row">
             <div class="col-md-4 mb-3">
                 <label for="modality" class="form-label">Modality <span class="text-danger">*</span></label>
