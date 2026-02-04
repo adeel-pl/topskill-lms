@@ -23,7 +23,7 @@ interface Course {
   slug: string;
   description: string;
   short_description?: string;
-  price: number;
+  price: number | string; // API may return string
   thumbnail?: string;
   featured_image?: string;
   instructor_name: string;

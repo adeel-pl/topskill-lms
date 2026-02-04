@@ -36,12 +36,17 @@ export default function CourseCardNew({ course, index = 0 }: CourseCardNewProps)
   // Defensive: Ensure required fields exist
   const courseTitle = course.title || 'Untitled Course';
   const courseSlug = course.slug || `course-${course.id || 'unknown'}`;
-  const coursePrice = course.price ?? 0;
+  // Convert price to number (API may return string)
+  const coursePrice = typeof course.price === 'string' 
+    ? parseFloat(course.price) || 0 
+    : (typeof course.price === 'number' ? course.price : 0);
   const instructorName = course.instructor_name || 'Instructor';
 
   const formatPrice = (price: number) => {
     try {
-      if (typeof price !== 'number' || isNaN(price)) {
+      // Ensure price is a number
+      const numPrice = typeof price === 'string' ? parseFloat(price) : price;
+      if (typeof numPrice !== 'number' || isNaN(numPrice) || numPrice < 0) {
         return '$0';
       }
       return new Intl.NumberFormat('en-US', {
@@ -49,7 +54,7 @@ export default function CourseCardNew({ course, index = 0 }: CourseCardNewProps)
         currency: 'USD',
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
-      }).format(price);
+      }).format(numPrice);
     } catch (error) {
       return '$0';
     }
