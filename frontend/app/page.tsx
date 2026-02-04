@@ -314,18 +314,7 @@ export default function HomePage() {
                   size="display" 
                   className="mb-4 md:mb-6 text-white"
                 >
-                  <span className="relative inline-block">
-                    New to{' '}
-                    <span style={{ color: colors.highlight }}>TopSkill?</span>
-                  </span>
-                  <br />
-                  <motion.span
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8, delay: 0.3 }}
-                  >
-                    You are lucky.
-                  </motion.span>
+                  Pakistan's No.1 IT Training Platform
                 </Heading>
               </motion.div>
               <motion.div
@@ -334,8 +323,61 @@ export default function HomePage() {
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
                 <Text size="lg" className="mb-8 md:mb-10 text-white">
-                  Let us help you ensure you get an unmatched experience combined with results worth.
+                  90% of our students land jobs in 6 months. Join thousands of successful graduates who transformed their careers with Top Skills.
                 </Text>
+              </motion.div>
+              
+              {/* Feature List */}
+              <motion.ul
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="space-y-3 mb-8 md:mb-10"
+              >
+                {[
+                  'Industry-recognized certification',
+                  'Expert instructors from top companies',
+                  'Job placement assistance included'
+                ].map((feature, idx) => (
+                  <motion.li
+                    key={idx}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.4, delay: 0.4 + idx * 0.1 }}
+                    className="flex items-center gap-3 text-white"
+                  >
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: colors.highlight }}>
+                      <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <Text size="base" className="text-white">{feature}</Text>
+                  </motion.li>
+                ))}
+              </motion.ul>
+              
+              {/* CTA Buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+                className="flex flex-wrap gap-4 mb-8 md:mb-10"
+              >
+                <Button variant="default" size="lg" className="text-white" asChild>
+                  <Link href="/register">
+                    Learn With Us
+                    <ArrowRight className="w-5 h-5" />
+                  </Link>
+                </Button>
+                <Button variant="outline" size="lg" className="text-white border-white/30 hover:bg-white/10" asChild>
+                  <Link href="#">
+                    Watch Demo
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </Link>
+                </Button>
               </motion.div>
               
               {/* Search Bar */}
