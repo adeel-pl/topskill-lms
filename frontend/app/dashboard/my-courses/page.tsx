@@ -21,6 +21,7 @@ interface Enrollment {
     slug: string;
     modality: string;
     thumbnail?: string;
+    featured_image?: string; // Added featured_image support
   };
   batch?: {
     id: number;
@@ -167,7 +168,7 @@ export default function MyCoursesPage() {
                         {enrollment.status?.toUpperCase() || 'ACTIVE'}
                       </span>
                       {enrollment.course.modality && (
-                        <span className="px-3 py-1 rounded-lg text-xs font-semibold text-white" style={{ backgroundColor: colors.accentColor }}>
+                        <span className="px-3 py-1 rounded-lg text-xs font-semibold text-white" style={{ backgroundColor: colors.secondary }}>
                           {enrollment.course.modality.toUpperCase()}
                         </span>
                       )}
@@ -210,8 +211,8 @@ export default function MyCoursesPage() {
 
                     {/* Action Button */}
                     <div className="mt-auto">
-                      <Button asChild variant="default" className="w-full" size="default">
-                        <Link href={`/learn/${enrollment.course.slug}`}>
+                      <Button asChild variant="default" className="w-full text-white" size="default">
+                        <Link href={`/learn/${enrollment.course.slug}`} className="flex items-center justify-center gap-2">
                           <FiPlay className="text-lg flex-shrink-0" />
                           <span>Continue Learning</span>
                         </Link>
