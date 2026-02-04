@@ -296,7 +296,7 @@ textarea:focus,
 select:focus {
   outline: none;
   border-color: #366854;
-  box-shadow: 0 0 0 4px rgba(4, 129, 129, 0.1);
+  box-shadow: 0 0 0 3px rgba(54, 104, 84, 0.2);
   background: #FFFFFF;
   transform: translateY(-1px);
 }

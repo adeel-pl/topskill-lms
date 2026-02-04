@@ -70,12 +70,16 @@ export default function CourseCardNew({ course, index = 0 }: CourseCardNewProps)
       transition={{ duration: 0.3, delay: (index || 0) * 0.05 }}
       className="w-full h-full"
     >
-      <Link href={`/courses/${courseSlug}`} className="block group h-full">
-        <Card 
-          variant="default" 
-          hover={true}
-          className="h-full flex flex-col overflow-hidden"
-        >
+             <Link 
+               href={`/courses/${courseSlug}`} 
+               className="block group h-full focus:outline-none focus:ring-2 focus:ring-[#366854] focus:ring-offset-2 rounded-[1.125rem]"
+               aria-label={`View course: ${courseTitle}`}
+             >
+               <Card 
+                 variant="default" 
+                 hover={true}
+                 className="h-full flex flex-col overflow-hidden"
+               >
           {/* Course Image - Use featured_image first, then thumbnail, then fallback */}
           <div className="relative w-full aspect-video overflow-hidden" style={{ backgroundColor: colors.primary }}>
             {(course.featured_image || course.thumbnail) ? (

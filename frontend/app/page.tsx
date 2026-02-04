@@ -423,7 +423,7 @@ export default function HomePage() {
                     >
                       10M
                     </motion.div>
-                    <div className="text-sm md:text-base text-white/80">HAPPY CUSTOMER</div>
+                    <div className="text-sm md:text-base text-white">HAPPY CUSTOMER</div>
                   </div>
                 </motion.div>
                 <div className="hidden sm:block w-px bg-white/30"></div>
@@ -449,7 +449,7 @@ export default function HomePage() {
                     >
                       25K
                     </motion.div>
-                    <div className="text-sm md:text-base text-white/80">POPULAR COURSE</div>
+                    <div className="text-sm md:text-base text-white">POPULAR COURSE</div>
                   </div>
                 </motion.div>
                 <div className="hidden sm:block w-px bg-white/30"></div>
@@ -475,7 +475,7 @@ export default function HomePage() {
                     >
                       10+
                     </motion.div>
-                    <div className="text-sm md:text-base text-white/80">YEARS EXPERIENCES</div>
+                    <div className="text-sm md:text-base text-white">YEARS EXPERIENCES</div>
                   </div>
                 </motion.div>
               </motion.div>
@@ -488,7 +488,7 @@ export default function HomePage() {
                 className="mt-8 md:mt-12 w-full"
               >
                 <div className="text-center mb-4 md:mb-6">
-                  <h3 className="text-lg md:text-xl font-semibold text-white/90 whitespace-nowrap">
+                  <h3 className="text-lg md:text-xl font-semibold text-white whitespace-nowrap">
                     Our Experienced Trainers are <span className="font-bold" style={{ color: colors.highlight }}>Certified from</span>
                   </h3>
                 </div>
