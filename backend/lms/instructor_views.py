@@ -136,3 +136,5 @@ def instructor_detail(request, instructor_id):
 
 
 
+
+

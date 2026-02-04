@@ -110,3 +110,5 @@ All portal routes are properly configured. The fix from commit `37cb6a1eab0793bb
 3. Test portal routes on production URL
 4. Verify no 404 errors
 
+
+
