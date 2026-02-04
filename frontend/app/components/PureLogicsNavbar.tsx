@@ -5,22 +5,14 @@ import { useAuthStore } from '@/lib/store';
 import { ShoppingCart, ChevronDown, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-// New Color Palette
-const navbarColors = {
-  primary: '#048181',      // Deep teal - primary accent
-  secondary: '#f45c2c',    // Reddish-orange - secondary accent/CTA
-  accent: '#5a9c7d',       // Sage green - secondary buttons
-  dark: '#366854',         // Dark forest green - text
-  highlight: '#ecca72',    // Pale gold - highlights
-};
+import { colors } from '@/lib/colors';
 
 export default function PureLogicsNavbar() {
   const { isAuthenticated, user, logout } = useAuthStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm" style={{ borderBottomColor: colors.border.primary, borderBottomWidth: '1px', borderBottomStyle: 'solid' }}>
       <div className="max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16">
         <div className="flex items-center justify-between h-16 sm:h-18 md:h-20 gap-2 sm:gap-3 md:gap-4 w-full">
           {/* Logo */}
@@ -44,18 +36,18 @@ export default function PureLogicsNavbar() {
             <Link
               href="/"
               className="text-gray-900 transition-colors"
-              style={{ color: '#1E293B' }}
-              onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
-              onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
+              style={{ color: colors.text.dark }}
+              onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
+              onMouseLeave={(e) => e.currentTarget.style.color = colors.text.dark}
             >
               Home
             </Link>
             <Link
               href="/"
               className="text-sm font-medium transition-colors flex items-center gap-1"
-              style={{ color: '#1E293B' }}
-              onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
-              onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
+              style={{ color: colors.text.dark }}
+              onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
+              onMouseLeave={(e) => e.currentTarget.style.color = colors.text.dark}
             >
               Category
               <ChevronDown className="w-4 h-4" />
@@ -63,29 +55,29 @@ export default function PureLogicsNavbar() {
             <Link
               href="/"
               className="text-gray-900 transition-colors"
-              style={{ color: '#1E293B' }}
-              onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
-              onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
+              style={{ color: colors.text.dark }}
+              onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
+              onMouseLeave={(e) => e.currentTarget.style.color = colors.text.dark}
             >
               Product
             </Link>
             <Link
               href="/instructors"
               className="text-gray-900 transition-colors"
-              style={{ color: '#1E293B' }}
-              onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
-              onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
+              style={{ color: colors.text.dark }}
+              onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
+              onMouseLeave={(e) => e.currentTarget.style.color = colors.text.dark}
             >
               Community
             </Link>
             <Link
               href="/instructors"
               className="text-gray-900 transition-colors"
-              style={{ color: '#1E293B' }}
-              onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
-              onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
+              style={{ color: colors.text.dark }}
+              onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
+              onMouseLeave={(e) => e.currentTarget.style.color = colors.text.dark}
             >
-              Teach
+              Instructors
             </Link>
           </div>
 
@@ -93,10 +85,13 @@ export default function PureLogicsNavbar() {
           <div className="navbar-right-actions flex items-center gap-1.5 sm:gap-2 md:gap-3 flex-shrink-0">
             <Link 
               href="/cart" 
-              className="p-2 sm:p-2.5 rounded-lg hover:bg-gray-100 transition-colors relative flex-shrink-0"
-              style={{ color: '#1E293B' }}
-              onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
-              onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
+              className="p-2 sm:p-2.5 rounded-lg transition-colors relative flex-shrink-0"
+              style={{ color: colors.text.dark }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+              style={{ color: colors.text.dark }}
+              onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
+              onMouseLeave={(e) => e.currentTarget.style.color = colors.text.dark}
             >
               <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
             </Link>
@@ -104,25 +99,32 @@ export default function PureLogicsNavbar() {
               <>
                 <Link
                   href="/dashboard/my-courses"
-                  className="px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 border border-gray-300 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap transition-colors hover:bg-gray-50 hidden lg:block"
-                  style={{ color: '#1E293B' }}
+                  className="px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap transition-colors hidden lg:block"
+                  style={{ borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.color = navbarColors.primary;
-                    e.currentTarget.style.borderColor = navbarColors.primary;
+                    e.currentTarget.style.backgroundColor = colors.background.soft;
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.color = '#1E293B';
-                    e.currentTarget.style.borderColor = '#D1D5DB';
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }}
+                  style={{ color: '#1E293B' }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = colors.primary;
+                    e.currentTarget.style.borderColor = colors.primary;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = colors.text.dark;
+                    e.currentTarget.style.borderColor = colors.border.primary;
                   }}
                 >
-                  My Learning
+                  My Courses
                 </Link>
                 <motion.button
                   onClick={logout}
                   className="text-white px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-300 shadow-lg hidden lg:block"
-                  style={{ backgroundColor: navbarColors.primary, boxShadow: `0 10px 15px -3px ${navbarColors.primary}20` }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = navbarColors.secondary}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = navbarColors.primary}
+                  style={{ backgroundColor: colors.primary, boxShadow: `0 10px 15px -3px ${colors.primary}20` }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -133,15 +135,22 @@ export default function PureLogicsNavbar() {
               <>
                 <Link
                   href="/login"
-                  className="px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 border border-gray-300 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap transition-colors hover:bg-gray-50 hidden lg:block"
-                  style={{ color: '#1E293B' }}
+                  className="px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap transition-colors hidden lg:block"
+                  style={{ borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.color = navbarColors.primary;
-                    e.currentTarget.style.borderColor = navbarColors.primary;
+                    e.currentTarget.style.backgroundColor = colors.background.soft;
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.color = '#1E293B';
-                    e.currentTarget.style.borderColor = '#D1D5DB';
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }}
+                  style={{ color: '#1E293B' }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = colors.primary;
+                    e.currentTarget.style.borderColor = colors.primary;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = colors.text.dark;
+                    e.currentTarget.style.borderColor = colors.border.primary;
                   }}
                 >
                   Login
@@ -162,7 +171,10 @@ export default function PureLogicsNavbar() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="mobile-menu-toggle block text-gray-900 p-2 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0 lg:hidden"
+              className="mobile-menu-toggle block p-2 rounded-lg transition-colors flex-shrink-0 lg:hidden"
+              style={{ color: colors.text.dark }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
               aria-label="Toggle mobile menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
@@ -178,12 +190,15 @@ export default function PureLogicsNavbar() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2 }}
-              className="lg:hidden border-t border-gray-200 py-4 overflow-hidden bg-white"
+              className="lg:hidden py-4 overflow-hidden bg-white"
+              style={{ borderTopColor: colors.border.primary, borderTopWidth: '1px', borderTopStyle: 'solid' }}
             >
               <div className="flex flex-col gap-2">
                 <Link 
                   href="/" 
-                  className="px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                  className="px-4 py-2 rounded-lg transition-colors text-sm"
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   style={{ color: '#1E293B' }}
                   onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
                   onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
@@ -192,7 +207,9 @@ export default function PureLogicsNavbar() {
                 </Link>
                 <Link 
                   href="/" 
-                  className="px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                  className="px-4 py-2 rounded-lg transition-colors text-sm"
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   style={{ color: '#1E293B' }}
                   onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
                   onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
@@ -201,7 +218,9 @@ export default function PureLogicsNavbar() {
                 </Link>
                 <Link 
                   href="/" 
-                  className="px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                  className="px-4 py-2 rounded-lg transition-colors text-sm"
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   style={{ color: '#1E293B' }}
                   onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
                   onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
@@ -210,7 +229,9 @@ export default function PureLogicsNavbar() {
                 </Link>
                 <Link 
                   href="/instructors" 
-                  className="px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                  className="px-4 py-2 rounded-lg transition-colors text-sm"
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   style={{ color: '#1E293B' }}
                   onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
                   onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
@@ -219,23 +240,27 @@ export default function PureLogicsNavbar() {
                 </Link>
                 <Link 
                   href="/instructors" 
-                  className="px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                  className="px-4 py-2 rounded-lg transition-colors text-sm"
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   style={{ color: '#1E293B' }}
                   onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
                   onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
                 >
-                  Teach
+                  Instructors
                 </Link>
                 {isAuthenticated ? (
                   <>
                     <Link 
                       href="/dashboard/my-courses" 
-                      className="px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                      className="px-4 py-2 rounded-lg transition-colors text-sm"
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                       style={{ color: '#1E293B' }}
                       onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
                       onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
                     >
-                      My Learning
+                      My Courses
                     </Link>
                     <button 
                       onClick={logout} 
@@ -251,7 +276,9 @@ export default function PureLogicsNavbar() {
                   <>
                     <Link 
                       href="/login" 
-                      className="px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                      className="px-4 py-2 rounded-lg transition-colors text-sm"
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                       style={{ color: '#1E293B' }}
                       onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
                       onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
@@ -260,7 +287,9 @@ export default function PureLogicsNavbar() {
                     </Link>
                     <Link 
                       href="/register" 
-                      className="px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                      className="px-4 py-2 rounded-lg transition-colors text-sm"
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                       style={{ color: '#1E293B' }}
                       onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
                       onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}

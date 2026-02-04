@@ -6,6 +6,11 @@ import { useRouter } from 'next/navigation';
 import { enrollmentsAPI } from '@/lib/api';
 import { useAuthStore } from '@/lib/store';
 import { FiPlay, FiBookOpen, FiRefreshCw, FiClock, FiZap } from 'react-icons/fi';
+import { Container } from '@/app/components/ui/container';
+import { Heading } from '@/app/components/ui/heading';
+import { Text } from '@/app/components/ui/text';
+import { Button } from '@/app/components/ui/button';
+import { Card } from '@/app/components/ui/card';
 import { colors } from '@/lib/colors';
 
 interface Enrollment {
@@ -72,204 +77,153 @@ export default function MyCoursesPage() {
 
   if (loading || isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: colors.background.primary }}>
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4" style={{ borderColor: colors.border.primary, borderTopColor: colors.accent.primary }}></div>
-          <p style={{ color: colors.text.muted }}>Loading your courses...</p>
+          <div className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4" style={{ borderColor: colors.border.primary, borderTopColor: colors.primary }}></div>
+          <Text variant="muted">Loading your courses...</Text>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: colors.background.primary, color: colors.text.dark }}>
-
-      <div className="max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 pb-10 md:pb-12 relative z-10">
+    <div className="min-h-screen bg-white">
+      <Container size="2xl" className="pb-10 md:pb-12">
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-4 mb-6 md:mb-8 lg:mb-12">
           <div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-2" style={{ color: colors.text.dark }}>
-              My Courses
-            </h1>
-            <p className="text-sm md:text-base lg:text-lg" style={{ color: colors.text.muted }}>Continue your learning journey</p>
+            <Heading as="h1" size="h1" className="mb-2">My Courses</Heading>
+            <Text variant="muted" size="lg">Continue your learning journey</Text>
           </div>
-          <button
+          <Button
+            variant="light"
             onClick={refreshProgress}
             disabled={refreshing}
-            className="flex items-center gap-2 px-4 md:px-5 lg:px-6 py-2.5 md:py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap text-sm md:text-base"
-            style={{ 
-              backgroundColor: colors.background.card, 
-              borderColor: colors.border.primary, 
-              borderWidth: '1px', 
-              borderStyle: 'solid',
-              color: colors.text.dark
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = colors.accent.primary;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = colors.border.primary;
-            }}
+            className="whitespace-nowrap"
           >
             <FiRefreshCw className={`text-lg md:text-xl ${refreshing ? 'animate-spin' : ''}`} />
             <span className="hidden sm:inline">Refresh Progress</span>
             <span className="sm:hidden">Refresh</span>
-          </button>
+          </Button>
         </div>
 
         {enrollments.length === 0 ? (
           <div className="text-center py-16 md:py-20">
-            <div className="rounded-2xl p-10 md:p-12 lg:p-16 max-w-md mx-auto" style={{ backgroundColor: colors.background.card, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
-              <div className="w-20 md:w-24 h-20 md:h-24 rounded-full flex items-center justify-center mx-auto mb-5 md:mb-6" style={{ backgroundColor: `${colors.accent.primary}20` }}>
-                <FiBookOpen className="text-4xl md:text-5xl" style={{ color: colors.accent.primary }} />
+            <Card variant="default" className="p-10 md:p-12 lg:p-16 max-w-md mx-auto">
+              <div className="w-20 md:w-24 h-20 md:h-24 rounded-full flex items-center justify-center mx-auto mb-5 md:mb-6" style={{ backgroundColor: `${colors.primary}20` }}>
+                <FiBookOpen className="text-4xl md:text-5xl" style={{ color: colors.primary }} />
               </div>
-              <h2 className="text-2xl md:text-3xl font-black mb-3 md:mb-4" style={{ color: colors.text.dark }}>No courses yet</h2>
-              <p className="mb-5 md:mb-6 lg:mb-8 text-sm md:text-base" style={{ color: colors.text.muted }}>Start learning by enrolling in a course!</p>
-              <Link
-                href="/"
-                className="inline-block px-7 md:px-8 py-3.5 md:py-4 rounded-xl font-black transition-all duration-300 hover:scale-105 hover:shadow-2xl text-sm md:text-base"
-                style={{ 
-                  backgroundColor: colors.button.primary, 
-                  color: colors.text.white,
-                  boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(16, 185, 129, 0.5)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(16, 185, 129, 0.3)';
-                }}
-              >
-                Browse Courses
-              </Link>
-            </div>
+              <Heading as="h2" size="h2" className="mb-3 md:mb-4">No courses yet</Heading>
+              <Text variant="muted" size="base" className="mb-5 md:mb-6 lg:mb-8">Start learning by enrolling in a course!</Text>
+              <Button asChild variant="default" size="lg">
+                <Link href="/">Browse Courses</Link>
+              </Button>
+            </Card>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7">
             {enrollments.map((enrollment, idx) => {
               const progress = enrollment.progress_percent;
               const numProgress = typeof progress === 'number' ? progress : parseFloat(String(progress));
               const displayProgress = isNaN(numProgress) ? 0 : Math.max(0, Math.min(100, numProgress));
               
               return (
-                <div
+                <Card
                   key={enrollment.id}
-                  className="h-full flex flex-col rounded-2xl overflow-hidden transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-2xl"
-                  style={{ 
-                    backgroundColor: colors.background.card, 
-                    borderColor: colors.border.primary, 
-                    borderWidth: '1px', 
-                    borderStyle: 'solid',
-                    animationDelay: `${idx * 100}ms`
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = colors.accent.primary;
-                    e.currentTarget.style.boxShadow = `0 20px 25px -5px ${colors.accent.primary}20`;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = colors.border.primary;
-                    e.currentTarget.style.boxShadow = '';
-                  }}
+                  variant="default"
+                  hover={true}
+                  className="h-full flex flex-col overflow-hidden"
                 >
-                  {/* Course Image */}
-                  <div className="relative w-full aspect-video overflow-hidden" style={{ backgroundColor: colors.accent.primary }}>
-                    {enrollment.course.thumbnail ? (
+                  {/* Course Image - Use featured_image first, then thumbnail */}
+                  <div className="relative w-full aspect-video overflow-hidden" style={{ backgroundColor: colors.primary }}>
+                    {(enrollment.course.featured_image || enrollment.course.thumbnail) ? (
                       <img
-                        src={enrollment.course.thumbnail}
+                        src={enrollment.course.featured_image || enrollment.course.thumbnail}
                         alt={enrollment.course.title}
                         className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          if (target) target.style.display = 'none';
+                        }}
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <span className="text-white text-5xl font-black drop-shadow-lg">{enrollment.course.title.charAt(0)}</span>
+                        <span className="text-white text-5xl font-extrabold">
+                          {enrollment.course.title?.charAt(0)?.toUpperCase() || '?'}
+                        </span>
                       </div>
                     )}
                   </div>
 
-                  {/* Course Header */}
-                  <div className="flex-1 flex flex-col p-5 md:p-6 lg:p-8">
-                    <div className="flex items-start justify-between mb-4 md:mb-5 lg:mb-6">
-                      <h3 className="text-lg md:text-xl lg:text-2xl font-black flex-1 transition-colors" style={{ color: colors.text.dark }}>
-                        {enrollment.course.title}
-                      </h3>
+                  {/* Course Content */}
+                  <div className="flex-1 flex flex-col p-5">
+                    <div className="flex items-start justify-between mb-3">
+                      <Heading as="h3" size="h5" className="flex-1 line-clamp-2">
+                        {enrollment.course.title || 'Untitled Course'}
+                      </Heading>
                     </div>
-                    <div className="flex items-center gap-2 md:gap-3 flex-wrap mb-4 md:mb-5 lg:mb-6">
-                      <span className="px-2.5 md:px-3 lg:px-4 py-1 md:py-1.5 lg:py-2 rounded-xl text-xs font-black text-white" style={{ backgroundColor: enrollment.status === 'active' ? colors.accent.primary : colors.text.muted }}>
-                        {enrollment.status.toUpperCase()}
+                    <div className="flex items-center gap-2 flex-wrap mb-3">
+                      <span className="px-3 py-1 rounded-lg text-xs font-semibold text-white" style={{ backgroundColor: colors.primary }}>
+                        {enrollment.status?.toUpperCase() || 'ACTIVE'}
                       </span>
-                      <span className="px-2.5 md:px-3 lg:px-4 py-1 md:py-1.5 lg:py-2 rounded-xl text-xs font-black text-white" style={{ backgroundColor: colors.accent.blue }}>
-                        {enrollment.course.modality.toUpperCase()}
-                      </span>
+                      {enrollment.course.modality && (
+                        <span className="px-3 py-1 rounded-lg text-xs font-semibold text-white" style={{ backgroundColor: colors.accentColor }}>
+                          {enrollment.course.modality.toUpperCase()}
+                        </span>
+                      )}
                     </div>
 
                     {/* Batch Information */}
                     {enrollment.batch && (
-                      <div className="mb-4 md:mb-5 lg:mb-6 p-3 md:p-4 rounded-xl" style={{ backgroundColor: colors.background.secondary, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
-                        <div className="flex items-center gap-2.5 md:gap-3">
-                          <FiClock className="text-base md:text-lg lg:text-xl" style={{ color: colors.accent.primary }} />
-                          <p className="text-xs md:text-sm lg:text-base" style={{ color: colors.text.muted }}>
-                            <span className="font-bold" style={{ color: colors.text.dark }}>Batch:</span> {enrollment.batch.name}
-                          </p>
+                      <Card variant="outlined" className="p-3 mb-3">
+                        <div className="flex items-center gap-2">
+                          <FiClock className="text-base" style={{ color: colors.primary }} />
+                          <Text size="sm" variant="muted">
+                            <span className="font-semibold" style={{ color: colors.text.dark }}>Batch:</span> {enrollment.batch.name}
+                          </Text>
                         </div>
-                      </div>
+                      </Card>
                     )}
 
                     {/* Progress Section */}
-                    <div className="mb-5 md:mb-6 lg:mb-8">
-                      <div className="flex items-center justify-between mb-2.5 md:mb-3">
-                        <span className="text-xs md:text-sm font-bold flex items-center gap-1.5 md:gap-2" style={{ color: colors.text.dark }}>
-                          <FiZap className="text-sm md:text-base" style={{ color: colors.accent.primary }} />
+                    <div className="mb-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <Text size="sm" className="font-semibold flex items-center gap-1.5">
+                          <FiZap className="text-sm" style={{ color: colors.primary }} />
                           Progress
-                        </span>
-                        <span className="text-lg md:text-xl lg:text-2xl font-black" style={{ color: colors.accent.primary }}>
+                        </Text>
+                        <Text size="lg" className="font-bold" style={{ color: colors.primary }}>
                           {(() => {
                             if (progress === null || progress === undefined) return '0.0';
                             const num = typeof progress === 'number' ? progress : parseFloat(String(progress));
                             return isNaN(num) ? '0.0' : num.toFixed(1);
                           })()}%
-                        </span>
+                        </Text>
                       </div>
-                      <div className="w-full rounded-full h-2.5 md:h-3 lg:h-4 overflow-hidden" style={{ backgroundColor: colors.background.secondary }}>
+                      <div className="w-full rounded-full h-3 overflow-hidden" style={{ backgroundColor: colors.background.soft }}>
                         <div
-                          className="h-full rounded-full transition-all duration-1000 shadow-lg"
-                          style={{ 
-                            width: `${displayProgress}%`,
-                            backgroundColor: colors.accent.primary,
-                            boxShadow: `0 0 10px ${colors.accent.primary}50`
-                          }}
-                        >
-                        </div>
+                          className="h-full rounded-full transition-all duration-1000"
+                          style={{ width: `${displayProgress}%`, backgroundColor: colors.primary }}
+                        />
                       </div>
                     </div>
 
                     {/* Action Button */}
                     <div className="mt-auto">
-                      <Link
-                        href={`/learn/${enrollment.course.slug}`}
-                        className="w-full px-5 md:px-6 py-3 md:py-3.5 lg:py-4 rounded-xl font-black transition-all duration-300 flex items-center justify-center gap-2 md:gap-3 hover:scale-105 hover:shadow-2xl text-sm md:text-base whitespace-nowrap"
-                        style={{ 
-                          backgroundColor: colors.button.primary, 
-                          color: colors.text.white,
-                          boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(16, 185, 129, 0.5)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(16, 185, 129, 0.3)';
-                        }}
-                      >
-                        <FiPlay className="text-lg md:text-xl flex-shrink-0" />
-                        <span>Continue Learning</span>
-                      </Link>
+                      <Button asChild variant="default" className="w-full" size="default">
+                        <Link href={`/learn/${enrollment.course.slug}`}>
+                          <FiPlay className="text-lg flex-shrink-0" />
+                          <span>Continue Learning</span>
+                        </Link>
+                      </Button>
                     </div>
                   </div>
-                </div>
+                </Card>
               );
             })}
           </div>
         )}
-      </div>
+      </Container>
     </div>
   );
 }

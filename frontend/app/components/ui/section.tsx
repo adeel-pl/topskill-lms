@@ -1,5 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import { colors } from "@/lib/colors"
 
 interface SectionProps extends React.HTMLAttributes<HTMLElement> {
   variant?: 'default' | 'soft' | 'muted'
@@ -8,10 +9,10 @@ interface SectionProps extends React.HTMLAttributes<HTMLElement> {
 
 const Section = React.forwardRef<HTMLElement, SectionProps>(
   ({ className, variant = 'default', padding = 'default', children, ...props }, ref) => {
-    const variantClasses: Record<string, string> = {
-      default: 'bg-white',
-      soft: 'bg-[#F9FAFB]',
-      muted: 'bg-[#F3F4F6]',
+    const variantClasses: Record<string, React.CSSProperties> = {
+      default: { backgroundColor: colors.background.primary },
+      soft: { backgroundColor: colors.background.soft },
+      muted: { backgroundColor: colors.background.muted },
     }
     
     const paddingClasses: Record<string, string> = {
@@ -30,10 +31,10 @@ const Section = React.forwardRef<HTMLElement, SectionProps>(
         ref={ref}
         className={cn(
           "relative",
-          safeVariant,
           safePadding,
           className
         )}
+        style={variantClasses[variant]}
         {...props}
       >
         {children}

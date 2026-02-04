@@ -6,6 +6,11 @@ import { useAuthStore } from '@/lib/store';
 import { authAPI } from '@/lib/api';
 import { FiUser, FiSave, FiMail, FiLock } from 'react-icons/fi';
 import { useToast } from '@/app/contexts/ToastContext';
+import { Container } from '@/app/components/ui/container';
+import { Heading } from '@/app/components/ui/heading';
+import { Text } from '@/app/components/ui/text';
+import { Button } from '@/app/components/ui/button';
+import { Card } from '@/app/components/ui/card';
 import { colors } from '@/lib/colors';
 
 export default function AccountPage() {
@@ -78,30 +83,28 @@ export default function AccountPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: colors.background.primary }}>
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4" style={{ borderColor: colors.border.primary, borderTopColor: colors.accent.primary }}></div>
-          <p style={{ color: colors.text.muted }}>Loading...</p>
+          <div className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4" style={{ borderColor: colors.border.primary, borderTopColor: colors.primary }}></div>
+          <Text variant="muted">Loading...</Text>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 pb-8 md:pb-12" style={{ backgroundColor: colors.background.primary, color: colors.text.dark }}>
-      <div className="max-w-container xl:max-w-container-xl 2xl:max-w-container-2xl mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 pb-10 md:pb-12">
+    <div className="pb-8 md:pb-12 bg-white">
+      <Container size="2xl" className="pb-10 md:pb-12">
         <div className="mb-8 md:mb-12">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black mb-2" style={{ color: colors.text.dark }}>
-            Account Settings
-          </h1>
-          <p className="text-base md:text-lg" style={{ color: colors.text.muted }}>Manage your account information and preferences</p>
+          <Heading as="h1" size="h1" className="mb-2">Account Settings</Heading>
+          <Text variant="muted" size="lg">Manage your account information and preferences</Text>
         </div>
 
-        <div className="rounded-2xl p-6 md:p-8 shadow-2xl" style={{ backgroundColor: colors.background.card, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
+        <Card variant="default" className="p-6 md:p-8">
           <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
             <div>
-              <label className="block text-sm font-bold mb-3 flex items-center gap-2" style={{ color: colors.text.dark }}>
-                <FiUser style={{ color: colors.accent.primary }} />
+              <label className="block text-sm font-semibold mb-3 flex items-center gap-2" style={{ color: colors.text.dark }}>
+                <FiUser style={{ color: colors.primary }} />
                 Username
               </label>
               <input
@@ -109,89 +112,71 @@ export default function AccountPage() {
                 value={user?.username || ''}
                 disabled
                 className="w-full px-5 py-4 rounded-xl cursor-not-allowed"
-                style={{ backgroundColor: colors.background.secondary, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid', color: colors.text.muted }}
+                style={{ backgroundColor: colors.background.soft, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid', color: colors.text.muted }}
               />
-              <p className="text-xs mt-2" style={{ color: colors.text.muted }}>Username cannot be changed</p>
+              <Text size="xs" variant="muted" className="mt-2">Username cannot be changed</Text>
             </div>
 
             <div>
-              <label className="block text-sm font-bold mb-3 flex items-center gap-2" style={{ color: colors.text.dark }}>
-                <FiMail style={{ color: colors.accent.primary }} />
+              <label className="block text-sm font-semibold mb-3 flex items-center gap-2" style={{ color: colors.text.dark }}>
+                <FiMail style={{ color: colors.primary }} />
                 Email Address
               </label>
               <input
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-5 py-4 rounded-xl focus:outline-none focus:ring-2 transition-all"
-                style={{ 
-                  backgroundColor: colors.background.secondary, 
-                  borderColor: colors.border.primary, 
-                  borderWidth: '1px', 
-                  borderStyle: 'solid', 
-                  color: colors.text.dark
-                }}
-                placeholder="your.email@example.com"
+                className="w-full px-5 py-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all"
+                style={{ backgroundColor: colors.background.soft, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid', color: colors.text.dark }}
                 onFocus={(e) => {
-                  e.currentTarget.style.borderColor = colors.accent.primary;
-                  e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.accent.primary}20`;
+                  e.currentTarget.style.borderColor = colors.primary;
+                  e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.primary}30`;
                 }}
                 onBlur={(e) => {
                   e.currentTarget.style.borderColor = colors.border.primary;
                   e.currentTarget.style.boxShadow = '';
                 }}
+                placeholder="your.email@example.com"
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               <div>
-                <label className="block text-sm font-bold mb-3" style={{ color: colors.text.dark }}>First Name</label>
+                <label className="block text-sm font-semibold mb-3" style={{ color: colors.text.dark }}>First Name</label>
                 <input
                   type="text"
                   value={formData.first_name}
                   onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
-                  className="w-full px-5 py-4 rounded-xl focus:outline-none focus:ring-2 transition-all"
-                  style={{ 
-                    backgroundColor: colors.background.secondary, 
-                    borderColor: colors.border.primary, 
-                    borderWidth: '1px', 
-                    borderStyle: 'solid', 
-                    color: colors.text.dark
-                  }}
+                  className="w-full px-5 py-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all"
+                style={{ backgroundColor: colors.background.soft, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid', color: colors.text.dark }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = colors.primary;
+                  e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.primary}30`;
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = colors.border.primary;
+                  e.currentTarget.style.boxShadow = '';
+                }}
                   placeholder="John"
-                  onFocus={(e) => {
-                    e.currentTarget.style.borderColor = colors.accent.primary;
-                    e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.accent.primary}20`;
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.borderColor = colors.border.primary;
-                    e.currentTarget.style.boxShadow = '';
-                  }}
                 />
               </div>
               <div>
-                <label className="block text-sm font-bold mb-3" style={{ color: colors.text.dark }}>Last Name</label>
+                <label className="block text-sm font-semibold mb-3" style={{ color: colors.text.dark }}>Last Name</label>
                 <input
                   type="text"
                   value={formData.last_name}
                   onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
-                  className="w-full px-5 py-4 rounded-xl focus:outline-none focus:ring-2 transition-all"
-                  style={{ 
-                    backgroundColor: colors.background.secondary, 
-                    borderColor: colors.border.primary, 
-                    borderWidth: '1px', 
-                    borderStyle: 'solid', 
-                    color: colors.text.dark
-                  }}
+                  className="w-full px-5 py-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all"
+                style={{ backgroundColor: colors.background.soft, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid', color: colors.text.dark }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = colors.primary;
+                  e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.primary}30`;
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = colors.border.primary;
+                  e.currentTarget.style.boxShadow = '';
+                }}
                   placeholder="Doe"
-                  onFocus={(e) => {
-                    e.currentTarget.style.borderColor = colors.accent.primary;
-                    e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.accent.primary}20`;
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.borderColor = colors.border.primary;
-                    e.currentTarget.style.boxShadow = '';
-                  }}
                 />
               </div>
             </div>
@@ -199,12 +184,10 @@ export default function AccountPage() {
             <div className="pt-6 md:pt-8" style={{ borderTopColor: colors.border.primary, borderTopWidth: '1px', borderTopStyle: 'solid' }}>
               <form onSubmit={handleChangePassword}>
                 <div className="flex items-center gap-3 mb-4 md:mb-6">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${colors.accent.primary}20` }}>
-                    <FiLock style={{ color: colors.accent.primary }} className="text-xl" />
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${colors.primary}20` }}>
+                    <FiLock className="text-xl" style={{ color: colors.primary }} />
                   </div>
-                  <label className="block text-lg font-bold" style={{ color: colors.text.dark }}>
-                    Change Password
-                  </label>
+                  <Heading as="h3" size="h4">Change Password</Heading>
                 </div>
                 <div className="space-y-4">
                   <input
@@ -213,22 +196,16 @@ export default function AccountPage() {
                     placeholder="Current Password"
                     value={passwordData.old_password}
                     onChange={(e) => setPasswordData({ ...passwordData, old_password: e.target.value })}
-                    className="w-full px-5 py-4 rounded-xl focus:outline-none focus:ring-2 transition-all"
-                    style={{ 
-                      backgroundColor: colors.background.secondary, 
-                      borderColor: colors.border.primary, 
-                      borderWidth: '1px', 
-                      borderStyle: 'solid', 
-                      color: colors.text.dark
-                    }}
-                    onFocus={(e) => {
-                      e.currentTarget.style.borderColor = colors.accent.primary;
-                      e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.accent.primary}20`;
-                    }}
-                    onBlur={(e) => {
-                      e.currentTarget.style.borderColor = colors.border.primary;
-                      e.currentTarget.style.boxShadow = '';
-                    }}
+                    className="w-full px-5 py-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all"
+                style={{ backgroundColor: colors.background.soft, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid', color: colors.text.dark }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = colors.primary;
+                  e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.primary}30`;
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = colors.border.primary;
+                  e.currentTarget.style.boxShadow = '';
+                }}
                   />
                   <input
                     type="password"
@@ -237,22 +214,16 @@ export default function AccountPage() {
                     placeholder="New Password (min 8 characters)"
                     value={passwordData.new_password}
                     onChange={(e) => setPasswordData({ ...passwordData, new_password: e.target.value })}
-                    className="w-full px-5 py-4 rounded-xl focus:outline-none focus:ring-2 transition-all"
-                    style={{ 
-                      backgroundColor: colors.background.secondary, 
-                      borderColor: colors.border.primary, 
-                      borderWidth: '1px', 
-                      borderStyle: 'solid', 
-                      color: colors.text.dark
-                    }}
-                    onFocus={(e) => {
-                      e.currentTarget.style.borderColor = colors.accent.primary;
-                      e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.accent.primary}20`;
-                    }}
-                    onBlur={(e) => {
-                      e.currentTarget.style.borderColor = colors.border.primary;
-                      e.currentTarget.style.boxShadow = '';
-                    }}
+                    className="w-full px-5 py-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all"
+                style={{ backgroundColor: colors.background.soft, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid', color: colors.text.dark }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = colors.primary;
+                  e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.primary}30`;
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = colors.border.primary;
+                  e.currentTarget.style.boxShadow = '';
+                }}
                   />
                   <input
                     type="password"
@@ -261,47 +232,42 @@ export default function AccountPage() {
                     placeholder="Confirm New Password"
                     value={passwordData.new_password2}
                     onChange={(e) => setPasswordData({ ...passwordData, new_password2: e.target.value })}
-                    className="w-full px-5 py-4 rounded-xl focus:outline-none focus:ring-2 transition-all"
-                    style={{ 
-                      backgroundColor: colors.background.secondary, 
-                      borderColor: colors.border.primary, 
-                      borderWidth: '1px', 
-                      borderStyle: 'solid', 
-                      color: colors.text.dark
-                    }}
-                    onFocus={(e) => {
-                      e.currentTarget.style.borderColor = colors.accent.primary;
-                      e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.accent.primary}20`;
-                    }}
-                    onBlur={(e) => {
-                      e.currentTarget.style.borderColor = colors.border.primary;
-                      e.currentTarget.style.boxShadow = '';
-                    }}
+                    className="w-full px-5 py-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all"
+                style={{ backgroundColor: colors.background.soft, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid', color: colors.text.dark }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = colors.primary;
+                  e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.primary}30`;
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = colors.border.primary;
+                  e.currentTarget.style.boxShadow = '';
+                }}
                   />
                 </div>
-                <button
+                <Button
                   type="submit"
                   disabled={changingPassword}
-                  className="mt-4 w-full px-6 py-3 rounded-xl font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 hover:shadow-xl"
-                  style={{ backgroundColor: colors.button.primary, color: colors.text.white }}
+                  variant="default"
+                  className="mt-4 w-full"
                 >
                   {changingPassword ? 'Changing...' : 'Change Password'}
-                </button>
+                </Button>
               </form>
             </div>
 
-            <button
+            <Button
               type="submit"
               disabled={saving}
-              className="w-full px-6 py-4 rounded-xl font-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 hover:shadow-2xl flex items-center justify-center gap-2"
-              style={{ backgroundColor: colors.button.primary, color: colors.text.white, boxShadow: `0 10px 25px -5px ${colors.accent.primary}30` }}
+              variant="default"
+              size="lg"
+              className="w-full"
             >
               <FiSave className={saving ? 'animate-spin' : ''} />
               {saving ? 'Saving...' : 'Save Changes'}
-            </button>
+            </Button>
           </form>
-        </div>
-      </div>
+        </Card>
+      </Container>
     </div>
   );
 }

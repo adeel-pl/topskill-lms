@@ -9,6 +9,11 @@ import PureLogicsNavbar from '@/app/components/PureLogicsNavbar';
 import Footer from '@/app/components/Footer';
 import { FiTrash2, FiShoppingCart, FiArrowRight } from 'react-icons/fi';
 import { useToast } from '@/app/contexts/ToastContext';
+import { Container } from '@/app/components/ui/container';
+import { Heading } from '@/app/components/ui/heading';
+import { Text } from '@/app/components/ui/text';
+import { Button } from '@/app/components/ui/button';
+import { Card } from '@/app/components/ui/card';
 import { colors } from '@/lib/colors';
 
 export default function CartPage() {
@@ -36,7 +41,6 @@ export default function CartPage() {
       setCart(cartData);
       setLoading(false);
     } catch (error) {
-      console.error('Error loading cart:', error);
       setCart(null);
       setLoading(false);
     }
@@ -61,7 +65,6 @@ export default function CartPage() {
     setCheckingOut(true);
     try {
       const response = await cartAPI.checkout();
-      console.log('Checkout response:', response);
       
       if (response.data && response.data.payment_url) {
         window.location.href = response.data.payment_url;
@@ -76,7 +79,6 @@ export default function CartPage() {
         setCheckingOut(false);
       }
     } catch (error: any) {
-      console.error('Checkout error:', error);
       const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message || 'Checkout failed. Please try again.';
       showError(errorMessage);
       setCheckingOut(false);
@@ -85,10 +87,10 @@ export default function CartPage() {
 
   if (loading || isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: colors.background.primary }}>
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4" style={{ borderColor: colors.border.primary, borderTopColor: colors.accent.primary }}></div>
-          <p style={{ color: colors.text.muted }}>Loading cart...</p>
+          <div className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4" style={{ borderColor: colors.border.primary, borderTopColor: colors.primary }}></div>
+          <Text variant="muted">Loading cart...</Text>
         </div>
       </div>
     );
@@ -97,51 +99,48 @@ export default function CartPage() {
   const itemCount = cart?.items?.length || 0;
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: colors.background.primary, color: colors.text.dark }}>
+    <div className="min-h-screen bg-white">
       <PureLogicsNavbar />
 
-      <div className="section-after-header max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 pb-10 md:pb-12 relative z-10">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-2 md:mb-3" style={{ color: colors.text.dark }}>
-          Shopping Cart
-        </h1>
-        <p className="text-sm md:text-base lg:text-lg mb-6 md:mb-8 lg:mb-12" style={{ color: colors.text.muted }}>{itemCount} {itemCount === 1 ? 'Course' : 'Courses'} in Cart</p>
+      <Container size="2xl" className="pb-10 md:pb-12 pt-20">
+        <Heading as="h1" size="h1" className="mb-2 md:mb-3">Shopping Cart</Heading>
+        <Text variant="muted" size="lg" className="mb-6 md:mb-8 lg:mb-12">{itemCount} {itemCount === 1 ? 'Course' : 'Courses'} in Cart</Text>
 
         {!cart || !cart.items || cart.items.length === 0 ? (
           <div className="text-center py-16 md:py-20">
-            <div className="rounded-2xl p-10 md:p-12 lg:p-16 max-w-md mx-auto" style={{ backgroundColor: colors.background.secondary, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
-              <div className="w-20 md:w-24 h-20 md:h-24 rounded-full flex items-center justify-center mx-auto mb-5 md:mb-6" style={{ backgroundColor: `${colors.accent.primary}20` }}>
-                <FiShoppingCart className="text-4xl md:text-5xl" style={{ color: colors.accent.primary }} />
+            <Card variant="default" className="p-10 md:p-12 lg:p-16 max-w-md mx-auto">
+              <div className="w-20 md:w-24 h-20 md:h-24 rounded-full flex items-center justify-center mx-auto mb-5 md:mb-6" style={{ backgroundColor: `${colors.primary}20` }}>
+                <FiShoppingCart className="text-4xl md:text-5xl" style={{ color: colors.primary }} />
               </div>
-              <h2 className="text-2xl md:text-3xl font-black mb-3 md:mb-4" style={{ color: colors.text.dark }}>Your cart is empty</h2>
-              <p className="mb-5 md:mb-6 lg:mb-8 text-sm md:text-base" style={{ color: colors.text.muted }}>Keep shopping to find a course!</p>
-              <Link
-                href="/"
-                className="inline-block px-7 md:px-8 py-3.5 md:py-4 rounded-xl font-black transition-all duration-300 hover:scale-105 hover:shadow-2xl text-sm md:text-base"
-                style={{ backgroundColor: colors.button.primary, color: colors.text.white }}
-              >
-                Keep shopping
+              <Heading as="h2" size="h2" className="mb-3 md:mb-4">Your cart is empty</Heading>
+              <Text variant="muted" size="base" className="mb-5 md:mb-6 lg:mb-8">Keep shopping to find a course!</Text>
+              <Link href="/">
+                <Button variant="default" size="lg">Keep shopping</Button>
               </Link>
-            </div>
+            </Card>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 md:gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-7">
             <div className="lg:col-span-2 space-y-4 md:space-y-5 lg:space-y-6">
-              {cart.items.map((item: any, idx: number) => (
-                <div
+              {cart.items.map((item: any) => (
+                <Card
                   key={item.id}
-                  className="rounded-2xl p-4 md:p-5 lg:p-6 transition-all duration-500 hover:scale-[1.02] hover:-translate-y-1"
-                  style={{ 
-                    backgroundColor: colors.background.secondary, 
-                    borderColor: colors.border.primary, 
-                    borderWidth: '1px', 
-                    borderStyle: 'solid',
-                    animationDelay: `${idx * 100}ms` 
-                  }}
+                  variant="default"
+                  hover={true}
+                  className="p-4 md:p-5 lg:p-6"
                 >
                   <div className="flex items-start gap-4 md:gap-5 lg:gap-6">
-                    <div className="w-24 md:w-28 lg:w-32 h-20 md:h-24 lg:h-28 rounded-xl overflow-hidden flex-shrink-0" style={{ backgroundColor: colors.accent.primary }}>
-                      {item.course?.thumbnail ? (
-                        <img src={item.course.thumbnail} alt={item.course.title} className="w-full h-full object-cover" />
+                    <div className="w-24 md:w-28 lg:w-32 h-20 md:h-24 lg:h-28 rounded-xl overflow-hidden flex-shrink-0" style={{ backgroundColor: colors.primary }}>
+                      {(item.course?.featured_image || item.course?.thumbnail) ? (
+                        <img 
+                          src={item.course.featured_image || item.course.thumbnail} 
+                          alt={item.course.title} 
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            if (target) target.style.display = 'none';
+                          }}
+                        />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
                           <span className="text-white text-xl md:text-2xl font-black">{item.course?.title?.charAt(0) || 'C'}</span>
@@ -149,17 +148,19 @@ export default function CartPage() {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-base md:text-lg lg:text-xl font-black mb-1.5 md:mb-2" style={{ color: colors.text.dark }}>{item.course?.title || 'Course'}</h3>
-                      <p className="text-xs md:text-sm mb-3 md:mb-4 line-clamp-2" style={{ color: colors.text.muted }}>{item.course?.description || ''}</p>
+                      <Heading as="h3" size="h5" className="mb-1.5 md:mb-2">{item.course?.title || 'Course'}</Heading>
+                      {item.course?.description && (
+                        <Text variant="muted" size="sm" className="mb-3 md:mb-4 line-clamp-2">{item.course.description}</Text>
+                      )}
                       <div className="flex items-center justify-between">
-                        <div className="text-lg md:text-xl lg:text-2xl font-black" style={{ color: colors.accent.primary }}>${item.course?.price || 0}</div>
+                        <Text size="lg" className="font-bold" style={{ color: colors.primary }}>${item.course?.price || 0}</Text>
                         <button
                           onClick={() => removeItem(item.course?.id)}
                           className="p-2 md:p-2.5 rounded-xl transition-all duration-300"
                           style={{ color: colors.text.muted }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.color = '#EF4444';
-                            e.currentTarget.style.backgroundColor = '#EF444410';
+                            e.currentTarget.style.color = colors.status.error;
+                            e.currentTarget.style.backgroundColor = `${colors.status.error}10`;
                           }}
                           onMouseLeave={(e) => {
                             e.currentTarget.style.color = colors.text.muted;
@@ -171,19 +172,20 @@ export default function CartPage() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </Card>
               ))}
             </div>
 
             <div className="lg:col-span-1">
-              <div className="sticky top-20 md:top-24 rounded-2xl p-5 md:p-6 lg:p-8 shadow-2xl transition-all duration-500" style={{ backgroundColor: colors.background.secondary, borderColor: colors.border.primary, borderWidth: '2px', borderStyle: 'solid' }}>
-                <h2 className="text-xl md:text-2xl font-black mb-4 md:mb-5 lg:mb-6" style={{ color: colors.text.dark }}>Total</h2>
-                <div className="text-3xl md:text-4xl lg:text-5xl font-black mb-5 md:mb-6 lg:mb-8" style={{ color: colors.accent.primary }}>${cart.total || 0}</div>
-                <button
+              <Card variant="default" className="sticky top-20 md:top-24 p-5 md:p-6 lg:p-8">
+                <Heading as="h2" size="h3" className="mb-4 md:mb-5 lg:mb-6">Total</Heading>
+                <Text size="3xl" className="font-bold mb-5 md:mb-6 lg:mb-8" style={{ color: colors.primary }}>${cart.total || 0}</Text>
+                <Button
                   onClick={handleCheckout}
                   disabled={checkingOut || itemCount === 0}
-                  className="w-full py-3.5 md:py-4 lg:py-5 rounded-xl font-black text-base md:text-lg transition-all duration-300 mb-3 md:mb-4 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 hover:shadow-2xl flex items-center justify-center gap-2"
-                  style={{ backgroundColor: colors.button.primary, color: colors.text.white }}
+                  variant="default"
+                  size="lg"
+                  className="w-full mb-3 md:mb-4"
                 >
                   {checkingOut ? (
                     <>
@@ -196,25 +198,21 @@ export default function CartPage() {
                       <FiArrowRight className="text-lg md:text-xl" />
                     </>
                   )}
-                </button>
+                </Button>
                 <Link
                   href="/"
-                  className="block text-center font-bold text-xs md:text-sm transition-colors py-2.5 md:py-3 rounded-xl"
+                  className="block text-center font-semibold text-sm transition-colors py-2.5 md:py-3 rounded-xl"
                   style={{ color: colors.text.muted }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = colors.accent.primary;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = colors.text.muted;
-                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
+                  onMouseLeave={(e) => e.currentTarget.style.color = colors.text.muted}
                 >
                   Continue Shopping
                 </Link>
-              </div>
+              </Card>
             </div>
           </div>
         )}
-      </div>
+      </Container>
 
       <Footer />
     </div>

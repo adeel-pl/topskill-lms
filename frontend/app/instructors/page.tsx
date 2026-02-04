@@ -83,7 +83,7 @@ export default function InstructorsPage() {
         <PureLogicsNavbar />
         <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
           <div className="text-center">
-            <div className="w-16 h-16 border-4 border-gray-300 border-t-[#048181] rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4" style={{ borderColor: colors.border.primary, borderTopColor: colors.primary }}></div>
             <p style={{ color: colors.text.muted }}>Loading instructors...</p>
           </div>
         </div>
@@ -126,7 +126,7 @@ export default function InstructorsPage() {
               >
                 {/* Instructor Header */}
                 <div className="flex items-start gap-4 mb-4">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#048181] to-[#036969] flex items-center justify-center text-white text-2xl font-bold">
+                  <div className="w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl font-bold" style={{ backgroundColor: colors.primary }}>
                     {instructor.full_name.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1">
@@ -143,7 +143,7 @@ export default function InstructorsPage() {
                 <div className="grid grid-cols-3 gap-4 mb-4 pb-4 border-b border-gray-200">
                   <div className="text-center">
                     <div className="flex items-center justify-center gap-1 mb-1">
-                      <FiBook className="text-[#048181]" />
+                      <FiBook style={{ color: colors.primary }} />
                       <span className="text-lg font-bold" style={{ color: colors.text.dark }}>
                         {instructor.course_count}
                       </span>
@@ -152,7 +152,7 @@ export default function InstructorsPage() {
                   </div>
                   <div className="text-center">
                     <div className="flex items-center justify-center gap-1 mb-1">
-                      <FiUsers className="text-[#048181]" />
+                      <FiUsers style={{ color: colors.primary }} />
                       <span className="text-lg font-bold" style={{ color: colors.text.dark }}>
                         {instructor.total_students}
                       </span>
@@ -185,7 +185,7 @@ export default function InstructorsPage() {
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium truncate group-hover:text-[#048181] transition-colors" style={{ color: colors.text.dark }}>
+                              <p className="text-sm font-medium truncate transition-colors" style={{ color: colors.text.dark }} onMouseEnter={(e) => e.currentTarget.style.color = colors.primary} onMouseLeave={(e) => e.currentTarget.style.color = colors.text.dark}>
                                 {course.title}
                               </p>
                               <div className="flex items-center gap-2 mt-1">
@@ -205,7 +205,7 @@ export default function InstructorsPage() {
                                 )}
                               </div>
                             </div>
-                            <FiArrowRight className="text-gray-400 group-hover:text-[#048181] transition-colors ml-2" />
+                            <FiArrowRight className="transition-colors ml-2" style={{ color: colors.text.muted }} onMouseEnter={(e) => e.currentTarget.style.color = colors.primary} onMouseLeave={(e) => e.currentTarget.style.color = colors.text.muted} />
                           </div>
                         </Link>
                       ))}
@@ -219,14 +219,14 @@ export default function InstructorsPage() {
                     href={`/instructors/${instructor.id}`}
                     className="block w-full text-center py-2 rounded-lg font-semibold text-sm transition-colors"
                     style={{
-                      backgroundColor: colors.accent.primary,
-                      color: 'white',
+                      backgroundColor: colors.primary,
+                      color: colors.text.white,
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#036969';
+                      e.currentTarget.style.backgroundColor = colors.primaryHover;
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = colors.accent.primary;
+                      e.currentTarget.style.backgroundColor = colors.primary;
                     }}
                   >
                     View All Courses

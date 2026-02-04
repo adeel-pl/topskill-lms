@@ -177,13 +177,13 @@ export default function AdminDashboardPage() {
                 style={{ 
                   backgroundColor: colors.button.primary, 
                   color: colors.text.white,
-                  boxShadow: '0 10px 25px -5px rgba(4, 129, 129, 0.3)'
+                  boxShadow: `0 10px 25px -5px ${colors.primary}30`
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(4, 129, 129, 0.5)';
+                  e.currentTarget.style.boxShadow = `0 20px 25px -5px ${colors.primary}50`;
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(4, 129, 129, 0.3)';
+                  e.currentTarget.style.boxShadow = `0 10px 25px -5px ${colors.primary}30`;
                 }}
               >
                 <FiRefreshCw className={`text-lg md:text-xl ${refreshing ? 'animate-spin' : ''}`} />

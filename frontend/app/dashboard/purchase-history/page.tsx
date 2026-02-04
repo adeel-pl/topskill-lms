@@ -7,8 +7,13 @@ import { useAuthStore } from '@/lib/store';
 import { enrollmentsAPI, cartAPI } from '@/lib/api';
 import { BookOpen, ShoppingCart, Play, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { colors } from '@/lib/colors';
+import { Container } from '@/app/components/ui/container';
+import { Heading } from '@/app/components/ui/heading';
+import { Text } from '@/app/components/ui/text';
+import { Button } from '@/app/components/ui/button';
+import { Card } from '@/app/components/ui/card';
 import { FiClock, FiZap, FiPlay } from 'react-icons/fi';
+import { colors } from '@/lib/colors';
 
 interface Enrollment {
   id: number;
@@ -126,119 +131,106 @@ export default function PurchaseHistoryPage() {
 
   if (isLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: colors.background.primary }}>
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4" style={{ borderColor: colors.border.primary, borderTopColor: colors.accent.primary }}></div>
-          <p style={{ color: colors.text.muted }}>Loading...</p>
+          <div className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4" style={{ borderColor: colors.border.primary, borderTopColor: colors.primary }}></div>
+          <Text variant="muted">Loading...</Text>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 pb-8 md:pb-12" style={{ backgroundColor: colors.background.primary, color: colors.text.dark }}>
-      <div className="max-w-container xl:max-w-container-xl 2xl:max-w-container-2xl mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 pb-10 md:pb-12">
+    <div className="pb-8 md:pb-12 bg-white">
+      <Container size="2xl" className="pb-10 md:pb-12">
         <div className="mb-8 md:mb-12">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black mb-2" style={{ color: colors.text.dark }}>
-            Purchase History
-          </h1>
-          <p className="text-base md:text-lg" style={{ color: colors.text.muted }}>View all your enrolled courses and cart items</p>
+          <Heading as="h1" size="h1" className="mb-2">Purchase History</Heading>
+          <Text variant="muted" size="lg">View all your enrolled courses and cart items</Text>
         </div>
 
         {/* Analytics Summary */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="rounded-2xl p-6" style={{ backgroundColor: colors.background.card, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
+          <Card variant="default" className="p-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium" style={{ color: colors.text.muted }}>Total Enrolled</span>
-              <BookOpen className="w-5 h-5" style={{ color: colors.accent.primary }} />
+              <Text size="sm" variant="muted" className="font-medium">Total Enrolled</Text>
+              <BookOpen className="w-5 h-5" style={{ color: colors.primary }} />
             </div>
-            <p className="text-3xl font-black" style={{ color: colors.text.dark }}>{enrollments.length}</p>
-            <p className="text-xs mt-1" style={{ color: colors.text.muted }}>Active courses</p>
-          </div>
-          <div className="rounded-2xl p-6" style={{ backgroundColor: colors.background.card, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
+            <Heading as="p" size="h1" className="text-3xl">{enrollments.length}</Heading>
+            <Text size="xs" variant="muted" className="mt-1">Active courses</Text>
+          </Card>
+          <Card variant="default" className="p-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium" style={{ color: colors.text.muted }}>Average Progress</span>
-              <Play className="w-5 h-5" style={{ color: colors.accent.primary }} />
+              <Text size="sm" variant="muted" className="font-medium">Average Progress</Text>
+              <Play className="w-5 h-5" style={{ color: colors.primary }} />
             </div>
-            <p className="text-3xl font-black" style={{ color: colors.text.dark }}>{calculateAverageProgress()}%</p>
-            <p className="text-xs mt-1" style={{ color: colors.text.muted }}>Across all courses</p>
-          </div>
+            <Heading as="p" size="h1" className="text-3xl">{calculateAverageProgress()}%</Heading>
+            <Text size="xs" variant="muted" className="mt-1">Across all courses</Text>
+          </Card>
         </div>
 
         {/* Enrolled Courses */}
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-6">
-            <BookOpen className="w-6 h-6" style={{ color: colors.accent.primary }} />
-            <h2 className="text-2xl md:text-3xl font-black" style={{ color: colors.text.dark }}>Enrolled Courses ({enrollments.length})</h2>
+            <BookOpen className="w-6 h-6" style={{ color: colors.primary }} />
+            <Heading as="h2" size="h2">Enrolled Courses ({enrollments.length})</Heading>
           </div>
 
           {enrollments.length === 0 ? (
-            <div className="rounded-2xl p-12 text-center" style={{ backgroundColor: colors.background.card, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
-              <BookOpen className="w-16 h-16 mx-auto mb-4 opacity-50" style={{ color: colors.accent.primary }} />
-              <p className="mb-4 text-lg" style={{ color: colors.text.muted }}>No enrolled courses yet</p>
-              <Link
-                href="/"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
-                style={{ backgroundColor: colors.button.primary, color: colors.text.white }}
-              >
-                Browse Courses
-              </Link>
-            </div>
+            <Card variant="default" className="p-12 text-center">
+              <BookOpen className="w-16 h-16 mx-auto mb-4 opacity-50" style={{ color: colors.primary }} />
+              <Text size="lg" variant="muted" className="mb-4">No enrolled courses yet</Text>
+              <Button asChild variant="default">
+                <Link href="/">Browse Courses</Link>
+              </Button>
+            </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6 lg:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7">
               {enrollments.map((enrollment, idx) => {
                 const progress = enrollment.progress_percent;
                 const numProgress = typeof progress === 'number' ? progress : parseFloat(String(progress));
                 const displayProgress = isNaN(numProgress) ? 0 : Math.max(0, Math.min(100, numProgress));
                 
                 return (
-                  <div
+                  <Card
                     key={enrollment.id}
-                    className="h-full flex flex-col rounded-2xl overflow-hidden transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-2xl"
-                    style={{ 
-                      backgroundColor: colors.background.card, 
-                      borderColor: colors.border.primary, 
-                      borderWidth: '1px', 
-                      borderStyle: 'solid',
-                      animationDelay: `${idx * 100}ms`
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = colors.accent.primary;
-                      e.currentTarget.style.boxShadow = `0 20px 25px -5px ${colors.accent.primary}20`;
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = colors.border.primary;
-                      e.currentTarget.style.boxShadow = '';
-                    }}
+                    variant="default"
+                    hover={true}
+                    className="h-full flex flex-col overflow-hidden"
                   >
-                    {/* Course Image */}
-                    <div className="relative w-full aspect-video overflow-hidden" style={{ backgroundColor: colors.accent.primary }}>
-                      {enrollment.course.thumbnail ? (
+                    {/* Course Image - Use featured_image first, then thumbnail */}
+                    <div className="relative w-full aspect-video overflow-hidden" style={{ backgroundColor: colors.primary }}>
+                      {(enrollment.course.featured_image || enrollment.course.thumbnail) ? (
                         <img
-                          src={enrollment.course.thumbnail}
+                          src={enrollment.course.featured_image || enrollment.course.thumbnail}
                           alt={enrollment.course.title}
                           className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            if (target) target.style.display = 'none';
+                          }}
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
-                          <span className="text-white text-5xl font-black drop-shadow-lg">{enrollment.course.title.charAt(0)}</span>
+                          <span className="text-white text-5xl font-extrabold">
+                            {enrollment.course.title?.charAt(0)?.toUpperCase() || '?'}
+                          </span>
                         </div>
                       )}
                     </div>
 
-                    {/* Course Header */}
-                    <div className="flex-1 flex flex-col p-5 md:p-6 lg:p-8">
-                      <div className="flex items-start justify-between mb-4 md:mb-5 lg:mb-6">
-                        <h3 className="text-lg md:text-xl lg:text-2xl font-black flex-1 transition-colors" style={{ color: colors.text.dark }}>
-                          {enrollment.course.title}
-                        </h3>
+                    {/* Course Content */}
+                    <div className="flex-1 flex flex-col p-5">
+                      <div className="flex items-start justify-between mb-3">
+                        <Heading as="h3" size="h5" className="flex-1 line-clamp-2">
+                          {enrollment.course.title || 'Untitled Course'}
+                        </Heading>
                       </div>
-                      <div className="flex items-center gap-2 md:gap-3 flex-wrap mb-4 md:mb-5 lg:mb-6">
-                        <span className="px-2.5 md:px-3 lg:px-4 py-1 md:py-1.5 lg:py-2 rounded-xl text-xs font-black text-white" style={{ backgroundColor: enrollment.status === 'active' ? colors.accent.primary : colors.text.muted }}>
-                          {enrollment.status.toUpperCase()}
+                      <div className="flex items-center gap-2 flex-wrap mb-3">
+                        <span className="px-3 py-1 rounded-lg text-xs font-semibold text-white" style={{ backgroundColor: colors.primary }}>
+                          {enrollment.status?.toUpperCase() || 'ACTIVE'}
                         </span>
                         {enrollment.course.modality && (
-                          <span className="px-2.5 md:px-3 lg:px-4 py-1 md:py-1.5 lg:py-2 rounded-xl text-xs font-black text-white" style={{ backgroundColor: colors.accent.blue }}>
+                          <span className="px-3 py-1 rounded-lg text-xs font-semibold text-white" style={{ backgroundColor: colors.accentColor }}>
                             {enrollment.course.modality.toUpperCase()}
                           </span>
                         )}
@@ -246,67 +238,50 @@ export default function PurchaseHistoryPage() {
 
                       {/* Batch Information */}
                       {enrollment.batch && (
-                        <div className="mb-4 md:mb-5 lg:mb-6 p-3 md:p-4 rounded-xl" style={{ backgroundColor: colors.background.secondary, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
-                          <div className="flex items-center gap-2.5 md:gap-3">
-                            <FiClock className="text-base md:text-lg lg:text-xl" style={{ color: colors.accent.primary }} />
-                            <p className="text-xs md:text-sm lg:text-base" style={{ color: colors.text.muted }}>
-                              <span className="font-bold" style={{ color: colors.text.dark }}>Batch:</span> {enrollment.batch.name}
-                            </p>
+                        <Card variant="outlined" className="p-3 mb-3">
+                          <div className="flex items-center gap-2">
+                            <FiClock className="text-base" style={{ color: colors.primary }} />
+                            <Text size="sm" variant="muted">
+                              <span className="font-semibold" style={{ color: colors.text.dark }}>Batch:</span> {enrollment.batch.name}
+                            </Text>
                           </div>
-                        </div>
+                        </Card>
                       )}
 
                       {/* Progress Section */}
-                      <div className="mb-5 md:mb-6 lg:mb-8">
-                        <div className="flex items-center justify-between mb-2.5 md:mb-3">
-                          <span className="text-xs md:text-sm font-bold flex items-center gap-1.5 md:gap-2" style={{ color: colors.text.dark }}>
-                            <FiZap className="text-sm md:text-base" style={{ color: colors.accent.primary }} />
+                      <div className="mb-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <Text size="sm" className="font-semibold flex items-center gap-1.5">
+                            <FiZap className="text-sm" style={{ color: colors.primary }} />
                             Progress
-                          </span>
-                          <span className="text-lg md:text-xl lg:text-2xl font-black" style={{ color: colors.accent.primary }}>
+                          </Text>
+                          <Text size="lg" className="font-bold" style={{ color: colors.primary }}>
                             {(() => {
                               if (progress === null || progress === undefined) return '0.0';
                               const num = typeof progress === 'number' ? progress : parseFloat(String(progress));
                               return isNaN(num) ? '0.0' : num.toFixed(1);
                             })()}%
-                          </span>
+                          </Text>
                         </div>
-                        <div className="w-full rounded-full h-2.5 md:h-3 lg:h-4 overflow-hidden" style={{ backgroundColor: colors.background.secondary }}>
+                        <div className="w-full rounded-full h-3 overflow-hidden" style={{ backgroundColor: colors.background.soft }}>
                           <div
-                            className="h-full rounded-full transition-all duration-1000 shadow-lg"
-                            style={{ 
-                              width: `${displayProgress}%`,
-                              backgroundColor: colors.accent.primary,
-                              boxShadow: `0 0 10px ${colors.accent.primary}50`
-                            }}
-                          >
-                          </div>
+                            className="h-full rounded-full transition-all duration-1000"
+                            style={{ width: `${displayProgress}%`, backgroundColor: colors.primary }}
+                          />
                         </div>
                       </div>
 
                       {/* Action Button */}
                       <div className="mt-auto">
-                        <Link
-                          href={`/learn/${enrollment.course.slug}`}
-                          className="w-full px-5 md:px-6 py-3 md:py-3.5 lg:py-4 rounded-xl font-black transition-all duration-300 flex items-center justify-center gap-2 md:gap-3 hover:scale-105 hover:shadow-2xl text-sm md:text-base whitespace-nowrap"
-                          style={{ 
-                            backgroundColor: colors.button.primary, 
-                            color: colors.text.white,
-                            boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)'
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(16, 185, 129, 0.5)';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(16, 185, 129, 0.3)';
-                          }}
-                        >
-                          <FiPlay className="text-lg md:text-xl flex-shrink-0" />
-                          <span>Continue Learning</span>
-                        </Link>
+                        <Button asChild variant="default" className="w-full" size="default">
+                          <Link href={`/learn/${enrollment.course.slug}`}>
+                            <FiPlay className="text-lg flex-shrink-0" />
+                            <span>Continue Learning</span>
+                          </Link>
+                        </Button>
                       </div>
                     </div>
-                  </div>
+                  </Card>
                 );
               })}
             </div>
@@ -316,89 +291,76 @@ export default function PurchaseHistoryPage() {
         {/* Cart Items */}
         <div>
           <div className="flex items-center gap-3 mb-6">
-            <ShoppingCart className="w-6 h-6" style={{ color: colors.accent.primary }} />
-            <h2 className="text-2xl md:text-3xl font-black" style={{ color: colors.text.dark }}>Cart Items ({cartItems.length})</h2>
+            <ShoppingCart className="w-6 h-6" style={{ color: colors.primary }} />
+            <Heading as="h2" size="h2">Cart Items ({cartItems.length})</Heading>
           </div>
 
           {cartItems.length === 0 ? (
-            <div className="rounded-2xl p-12 text-center" style={{ backgroundColor: colors.background.card, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
-              <ShoppingCart className="w-16 h-16 mx-auto mb-4 opacity-50" style={{ color: colors.accent.primary }} />
-              <p className="mb-4 text-lg" style={{ color: colors.text.muted }}>Your cart is empty</p>
-              <Link
-                href="/"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all"
-                style={{ backgroundColor: colors.button.primary, color: colors.text.white }}
-              >
-                Browse Courses
-              </Link>
-            </div>
+            <Card variant="default" className="p-12 text-center">
+              <ShoppingCart className="w-16 h-16 mx-auto mb-4 opacity-50" style={{ color: colors.primary }} />
+              <Text size="lg" variant="muted" className="mb-4">Your cart is empty</Text>
+              <Button asChild variant="default">
+                <Link href="/">Browse Courses</Link>
+              </Button>
+            </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
               {cartItems.map((item, index) => (
                 <motion.div
                   key={item.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="rounded-2xl overflow-hidden transition-all hover:shadow-xl"
-                  style={{ backgroundColor: colors.background.card, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = colors.accent.primary;
-                    e.currentTarget.style.boxShadow = `0 20px 25px -5px ${colors.accent.primary}20`;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = colors.border.primary;
-                    e.currentTarget.style.boxShadow = '';
-                  }}
                 >
-                  <Link href={`/courses/${item.course.slug}`}>
-                    <div className="relative aspect-video" style={{ backgroundColor: colors.accent.primary }}>
-                      {item.course.thumbnail ? (
-                        <img
-                          src={item.course.thumbnail}
-                          alt={item.course.title}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <span className="text-white text-4xl font-black">
-                            {item.course.title.charAt(0)}
-                          </span>
-                        </div>
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                    </div>
-                  </Link>
-                  
-                  <div className="p-6">
+                  <Card variant="default" hover={true} className="overflow-hidden">
                     <Link href={`/courses/${item.course.slug}`}>
-                      <h3 className="text-xl font-bold mb-3 transition-colors line-clamp-2" style={{ color: colors.text.dark }}
-                        onMouseEnter={(e) => e.currentTarget.style.color = colors.accent.primary}
-                        onMouseLeave={(e) => e.currentTarget.style.color = colors.text.dark}>
-                        {item.course.title}
-                      </h3>
+                      <div className="relative aspect-video" style={{ backgroundColor: colors.primary }}>
+                        {(item.course.featured_image || item.course.thumbnail) ? (
+                          <img
+                            src={item.course.featured_image || item.course.thumbnail}
+                            alt={item.course.title}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              if (target) target.style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <span className="text-white text-4xl font-extrabold">
+                              {item.course.title?.charAt(0)?.toUpperCase() || '?'}
+                            </span>
+                          </div>
+                        )}
+                      </div>
                     </Link>
                     
-                    <div className="flex items-center justify-between">
-                      <div className="text-2xl font-black" style={{ color: colors.text.dark }}>
-                        {formatPrice(item.course.price || 0)}
-                      </div>
-                      <Link
-                        href="/cart"
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg font-bold text-sm transition-all"
-                        style={{ backgroundColor: colors.button.primary, color: colors.text.white }}
-                      >
-                        <ShoppingCart className="w-4 h-4" />
-                        View Cart
+                    <div className="p-6">
+                      <Link href={`/courses/${item.course.slug}`}>
+                        <Heading as="h3" size="h5" className="mb-3 line-clamp-2 transition-colors group-hover:text-[#048181]">
+                          {item.course.title || 'Untitled Course'}
+                        </Heading>
                       </Link>
+                      
+                      <div className="flex items-center justify-between">
+                        <Text size="xl" className="font-bold">
+                          {formatPrice(item.course.price || 0)}
+                        </Text>
+                        <Button asChild variant="default" size="sm">
+                          <Link href="/cart">
+                            <ShoppingCart className="w-4 h-4" />
+                            View Cart
+                          </Link>
+                        </Button>
+                      </div>
                     </div>
-                  </div>
+                  </Card>
                 </motion.div>
               ))}
             </div>
           )}
         </div>
-      </div>
+      </Container>
     </div>
   );
 }

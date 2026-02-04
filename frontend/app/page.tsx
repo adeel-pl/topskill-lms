@@ -9,12 +9,12 @@ import CourseCardNew from '@/app/components/CourseCardNew';
 import Footer from '@/app/components/Footer';
 import { ArrowRight, Grid3x3, List } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { colors } from '@/lib/colors';
 import { Container } from '@/app/components/ui/container';
 import { Section } from '@/app/components/ui/section';
 import { Heading } from '@/app/components/ui/heading';
 import { Text } from '@/app/components/ui/text';
 import { Button } from '@/app/components/ui/button';
+import { colors } from '@/lib/colors';
 
 interface Course {
   id: number;
@@ -23,7 +23,8 @@ interface Course {
   description: string;
   short_description?: string;
   price: number;
-  thumbnail: string;
+  thumbnail?: string;
+  featured_image?: string;
   instructor_name: string;
   enrolled_count: number;
   average_rating: number;
@@ -230,19 +231,19 @@ export default function HomePage() {
 
 
   return (
-    <div className="min-h-screen w-full" style={{ backgroundColor: colors.text.white, color: colors.text.dark }}>
+    <div className="min-h-screen w-full bg-white">
       <PureLogicsNavbar />
 
       {/* Hero Section */}
-      <section className="section-after-header relative pb-16 md:pb-20 lg:pb-24 overflow-hidden" style={{ backgroundColor: '#048181' }}>
+      <section className="section-after-header relative pb-16 md:pb-20 lg:pb-24 overflow-hidden" style={{ backgroundColor: colors.primary }}>
         {/* Animated Background Effects */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <motion.div
-            className="absolute rounded-full opacity-20 blur-3xl"
+            className="absolute rounded-full opacity-5 blur-3xl"
             style={{ 
               width: '400px', 
               height: '400px',
-              background: `radial-gradient(circle, ${colors.accent.highlight} 0%, transparent 70%)`,
+              backgroundColor: colors.highlight,
               top: '10%',
               left: '10%',
             }}
@@ -258,11 +259,11 @@ export default function HomePage() {
             }}
           />
           <motion.div
-            className="absolute rounded-full opacity-15 blur-3xl"
+            className="absolute rounded-full opacity-5 blur-3xl"
             style={{ 
               width: '300px', 
               height: '300px',
-              background: `radial-gradient(circle, ${colors.accent.secondary} 0%, transparent 70%)`,
+              backgroundColor: colors.secondary,
               bottom: '20%',
               right: '15%',
             }}
@@ -278,11 +279,11 @@ export default function HomePage() {
             }}
           />
           <motion.div
-            className="absolute rounded-full opacity-10 blur-2xl"
+            className="absolute rounded-full opacity-5 blur-2xl"
             style={{ 
               width: '250px', 
               height: '250px',
-              background: `radial-gradient(circle, ${colors.accent.accent} 0%, transparent 70%)`,
+              backgroundColor: colors.accentColor,
               top: '50%',
               right: '30%',
             }}
@@ -315,7 +316,7 @@ export default function HomePage() {
                 >
                   <span className="relative inline-block">
                     New to{' '}
-                    <span className="text-[#ecca72]">TopSkill?</span>
+                    <span style={{ color: colors.highlight }}>TopSkill?</span>
                   </span>
                   <br />
                   <motion.span
@@ -366,7 +367,7 @@ export default function HomePage() {
                   <div className="relative backdrop-blur-sm bg-white/5 rounded-xl px-6 py-4 border border-white/10">
                     <motion.div 
                       className="text-3xl md:text-4xl lg:text-5xl font-black mb-1"
-                      style={{ color: colors.accent.highlight }}
+                      style={{ color: colors.highlight }}
                       animate={{
                         scale: [1, 1.05, 1],
                       }}
@@ -391,7 +392,7 @@ export default function HomePage() {
                   <div className="relative backdrop-blur-sm bg-white/5 rounded-xl px-6 py-4 border border-white/10">
                     <motion.div 
                       className="text-3xl md:text-4xl lg:text-5xl font-black mb-1"
-                      style={{ color: colors.accent.secondary }}
+                      style={{ color: colors.secondary }}
                       animate={{
                         scale: [1, 1.05, 1],
                       }}
@@ -417,7 +418,7 @@ export default function HomePage() {
                   <div className="relative backdrop-blur-sm bg-white/5 rounded-xl px-6 py-4 border border-white/10">
                     <motion.div 
                       className="text-3xl md:text-4xl lg:text-5xl font-black mb-1"
-                      style={{ color: colors.accent.accent }}
+                      style={{ color: colors.accentColor }}
                       animate={{
                         scale: [1, 1.05, 1],
                       }}
@@ -444,7 +445,7 @@ export default function HomePage() {
               >
                 <div className="text-center mb-4 md:mb-6">
                   <h3 className="text-lg md:text-xl font-semibold text-white/90 whitespace-nowrap">
-                    Our Experienced Trainers are <span className="font-bold" style={{ color: colors.accent.highlight }}>Certified from</span>
+                    Our Experienced Trainers are <span className="font-bold" style={{ color: colors.highlight }}>Certified from</span>
                   </h3>
                 </div>
                 
@@ -488,8 +489,8 @@ export default function HomePage() {
             >
               <div className="relative w-full max-w-lg">
                 {/* Decorative shapes */}
-                <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full blur-2xl" style={{ backgroundColor: `${colors.accent.highlight}30` }}></div>
-                <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full blur-3xl" style={{ backgroundColor: `${colors.accent.secondary}30` }}></div>
+                <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full blur-2xl" style={{ backgroundColor: `${colors.highlight}30` }}></div>
+                <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full blur-3xl" style={{ backgroundColor: `${colors.secondary}30` }}></div>
                 
                 {/* Main illustration area with Glassmorphism */}
                 <motion.div 
@@ -578,25 +579,39 @@ export default function HomePage() {
               
               {/* View Toggle Buttons */}
               <div className="flex items-center justify-center md:justify-end">
-                <div className="flex items-center gap-1 bg-white rounded-xl px-1 py-1 shadow-sm border border-[#E5E7EB]">
+                <div className="flex items-center gap-1 bg-white rounded-xl px-1 py-1 shadow-sm" style={{ borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
                   <button
                     onClick={() => setViewMode('grid')}
-                    className={`p-2.5 md:p-3 rounded-lg transition-all duration-300 ${
-                      viewMode === 'grid' 
-                        ? 'bg-[#048181] text-white shadow-sm' 
-                        : 'text-[#6B7280] hover:bg-[#F9FAFB]'
-                    }`}
+                    className="p-2.5 md:p-3 rounded-lg transition-all duration-300"
+                    style={viewMode === 'grid' ? { backgroundColor: colors.primary, color: colors.text.white } : { color: colors.text.muted }}
+                    onMouseEnter={(e) => {
+                      if (viewMode !== 'grid') {
+                        e.currentTarget.style.backgroundColor = colors.background.soft;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (viewMode !== 'grid') {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                      }
+                    }}
                     title="Grid View"
                   >
                     <Grid3x3 className="w-5 h-5" />
                   </button>
                   <button
                     onClick={() => setViewMode('list')}
-                    className={`p-2.5 md:p-3 rounded-lg transition-all duration-300 ${
-                      viewMode === 'list' 
-                        ? 'bg-[#048181] text-white shadow-sm' 
-                        : 'text-[#6B7280] hover:bg-[#F9FAFB]'
-                    }`}
+                    className="p-2.5 md:p-3 rounded-lg transition-all duration-300"
+                    style={viewMode === 'list' ? { backgroundColor: colors.primary, color: colors.text.white } : { color: colors.text.muted }}
+                    onMouseEnter={(e) => {
+                      if (viewMode !== 'list') {
+                        e.currentTarget.style.backgroundColor = colors.background.soft;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (viewMode !== 'list') {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                      }
+                    }}
                     title="List View"
                   >
                     <List className="w-5 h-5" />
@@ -626,7 +641,7 @@ export default function HomePage() {
 
           {loading ? (
             <div className="text-center py-20">
-              <div className="w-16 h-16 border-4 border-[#E5E7EB] border-t-[#048181] rounded-full animate-spin mx-auto mb-4"></div>
+              <div className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4" style={{ borderColor: colors.border.primary, borderTopColor: colors.primary }}></div>
               <Text size="lg">Loading courses...</Text>
             </div>
           ) : displayedTrendingCourses.length === 0 ? (
@@ -659,12 +674,12 @@ export default function HomePage() {
               <div ref={observerTarget} className="h-10 flex items-center justify-center mt-8">
                 {loadingMore && (
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 border-2 border-[#E5E7EB] border-t-[#048181] rounded-full animate-spin"></div>
+                    <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: colors.border.primary, borderTopColor: colors.primary }}></div>
                     <Text size="sm">Loading more courses...</Text>
                   </div>
                 )}
                 {!hasMore && displayedTrendingCourses.length > 0 && (
-                  <Text size="sm" className="text-[#048181]">No more courses to load</Text>
+                  <Text size="sm" style={{ color: colors.primary }}>No more courses to load</Text>
                 )}
               </div>
             </>
@@ -686,10 +701,10 @@ export default function HomePage() {
                       >
                     <Card variant="default" hover={true} className="p-5">
                       <div className="flex items-start gap-5">
-                        <div className="relative w-32 md:w-40 h-24 md:h-28 rounded-xl overflow-hidden flex-shrink-0 bg-[#048181]">
-                          {course.thumbnail ? (
+                        <div className="relative w-32 md:w-40 h-24 md:h-28 rounded-xl overflow-hidden flex-shrink-0" style={{ backgroundColor: colors.primary }}>
+                          {(course.featured_image || course.thumbnail) ? (
                             <img
-                              src={course.thumbnail}
+                              src={course.featured_image || course.thumbnail}
                               alt={course.title || 'Course'}
                               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                               onError={(e) => {
@@ -708,7 +723,7 @@ export default function HomePage() {
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <Heading as="h3" size="h4" className="mb-2 group-hover:text-[#048181] transition-colors">
+                          <Heading as="h3" size="h4" className="mb-2 transition-colors group-hover:text-[#048181]">
                             {course.title || 'Untitled Course'}
                           </Heading>
                           {course.description && (
@@ -717,14 +732,14 @@ export default function HomePage() {
                             </Text>
                           )}
                           {course.instructor_name && (
-                            <Text variant="muted" size="sm" className="mb-4 font-semibold text-[#048181]">
+                            <Text variant="muted" size="sm" className="mb-4 font-semibold" style={{ color: colors.primary }}>
                               {course.instructor_name}
                             </Text>
                           )}
                           <div className="flex items-center gap-4 text-sm flex-wrap">
                             {course.average_rating && course.average_rating > 0 ? (
                               <div className="flex items-center gap-1">
-                                <Star className="w-4 h-4 text-[#F59E0B] fill-[#F59E0B]" />
+                                <Star className="w-4 h-4" style={{ color: colors.status.warning, fill: colors.status.warning }} />
                                 <Text size="sm" className="font-semibold">
                                   {typeof course.average_rating === 'number' ? course.average_rating.toFixed(1) : '0.0'}
                                 </Text>
@@ -735,7 +750,7 @@ export default function HomePage() {
                             ) : (
                               <Text variant="muted" size="xs">No ratings yet</Text>
                             )}
-                            <Text variant="muted" size="sm" className="font-semibold text-[#048181]">
+                            <Text variant="muted" size="sm" className="font-semibold" style={{ color: colors.primary }}>
                               {formatPrice(course.price)}
                             </Text>
                           </div>
@@ -745,7 +760,7 @@ export default function HomePage() {
                             <span 
                               className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white"
                               style={{ 
-                                backgroundColor: course.modality.toLowerCase() === 'online' ? '#048181' : '#5a9c7d',
+                                backgroundColor: course.modality.toLowerCase() === 'online' ? colors.primary : colors.accentColor,
                               }}
                             >
                               {course.modality.toUpperCase()}
@@ -768,12 +783,12 @@ export default function HomePage() {
               <div ref={observerTarget} className="h-10 flex items-center justify-center mt-8">
                 {loadingMore && (
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 border-2 border-[#E5E7EB] border-t-[#048181] rounded-full animate-spin"></div>
+                    <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: colors.border.primary, borderTopColor: colors.primary }}></div>
                     <Text size="sm">Loading more courses...</Text>
                   </div>
                 )}
                 {!hasMore && displayedTrendingCourses.length > 0 && (
-                  <Text size="sm" className="text-[#048181]">No more courses to load</Text>
+                  <Text size="sm" style={{ color: colors.primary }}>No more courses to load</Text>
                 )}
               </div>
             </>

@@ -8,7 +8,7 @@ import PureLogicsNavbar from '@/app/components/PureLogicsNavbar';
 import { colors } from '@/lib/colors';
 import { FiUser, FiBook, FiUsers, FiStar, FiArrowLeft, FiClock, FiDollarSign } from 'react-icons/fi';
 import api from '@/lib/api';
-import CourseCard from '@/app/components/CourseCard';
+import CourseCardNew from '@/app/components/CourseCardNew';
 
 interface Instructor {
   id: number;
@@ -87,7 +87,7 @@ export default function InstructorDetailPage() {
         <PureLogicsNavbar />
         <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
           <div className="text-center">
-            <div className="w-16 h-16 border-4 border-gray-300 border-t-[#048181] rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4" style={{ borderColor: colors.border.primary, borderTopColor: colors.primary }}></div>
             <p style={{ color: colors.text.muted }}>Loading instructor...</p>
           </div>
         </div>
@@ -135,7 +135,7 @@ export default function InstructorDetailPage() {
           href="/instructors"
           className="inline-flex items-center gap-2 mb-8 text-sm font-medium transition-colors"
           style={{ color: colors.accent.primary }}
-          onMouseEnter={(e) => e.currentTarget.style.color = '#036969'}
+          onMouseEnter={(e) => e.currentTarget.style.color = colors.primaryHover}
           onMouseLeave={(e) => e.currentTarget.style.color = colors.accent.primary}
         >
           <FiArrowLeft />
@@ -145,7 +145,7 @@ export default function InstructorDetailPage() {
         {/* Instructor Header */}
         <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200 mb-8">
           <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#048181] to-[#036969] flex items-center justify-center text-white text-4xl font-bold">
+            <div className="w-24 h-24 rounded-full flex items-center justify-center text-white text-4xl font-bold" style={{ background: `linear-gradient(to bottom right, ${colors.primary}, ${colors.primaryHover})` }}>
               {instructor.full_name.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1">
@@ -213,13 +213,14 @@ export default function InstructorDetailPage() {
           {instructor.courses && instructor.courses.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {instructor.courses.map((course, index) => (
-                <CourseCard key={course.id} course={{
+                <CourseCardNew key={course.id} course={{
                   id: course.id,
                   title: course.title,
                   slug: course.slug,
                   description: course.short_description || course.description,
                   price: course.price,
                   thumbnail: course.thumbnail,
+                  featured_image: course.featured_image,
                   instructor_name: instructor.full_name,
                   enrolled_count: course.enrolled_count,
                   average_rating: course.avg_rating,

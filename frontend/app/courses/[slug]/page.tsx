@@ -529,14 +529,14 @@ export default function CourseDetailPage() {
                           whileTap={{ scale: 0.98 }}
                           className="w-full py-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                           style={{ 
-                            borderColor: isInWishlist ? '#EF4444' : colors.border.primary, 
+                            borderColor: isInWishlist ? colors.status.error : colors.border.primary, 
                             borderWidth: '2px', 
                             borderStyle: 'solid',
-                            backgroundColor: isInWishlist ? '#EF4444' : colors.background.primary,
-                            color: isInWishlist ? '#EF4444' : colors.text.dark
+                            backgroundColor: isInWishlist ? colors.status.error : colors.background.primary,
+                            color: isInWishlist ? colors.text.white : colors.text.dark
                           }}
                         >
-                          <Heart className={`w-5 h-5 ${isInWishlist ? 'fill-[#EF4444]' : ''}`} />
+                          <Heart className="w-5 h-5" style={{ color: isInWishlist ? colors.status.error : colors.text.dark, fill: isInWishlist ? colors.status.error : 'none' }} />
                           {wishlistLoading ? 'Loading...' : isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
                         </motion.button>
                       )}

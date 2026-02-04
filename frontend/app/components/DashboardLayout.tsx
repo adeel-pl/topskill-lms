@@ -4,7 +4,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
 import PureLogicsNavbar from './PureLogicsNavbar';
-import { colors } from '@/lib/colors';
+import { Container } from './ui/container';
+import { Heading } from './ui/heading';
+import { Text } from './ui/text';
+import { Button } from './ui/button';
 import { 
   FiBookOpen, 
   FiAward, 
@@ -32,27 +35,21 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const isActive = (href: string) => pathname === href;
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: colors.background.primary }}>
+    <div className="min-h-screen bg-white">
       <PureLogicsNavbar />
 
-      {/* Subtle Background Pattern */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-40 right-20 w-96 h-96 rounded-full blur-3xl animate-pulse" style={{ backgroundColor: colors.accent.primary, opacity: 0.05 }}></div>
-        <div className="absolute bottom-40 left-20 w-80 h-80 rounded-full blur-3xl animate-pulse delay-1000" style={{ backgroundColor: colors.accent.blue, opacity: 0.05 }}></div>
-      </div>
-
-      <div className="flex max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 relative z-10" style={{ paddingTop: '10rem' }}>
+      <Container size="2xl" className="flex relative z-10 pt-40">
         {/* Sidebar */}
-        <aside className="hidden md:block w-72 min-h-[calc(100vh-10rem)] sticky z-30" style={{ top: '10rem', backgroundColor: colors.background.card, borderRightColor: colors.border.primary, borderRightWidth: '1px', borderRightStyle: 'solid', backfaceVisibility: 'hidden', transform: 'translateZ(0)' }}>
+        <aside className="hidden md:block w-72 min-h-[calc(100vh-10rem)] sticky top-40 z-30 bg-white border-r border-[#E5E7EB]">
           <div className="p-6 relative">
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg" style={{ backgroundColor: colors.accent.primary, boxShadow: `0 10px 25px -5px ${colors.accent.primary}50` }}>
-                  <FiZap className="text-xl" style={{ color: colors.text.white }} />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#048181] shadow-[0_4px_6px_-1px_rgba(4,129,129,0.1)]">
+                  <FiZap className="text-xl text-white" />
                 </div>
-                <h2 className="text-xl font-black" style={{ color: colors.text.dark }}>My Learning</h2>
+                <Heading as="h2" size="h4">My Courses</Heading>
               </div>
-              <p className="text-sm" style={{ color: colors.text.muted }}>Manage your courses</p>
+              <Text variant="muted" size="sm">Manage your courses</Text>
             </div>
             <nav className="space-y-2">
               {navItems.map((item) => {
@@ -62,39 +59,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`group flex items-center gap-4 px-5 py-4 rounded-xl font-semibold transition-all duration-300 text-sm relative overflow-hidden ${
-                      active ? 'shadow-lg' : ''
+                    className={`group flex items-center gap-4 px-5 py-4 rounded-[0.875rem] font-semibold transition-all duration-300 text-sm ${
+                      active ? 'bg-[#048181] text-white shadow-md' : 'text-[#1F2937] hover:bg-[#F9FAFB]'
                     }`}
-                    style={active ? {
-                      backgroundColor: colors.accent.primary,
-                      color: colors.text.white
-                    } : {
-                      color: colors.text.dark,
-                      backgroundColor: 'transparent'
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!active) {
-                        e.currentTarget.style.backgroundColor = colors.background.secondary;
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!active) {
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                      }
-                    }}
                   >
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all`}
-                      style={active ? {
-                        backgroundColor: 'rgba(255, 255, 255, 0.2)'
-                      } : {
-                        backgroundColor: colors.background.secondary
-                      }}>
-                      <Icon className="text-xl" style={{ color: active ? colors.text.white : colors.text.muted }} />
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+                      active ? 'bg-white/20' : 'bg-[#F9FAFB]'
+                    }`}>
+                      <Icon className={`text-xl ${active ? 'text-white' : 'text-[#6B7280]'}`} />
                     </div>
-                    <span className="relative z-10">{item.label}</span>
-                    {active && (
-                      <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent"></div>
-                    )}
+                    <span>{item.label}</span>
                   </Link>
                 );
               })}
@@ -106,7 +80,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <main className="flex-1 min-h-[calc(100vh-80px)]">
           {children}
         </main>
-      </div>
+      </Container>
     </div>
   );
 }

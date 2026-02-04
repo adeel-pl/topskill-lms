@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { Card, CardContent } from './ui/card';
 import { Heading } from './ui/heading';
 import { Text } from './ui/text';
+import { colors } from '@/lib/colors';
 
 interface CourseCardNewProps {
   course: {
@@ -16,6 +17,7 @@ interface CourseCardNewProps {
     short_description?: string;
     price: number;
     thumbnail?: string;
+    featured_image?: string;
     instructor_name: string;
     enrolled_count?: number;
     average_rating?: number;
@@ -51,7 +53,6 @@ export default function CourseCardNew({ course, index = 0 }: CourseCardNewProps)
         maximumFractionDigits: 0,
       }).format(price);
     } catch (error) {
-      console.error('Error formatting price:', error);
       return '$0';
     }
   };
@@ -77,11 +78,11 @@ export default function CourseCardNew({ course, index = 0 }: CourseCardNewProps)
           hover={true}
           className="h-full flex flex-col overflow-hidden"
         >
-          {/* Course Image */}
-          <div className="relative w-full aspect-video overflow-hidden bg-[#048181]">
-            {course.thumbnail ? (
+          {/* Course Image - Use featured_image first, then thumbnail, then fallback */}
+          <div className="relative w-full aspect-video overflow-hidden" style={{ backgroundColor: colors.primary }}>
+            {(course.featured_image || course.thumbnail) ? (
               <motion.img
-                src={course.thumbnail}
+                src={course.featured_image || course.thumbnail}
                 alt={courseTitle}
                 className="w-full h-full object-cover"
                 whileHover={{ scale: 1.05 }}
@@ -109,7 +110,7 @@ export default function CourseCardNew({ course, index = 0 }: CourseCardNewProps)
             <Heading 
               as="h3" 
               size="h5" 
-              className="mb-1.5 line-clamp-2 min-h-[2.75rem] group-hover:text-[#048181] transition-colors"
+              className="mb-1.5 line-clamp-2 min-h-[2.75rem] transition-colors group-hover:text-[#048181]"
             >
               {courseTitle}
             </Heading>
@@ -131,7 +132,7 @@ export default function CourseCardNew({ course, index = 0 }: CourseCardNewProps)
               {/* Rating */}
               {course.average_rating && course.average_rating > 0 ? (
                 <div className="flex items-center gap-1">
-                  <Star className="w-4 h-4 text-[#F59E0B] fill-[#F59E0B]" />
+                  <Star className="w-4 h-4" style={{ color: colors.status.warning, fill: colors.status.warning }} />
                   <Text size="sm" className="font-semibold">
                     {course.average_rating.toFixed(1)}
                   </Text>
@@ -148,7 +149,7 @@ export default function CourseCardNew({ course, index = 0 }: CourseCardNewProps)
               {/* Students */}
               {course.enrolled_count !== undefined && course.enrolled_count > 0 && (
                 <div className="flex items-center gap-1">
-                  <Users className="w-4 h-4 text-[#6B7280]" />
+                  <Users className="w-4 h-4" style={{ color: colors.text.muted }} />
                   <Text variant="muted" size="xs">
                     {course.enrolled_count > 1000 ? `${(course.enrolled_count / 1000).toFixed(1)}K` : course.enrolled_count} students
                   </Text>
@@ -158,7 +159,7 @@ export default function CourseCardNew({ course, index = 0 }: CourseCardNewProps)
               {/* Duration */}
               {course.total_duration_hours && (
                 <div className="flex items-center gap-1">
-                  <Clock className="w-4 h-4 text-[#6B7280]" />
+                  <Clock className="w-4 h-4" style={{ color: colors.text.muted }} />
                   <Text variant="muted" size="xs">
                     {course.total_duration_hours}h
                   </Text>
@@ -167,16 +168,16 @@ export default function CourseCardNew({ course, index = 0 }: CourseCardNewProps)
             </div>
             
             {/* Price and CTA */}
-            <div className="flex items-center justify-between pt-3 border-t border-[#E5E7EB] mt-auto">
-              <Text size="lg" className="font-bold text-[#048181]">
+            <div className="flex items-center justify-between pt-3 mt-auto" style={{ borderTopColor: colors.border.primary, borderTopWidth: '1px', borderTopStyle: 'solid' }}>
+              <Text size="lg" className="font-bold" style={{ color: colors.primary }}>
                 {formatPrice(coursePrice)}
               </Text>
               {course.modality && typeof course.modality === 'string' && (
                 <span 
                   className="px-3 py-1 rounded-lg text-xs font-semibold"
                   style={{
-                    backgroundColor: course.modality.toLowerCase() === 'online' ? '#048181' : '#5a9c7d',
-                    color: '#FFFFFF',
+                    backgroundColor: course.modality.toLowerCase() === 'online' ? colors.primary : colors.accentColor,
+                    color: colors.text.white,
                   }}
                 >
                   {course.modality.toUpperCase()}

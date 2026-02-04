@@ -14,6 +14,7 @@ import {
   FiDollarSign,
   FiCheckCircle,
 } from 'react-icons/fi';
+import { colors } from '@/lib/colors';
 
 export default function AdminStudentsPage() {
   const router = useRouter();
@@ -69,14 +70,14 @@ export default function AdminStudentsPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">Student Management</h1>
-            <p className="text-[#9CA3AF]">Manage all students in the system</p>
+            <p style={{ color: colors.text.light }}>Manage all students in the system</p>
           </div>
         </div>
 
         {/* Search */}
-        <div className="bg-[#0F172A] border border-[#334155] rounded-xl p-6">
+        <div className="rounded-xl p-6" style={{ backgroundColor: colors.background.dark, borderColor: colors.border.dark, borderWidth: '1px', borderStyle: 'solid' }}>
           <div className="relative">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] w-5 h-5" />
+            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5" style={{ color: colors.text.light }} />
             <input
               type="text"
               placeholder="Search students by name, username, or email..."
@@ -85,20 +86,23 @@ export default function AdminStudentsPage() {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              className="w-full pl-10 pr-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white placeholder-[#9CA3AF] focus:outline-none focus:border-[#048181]"
+              className="w-full pl-10 pr-4 py-2 rounded-lg text-white focus:outline-none"
+              style={{ backgroundColor: '#1E293B', borderColor: colors.border.dark, borderWidth: '1px', borderStyle: 'solid' }}
+              onFocus={(e) => e.currentTarget.style.borderColor = colors.primary}
+              onBlur={(e) => e.currentTarget.style.borderColor = colors.border.dark}
             />
           </div>
         </div>
 
         {/* Students Table */}
-        <div className="bg-[#0F172A] border border-[#334155] rounded-xl overflow-hidden">
+        <div className="rounded-xl overflow-hidden" style={{ backgroundColor: colors.background.dark, borderColor: colors.border.dark, borderWidth: '1px', borderStyle: 'solid' }}>
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="w-12 h-12 border-4 border-[#334155] border-t-[#048181] rounded-full animate-spin"></div>
+              <div className="w-12 h-12 border-4 rounded-full animate-spin" style={{ borderColor: colors.border.dark, borderTopColor: colors.primary }}></div>
             </div>
           ) : students.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-[#9CA3AF]">No students found</p>
+              <p style={{ color: colors.text.light }}>No students found</p>
             </div>
           ) : (
             <>
@@ -120,7 +124,7 @@ export default function AdminStudentsPage() {
                       <tr key={student.id} className="hover:bg-[#1E293B]/50 transition-colors">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-[#048181] rounded-full flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: colors.primary }}>
                               <span className="text-white font-bold text-sm">
                                 {student.first_name?.charAt(0) || student.username?.charAt(0) || 'U'}
                               </span>
@@ -131,29 +135,29 @@ export default function AdminStudentsPage() {
                                   ? `${student.first_name} ${student.last_name}`
                                   : student.username}
                               </p>
-                              <p className="text-[#9CA3AF] text-sm">@{student.username}</p>
+                              <p className="text-sm" style={{ color: colors.text.light }}>@{student.username}</p>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="flex items-center gap-2 text-[#9CA3AF]">
+                          <div className="flex items-center gap-2" style={{ color: colors.text.light }}>
                             <FiMail className="w-4 h-4" />
                             <span className="text-sm">{student.email}</span>
                           </div>
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2 text-white">
-                            <FiUser className="w-4 h-4 text-[#3B82F6]" />
+                            <FiUser className="w-4 h-4" style={{ color: colors.status.info }} />
                             <span className="font-semibold">{student.enrollment_count}</span>
                           </div>
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2 text-white">
-                            <FiCheckCircle className="w-4 h-4 text-[#048181]" />
+                            <FiCheckCircle className="w-4 h-4" style={{ color: colors.primary }} />
                             <span className="font-semibold">{student.courses_completed}</span>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-[#048181] font-semibold">
+                        <td className="px-6 py-4 font-semibold" style={{ color: colors.primary }}>
                           {formatCurrency(student.total_spent)}
                         </td>
                         <td className="px-6 py-4">
@@ -165,7 +169,7 @@ export default function AdminStudentsPage() {
                             {student.is_active ? 'Active' : 'Inactive'}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-[#9CA3AF] text-sm">
+                        <td className="px-6 py-4 text-sm" style={{ color: colors.text.light }}>
                           {new Date(student.date_joined).toLocaleDateString()}
                         </td>
                       </tr>
@@ -177,24 +181,30 @@ export default function AdminStudentsPage() {
               {/* Pagination */}
               {total > pageSize && (
                 <div className="px-6 py-4 border-t border-[#334155] flex items-center justify-between">
-                  <p className="text-[#9CA3AF] text-sm">
+                  <p className="text-sm" style={{ color: colors.text.light }}>
                     Showing {(page - 1) * pageSize + 1} to {Math.min(page * pageSize, total)} of {total} students
                   </p>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setPage(page - 1)}
                       disabled={page === 1}
-                      className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed hover:border-[#048181] transition-colors"
+                      className="p-2 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      style={{ backgroundColor: '#1E293B', borderColor: colors.border.dark, borderWidth: '1px', borderStyle: 'solid' }}
+                      onMouseEnter={(e) => !e.currentTarget.disabled && (e.currentTarget.style.borderColor = colors.primary)}
+                      onMouseLeave={(e) => !e.currentTarget.disabled && (e.currentTarget.style.borderColor = colors.border.dark)}
                     >
                       <FiChevronLeft className="w-5 h-5" />
                     </button>
-                    <span className="px-4 py-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white">
+                    <span className="px-4 py-2 rounded-lg text-white" style={{ backgroundColor: '#1E293B', borderColor: colors.border.dark, borderWidth: '1px', borderStyle: 'solid' }}>
                       Page {page} of {Math.ceil(total / pageSize)}
                     </span>
                     <button
                       onClick={() => setPage(page + 1)}
                       disabled={page >= Math.ceil(total / pageSize)}
-                      className="p-2 bg-[#1E293B] border border-[#334155] rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed hover:border-[#048181] transition-colors"
+                      className="p-2 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      style={{ backgroundColor: '#1E293B', borderColor: colors.border.dark, borderWidth: '1px', borderStyle: 'solid' }}
+                      onMouseEnter={(e) => !e.currentTarget.disabled && (e.currentTarget.style.borderColor = colors.primary)}
+                      onMouseLeave={(e) => !e.currentTarget.disabled && (e.currentTarget.style.borderColor = colors.border.dark)}
                     >
                       <FiChevronRight className="w-5 h-5" />
                     </button>

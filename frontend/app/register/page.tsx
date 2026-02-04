@@ -60,10 +60,10 @@ export default function RegisterPage() {
           <div className="text-center mb-12">
             <div className="inline-block mb-8">
               <div className="relative">
-                <div className="w-20 h-20 bg-[#048181] rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-[#048181]/50 transform hover:scale-110 transition-transform duration-300">
-                  <div className="w-10 h-10 bg-[#0F172A] rounded-xl"></div>
+                <div className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto shadow-2xl transform hover:scale-110 transition-transform duration-300" style={{ backgroundColor: colors.primary, boxShadow: `0 25px 50px -12px ${colors.primary}50` }}>
+                  <div className="w-10 h-10 rounded-xl" style={{ backgroundColor: colors.background.dark }}></div>
                 </div>
-                <div className="absolute inset-0 bg-[#048181] rounded-3xl opacity-20 blur-2xl animate-pulse"></div>
+                <div className="absolute inset-0 rounded-3xl opacity-20 blur-2xl animate-pulse" style={{ backgroundColor: colors.primary }}></div>
               </div>
             </div>
             <h2 className="text-5xl md:text-6xl font-black mb-4 leading-tight" style={{ color: colors.text.dark }}>
@@ -76,7 +76,7 @@ export default function RegisterPage() {
           <div className="rounded-3xl p-8 md:p-10 shadow-2xl transition-all duration-500" style={{ backgroundColor: colors.background.card, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
             <form className="space-y-6" onSubmit={handleSubmit}>
               {error && (
-                <div className="bg-gradient-to-r from-[#EF4444]/20 to-[#DC2626]/20 border border-[#EF4444]/50 text-[#FCA5A5] px-6 py-4 rounded-xl text-sm font-medium backdrop-blur-sm">
+                <div className="px-6 py-4 rounded-xl text-sm font-medium" style={{ backgroundColor: `${colors.status.error}15`, borderColor: colors.status.error, borderWidth: '1px', borderStyle: 'solid', color: colors.status.error }}>
                   {error}
                 </div>
               )}
@@ -137,8 +137,8 @@ export default function RegisterPage() {
               <div>
                 <label className="block text-sm font-bold mb-3" style={{ color: colors.text.dark }}>Username</label>
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-[#048181]/0 rounded-xl group-focus-within:bg-[#048181]/10 transition-all duration-300"></div>
-                  <FiUser className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#048181] transition-colors z-10" />
+                  <div className="absolute inset-0 rounded-xl transition-all duration-300 group-focus-within:opacity-100 opacity-0" style={{ backgroundColor: `${colors.primary}10` }}></div>
+                  <FiUser className="absolute left-5 top-1/2 transform -translate-y-1/2 transition-colors z-10 group-focus-within:text-[#048181]" style={{ color: colors.text.light }} />
                   <input
                     type="text"
                     required
@@ -169,7 +169,7 @@ export default function RegisterPage() {
                 <label className="block text-sm font-bold mb-3" style={{ color: colors.text.dark }}>Email</label>
                 <div className="relative group">
                   <div className="absolute inset-0 bg-[#048181]/0 rounded-xl group-focus-within:bg-[#048181]/10 transition-all duration-300"></div>
-                  <FiMail className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#048181] transition-colors z-10" />
+                  <FiMail className="absolute left-5 top-1/2 transform -translate-y-1/2 transition-colors z-10" style={{ color: colors.text.light }} />
                   <input
                     type="email"
                     required
@@ -199,8 +199,8 @@ export default function RegisterPage() {
               <div>
                 <label className="block text-sm font-bold mb-3" style={{ color: colors.text.dark }}>Password</label>
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-[#048181]/0 rounded-xl group-focus-within:bg-[#048181]/10 transition-all duration-300"></div>
-                  <FiLock className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#048181] transition-colors z-10" />
+                  <div className="absolute inset-0 rounded-xl transition-all duration-300 group-focus-within:opacity-100 opacity-0" style={{ backgroundColor: `${colors.primary}10` }}></div>
+                  <FiLock className="absolute left-5 top-1/2 transform -translate-y-1/2 transition-colors z-10 group-focus-within:text-[#048181]" style={{ color: colors.text.light }} />
                   <input
                     type="password"
                     required
@@ -230,8 +230,8 @@ export default function RegisterPage() {
               <div>
                 <label className="block text-sm font-bold mb-3" style={{ color: colors.text.dark }}>Confirm Password</label>
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-[#048181]/0 rounded-xl group-focus-within:bg-[#048181]/10 transition-all duration-300"></div>
-                  <FiLock className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#048181] transition-colors z-10" />
+                  <div className="absolute inset-0 rounded-xl transition-all duration-300 group-focus-within:opacity-100 opacity-0" style={{ backgroundColor: `${colors.primary}10` }}></div>
+                  <FiLock className="absolute left-5 top-1/2 transform -translate-y-1/2 transition-colors z-10 group-focus-within:text-[#048181]" style={{ color: colors.text.light }} />
                   <input
                     type="password"
                     required

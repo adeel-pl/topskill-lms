@@ -399,7 +399,7 @@ export default function CoursePlayerPage() {
     const watchTime = Math.floor(progress.playedSeconds);
     const position = Math.floor(progress.playedSeconds);
 
-    if (watchTime % 10 === 0) {
+    if (watchTime % 10 === 0 && selectedLecture) {
       try {
         await playerAPI.updateProgress(course.id, selectedLecture.id, {
           watch_time_seconds: watchTime,
@@ -453,7 +453,7 @@ export default function CoursePlayerPage() {
           content: updatedNote.content,
           timestamp: updatedNote.timestamp,
           is_public: updatedNote.is_public,
-          lecture_title: selectedLecture.title,
+          lecture_title: selectedLecture?.title || '',
           created_at: updatedNote.created_at,
           updated_at: updatedNote.created_at
         };
@@ -462,7 +462,7 @@ export default function CoursePlayerPage() {
       
       // Also reload lecture to ensure we have the latest data from server
       try {
-        const lectureRes = await playerAPI.getLecture(course.id, selectedLecture.id);
+        const lectureRes = await playerAPI.getLecture(course.id, selectedLecture?.id!);
         if (lectureRes.data && lectureRes.data.notes) {
           // Update with server data to ensure consistency
           setNotes(lectureRes.data.notes || []);
@@ -500,7 +500,7 @@ export default function CoursePlayerPage() {
       // Also reload lecture to ensure we have the latest data from server
       if (course && selectedLecture) {
         try {
-          const lectureRes = await playerAPI.getLecture(course.id, selectedLecture.id);
+          const lectureRes = await playerAPI.getLecture(course.id, selectedLecture?.id!);
           if (lectureRes.data && lectureRes.data.notes) {
             // Update with server data to ensure consistency
             setNotes(lectureRes.data.notes || []);
@@ -671,14 +671,14 @@ export default function CoursePlayerPage() {
                       className={`w-full text-left px-4 py-2.5 text-sm rounded-sm flex items-center justify-between transition-all duration-300 ${
                         isDisabled 
                           ? 'opacity-50 cursor-not-allowed' 
-                          : selectedLecture.id === lecture.id 
+                          : selectedLecture?.id === lecture.id 
                             ? 'border-l-2'
                             : ''
                       }`}
                       style={
                         isDisabled
                           ? { color: 'rgba(255, 255, 255, 0.5)' }
-                          : selectedLecture.id === lecture.id
+                          : selectedLecture?.id === lecture.id
                             ? { 
                                 backgroundColor: 'rgba(255, 255, 255, 0.2)',
                                 borderLeftColor: colors.accent.highlight,
@@ -688,7 +688,7 @@ export default function CoursePlayerPage() {
                             : { color: colors.text.white }
                       }
                       onMouseEnter={(e) => {
-                        if (!isDisabled && selectedLecture.id !== lecture.id) {
+                        if (!isDisabled && selectedLecture?.id !== lecture.id) {
                           e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
                           e.currentTarget.style.borderLeftColor = colors.accent.highlight;
                           e.currentTarget.style.borderLeftWidth = '3px';
@@ -696,7 +696,7 @@ export default function CoursePlayerPage() {
                         }
                       }}
                       onMouseLeave={(e) => {
-                        if (!isDisabled && selectedLecture.id !== lecture.id) {
+                        if (!isDisabled && selectedLecture?.id !== lecture.id) {
                           e.currentTarget.style.backgroundColor = 'transparent';
                           e.currentTarget.style.borderLeftWidth = '0';
                         }
@@ -762,14 +762,14 @@ export default function CoursePlayerPage() {
             height: 0,
             overflow: 'hidden'
           }}>
-            {selectedLecture.youtube_video_id ? (
+            {selectedLecture?.youtube_video_id ? (
               <iframe
                 className="absolute top-0 left-0 w-full h-full"
-                src={`https://www.youtube.com/embed/${selectedLecture.youtube_video_id}?start=${Math.floor(watchPosition)}&rel=0&modestbranding=1&controls=1&enablejsapi=1&origin=${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}&showinfo=0&iv_load_policy=3`}
+                src={`https://www.youtube.com/embed/${selectedLecture.youtube_video_id}?start=${Math.floor(watchPosition)}&rel=0&modestbranding=1&controls=1&enablejsapi=1&origin=${typeof window !== 'undefined' ? window.location.origin : (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000')}&showinfo=0&iv_load_policy=3`}
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
-                title={selectedLecture.title}
+                title={selectedLecture?.title || ''}
                 style={{
                   width: '100%',
                   height: '100%',
@@ -777,7 +777,7 @@ export default function CoursePlayerPage() {
                   display: 'block'
                 }}
               />
-            ) : selectedLecture.content_url ? (
+            ) : selectedLecture?.content_url ? (
               <div className="absolute top-0 left-0 w-full h-full">
                 <VideoPlayer
                   url={selectedLecture.content_url}
@@ -795,7 +795,7 @@ export default function CoursePlayerPage() {
               <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
                 <div className="text-center" style={{ color: colors.text.muted }}>
                   <p className="text-lg mb-2">No video available</p>
-                  <p className="text-sm">Video ID: {selectedLecture.youtube_video_id || 'Not set'}</p>
+                  <p className="text-sm">Video ID: {selectedLecture?.youtube_video_id || 'Not set'}</p>
                   <p className="text-xs mt-2">Please add a YouTube Video ID in the admin panel</p>
                 </div>
               </div>
@@ -804,7 +804,7 @@ export default function CoursePlayerPage() {
 
           {/* Content Area */}
           <div className="max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-6">
-            <h1 className="text-2xl font-bold mb-4" style={{ color: colors.text.dark }}>{selectedLecture.title}</h1>
+            <h1 className="text-2xl font-bold mb-4" style={{ color: colors.text.dark }}>{selectedLecture?.title || 'Loading...'}</h1>
 
             {/* Tabs - Dynamic based on course content */}
             <div className="border-b mb-6" style={{ borderBottomColor: colors.border.primary }}>
@@ -1018,7 +1018,7 @@ export default function CoursePlayerPage() {
 
             {/* Tab Content */}
             <div className="min-h-[400px]">
-              {activeTab === 'overview' && (
+              {activeTab === 'overview' && selectedLecture && (
                 <div>
                   {selectedLecture.description && (
                     <div className="mb-6">
@@ -1064,7 +1064,7 @@ export default function CoursePlayerPage() {
                     </div>
                   )}
 
-                  {selectedLecture.is_completed && (
+                  {selectedLecture?.is_completed && (
                     <div 
                       className="mb-6 p-4 border rounded-sm"
                       style={{
@@ -1416,13 +1416,13 @@ export default function CoursePlayerPage() {
                         style={{ 
                           backgroundColor: colors.button.primary, 
                           color: colors.text.white,
-                          boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)'
+                          boxShadow: `0 10px 25px -5px ${colors.primary}30`
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(16, 185, 129, 0.5)';
+                          e.currentTarget.style.boxShadow = `0 20px 25px -5px ${colors.primary}50`;
                         }}
                         onMouseLeave={(e) => {
-                          e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(16, 185, 129, 0.3)';
+                          e.currentTarget.style.boxShadow = `0 10px 25px -5px ${colors.primary}30`;
                         }}
                       >
                         <FiBook className="inline" />
@@ -1480,9 +1480,9 @@ export default function CoursePlayerPage() {
                               <button
                                 onClick={() => handleDeleteNote(note.id)}
                                 className="p-1.5 rounded transition-colors hover:scale-110"
-                                style={{ color: '#EF4444' }}
+                                style={{ color: colors.status.error }}
                                 onMouseEnter={(e) => {
-                                  e.currentTarget.style.backgroundColor = '#FEE2E2';
+                                  e.currentTarget.style.backgroundColor = `${colors.status.error}15`;
                                 }}
                                 onMouseLeave={(e) => {
                                   e.currentTarget.style.backgroundColor = 'transparent';
@@ -1797,7 +1797,7 @@ export default function CoursePlayerPage() {
                                 {submission.submission_file && (
                                   <div className="pt-2 border-t borderColor: colors.border.primary">
                                     <a 
-                                      href={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000'}${submission.submission_file}`}
+                                      href={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || ''}${submission.submission_file}`}
                                       target="_blank" 
                                       rel="noopener noreferrer"
                                       className="text-sm hover:underline"
@@ -2004,8 +2004,7 @@ export default function CoursePlayerPage() {
                 borderWidth: '1px',
                 borderStyle: 'solid',
                 backgroundColor: colors.background.secondary,
-                color: colors.text.dark,
-                focusRingColor: colors.accent.primary
+                color: colors.text.dark
               }}
               rows={6}
               autoFocus
@@ -2031,13 +2030,13 @@ export default function CoursePlayerPage() {
                 style={{ 
                   backgroundColor: colors.button.primary, 
                   color: colors.text.white,
-                  boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)'
+                  boxShadow: `0 10px 25px -5px ${colors.primary}30`
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(16, 185, 129, 0.5)';
+                  e.currentTarget.style.boxShadow = `0 20px 25px -5px ${colors.primary}50`;
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(16, 185, 129, 0.3)';
+                  e.currentTarget.style.boxShadow = `0 10px 25px -5px ${colors.primary}30`;
                 }}
               >
                 {editingNote ? 'Update Note' : 'Save Note'}
@@ -2052,13 +2051,13 @@ export default function CoursePlayerPage() {
                 style={{ 
                   backgroundColor: colors.button.primary, 
                   color: colors.text.white,
-                  boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)'
+                  boxShadow: `0 10px 25px -5px ${colors.primary}30`
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(16, 185, 129, 0.5)';
+                  e.currentTarget.style.boxShadow = `0 20px 25px -5px ${colors.primary}50`;
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(16, 185, 129, 0.3)';
+                  e.currentTarget.style.boxShadow = `0 10px 25px -5px ${colors.primary}30`;
                 }}
               >
                 Cancel
