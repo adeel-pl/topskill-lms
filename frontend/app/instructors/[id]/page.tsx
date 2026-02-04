@@ -218,7 +218,6 @@ export default function InstructorDetailPage() {
                   title: course.title,
                   slug: course.slug,
                   description: course.short_description || course.description,
-                  short_description: course.short_description,
                   price: course.price,
                   thumbnail: course.thumbnail,
                   instructor_name: instructor.full_name,
