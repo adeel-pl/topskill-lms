@@ -65,6 +65,7 @@ class Course(TimeStampedModel):
     max_batch_size = models.PositiveIntegerField(default=25, help_text="Maximum students per batch for physical courses")
     is_active = models.BooleanField(default=True)
     thumbnail = models.URLField(blank=True)
+    featured_image = models.URLField(blank=True, help_text="Featured image for course cards (preferred over thumbnail)")
     instructor = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='instructed_courses', null=True, blank=True)
     categories = models.ManyToManyField(Category, through='CourseCategory', related_name='course_set')
     tags = models.ManyToManyField(Tag, through='CourseTag', related_name='course_set')

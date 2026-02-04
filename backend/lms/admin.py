@@ -74,8 +74,8 @@ class CourseAdmin(admin.ModelAdmin):
     
     fieldsets = (
         ('Basic Information', {
-            'fields': ('title', 'slug', 'description', 'short_description', 'thumbnail'),
-            'description': 'Enter course title and description. The slug will be auto-generated from the title.'
+            'fields': ('title', 'slug', 'description', 'short_description', 'thumbnail', 'featured_image'),
+            'description': 'Enter course title and description. The slug will be auto-generated from the title. Featured image is preferred for course cards.'
         }),
         ('Course Details', {
             'fields': ('instructor', 'modality', 'price', 'max_batch_size', 'language', 'level', 'is_active'),

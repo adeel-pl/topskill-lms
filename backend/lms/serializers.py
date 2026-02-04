@@ -172,7 +172,7 @@ class CourseListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = ['id', 'title', 'slug', 'description', 'short_description', 'modality', 'price', 
-                  'max_batch_size', 'thumbnail', 'instructor_name', 'enrolled_count',
+                  'max_batch_size', 'thumbnail', 'featured_image', 'instructor_name', 'enrolled_count',
                   'average_rating', 'total_sections', 'total_lectures', 'total_duration_hours',
                   'categories', 'tags', 'is_active', 'created_at']
     
@@ -210,6 +210,7 @@ class CourseDetailSerializer(serializers.ModelSerializer):
     instructor_name = serializers.SerializerMethodField()
     enrolled_count = serializers.SerializerMethodField()
     average_rating = serializers.SerializerMethodField()
+    rating_count = serializers.SerializerMethodField()
     total_sections = serializers.SerializerMethodField()
     total_lectures = serializers.SerializerMethodField()
     total_duration_hours = serializers.SerializerMethodField()
@@ -219,8 +220,8 @@ class CourseDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = ['id', 'title', 'slug', 'description', 'short_description', 'modality', 'price', 
-                  'max_batch_size', 'thumbnail', 'instructor', 'instructor_name',
-                  'enrolled_count', 'average_rating', 'total_sections', 'total_lectures', 'total_duration_hours',
+                  'max_batch_size', 'thumbnail', 'featured_image', 'instructor', 'instructor_name',
+                  'enrolled_count', 'average_rating', 'rating_count', 'total_sections', 'total_lectures', 'total_duration_hours',
                   'categories', 'tags', 'sections', 'batches', 'is_active', 'created_at', 'updated_at']
     
     def get_instructor_name(self, obj):
