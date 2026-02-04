@@ -12,12 +12,12 @@ const searchColors = {
   primary: '#366854',      // Deep teal - primary accent (from reference)
   secondary: '#0F3A62',    // Reddish-orange - secondary accent/CTA (from reference)
   accent: '#366854',       // Sage green - secondary buttons (from reference)
-  dark: '#1F2937',         // Dark gray - text (from reference)
+  dark: '#366854',         // Dark gray - text (from reference)
   light: '#E5E7EB',        // Light border (from reference)
   highlight: '#0F3A62',    // Pale gold - highlights (from reference)
   white: '#FFFFFF',
-  textDark: '#1F2937',     // Dark gray (from reference)
-  textMuted: '#6B7280',    // Muted gray (from reference)
+  textDark: '#366854',     // Dark gray (from reference)
+  textMuted: '#64748B',    // Muted gray (from reference)
   background: '#FFFFFF',
   backgroundHover: '#F9FAFB',
 };

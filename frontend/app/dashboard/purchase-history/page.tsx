@@ -337,7 +337,7 @@ export default function PurchaseHistoryPage() {
                     
                     <div className="p-6">
                       <Link href={`/courses/${item.course.slug}`}>
-                        <Heading as="h3" size="h5" className="mb-3 line-clamp-2 transition-colors group-hover:text-[#048181]">
+                        <Heading as="h3" size="h5" className="mb-3 line-clamp-2 transition-colors group-hover:text-[#366854]">
                           {item.course.title || 'Untitled Course'}
                         </Heading>
                       </Link>

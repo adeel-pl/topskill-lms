@@ -84,7 +84,7 @@ export default function CourseListCard({ course, index = 0 }: CourseListCardProp
                     )}
                   </div>
                 ) : (
-                  <span className="text-[#6B7280]">No ratings yet</span>
+                  <span className="text-[#64748B]">No ratings yet</span>
                 )}
                 <div className="flex items-center gap-1 md:gap-1.5 text-[#9CA3AF]">
                   <Users className="w-4 h-4" />

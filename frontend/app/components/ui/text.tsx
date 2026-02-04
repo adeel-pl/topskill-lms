@@ -10,8 +10,8 @@ interface TextProps extends React.HTMLAttributes<HTMLParagraphElement> {
 const Text = React.forwardRef<HTMLParagraphElement, TextProps>(
   ({ className, variant = 'default', size = 'default', as: Component = 'p', children, ...props }, ref) => {
     const variantClasses: Record<string, string> = {
-      default: 'text-[#1F2937]',
-      muted: 'text-[#6B7280]',
+      default: 'text-[#366854]',
+      muted: 'text-[#64748B]',
       light: 'text-[#9CA3AF]',
       secondary: 'text-[#4B5563]',
     }

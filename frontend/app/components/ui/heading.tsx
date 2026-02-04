@@ -29,7 +29,7 @@ const Heading = React.forwardRef<HTMLHeadingElement, HeadingProps>(
       <Component
         ref={ref}
         className={cn(
-          "text-[#1F2937] leading-tight",
+          "text-[#366854] leading-tight",
           safeSizeClass,
           className
         )}
