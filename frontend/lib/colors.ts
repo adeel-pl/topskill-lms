@@ -1,27 +1,29 @@
 /**
  * Global Color Configuration
- * EXACT colors from reference site: https://topskillspk.lovable.app/
- * Extracted from logo and reference design
+ * EXACT colors from actual logo: https://topskillspk.lovable.app/assets/topskills-logo-Dx7knxYN.png
+ * Logo colors extracted from the actual logo image:
+ * - "TOP" text: #366854 (dark green)
+ * - "SKILLS" text: #0F3A62 (dark blue)
  */
 
 export const colors = {
-  // Primary Brand Colors (from logo)
-  primary: '#048181',        // Deep teal - primary brand color
-  primaryHover: '#036969',   // Darker teal on hover
-  primaryLight: '#5a9c7d',   // Lighter teal variant
+  // Primary Brand Colors (from actual logo)
+  primary: '#366854',        // Dark green - "TOP" text in logo
+  primaryHover: '#2a5242',   // Darker green on hover
+  primaryLight: '#4a7a66',    // Lighter green variant
   
-  // Secondary/Accent Colors
-  secondary: '#f45c2c',      // Reddish-orange - secondary CTA
-  secondaryHover: '#d94a1f', // Darker orange on hover
-  accentColor: '#5a9c7d',    // Sage green - secondary buttons
-  highlight: '#ecca72',      // Pale gold - highlights
+  // Secondary/Accent Colors (from actual logo)
+  secondary: '#0F3A62',      // Dark blue - "SKILLS" text in logo
+  secondaryHover: '#0c2d4a', // Darker blue on hover
+  accentColor: '#4a7a66',    // Medium green - secondary buttons
+  highlight: '#ecca72',      // Pale gold - highlights (kept for UI elements)
   
   // Legacy support (for backward compatibility)
   accent: {
-    primary: '#048181',
-    secondary: '#f45c2c',
-    accent: '#5a9c7d',
-    highlight: '#ecca72',
+    primary: '#366854',      // Dark green from logo
+    secondary: '#0F3A62',    // Dark blue from logo
+    accent: '#4a7a66',       // Medium green
+    highlight: '#ecca72',    // Pale gold
   },
   
   // Background Colors
@@ -45,20 +47,20 @@ export const colors = {
     white: '#FFFFFF',        // White text
   },
   
-  // Border Colors (EXACT from reference)
+  // Border Colors
   border: {
-    primary: '#E5E7EB',      // Light border (NOT #CBD5E1)
+    primary: '#E5E7EB',      // Light border
     muted: '#F3F4F6',        // Very light border
-    accent: '#048181',       // Accent border
+    accent: '#366854',       // Accent border (dark green from logo)
     light: '#E5E7EB',        // Light border (same as primary)
     dark: '#334155',         // Dark border (if needed)
   },
   
-  // Button Colors
+  // Button Colors (from actual logo)
   button: {
-    primary: '#048181',      // Deep teal button
-    secondary: '#f45c2c',    // Orange button
-    accent: '#5a9c7d',       // Sage green button
+    primary: '#366854',      // Dark green button (from "TOP" in logo)
+    secondary: '#0F3A62',    // Dark blue button (from "SKILLS" in logo)
+    accent: '#4a7a66',       // Medium green button
     dark: '#1F2937',         // Dark button
   },
   
@@ -70,10 +72,10 @@ export const colors = {
     info: '#3B82F6',
   },
   
-  // Hover colors
+  // Hover colors (from actual logo)
   hover: {
-    primary: '#036969',       // Darker teal on hover
-    secondary: '#d94a1f',     // Darker orange on hover
+    primary: '#2a5242',       // Darker green on hover
+    secondary: '#0c2d4a',     // Darker blue on hover
   },
 } as const;
 

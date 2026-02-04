@@ -7,23 +7,23 @@
 export const designTokens = {
   // Color System
   colors: {
-    // Primary Brand Colors
+    // Primary Brand Colors (from actual logo)
     primary: {
-      DEFAULT: '#048181',      // Deep teal - primary brand
-      hover: '#036969',        // Darker teal on hover
-      light: '#5a9c7d',        // Lighter teal variant
-      '50': '#f0fdfa',
-      '100': '#ccfbf1',
-      '500': '#048181',
-      '600': '#036969',
-      '700': '#024d4d',
+      DEFAULT: '#366854',      // Dark green - "TOP" text in logo
+      hover: '#2a5242',        // Darker green on hover
+      light: '#4a7a66',        // Lighter green variant
+      '50': '#f0f7f4',
+      '100': '#d4e8df',
+      '500': '#366854',
+      '600': '#2a5242',
+      '700': '#1e3d30',
     },
     
-    // Secondary/Accent Colors
+    // Secondary/Accent Colors (from actual logo)
     secondary: {
-      DEFAULT: '#f45c2c',      // Reddish-orange - secondary CTA
-      hover: '#d94a1f',
-      light: '#ff7a5c',
+      DEFAULT: '#0F3A62',      // Dark blue - "SKILLS" text in logo
+      hover: '#0c2d4a',
+      light: '#1a5a8a',
     },
     
     // Background Colors
@@ -47,7 +47,7 @@ export const designTokens = {
     border: {
       DEFAULT: '#E5E7EB',       // Light border
       muted: '#F3F4F6',        // Very light border
-      accent: '#048181',       // Accent border
+      accent: '#366854',       // Accent border (dark green from logo)
     },
     
     // Status Colors
