@@ -92,8 +92,7 @@ export default function RegisterPage() {
                       borderColor: colors.border.primary, 
                       borderWidth: '2px', 
                       borderStyle: 'solid',
-                      color: colors.text.dark,
-                      placeholderColor: colors.text.muted
+                      color: colors.text.dark
                     }}
                     onFocus={(e) => {
                       e.currentTarget.style.borderColor = colors.accent.primary;
@@ -118,8 +117,7 @@ export default function RegisterPage() {
                       borderColor: colors.border.primary, 
                       borderWidth: '2px', 
                       borderStyle: 'solid',
-                      color: colors.text.dark,
-                      placeholderColor: colors.text.muted
+                      color: colors.text.dark
                     }}
                     onFocus={(e) => {
                       e.currentTarget.style.borderColor = colors.accent.primary;
@@ -150,8 +148,7 @@ export default function RegisterPage() {
                       borderColor: colors.border.primary, 
                       borderWidth: '2px', 
                       borderStyle: 'solid',
-                      color: colors.text.dark,
-                      placeholderColor: colors.text.muted
+                      color: colors.text.dark
                     }}
                     placeholder="johndoe"
                     value={formData.username}
@@ -182,8 +179,7 @@ export default function RegisterPage() {
                       borderColor: colors.border.primary, 
                       borderWidth: '2px', 
                       borderStyle: 'solid',
-                      color: colors.text.dark,
-                      placeholderColor: colors.text.muted
+                      color: colors.text.dark
                     }}
                     placeholder="john@example.com"
                     value={formData.email}
@@ -214,8 +210,7 @@ export default function RegisterPage() {
                       borderColor: colors.border.primary, 
                       borderWidth: '2px', 
                       borderStyle: 'solid',
-                      color: colors.text.dark,
-                      placeholderColor: colors.text.muted
+                      color: colors.text.dark
                     }}
                     placeholder="At least 8 characters"
                     value={formData.password}
@@ -246,8 +241,7 @@ export default function RegisterPage() {
                       borderColor: colors.border.primary, 
                       borderWidth: '2px', 
                       borderStyle: 'solid',
-                      color: colors.text.dark,
-                      placeholderColor: colors.text.muted
+                      color: colors.text.dark
                     }}
                     placeholder="Confirm your password"
                     value={formData.password2}
