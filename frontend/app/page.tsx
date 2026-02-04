@@ -5,12 +5,16 @@ import Link from 'next/link';
 import { coursesAPI } from '@/lib/api';
 import PureLogicsNavbar from '@/app/components/PureLogicsNavbar';
 import SearchBar from '@/app/components/SearchBar';
-import CourseCard from '@/app/components/CourseCard';
-import CompactCourseCard from '@/app/components/CompactCourseCard';
+import CourseCardNew from '@/app/components/CourseCardNew';
 import Footer from '@/app/components/Footer';
-import { ArrowRight, Grid3x3, List, Star, Users } from 'lucide-react';
+import { ArrowRight, Grid3x3, List } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { colors } from '@/lib/colors';
+import { Container } from '@/app/components/ui/container';
+import { Section } from '@/app/components/ui/section';
+import { Heading } from '@/app/components/ui/heading';
+import { Text } from '@/app/components/ui/text';
+import { Button } from '@/app/components/ui/button';
 
 interface Course {
   id: number;
@@ -127,11 +131,14 @@ export default function HomePage() {
     }
   };
 
-  // Filter courses by modality
+  // Filter courses by modality - with defensive checks
   const getFilteredCourses = (courses: Course[], tab: 'online' | 'physical') => {
+    if (!Array.isArray(courses)) {
+      return [];
+    }
     return tab === 'online' 
-      ? courses.filter((c: Course) => c.modality === 'online' || !c.modality)
-      : courses.filter((c: Course) => c.modality === 'physical' || c.modality === 'hybrid');
+      ? courses.filter((c: Course) => c && (c.modality === 'online' || !c.modality))
+      : courses.filter((c: Course) => c && (c.modality === 'physical' || c.modality === 'hybrid'));
   };
 
   const formatPrice = (price: number) => {
@@ -143,25 +150,42 @@ export default function HomePage() {
     }).format(price);
   };
 
-  // Update trending courses when tab changes or on initial load
+  // Update trending courses when tab changes or on initial load - with defensive checks
   const updateTrendingCourses = useCallback((courses: Course[], tab: 'online' | 'physical', reset: boolean = false) => {
-    const filtered = getFilteredCourses(courses, tab);
-    if (reset) {
-      setDisplayedTrendingCourses(filtered.slice(0, coursesPerPage));
-      setHasMore(filtered.length > coursesPerPage);
-    } else {
-      setDisplayedTrendingCourses(prev => {
-        const currentLength = prev.length;
-        const nextBatch = filtered.slice(currentLength, currentLength + coursesPerPage);
-        if (nextBatch.length > 0) {
-          const newList = [...prev, ...nextBatch];
-          setHasMore(newList.length < filtered.length);
-          return newList;
-        } else {
-          setHasMore(false);
-          return prev;
-        }
-      });
+    try {
+      const filtered = getFilteredCourses(courses, tab);
+      if (!Array.isArray(filtered)) {
+        setDisplayedTrendingCourses([]);
+        setHasMore(false);
+        return;
+      }
+      
+      if (reset) {
+        const safeSlice = filtered.slice(0, coursesPerPage);
+        setDisplayedTrendingCourses(Array.isArray(safeSlice) ? safeSlice : []);
+        setHasMore(filtered.length > coursesPerPage);
+      } else {
+        setDisplayedTrendingCourses(prev => {
+          const currentLength = Array.isArray(prev) ? prev.length : 0;
+          const nextBatch = filtered.slice(currentLength, currentLength + coursesPerPage);
+          if (Array.isArray(nextBatch) && nextBatch.length > 0) {
+            const prevArray = Array.isArray(prev) ? prev : [];
+            const newList = [...prevArray, ...nextBatch];
+            setHasMore(newList.length < filtered.length);
+            return newList;
+          } else {
+            setHasMore(false);
+            return Array.isArray(prev) ? prev : [];
+          }
+        });
+      }
+    } catch (error) {
+      // Log error but don't crash - show empty state instead
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error updating trending courses:', error);
+      }
+      setDisplayedTrendingCourses([]);
+      setHasMore(false);
     }
   }, [coursesPerPage]);
 
@@ -209,9 +233,9 @@ export default function HomePage() {
     <div className="min-h-screen w-full" style={{ backgroundColor: colors.text.white, color: colors.text.dark }}>
       <PureLogicsNavbar />
 
-      {/* Hero Section - New Color Palette Background with WOW Effects */}
-      <section className="section-after-header relative pb-16 md:pb-20 lg:pb-24 overflow-hidden" style={{ backgroundColor: colors.accent.primary }}>
-        {/* Animated Floating Orbs/Background Particles */}
+      {/* Hero Section */}
+      <section className="section-after-header relative pb-16 md:pb-20 lg:pb-24 overflow-hidden" style={{ backgroundColor: '#048181' }}>
+        {/* Animated Background Effects */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <motion.div
             className="absolute rounded-full opacity-20 blur-3xl"
@@ -275,41 +299,43 @@ export default function HomePage() {
           />
         </div>
         
-        <div className="max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 relative z-10">
+        <Container size="2xl" className="relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-[600px] lg:min-h-[700px]">
             {/* Left Side - Text Content */}
             <div className="flex flex-col justify-center">
-              <motion.h1
+              <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black mb-4 md:mb-6 leading-tight relative"
-                style={{ color: '#FFFFFF' }}
               >
-                <span className="relative inline-block">
-                  New to{' '}
-                  <span style={{ color: colors.accent.highlight }}>
-                    TopSkill?
-                  </span>
-                </span>
-                <br />
-                <motion.span
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: 0.3 }}
+                <Heading 
+                  as="h1" 
+                  size="display" 
+                  className="mb-4 md:mb-6 text-white"
                 >
-                  You are lucky.
-                </motion.span>
-              </motion.h1>
-              <motion.p
+                  <span className="relative inline-block">
+                    New to{' '}
+                    <span className="text-[#ecca72]">TopSkill?</span>
+                  </span>
+                  <br />
+                  <motion.span
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.8, delay: 0.3 }}
+                  >
+                    You are lucky.
+                  </motion.span>
+                </Heading>
+              </motion.div>
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-lg md:text-xl lg:text-2xl mb-8 md:mb-10 leading-relaxed"
-                style={{ color: '#FFFFFF' }}
               >
-                Let us help you ensure you get an unmatched experience combined with results worth.
-              </motion.p>
+                <Text size="lg" className="mb-8 md:mb-10 text-white">
+                  Let us help you ensure you get an unmatched experience combined with results worth.
+                </Text>
+              </motion.div>
               
               {/* Search Bar */}
               <motion.div
@@ -435,7 +461,15 @@ export default function HomePage() {
                           className="h-full w-auto max-w-full object-contain opacity-100"
                           loading="eager"
                           onError={(e) => {
-                            console.error(`Failed to load logo: ${logo.name} from ${logo.url}`);
+                            // Silently handle image load errors - don't spam console in production
+                            if (process.env.NODE_ENV === 'development') {
+                              console.error(`Failed to load logo: ${logo.name} from ${logo.url}`);
+                            }
+                            // Hide broken image
+                            const target = e.target as HTMLImageElement;
+                            if (target) {
+                              target.style.display = 'none';
+                            }
                           }}
                         />
                       </div>
@@ -494,7 +528,7 @@ export default function HomePage() {
               </div>
             </motion.div>
           </div>
-        </div>
+        </Container>
       </section>
 
       <style jsx>{`
@@ -520,57 +554,38 @@ export default function HomePage() {
         
       `}</style>
 
-      {/* Trending Courses Section with Tabs - Enhanced with WOW */}
-      <section 
-        className="pt-20 pb-0 relative overflow-hidden" 
-        style={{ backgroundColor: colors.text.white }}
-      >
-        {/* Subtle background pattern */}
-        <div className="absolute inset-0 opacity-3" style={{
-          backgroundImage: `radial-gradient(circle at 2px 2px, ${colors.accent.primary} 1px, transparent 0)`,
-          backgroundSize: '40px 40px'
-        }}></div>
-        <div className="max-w-container xl:max-w-container-xl 2xl:max-w-container-2xl mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16">
+      {/* Trending Courses Section */}
+      <Section variant="default" padding="default">
+        <Container>
           <div className="mb-12">
             {/* Header with Title and View Toggle */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8">
               <div className="text-center md:text-left">
-                <motion.h2 
-                  className="text-4xl md:text-5xl font-black mb-4 relative inline-block"
-                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.6, ease: "easeOut" }}
-                  style={{ color: colors.text.dark }}
-                >
-                  Trending Courses
-                </motion.h2>
-                <motion.p 
-                  className="text-xl max-w-3xl"
-                  initial={{ opacity: 0, y: 10 }}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-                  style={{ color: colors.text.dark }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
                 >
-                  Discover the most popular courses loved by thousands of learners
-                </motion.p>
+                  <Heading as="h2" size="h1" className="mb-4">
+                    Trending Courses
+                  </Heading>
+                  <Text size="lg" variant="muted" className="max-w-3xl">
+                    Discover the most popular courses loved by thousands of learners
+                  </Text>
+                </motion.div>
               </div>
               
-              {/* View Toggle Buttons - Positioned on the right */}
+              {/* View Toggle Buttons */}
               <div className="flex items-center justify-center md:justify-end">
-                <div className="flex items-center gap-1 bg-white rounded-xl px-1 py-1 shadow-md border" style={{ borderColor: colors.accent.accent + '40' }}>
+                <div className="flex items-center gap-1 bg-white rounded-xl px-1 py-1 shadow-sm border border-[#E5E7EB]">
                   <button
                     onClick={() => setViewMode('grid')}
                     className={`p-2.5 md:p-3 rounded-lg transition-all duration-300 ${
                       viewMode === 'grid' 
-                        ? 'shadow-sm' 
-                        : 'hover:bg-gray-50'
+                        ? 'bg-[#048181] text-white shadow-sm' 
+                        : 'text-[#6B7280] hover:bg-[#F9FAFB]'
                     }`}
-                    style={{
-                      backgroundColor: viewMode === 'grid' ? colors.accent.primary : 'transparent',
-                      color: viewMode === 'grid' ? colors.text.white : colors.text.muted,
-                    }}
                     title="Grid View"
                   >
                     <Grid3x3 className="w-5 h-5" />
@@ -579,13 +594,9 @@ export default function HomePage() {
                     onClick={() => setViewMode('list')}
                     className={`p-2.5 md:p-3 rounded-lg transition-all duration-300 ${
                       viewMode === 'list' 
-                        ? 'shadow-sm' 
-                        : 'hover:bg-gray-50'
+                        ? 'bg-[#048181] text-white shadow-sm' 
+                        : 'text-[#6B7280] hover:bg-[#F9FAFB]'
                     }`}
-                    style={{
-                      backgroundColor: viewMode === 'list' ? colors.accent.primary : 'transparent',
-                      color: viewMode === 'list' ? colors.text.white : colors.text.muted,
-                    }}
                     title="List View"
                   >
                     <List className="w-5 h-5" />
@@ -594,181 +605,181 @@ export default function HomePage() {
               </div>
             </div>
             
-            {/* Tab Buttons with WOW Effects */}
+            {/* Tab Buttons */}
             <div className="flex items-center justify-center gap-4 mb-8">
-              <motion.button
+              <Button
+                variant={activeTab === 'online' ? 'default' : 'light'}
                 onClick={() => setActiveTab('online')}
-                className="px-6 py-3 rounded-xl font-semibold text-base md:text-lg relative overflow-hidden"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                style={{
-                  backgroundColor: activeTab === 'online' ? colors.accent.primary : colors.text.white,
-                  color: activeTab === 'online' ? colors.text.white : colors.text.dark,
-                  borderWidth: activeTab === 'online' ? '0' : '2px',
-                  borderStyle: 'solid',
-                  borderColor: colors.accent.primary,
-                  boxShadow: activeTab === 'online' ? `0 10px 25px -5px ${colors.accent.primary}40` : 'none',
-                }}
+                className="min-w-[140px]"
               >
-                {activeTab === 'online' && (
-                  <motion.div
-                    className="absolute inset-0"
-                    style={{
-                      backgroundColor: colors.accent.primary,
-                    }}
-                    layoutId="activeTab"
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
-                )}
-                <span className="relative z-10">Online Courses</span>
-              </motion.button>
-              <motion.button
+                Online Courses
+              </Button>
+              <Button
+                variant={activeTab === 'physical' ? 'default' : 'light'}
                 onClick={() => setActiveTab('physical')}
-                className="px-6 py-3 rounded-xl font-semibold text-base md:text-lg relative overflow-hidden"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                style={{
-                  backgroundColor: activeTab === 'physical' ? colors.accent.primary : colors.text.white,
-                  color: activeTab === 'physical' ? colors.text.white : colors.text.dark,
-                  borderWidth: activeTab === 'physical' ? '0' : '2px',
-                  borderStyle: 'solid',
-                  borderColor: colors.accent.primary,
-                  boxShadow: activeTab === 'physical' ? `0 10px 25px -5px ${colors.accent.primary}40` : 'none',
-                }}
+                className="min-w-[140px]"
               >
-                {activeTab === 'physical' && (
-                  <motion.div
-                    className="absolute inset-0"
-                    style={{
-                      backgroundColor: colors.accent.primary,
-                    }}
-                    layoutId="activeTab"
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
-                )}
-                <span className="relative z-10">Physical Courses</span>
-              </motion.button>
+                Physical Courses
+              </Button>
             </div>
           </div>
 
           {loading ? (
             <div className="text-center py-20">
-              <div 
-                className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4"
-                style={{ borderColor: colors.background.light, borderTopColor: colors.accent.primary }}
-              ></div>
-              <p className="text-lg" style={{ color: colors.text.dark }}>Loading courses...</p>
+              <div className="w-16 h-16 border-4 border-[#E5E7EB] border-t-[#048181] rounded-full animate-spin mx-auto mb-4"></div>
+              <Text size="lg">Loading courses...</Text>
             </div>
           ) : displayedTrendingCourses.length === 0 ? (
-            <div className="text-center py-20 text-lg" style={{ color: colors.text.dark }}>
-              No {activeTab === 'online' ? 'online' : 'physical'} courses available
+            <div className="text-center py-20">
+              <Text size="lg">
+                No {activeTab === 'online' ? 'online' : 'physical'} courses available
+              </Text>
             </div>
           ) : viewMode === 'grid' ? (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                {displayedTrendingCourses.map((course, index) => (
-                  <CompactCourseCard key={course.id} course={course} index={index} />
-                ))}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7">
+                {Array.isArray(displayedTrendingCourses) && displayedTrendingCourses.length > 0 ? (
+                  displayedTrendingCourses.map((course, index) => {
+                    // Defensive: Ensure course has required fields
+                    if (!course || !course.id) {
+                      return null;
+                    }
+                    return (
+                      <CourseCardNew key={course.id} course={course} index={index} />
+                    );
+                  })
+                ) : (
+                  <div className="col-span-full text-center py-12">
+                    <Text variant="muted">No courses available to display</Text>
+                  </div>
+                )}
               </div>
               
               {/* Infinite Scroll Trigger */}
               <div ref={observerTarget} className="h-10 flex items-center justify-center mt-8">
                 {loadingMore && (
                   <div className="flex items-center gap-2">
-                    <div 
-                      className="w-6 h-6 border-2 rounded-full animate-spin"
-                      style={{ borderColor: colors.background.light, borderTopColor: colors.accent.primary }}
-                    ></div>
-                    <p className="text-sm" style={{ color: colors.text.dark }}>Loading more courses...</p>
+                    <div className="w-6 h-6 border-2 border-[#E5E7EB] border-t-[#048181] rounded-full animate-spin"></div>
+                    <Text size="sm">Loading more courses...</Text>
                   </div>
                 )}
                 {!hasMore && displayedTrendingCourses.length > 0 && (
-                  <p className="text-sm mb-8" style={{ color: colors.accent.primary }}>No more courses to load</p>
+                  <Text size="sm" className="text-[#048181]">No more courses to load</Text>
                 )}
               </div>
             </>
           ) : (
             <>
-              <div className="space-y-3 md:space-y-4 lg:space-y-6">
-                {displayedTrendingCourses.map((course, index) => (
-                  <Link
-                    key={course.id}
-                    href={`/courses/${course.slug}`}
-                    className="block group"
-                  >
-                    <div className="bg-white border rounded-2xl p-4 md:p-5 lg:p-6 shadow-sm hover:shadow-lg transition-all duration-500 hover:scale-[1.01] hover:-translate-y-1" style={{ borderColor: colors.background.light }}>
-                      <div className="flex items-start gap-4 md:gap-5 lg:gap-6">
-                        <div className="relative w-28 md:w-40 lg:w-48 h-20 md:h-28 lg:h-32 rounded-xl overflow-hidden flex-shrink-0" style={{ backgroundColor: colors.accent.primary }}>
+              <div className="space-y-4">
+                {Array.isArray(displayedTrendingCourses) && displayedTrendingCourses.length > 0 ? (
+                  displayedTrendingCourses.map((course, index) => {
+                    // Defensive: Ensure course has required fields
+                    if (!course || !course.id) {
+                      return null;
+                    }
+                    const courseSlug = course.slug || `course-${course.id}`;
+                    return (
+                      <Link
+                        key={course.id}
+                        href={`/courses/${courseSlug}`}
+                        className="block group"
+                      >
+                    <Card variant="default" hover={true} className="p-5">
+                      <div className="flex items-start gap-5">
+                        <div className="relative w-32 md:w-40 h-24 md:h-28 rounded-xl overflow-hidden flex-shrink-0 bg-[#048181]">
                           {course.thumbnail ? (
                             <img
                               src={course.thumbnail}
-                              alt={course.title}
-                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                              alt={course.title || 'Course'}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                if (target) {
+                                  target.style.display = 'none';
+                                }
+                              }}
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
-                              <span className="text-white text-2xl md:text-3xl lg:text-4xl font-black">{course.title.charAt(0)}</span>
+                              <span className="text-white text-2xl font-extrabold">
+                                {(course.title && course.title.length > 0) ? course.title.charAt(0).toUpperCase() : '?'}
+                              </span>
                             </div>
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-lg md:text-xl lg:text-2xl font-black mb-1.5 md:mb-2 transition-colors" style={{ color: colors.text.dark }}>
-                            {course.title}
-                          </h3>
-                          <p className="mb-2 md:mb-3 line-clamp-2 text-sm md:text-base" style={{ color: colors.text.muted }}>{course.description}</p>
-                          <p className="text-xs md:text-sm font-semibold mb-3 md:mb-4" style={{ color: colors.accent.primary }}>{course.instructor_name}</p>
-                          <div className="flex items-center gap-3 md:gap-4 lg:gap-6 text-xs md:text-sm flex-wrap">
-                            {course.average_rating > 0 ? (
-                              <div className="flex items-center gap-1 md:gap-1.5">
-                                <Star className="w-4 h-4" style={{ color: colors.accent.secondary, fill: colors.accent.secondary }} />
-                                <span className="font-bold" style={{ color: colors.text.dark }}>{course.average_rating.toFixed(1)}</span>
-                                {course.rating_count && (
-                                  <span style={{ color: colors.text.muted }}>({course.rating_count})</span>
+                          <Heading as="h3" size="h4" className="mb-2 group-hover:text-[#048181] transition-colors">
+                            {course.title || 'Untitled Course'}
+                          </Heading>
+                          {course.description && (
+                            <Text variant="muted" size="sm" className="mb-3 line-clamp-2">
+                              {course.description}
+                            </Text>
+                          )}
+                          {course.instructor_name && (
+                            <Text variant="muted" size="sm" className="mb-4 font-semibold text-[#048181]">
+                              {course.instructor_name}
+                            </Text>
+                          )}
+                          <div className="flex items-center gap-4 text-sm flex-wrap">
+                            {course.average_rating && course.average_rating > 0 ? (
+                              <div className="flex items-center gap-1">
+                                <Star className="w-4 h-4 text-[#F59E0B] fill-[#F59E0B]" />
+                                <Text size="sm" className="font-semibold">
+                                  {typeof course.average_rating === 'number' ? course.average_rating.toFixed(1) : '0.0'}
+                                </Text>
+                                {course.rating_count && course.rating_count > 0 && (
+                                  <Text variant="muted" size="xs">({course.rating_count})</Text>
                                 )}
                               </div>
                             ) : (
-                              <span style={{ color: colors.text.muted }}>No ratings yet</span>
+                              <Text variant="muted" size="xs">No ratings yet</Text>
                             )}
-                            <div className="flex items-center gap-1 md:gap-1.5" style={{ color: colors.text.muted }}>
-                              <Users className="w-4 h-4" />
-                              <span>{course.enrolled_count || 0} students</span>
-                            </div>
-                            <span className="text-lg md:text-xl lg:text-2xl font-black" style={{ color: colors.accent.primary }}>{formatPrice(course.price)}</span>
+                            <Text variant="muted" size="sm" className="font-semibold text-[#048181]">
+                              {formatPrice(course.price)}
+                            </Text>
                           </div>
                         </div>
-                        <div className="flex-shrink-0">
-                          <span className="px-3 md:px-4 py-1.5 md:py-2 rounded-xl text-xs font-black text-white border" style={{ 
-                            backgroundColor: course.modality === 'online' ? colors.accent.primary : colors.accent.accent,
-                            borderColor: course.modality === 'online' ? colors.accent.primary : colors.accent.accent
-                          }}>
-                            {course.modality.toUpperCase()}
-                          </span>
-                        </div>
+                        {course.modality && typeof course.modality === 'string' && (
+                          <div className="flex-shrink-0">
+                            <span 
+                              className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white"
+                              style={{ 
+                                backgroundColor: course.modality.toLowerCase() === 'online' ? '#048181' : '#5a9c7d',
+                              }}
+                            >
+                              {course.modality.toUpperCase()}
+                            </span>
+                          </div>
+                        )}
                       </div>
-                    </div>
+                    </Card>
                   </Link>
-                ))}
+                    );
+                  })
+                ) : (
+                  <div className="text-center py-12">
+                    <Text variant="muted">No courses available to display</Text>
+                  </div>
+                )}
               </div>
               
               {/* Infinite Scroll Trigger */}
               <div ref={observerTarget} className="h-10 flex items-center justify-center mt-8">
                 {loadingMore && (
                   <div className="flex items-center gap-2">
-                    <div 
-                      className="w-6 h-6 border-2 rounded-full animate-spin"
-                      style={{ borderColor: colors.background.light, borderTopColor: colors.accent.primary }}
-                    ></div>
-                    <p className="text-sm" style={{ color: colors.text.dark }}>Loading more courses...</p>
+                    <div className="w-6 h-6 border-2 border-[#E5E7EB] border-t-[#048181] rounded-full animate-spin"></div>
+                    <Text size="sm">Loading more courses...</Text>
                   </div>
                 )}
                 {!hasMore && displayedTrendingCourses.length > 0 && (
-                  <p className="text-sm mb-8" style={{ color: colors.accent.primary }}>No more courses to load</p>
+                  <Text size="sm" className="text-[#048181]">No more courses to load</Text>
                 )}
               </div>
             </>
           )}
-        </div>
-      </section>
+        </Container>
+      </Section>
 
       {/* Footer - Premium Layout */}
       <Footer />

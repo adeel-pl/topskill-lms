@@ -9,35 +9,51 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Primary Brand Colors
         primary: {
-          DEFAULT: '#2563eb',
-          dark: '#1e40af',
+          DEFAULT: '#048181',      // Deep teal - primary brand
+          hover: '#036969',        // Darker teal on hover
+          light: '#5a9c7d',        // Lighter teal variant
+          50: '#f0fdfa',
+          100: '#ccfbf1',
+          500: '#048181',
+          600: '#036969',
+          700: '#024d4d',
         },
-        secondary: '#7c3aed',
-        accent: '#06b6d4',
-        // TopSkill brand colors - New Color Palette
-        'topskill-primary': '#048181',      // Deep teal
-        'topskill-secondary': '#f45c2c',    // Reddish-orange
-        'topskill-accent': '#5a9c7d',       // Sage green
-        'topskill-highlight': '#ecca72',    // Pale gold
-        'topskill-dark': '#366854',          // Dark forest green
-        'topskill-light': '#9fbeb2',        // Pale mint
-        // Legacy support (using new colors)
-        'purelogics-dark': '#0A0E27',
-        'purelogics-green': '#048181',      // Updated to new teal
-        'purelogics-green-dark': '#036969',
-        'purelogics-green-light': '#5a9c7d',
-        'bg-primary': '#0F172A',
-        'bg-secondary': '#1E293B',
-        'bg-tertiary': '#334155',
-        'bg-card': '#1E293B',
-        'border-primary': '#334155',
-        'border-secondary': '#475569',
-        'border-accent': '#048181',         // Updated to new teal
-        'text-primary': '#F9FAFB',
-        'text-secondary': '#E5E7EB',
-        'text-tertiary': '#D1D5DB',
-        'text-muted': '#9CA3AF',
+        // Secondary/Accent Colors
+        secondary: {
+          DEFAULT: '#f45c2c',      // Reddish-orange - secondary CTA
+          hover: '#d94a1f',
+          light: '#ff7a5c',
+        },
+        // Background Colors
+        background: {
+          main: '#FFFFFF',         // Main white background
+          soft: '#F9FAFB',         // Soft section background
+          card: '#FFFFFF',         // Card background
+          muted: '#F3F4F6',        // Muted background
+        },
+        // Text Colors
+        text: {
+          primary: '#1F2937',      // Dark gray - main text
+          secondary: '#4B5563',    // Medium gray - secondary text
+          muted: '#6B7280',        // Muted gray - descriptions
+          light: '#9CA3AF',        // Light gray - captions
+          white: '#FFFFFF',        // White text
+        },
+        // Border Colors
+        border: {
+          DEFAULT: '#E5E7EB',       // Light border
+          muted: '#F3F4F6',        // Very light border
+          accent: '#048181',       // Accent border
+        },
+        // Legacy support
+        'topskill-primary': '#048181',
+        'topskill-secondary': '#f45c2c',
+        'topskill-accent': '#5a9c7d',
+        'topskill-highlight': '#ecca72',
+        'topskill-dark': '#366854',
+        'topskill-light': '#9fbeb2',
       },
       maxWidth: {
         'container': '1400px',

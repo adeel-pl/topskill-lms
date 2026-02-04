@@ -1,19 +1,37 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
-const Card = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "rounded-2xl border border-[#334155] bg-[#1E293B] shadow-lg p-6",
-      className
-    )}
-    {...props}
-  />
-))
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  variant?: 'default' | 'elevated' | 'outlined'
+  hover?: boolean
+}
+
+const Card = React.forwardRef<HTMLDivElement, CardProps>(
+  ({ className, variant = 'default', hover = false, ...props }, ref) => {
+    const variantClasses = {
+      default: "bg-white border border-[#E5E7EB] shadow-[0_1px_3px_0_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06)]",
+      elevated: "bg-white border border-[#E5E7EB] shadow-[0_4px_6px_-1px_rgba(0,0,0,0.08),0_2px_4px_-2px_rgba(0,0,0,0.08)]",
+      outlined: "bg-white border-2 border-[#E5E7EB]",
+    }
+    
+    const hoverClasses = hover 
+      ? "transition-all duration-300 hover:shadow-[0_8px_12px_-2px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.08)] hover:-translate-y-0.5" 
+      : ""
+    
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          "rounded-[1.125rem] p-5",
+          variantClasses[variant],
+          hoverClasses,
+          className
+        )}
+        {...props}
+      />
+    )
+  }
+)
 Card.displayName = "Card"
 
 const CardHeader = React.forwardRef<
@@ -34,7 +52,7 @@ const CardTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <h3
     ref={ref}
-    className={cn("text-2xl font-bold text-white leading-none tracking-tight", className)}
+    className={cn("text-xl font-bold text-[#1F2937] leading-tight", className)}
     {...props}
   />
 ))
@@ -46,7 +64,7 @@ const CardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn("text-sm text-[#9CA3AF]", className)}
+    className={cn("text-sm text-[#6B7280] leading-relaxed", className)}
     {...props}
   />
 ))
