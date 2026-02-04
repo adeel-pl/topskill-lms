@@ -164,7 +164,7 @@ body {
 }
 
 .nav-link:hover {
-    background: rgba(4, 129, 129, 0.08);
+    background: rgba(54, 104, 84, 0.08);
     color: var(--ts-primary);
     transform: translateX(4px);
 }
@@ -172,7 +172,7 @@ body {
 .nav-link.active {
     background: var(--ts-primary);
     color: white;
-    box-shadow: 0 4px 12px rgba(4, 129, 129, 0.3);
+    box-shadow: 0 4px 12px rgba(54, 104, 84, 0.3);
 }
 
 .nav-link.active::before {
@@ -335,9 +335,9 @@ body {
 }
 
 .portal-table tbody tr:hover {
-    background: rgba(4, 129, 129, 0.05);
+    background: rgba(54, 104, 84, 0.05);
     transform: translateX(4px);
-    box-shadow: -4px 0 0 0 var(--ts-primary), 0 2px 8px rgba(4, 129, 129, 0.1);
+    box-shadow: -4px 0 0 0 var(--ts-primary), 0 2px 8px rgba(54, 104, 84, 0.1);
 }
 
 .portal-table tbody td {
@@ -361,7 +361,7 @@ body {
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(4, 129, 129, 0.3);
+    box-shadow: 0 4px 12px rgba(54, 104, 84, 0.3);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
@@ -370,7 +370,7 @@ body {
 
 .btn-primary-portal:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(4, 129, 129, 0.4);
+    box-shadow: 0 6px 16px rgba(54, 104, 84, 0.4);
     color: white;
 }
 

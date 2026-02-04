@@ -60,13 +60,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     key={item.href}
                     href={item.href}
                     className={`group flex items-center gap-4 px-5 py-4 rounded-[0.875rem] font-semibold transition-all duration-300 text-sm ${
-                      active ? 'bg-[#366854] text-white shadow-md' : 'text-[#1F2937] hover:bg-[#F9FAFB]'
+                      active ? 'bg-[#366854] text-white shadow-md' : 'text-[#366854] hover:bg-[#F9FAFB]'
                     }`}
                   >
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
                       active ? 'bg-white/20' : 'bg-[#F9FAFB]'
                     }`}>
-                      <Icon className={`text-xl ${active ? 'text-white' : 'text-[#6B7280]'}`} />
+                      <Icon className={`text-xl ${active ? 'text-white' : 'text-[#64748B]'}`} />
                     </div>
                     <span>{item.label}</span>
                   </Link>
