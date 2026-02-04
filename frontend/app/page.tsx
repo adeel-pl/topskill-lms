@@ -123,7 +123,15 @@ export default function HomePage() {
       updateTrendingCourses(allCoursesData, activeTab, true);
       setLoading(false);
     } catch (error: any) {
-      console.error('Error loading courses:', error);
+      // Better error logging
+      const errorMessage = error?.response?.data?.detail || error?.message || 'Unknown error';
+      const errorStatus = error?.response?.status;
+      console.error('Error loading courses:', {
+        message: errorMessage,
+        status: errorStatus,
+        url: error?.config?.url,
+        fullError: error
+      });
       setAllCourses([]);
       setDisplayedTrendingCourses([]);
       setLoading(false);
