@@ -5,25 +5,25 @@
  */
 
 export const designTokens = {
-  // Color System
+  // Color System - EXACT from LOGO ONLY
   colors: {
-    // Primary Brand Colors (EXACT from reference site)
+    // Primary Brand Colors (EXACT from logo - "TOP" green)
     primary: {
-      DEFAULT: '#048181',      // Deep teal - hero bg, primary buttons
-      hover: '#036969',        // Darker teal on hover
-      light: '#5a9c7d',        // Sage green - accent
-      '50': '#f0fdfa',
-      '100': '#ccfbf1',
-      '500': '#048181',
-      '600': '#036969',
-      '700': '#024d4d',
+      DEFAULT: '#366854',      // Dark green - from "TOP" in logo
+      hover: '#2a5242',        // Darker green on hover
+      light: '#4a7a66',        // Lighter green variant
+      '50': '#f0f7f4',
+      '100': '#d4e8de',
+      '500': '#366854',
+      '600': '#2a5242',
+      '700': '#1e3a2e',
     },
     
-    // Secondary/Accent Colors (EXACT from reference site)
+    // Secondary/Accent Colors (EXACT from logo - "SKILLS" blue)
     secondary: {
-      DEFAULT: '#f45c2c',      // Reddish-orange - logo accent, secondary CTAs
-      hover: '#d94a1f',
-      light: '#ff7a5c',
+      DEFAULT: '#0F3A62',      // Dark blue - from "SKILLS" in logo
+      hover: '#0c2d4a',
+      light: '#1a4d7a',
     },
     
     // Background Colors
@@ -36,18 +36,18 @@ export const designTokens = {
     
     // Text Colors
     text: {
-      primary: '#1F2937',      // Dark gray - main text
+      primary: '#366854',      // Dark green - main text (from logo)
       secondary: '#4B5563',    // Medium gray - secondary text
-      muted: '#6B7280',        // Muted gray - descriptions
+      muted: '#64748B',        // Muted gray - descriptions
       light: '#9CA3AF',        // Light gray - captions
       white: '#FFFFFF',        // White text
     },
     
-    // Border Colors (EXACT from reference site)
+    // Border Colors
     border: {
       DEFAULT: '#E5E7EB',       // Light border
       muted: '#F3F4F6',        // Very light border
-      accent: '#048181',       // Accent border (deep teal from reference)
+      accent: '#366854',       // Accent border (dark green from logo)
     },
     
     // Status Colors

@@ -25,7 +25,7 @@ export default function EnrollmentChart({ data }: EnrollmentChartProps) {
           return (
             <div key={index} className="flex-1 flex flex-col items-center justify-end gap-1">
               <div
-                className="w-full bg-gradient-to-t bg-[#048181] rounded-t transition-all duration-300 hover:opacity-80"
+                className="w-full bg-gradient-to-t bg-[#366854] rounded-t transition-all duration-300 hover:opacity-80"
                 style={{ height: `${Math.max(height, 5)}%` }}
                 title={`${item.date}: ${item.count} enrollments`}
               />

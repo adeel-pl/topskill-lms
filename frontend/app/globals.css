@@ -76,11 +76,11 @@ html {
 @keyframes glow {
   0%, 100% {
     opacity: 0.6;
-    box-shadow: 0 0 20px rgba(4, 129, 129, 0.3);
+    box-shadow: 0 0 20px rgba(54, 104, 84, 0.3);
   }
   50% {
     opacity: 1;
-    box-shadow: 0 0 40px rgba(4, 129, 129, 0.6);
+    box-shadow: 0 0 40px rgba(54, 104, 84, 0.6);
   }
 }
 
@@ -237,7 +237,7 @@ button:disabled, .btn:disabled {
 .btn-primary,
 button[class*="bg-green"]:not([class*="tailwind"]),
 .btn-primary-purelogics {
-  background: #048181 !important;
+  background: #366854 !important;
   color: #FFFFFF !important;
   font-weight: 700 !important;
   box-shadow: 0 4px 15px rgba(4, 129, 129, 0.3) !important;
@@ -246,7 +246,7 @@ button[class*="bg-green"]:not([class*="tailwind"]),
 .btn-primary:hover:not(:disabled),
 button[class*="bg-green"]:hover:not(:disabled):not([class*="tailwind"]),
 .btn-primary-purelogics:hover:not(:disabled) {
-  background: #f45c2c !important;
+  background: #0F3A62 !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 8px 25px rgba(244, 92, 44, 0.5) !important;
 }
@@ -261,7 +261,7 @@ button[class*="bg-green"]:hover:not(:disabled):not([class*="tailwind"]),
 
 .btn-secondary:hover:not(:disabled) {
   background: #FFFFFF;
-  border-color: #048181;
+  border-color: #366854;
   transform: translateY(-2px);
 }
 
@@ -295,7 +295,7 @@ input:focus,
 textarea:focus,
 select:focus {
   outline: none;
-  border-color: #048181;
+  border-color: #366854;
   box-shadow: 0 0 0 4px rgba(4, 129, 129, 0.1);
   background: #FFFFFF;
   transform: translateY(-1px);
@@ -316,7 +316,7 @@ a::after {
   left: 0;
   width: 0;
   height: 2px;
-  background: #048181;
+  background: #366854;
   transition: width 0.3s ease;
 }
 
@@ -325,7 +325,7 @@ a:hover::after {
 }
 
 a:hover {
-  color: #048181;
+  color: #366854;
 }
 
 /* Premium Scrollbar - Updated to use new color palette */
@@ -340,13 +340,13 @@ a:hover {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #048181;
+  background: #366854;
   border-radius: 10px;
   border: 2px solid #FFFFFF;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #5a9c7d;
+  background: #366854;
 }
 
 /* Premium Loading Spinner - Updated to use new color palette */
@@ -355,7 +355,7 @@ a:hover {
   animation: spin 1s linear infinite;
   border-radius: 50%;
   border: 4px solid #CBD5E1;
-  border-top-color: #048181;
+  border-top-color: #366854;
   box-shadow: 0 0 20px rgba(4, 129, 129, 0.3);
 }
 
@@ -384,7 +384,7 @@ a:hover {
 
 /* Premium Text - Updated */
 .gradient-text {
-  color: #048181;
+  color: #366854;
 }
 
 /* Premium Background Utilities - Updated */
@@ -414,19 +414,19 @@ a:hover {
 }
 
 .border-accent {
-  border-color: #048181;
+  border-color: #366854;
 }
 
 /* Premium Focus Styles - Updated */
 *:focus-visible {
-  outline: 2px solid #048181;
+  outline: 2px solid #366854;
   outline-offset: 2px;
   border-radius: 4px;
 }
 
 /* Premium Selection - Updated */
 ::selection {
-  background-color: #048181;
+  background-color: #366854;
   color: #FFFFFF;
 }
 

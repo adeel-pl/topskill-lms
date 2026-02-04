@@ -9,12 +9,12 @@ import Link from 'next/link';
 
 // Color Palette (EXACT from reference site)
 const searchColors = {
-  primary: '#048181',      // Deep teal - primary accent (from reference)
-  secondary: '#f45c2c',    // Reddish-orange - secondary accent/CTA (from reference)
-  accent: '#5a9c7d',       // Sage green - secondary buttons (from reference)
+  primary: '#366854',      // Deep teal - primary accent (from reference)
+  secondary: '#0F3A62',    // Reddish-orange - secondary accent/CTA (from reference)
+  accent: '#366854',       // Sage green - secondary buttons (from reference)
   dark: '#1F2937',         // Dark gray - text (from reference)
   light: '#E5E7EB',        // Light border (from reference)
-  highlight: '#ecca72',    // Pale gold - highlights (from reference)
+  highlight: '#0F3A62',    // Pale gold - highlights (from reference)
   white: '#FFFFFF',
   textDark: '#1F2937',     // Dark gray (from reference)
   textMuted: '#6B7280',    // Muted gray (from reference)

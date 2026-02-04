@@ -106,7 +106,7 @@ export default function CourseCardNew({ course, index = 0 }: CourseCardNewProps)
           <CardContent className="flex-1 flex flex-col !p-5 !pt-4">
             {/* Title - EXACT font size from reference: text-base sm:text-lg md:text-xl */}
             <h3 
-              className="text-base sm:text-lg md:text-xl font-semibold mb-1.5 line-clamp-2 min-h-[2.75rem] transition-colors group-hover:text-[#048181] leading-[1.5]"
+              className="text-base sm:text-lg md:text-xl font-semibold mb-1.5 line-clamp-2 min-h-[2.75rem] transition-colors group-hover:text-[#366854] leading-[1.5]"
               style={{ color: colors.text.dark }}
             >
               {courseTitle}
@@ -163,7 +163,7 @@ export default function CourseCardNew({ course, index = 0 }: CourseCardNewProps)
                 <span 
                   className="px-3 py-1 rounded-lg text-xs font-semibold"
                   style={{
-                    backgroundColor: course.modality.toLowerCase() === 'online' ? colors.primary : colors.accentColor,
+                    backgroundColor: course.modality.toLowerCase() === 'online' ? colors.primary : colors.secondary,
                     color: colors.text.white,
                   }}
                 >

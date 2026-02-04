@@ -4,18 +4,17 @@
  */
 
 :root {
-    /* TopSkill Color Palette - EXACT from reference site: https://topskillspk.lovable.app/ */
-    --ts-primary: #048181;          /* Deep teal - hero bg, primary buttons */
-    --ts-primary-dark: #036969;     /* Darker teal on hover */
-    --ts-secondary: #f45c2c;        /* Reddish-orange - logo accent, secondary CTAs */
-    --ts-accent: #5a9c7d;           /* Sage green - highlights */
-    --ts-highlight: #ecca72;        /* Pale gold - badges, icons */
-    --ts-text-main: #1F2937;        /* Dark gray - main text (EXACT from reference) */
-    --ts-text-muted: #6B7280;       /* Muted gray - secondary text (EXACT from reference) */
-    --ts-bg-primary: #FFFFFF;       /* White background */
-    --ts-bg-card: #FFFFFF;          /* White card background */
-    --ts-bg-light: #F9FAFB;         /* Soft section background */
-    --ts-border: #E5E7EB;           /* Light border (EXACT from reference) */
+    /* TopSkill Color Palette - EXACT from LOGO ONLY */
+    --ts-primary: #366854;          /* Dark green - from "TOP" in logo */
+    --ts-primary-dark: #2a5242;    /* Darker green on hover */
+    --ts-secondary: #0F3A62;       /* Dark blue - from "SKILLS" in logo */
+    --ts-secondary-dark: #0c2d4a;  /* Darker blue on hover */
+    --ts-text-main: #366854;       /* Dark green - main text (from logo) */
+    --ts-text-muted: #64748B;      /* Muted gray - secondary text */
+    --ts-bg-primary: #FFFFFF;      /* White background */
+    --ts-bg-card: #FFFFFF;         /* White card background */
+    --ts-bg-light: #F9FAFB;        /* Soft section background */
+    --ts-border: #E5E7EB;          /* Light border */
     --ts-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --ts-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --ts-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);

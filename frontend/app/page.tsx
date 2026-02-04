@@ -233,7 +233,7 @@ export default function HomePage() {
       <PureLogicsNavbar />
 
       {/* Hero Section */}
-      <section className="section-after-header relative pb-16 md:pb-20 lg:pb-24 overflow-hidden" style={{ backgroundColor: '#048181' }}>
+      <section className="section-after-header relative pb-16 md:pb-20 lg:pb-24 overflow-hidden" style={{ backgroundColor: '#366854' }}>
         {/* Animated Background Effects */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <motion.div
@@ -759,7 +759,7 @@ export default function HomePage() {
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <Heading as="h3" size="h4" className="mb-2 transition-colors group-hover:text-[#048181]">
+                          <Heading as="h3" size="h4" className="mb-2 transition-colors group-hover:text-[#366854]">
                             {course.title || 'Untitled Course'}
                           </Heading>
                           {course.description && (
