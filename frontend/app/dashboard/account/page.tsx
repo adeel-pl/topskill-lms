@@ -129,8 +129,7 @@ export default function AccountPage() {
                   borderColor: colors.border.primary, 
                   borderWidth: '1px', 
                   borderStyle: 'solid', 
-                  color: colors.text.dark,
-                  placeholder: colors.text.muted
+                  color: colors.text.dark
                 }}
                 placeholder="your.email@example.com"
                 onFocus={(e) => {
