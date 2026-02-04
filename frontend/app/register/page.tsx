@@ -323,7 +323,6 @@ export default function RegisterPage() {
                     theme="filled_black"
                     size="large"
                     text="signup_with"
-                    locale="en"
                   />
                   {googleLoading && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/80 rounded-lg">

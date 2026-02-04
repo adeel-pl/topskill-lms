@@ -223,7 +223,6 @@ export default function LoginPage() {
                     theme="filled_black"
                     size="large"
                     text="signin_with"
-                    locale="en"
                   />
                   {googleLoading && (
                     <div className="absolute inset-0 flex items-center justify-center bg-[#1E293B]/80 rounded-lg">
