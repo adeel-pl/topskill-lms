@@ -58,7 +58,7 @@ export default function InstructorsPage() {
         setError('Unexpected response format from server.');
       }
     } catch (err: any) {
-      console.error('Error loading instructors:', err);
+      
       const errorMessage = err.response?.data?.detail || err.response?.data?.error || err.message || 'Failed to load instructors. Please try again later.';
       setError(errorMessage);
     } finally {

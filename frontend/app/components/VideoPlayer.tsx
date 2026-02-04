@@ -54,7 +54,7 @@ export default function VideoPlayer(props: VideoPlayerProps) {
     <ReactPlayer
       {...props}
       onError={(err: any) => {
-        console.error('ReactPlayer error:', err);
+        
         setError(err?.message || 'Failed to load video');
       }}
       onReady={() => {

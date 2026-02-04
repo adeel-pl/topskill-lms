@@ -94,7 +94,7 @@ export default function SearchBar({
           setShowSuggestions(coursesData.length > 0);
           setIsSearching(false);
         } catch (error) {
-          console.error('Error fetching search suggestions:', error);
+          
           setSearchSuggestions([]);
           setShowSuggestions(false);
           setIsSearching(false);

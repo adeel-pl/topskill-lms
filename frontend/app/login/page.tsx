@@ -45,7 +45,7 @@ export default function LoginPage() {
       // Show detailed error message
       const errorMessage = err.message || err.response?.data?.error || err.response?.data?.detail || 'Login failed. Please check your credentials and try again.';
       setError(errorMessage);
-      console.error('Login error:', err);
+      
     } finally {
       setLoading(false);
     }
@@ -70,7 +70,7 @@ export default function LoginPage() {
     } catch (err: any) {
       const errorMessage = err.message || err.response?.data?.error || err.response?.data?.detail || 'Google login failed. Please try again.';
       setError(errorMessage);
-      console.error('Google login error:', err);
+      
     } finally {
       setGoogleLoading(false);
     }

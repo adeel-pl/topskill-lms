@@ -309,7 +309,7 @@ export default function RegisterPage() {
                       } catch (err: any) {
                         const errorMessage = err.message || err.response?.data?.error || err.response?.data?.detail || 'Google registration failed. Please try again.';
                         setError(errorMessage);
-                        console.error('Google registration error:', err);
+                        
                       } finally {
                         setGoogleLoading(false);
                       }

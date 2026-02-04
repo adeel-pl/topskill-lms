@@ -193,7 +193,7 @@ export default function HomePage() {
     } catch (error) {
       // Log error but don't crash - show empty state instead
       if (process.env.NODE_ENV === 'development') {
-        console.error('Error updating trending courses:', error);
+        
       }
       setDisplayedTrendingCourses([]);
       setHasMore(false);
@@ -512,7 +512,7 @@ export default function HomePage() {
                           onError={(e) => {
                             // Silently handle image load errors - don't spam console in production
                             if (process.env.NODE_ENV === 'development') {
-                              console.error(`Failed to load logo: ${logo.name} from ${logo.url}`);
+                              
                             }
                             // Hide broken image
                             const target = e.target as HTMLImageElement;

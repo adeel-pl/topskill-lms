@@ -95,7 +95,7 @@ export default function CoursePlayerPage() {
       }
 
       if (!courseData) {
-        console.error('Course not found for slug:', params.slug);
+        
         router.push('/');
         return;
       }
@@ -201,7 +201,7 @@ export default function CoursePlayerPage() {
                 setLoading(false);
               })
               .catch((error) => {
-                console.error('Error selecting lecture:', error);
+                
                 setLoading(false);
               });
           } else {
@@ -211,7 +211,7 @@ export default function CoursePlayerPage() {
           setLoading(false);
         }
       } catch (contentError: any) {
-        console.error('Error loading course content:', contentError);
+        
         if (contentError.response?.status === 403) {
           // Not enrolled - redirect to course page
           router.push(`/courses/${params.slug}`);
@@ -221,7 +221,7 @@ export default function CoursePlayerPage() {
         setLoading(false);
       }
     } catch (error: any) {
-      console.error('Error loading course:', error);
+      
       router.push('/courses');
       setLoading(false);
     }
@@ -238,7 +238,7 @@ export default function CoursePlayerPage() {
         setReviews(response.data.results || response.data || []);
       }
     } catch (error) {
-      console.error('Error loading reviews:', error);
+      
       // Use dummy reviews as fallback
       const dummyReviews = generateDummyReviews(courseId);
       setReviews(dummyReviews);
@@ -314,7 +314,7 @@ export default function CoursePlayerPage() {
         // If lecture data is provided, trust it - it's already been filtered to be preview
         if (!lectureDataOverride.is_preview) {
           // This shouldn't happen if filtering is correct, but handle it
-          console.warn('Non-preview lecture provided for non-enrolled user');
+          
           setLoading(false);
           return;
         }
@@ -370,7 +370,7 @@ export default function CoursePlayerPage() {
       // Ensure loading is set to false after lecture is loaded
       setLoading(false);
     } catch (error: any) {
-      console.error('Error loading lecture:', error);
+      
       if (error.response?.status === 403) {
         // For non-enrolled users, try to load first preview instead of redirecting
         if (!isEnrolled) {
@@ -407,7 +407,7 @@ export default function CoursePlayerPage() {
           completed: progress.played >= 0.9,
         });
       } catch (error) {
-        console.error('Error updating progress:', error);
+        
       }
     }
   };
@@ -468,7 +468,7 @@ export default function CoursePlayerPage() {
           setNotes(lectureRes.data.notes || []);
         }
       } catch (refreshError) {
-        console.error('Error refreshing notes:', refreshError);
+        
         // Continue anyway since we've already updated optimistically
       }
       
@@ -506,7 +506,7 @@ export default function CoursePlayerPage() {
             setNotes(lectureRes.data.notes || []);
           }
         } catch (refreshError) {
-          console.error('Error refreshing notes:', refreshError);
+          
           // Continue anyway since we've already updated optimistically
         }
       }
@@ -787,7 +787,7 @@ export default function CoursePlayerPage() {
                   playing={false}
                   onProgress={handleProgress}
                   onError={(error: any) => {
-                    console.error('Video player error:', error);
+                    
                   }}
                 />
               </div>
@@ -1042,7 +1042,7 @@ export default function CoursePlayerPage() {
                             // Reload course content to update progress
                             await loadCourseContent();
                           } catch (error: any) {
-                            console.error('Error marking lecture as complete:', error);
+                            
                             const errorMsg = error.response?.data?.error || error.message || 'Failed to mark lecture as complete';
                             showError(errorMsg);
                           }

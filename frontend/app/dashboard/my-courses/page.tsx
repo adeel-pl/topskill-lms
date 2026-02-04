@@ -61,7 +61,7 @@ export default function MyCoursesPage() {
         setLoading(false);
       }
     } catch (error) {
-      console.error('Error loading enrollments:', error);
+      
       // Only update state if this is still the latest request
       if (currentRequestId === requestIdRef.current) {
         setEnrollments([]);

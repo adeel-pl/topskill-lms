@@ -60,7 +60,7 @@ export default function AdminCoursesPage() {
       setCourses(response.data.results);
       setTotal(response.data.count);
     } catch (error) {
-      console.error('Error loading courses:', error);
+      
     } finally {
       setLoading(false);
     }

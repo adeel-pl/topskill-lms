@@ -37,7 +37,7 @@ export default function WishlistPage() {
       setWishlist(response.data.results || response.data || []);
       setLoading(false);
     } catch (error) {
-      console.error('Error loading wishlist:', error);
+      
       setWishlist([]);
       setLoading(false);
     }

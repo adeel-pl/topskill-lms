@@ -64,7 +64,7 @@ export default function CertificationsPage() {
       
       setCertificates(certificatesData);
     } catch (error) {
-      console.error('Error loading certificates:', error);
+      
       setCertificates([]);
     } finally {
       setLoading(false);
@@ -102,7 +102,7 @@ export default function CertificationsPage() {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error: any) {
-      console.error('Error downloading certificate:', error);
+      
       alert('Failed to download certificate. Please try again.');
     } finally {
       setDownloadingId(null);

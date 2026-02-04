@@ -54,7 +54,7 @@ export default function CourseDetailPage() {
       }
       
       if (!courseData) {
-        console.error('Course not found for slug:', params.slug);
+        
         router.push('/');
         return;
       }
@@ -67,7 +67,7 @@ export default function CourseDetailPage() {
         setOverview(overviewRes.data);
         // Don't set enrollment status here - check separately for logged-in users
       } catch (error) {
-        console.error('Error loading overview:', error);
+        
         // Fallback to course data if overview fails - use actual course data
         // This ensures curriculum is shown even if API fails
         setOverview({
@@ -105,7 +105,7 @@ export default function CourseDetailPage() {
 
       setLoading(false);
     } catch (error) {
-      console.error('Error loading course:', error);
+      
       setLoading(false);
     }
   };
@@ -125,7 +125,7 @@ export default function CourseDetailPage() {
       const courseInCart = cartItems.some((item: any) => item.course?.id === course.id || item.course_id === course.id);
       setIsInCart(courseInCart);
     } catch (error) {
-      console.error('Error checking cart/enrollment:', error);
+      
       setIsEnrolled(false);
       setIsInCart(false);
     }
@@ -170,7 +170,7 @@ export default function CourseDetailPage() {
         setWishlistId(wishlistItem.id);
       }
     } catch (error) {
-      console.error('Error checking wishlist:', error);
+      
     }
   };
 

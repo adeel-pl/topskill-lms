@@ -77,7 +77,7 @@ export default function PurchaseHistoryPage() {
         const cartRes = await cartAPI.get();
         cartData = cartRes.data.items || [];
       } catch (error) {
-        console.error('Error loading cart:', error);
+        
       }
 
       // Only update state if this is still the latest request (prevents race conditions)
@@ -87,7 +87,7 @@ export default function PurchaseHistoryPage() {
         setLoading(false);
       }
     } catch (error) {
-      console.error('Error loading data:', error);
+      
       // Only update state if this is still the latest request
       if (currentRequestId === requestIdRef.current) {
         setLoading(false);

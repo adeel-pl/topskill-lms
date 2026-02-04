@@ -50,7 +50,7 @@ export default function AdminStudentsPage() {
       setStudents(response.data.results);
       setTotal(response.data.count);
     } catch (error) {
-      console.error('Error loading students:', error);
+      
     } finally {
       setLoading(false);
     }

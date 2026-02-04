@@ -52,7 +52,7 @@ export default function VerifyCertificatePage() {
       const response = await certificatesAPI.verify(certificateNumber);
       setCertificate(response.data);
     } catch (err: any) {
-      console.error('Error verifying certificate:', err);
+      
       if (err.response?.status === 404) {
         setError('Certificate not found. Please verify the certificate number is correct.');
       } else {

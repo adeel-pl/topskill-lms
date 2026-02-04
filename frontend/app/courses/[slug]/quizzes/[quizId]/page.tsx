@@ -121,7 +121,7 @@ export default function QuizPage() {
       const data = await fetchWithAuth(`/quizzes/${quizId}/`);
       setQuiz(data);
     } catch (error: any) {
-      console.error("Failed to load quiz:", error);
+      
       if (error.message && error.message.includes('enrolled')) {
         showError("You must be enrolled in this course to access quizzes.");
         router.push(`/courses/${courseSlug}`);
@@ -209,7 +209,7 @@ export default function QuizPage() {
       setResult(resultData);
       setSubmitted(true);
     } catch (error) {
-      console.error("Failed to submit quiz:", error);
+      
       showError("Failed to submit quiz. Please try again.");
     }
   };

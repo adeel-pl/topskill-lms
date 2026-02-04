@@ -37,7 +37,6 @@ export default function ForgotPasswordPage() {
         showSuccess('Password reset link sent to your email!');
       }
     } catch (err: any) {
-      console.error('Forgot password error details:', {
         error: err,
         response: err.response,
         data: err.response?.data,

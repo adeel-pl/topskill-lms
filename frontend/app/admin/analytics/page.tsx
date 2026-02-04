@@ -37,7 +37,7 @@ export default function AdminAnalyticsPage() {
       const response = await adminAPI.getAnalytics({ date_range: dateRange });
       setAnalytics(response.data);
     } catch (error) {
-      console.error('Error loading analytics:', error);
+      
     } finally {
       setLoading(false);
     }

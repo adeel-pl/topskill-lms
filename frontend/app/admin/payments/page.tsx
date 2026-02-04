@@ -61,7 +61,7 @@ export default function AdminPaymentsPage() {
       setPayments(response.data.results);
       setTotal(response.data.count);
     } catch (error) {
-      console.error('Error loading payments:', error);
+      
     } finally {
       setLoading(false);
     }
