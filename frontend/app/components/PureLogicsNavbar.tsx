@@ -149,9 +149,9 @@ export default function PureLogicsNavbar() {
                   <Link
                     href="/register"
                     className="text-white px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-300 shadow-lg inline-block"
-                    style={{ backgroundColor: navbarColors.primary, boxShadow: `0 10px 15px -3px ${navbarColors.primary}20` }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = navbarColors.secondary}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = navbarColors.primary}
+                    style={{ backgroundColor: colors.primary, boxShadow: `0 10px 15px -3px ${colors.primary}20` }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                   >
                     Sign up
                   </Link>
@@ -190,7 +190,7 @@ export default function PureLogicsNavbar() {
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   style={{ color: '#1E293B' }}
-                  onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
+                  onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
                   onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
                 >
                   Home
@@ -201,7 +201,7 @@ export default function PureLogicsNavbar() {
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   style={{ color: '#1E293B' }}
-                  onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
+                  onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
                   onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
                 >
                   Category
@@ -212,7 +212,7 @@ export default function PureLogicsNavbar() {
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   style={{ color: '#1E293B' }}
-                  onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
+                  onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
                   onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
                 >
                   Product
@@ -223,7 +223,7 @@ export default function PureLogicsNavbar() {
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   style={{ color: '#1E293B' }}
-                  onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
+                  onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
                   onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
                 >
                   Community
@@ -234,7 +234,7 @@ export default function PureLogicsNavbar() {
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   style={{ color: '#1E293B' }}
-                  onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
+                  onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
                   onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
                 >
                   Instructors
@@ -247,7 +247,7 @@ export default function PureLogicsNavbar() {
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                       style={{ color: '#1E293B' }}
-                      onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
+                      onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
                       onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
                     >
                       My Courses
@@ -256,7 +256,7 @@ export default function PureLogicsNavbar() {
                       onClick={logout} 
                       className="text-left px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors text-sm"
                       style={{ color: '#1E293B' }}
-                      onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
+                      onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
                       onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
                     >
                       Log out
@@ -270,7 +270,7 @@ export default function PureLogicsNavbar() {
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                       style={{ color: '#1E293B' }}
-                      onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
+                      onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
                       onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
                     >
                       Login
@@ -281,7 +281,7 @@ export default function PureLogicsNavbar() {
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                       style={{ color: '#1E293B' }}
-                      onMouseEnter={(e) => e.currentTarget.style.color = navbarColors.primary}
+                      onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
                       onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
                     >
                       Sign up
