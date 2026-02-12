@@ -234,7 +234,6 @@ export default function MyCoursesPage() {
                         className="inline-flex items-center justify-center gap-2 w-full px-6 py-3 text-base font-semibold text-white rounded-xl transition-all duration-300 shadow-md hover:shadow-lg hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 whitespace-nowrap"
                         style={{ 
                           backgroundColor: colors.accent.green,
-                          focusVisibleRingColor: colors.accent.green
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.backgroundColor = colors.hover.accent;
