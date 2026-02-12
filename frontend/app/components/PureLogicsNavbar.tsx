@@ -284,11 +284,15 @@ export default function PureLogicsNavbar() {
                     <Link 
                       href="/login" 
                       className="px-4 py-2 rounded-lg transition-colors text-sm"
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                       style={{ color: '#1E293B' }}
-                      onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
-                      onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = colors.background.soft;
+                        e.currentTarget.style.color = colors.primary;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                        e.currentTarget.style.color = '#1E293B';
+                      }}
                     >
                       Login
                     </Link>
