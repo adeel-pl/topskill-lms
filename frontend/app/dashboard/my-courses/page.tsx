@@ -231,7 +231,7 @@ export default function MyCoursesPage() {
                     <div className="mt-auto">
                       <Link 
                         href={`/learn/${enrollment.course.slug}`}
-                        className="inline-flex items-center justify-center gap-2 w-full px-6 py-3 text-base font-semibold text-white rounded-xl transition-all duration-300 shadow-md hover:shadow-lg hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                        className="inline-flex items-center justify-center gap-2 w-full px-6 py-3 text-base font-semibold text-white rounded-xl transition-all duration-300 shadow-md hover:shadow-lg hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 whitespace-nowrap"
                         style={{ 
                           backgroundColor: colors.accent.green,
                           focusVisibleRingColor: colors.accent.green
@@ -246,7 +246,7 @@ export default function MyCoursesPage() {
                         }}
                       >
                         <FiPlay className="text-lg flex-shrink-0" />
-                        <span className="text-center">Continue Learning</span>
+                        <span>Continue Learning</span>
                       </Link>
                     </div>
                   </div>
