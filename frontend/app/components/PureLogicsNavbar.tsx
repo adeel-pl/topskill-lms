@@ -296,3 +296,130 @@ export default function PureLogicsNavbar() {
     </header>
   );
 }
+
+        </div>
+
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              className="lg:hidden py-4 overflow-hidden bg-white"
+              style={{ borderTopColor: colors.border.primary, borderTopWidth: '1px', borderTopStyle: 'solid' }}
+            >
+              <div className="flex flex-col gap-2">
+                <Link 
+                  href="/" 
+                  className="px-4 py-2 rounded-lg transition-colors text-sm"
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                  style={{ color: '#1E293B' }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
+                  onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
+                >
+                  Home
+                </Link>
+                <Link 
+                  href="/" 
+                  className="px-4 py-2 rounded-lg transition-colors text-sm"
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                  style={{ color: '#1E293B' }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
+                  onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
+                >
+                  Category
+                </Link>
+                <Link 
+                  href="/" 
+                  className="px-4 py-2 rounded-lg transition-colors text-sm"
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                  style={{ color: '#1E293B' }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
+                  onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
+                >
+                  Product
+                </Link>
+                <Link 
+                  href="/instructors" 
+                  className="px-4 py-2 rounded-lg transition-colors text-sm"
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                  style={{ color: '#1E293B' }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
+                  onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
+                >
+                  Community
+                </Link>
+                <Link 
+                  href="/instructors" 
+                  className="px-4 py-2 rounded-lg transition-colors text-sm"
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                  style={{ color: '#1E293B' }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
+                  onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
+                >
+                  Instructors
+                </Link>
+                {isAuthenticated ? (
+                  <>
+                    <Link 
+                      href="/dashboard/my-courses" 
+                      className="px-4 py-2 rounded-lg transition-colors text-sm"
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                      style={{ color: '#1E293B' }}
+                      onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
+                      onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
+                    >
+                      My Courses
+                    </Link>
+                    <button 
+                      onClick={logout} 
+                      className="text-left px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                      style={{ color: '#1E293B' }}
+                      onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
+                      onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
+                    >
+                      Log out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link 
+                      href="/login" 
+                      className="px-4 py-2 rounded-lg transition-colors text-sm"
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                      style={{ color: '#1E293B' }}
+                      onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
+                      onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
+                    >
+                      Login
+                    </Link>
+                    <Link 
+                      href="/register" 
+                      className="px-4 py-2 rounded-lg transition-colors text-sm"
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                      style={{ color: '#1E293B' }}
+                      onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
+                      onMouseLeave={(e) => e.currentTarget.style.color = '#1E293B'}
+                    >
+                      Sign up
+                    </Link>
+                  </>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </header>
+  );
+}

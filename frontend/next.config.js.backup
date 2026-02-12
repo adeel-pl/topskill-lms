@@ -17,41 +17,49 @@ const nextConfig = {
     return [
       {
         source: '/portal/:path*',
-        destination: `${backendUrl}/portal/:path*`,
+        destination: backendUrl + '/portal/' + pathPattern,
       },
       {
         source: '/api/:path*',
-        destination: `${backendUrl}/api/:path*`,
+        destination: backendUrl + '/api/' + pathPattern,
       },
       {
         source: '/admin/:path*',
-        destination: `${backendUrl}/admin/:path*`,
+        destination: backendUrl + '/admin/' + pathPattern,
       },
       {
         source: '/swagger/:path*',
-        destination: `${backendUrl}/swagger/:path*`,
+        destination: backendUrl + '/swagger/' + pathPattern,
       },
     ];
   },
-  images: {
-    remotePatterns: [
+  webpack: (config, { isServer }) => {
+    // Fix for react-player chunk loading issues
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      };
+    }
+    return config;
+  },
+};
+
+module.exports = nextConfig;
+
       {
-        protocol: 'https',
-        hostname: 'topskills.pk',
+        source: '/api/:path*',
+        destination: backendUrl + '/api/' + pathPattern,
       },
       {
-        protocol: 'https',
-        hostname: 'picsum.photos',
+        source: '/admin/:path*',
+        destination: backendUrl + '/admin/' + pathPattern,
       },
       {
-        protocol: 'https',
-        hostname: 'source.unsplash.com',
+        source: '/swagger/:path*',
+        destination: backendUrl + '/swagger/' + pathPattern,
       },
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
-    ],
+    ];
   },
   webpack: (config, { isServer }) => {
     // Fix for react-player chunk loading issues

@@ -275,3 +275,38 @@ export default function InstructorsPage() {
     </div>
   );
 }
+
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* View All Courses Button */}
+                {instructor.courses && instructor.courses.length > 0 && (
+                  <Link
+                    href={`/instructors/${instructor.id}`}
+                    className="block w-full text-center py-2 rounded-lg font-semibold text-sm transition-colors"
+                    style={{
+                      backgroundColor: colors.primary,
+                      color: colors.text.white,
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = colors.primaryHover;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = colors.primary;
+                    }}
+                  >
+                    View All Courses
+                  </Link>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}

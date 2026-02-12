@@ -234,3 +234,12 @@ export default function AdminAnalyticsPage() {
 }
 
 
+
+          </div>
+        </Card>
+      </div>
+    </AdminLayout>
+  );
+}
+
+

@@ -23,6 +23,3 @@
 - Shadow: `0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.06)`
 - Hover shadow: `0 8px 12px -2px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.08)`
 - Featured image: Must use `featured_image` field, aspect-video ratio
-
-
-

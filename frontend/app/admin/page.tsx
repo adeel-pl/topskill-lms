@@ -291,3 +291,55 @@ export default function AdminDashboardPage() {
     </AdminLayout>
   );
 }
+
+            <Card variant="outlined" className="p-6">
+              <Heading as="h3" size="h4" className="mb-4" style={{ color: colors.text.dark }}>Enrollment Status</Heading>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Text variant="muted">Active</Text>
+                  <Text className="font-black" style={{ color: colors.text.dark }}>{overview.active_enrollments}</Text>
+                </div>
+                <div className="flex items-center justify-between">
+                  <Text variant="muted">Completed</Text>
+                  <Text className="font-black" style={{ color: colors.text.dark }}>{overview.completed_enrollments}</Text>
+                </div>
+              </div>
+            </Card>
+
+            <Card variant="outlined" className="p-6">
+              <Heading as="h3" size="h4" className="mb-4" style={{ color: colors.text.dark }}>Payment Status</Heading>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Text variant="muted">Paid</Text>
+                  <Text className="font-black" style={{ color: colors.accent.primary }}>{payment_stats.paid}</Text>
+                </div>
+                <div className="flex items-center justify-between">
+                  <Text variant="muted">Pending</Text>
+                  <Text className="font-black" style={{ color: colors.accent.secondary }}>{payment_stats.pending}</Text>
+                </div>
+                <div className="flex items-center justify-between">
+                  <Text variant="muted">Failed</Text>
+                  <Text className="font-black" style={{ color: colors.accent.secondary }}>{payment_stats.failed}</Text>
+                </div>
+              </div>
+            </Card>
+
+            <Card variant="outlined" className="p-6">
+              <Heading as="h3" size="h4" className="mb-4" style={{ color: colors.text.dark }}>Top Courses</Heading>
+              <div className="space-y-2">
+                {top_courses.slice(0, 3).map((course: any, index: number) => (
+                  <div key={course.id} className="flex items-center justify-between">
+                    <Text size="sm" variant="muted" className="truncate flex-1">
+                      {index + 1}. {course.title}
+                    </Text>
+                    <Text className="font-black ml-2" style={{ color: colors.text.dark }}>{course.enrollment_count}</Text>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </AdminLayout>
+  );
+}

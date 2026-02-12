@@ -7,11 +7,11 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-[#366854] text-white hover:bg-[#2a5242] shadow-md hover:shadow-lg focus-visible:ring-[#366854]",
-        secondary: "bg-[#0F3A62] text-white hover:bg-[#0c2d4a] shadow-md hover:shadow-lg focus-visible:ring-[#0F3A62]",
-        outline: "border-2 border-[#366854] bg-transparent text-[#366854] hover:bg-[#366854] hover:text-white focus-visible:ring-[#366854]",
-        ghost: "text-[#366854] hover:bg-[#F9FAFB] focus-visible:ring-[#366854]",
-        light: "bg-white border-2 border-[#E5E7EB] text-[#366854] hover:border-[#366854] hover:text-[#366854] focus-visible:ring-[#366854]",
+        default: "bg-[#048181] text-white hover:bg-[#036969] shadow-md hover:shadow-lg focus-visible:ring-[#048181]",
+        secondary: "bg-[#f45c2c] text-white hover:bg-[#d94a1f] shadow-md hover:shadow-lg focus-visible:ring-[#f45c2c]",
+        outline: "border-2 border-[#048181] bg-transparent text-[#048181] hover:bg-[#048181] hover:text-white focus-visible:ring-[#048181]",
+        ghost: "text-[#1F2937] hover:bg-[#F9FAFB] focus-visible:ring-[#048181]",
+        light: "bg-white border-2 border-[#E5E7EB] text-[#1F2937] hover:border-[#048181] hover:text-[#048181] focus-visible:ring-[#048181]",
       },
       size: {
         default: "px-6 py-3 text-base",
@@ -53,6 +53,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button"
 
 export { Button, buttonVariants }
+
+
+
+
+
+
+
 
 
 

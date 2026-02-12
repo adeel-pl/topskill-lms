@@ -1,23 +1,27 @@
 /**
  * Global Color Configuration
- * EXACT colors from LOGO: https://topskillspk.lovable.app/assets/topskills-logo-Dx7knxYN.png
- * Logo colors ONLY - no other color scheme
+ * EXACT colors from reference site: https://topskillspk.lovable.app/
+ * Extracted directly from the reference site design
  */
 
 export const colors = {
-  // Logo Colors (EXACT from logo image)
-  primary: '#366854',        // Dark green - from "TOP" in logo
-  primaryHover: '#2a5242',   // Darker green on hover
-  primaryLight: '#4a7a66',   // Lighter green variant
+  // Primary Brand Colors (EXACT from reference site)
+  primary: '#048181',        // Deep teal - hero background, primary buttons
+  primaryHover: '#036969',   // Darker teal on hover
+  primaryLight: '#5a9c7d',   // Sage green - accent/highlights
   
-  secondary: '#0F3A62',      // Dark blue - from "SKILLS" in logo
-  secondaryHover: '#0c2d4a', // Darker blue on hover
-  secondaryLight: '#1a4d7a', // Lighter blue variant
+  // Secondary/Accent Colors (EXACT from reference site)
+  secondary: '#f45c2c',      // Reddish-orange - logo accent, secondary CTAs
+  secondaryHover: '#d94a1f', // Darker orange on hover
+  accentColor: '#5a9c7d',    // Sage green - "No.1" highlight, secondary buttons
+  highlight: '#ecca72',      // Pale gold - checkmark circles, badges
   
   // Legacy support (for backward compatibility)
   accent: {
-    primary: '#366854',      // Dark green from logo
-    secondary: '#0F3A62',    // Dark blue from logo
+    primary: '#048181',      // Deep teal from reference
+    secondary: '#f45c2c',    // Reddish-orange from reference
+    accent: '#5a9c7d',       // Sage green from reference
+    highlight: '#ecca72',    // Pale gold from reference
   },
   
   // Background Colors
@@ -32,29 +36,29 @@ export const colors = {
   
   // Text Colors
   text: {
-    primary: '#366854',      // Dark green - main text (from logo)
-    secondary: '#4B5563',    // Medium gray - secondary text
-    dark: '#366854',         // Dark green - headings (from logo)
-    darkGray: '#366854',     // Dark green - same as dark
-    muted: '#64748B',        // Muted gray - descriptions
+    primary: '#1F2937',      // Dark gray - main text
+    secondary: '#6B7280',    // Muted gray - secondary text
+    dark: '#1F2937',         // Dark gray - headings
+    darkGray: '#1F2937',     // Dark gray - same as dark
+    muted: '#6B7280',        // Muted gray - descriptions
     light: '#9CA3AF',        // Light gray - captions
     white: '#FFFFFF',        // White text
   },
   
-  // Border Colors
+  // Border Colors (EXACT from reference site)
   border: {
     primary: '#E5E7EB',      // Light border
     muted: '#F3F4F6',        // Very light border
-    accent: '#366854',       // Accent border (dark green from logo)
+    accent: '#048181',       // Accent border (deep teal from reference)
     light: '#E5E7EB',        // Light border (same as primary)
     dark: '#334155',         // Dark border (if needed)
   },
   
-  // Button Colors (from logo)
+  // Button Colors (EXACT from reference site)
   button: {
-    primary: '#366854',      // Dark green button (from logo)
-    secondary: '#0F3A62',    // Dark blue button (from logo)
-    accent: '#366854',       // Dark green button
+    primary: '#048181',      // Deep teal button (from reference)
+    secondary: '#f45c2c',    // Reddish-orange button (from reference)
+    accent: '#5a9c7d',       // Sage green button
     dark: '#1F2937',         // Dark button
   },
   
@@ -66,10 +70,10 @@ export const colors = {
     info: '#3B82F6',
   },
   
-  // Hover colors (from logo)
+  // Hover colors (EXACT from reference site)
   hover: {
-    primary: '#2a5242',       // Darker green on hover
-    secondary: '#0c2d4a',     // Darker blue on hover
+    primary: '#036969',       // Darker teal on hover
+    secondary: '#d94a1f',     // Darker orange on hover
   },
 } as const;
 

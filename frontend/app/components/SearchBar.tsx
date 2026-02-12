@@ -319,3 +319,45 @@ export default function SearchBar({
   );
 }
 
+
+                  key={course.id}
+                  href={`/courses/${course.slug}`}
+                  onClick={() => {
+                    setShowSuggestions(false);
+                    setSearchQuery('');
+                  }}
+                  className="flex items-center gap-3 px-4 py-3 transition-colors group"
+                  style={{ backgroundColor: 'transparent' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = searchColors.backgroundHover}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                >
+                  <div className="flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden flex items-center justify-center" style={{ backgroundColor: searchColors.primary }}>
+                    {course.thumbnail ? (
+                      <img
+                        src={course.thumbnail}
+                        alt={course.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <BookOpen className="w-6 h-6 text-white" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-sm transition-colors truncate" style={{ color: searchColors.dark }} onMouseEnter={(e) => e.currentTarget.style.color = searchColors.primary} onMouseLeave={(e) => e.currentTarget.style.color = searchColors.dark}>
+                      {course.title}
+                    </p>
+                    <p className="text-xs truncate" style={{ color: searchColors.textMuted }}>
+                      {course.instructor_name}
+                    </p>
+                  </div>
+                  <Search className="w-4 h-4 transition-colors flex-shrink-0" style={{ color: searchColors.textMuted }} onMouseEnter={(e) => e.currentTarget.style.color = searchColors.primary} onMouseLeave={(e) => e.currentTarget.style.color = searchColors.textMuted} />
+                </Link>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+

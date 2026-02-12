@@ -483,3 +483,487 @@ body {
     }
 }
 
+
+ * Premium UI matching student dashboard design
+ */
+
+:root {
+    /* TopSkill Color Palette - EXACT from LOGO ONLY */
+    --ts-primary: #366854;          /* Dark green - from "TOP" in logo */
+    --ts-primary-dark: #2a5242;    /* Darker green on hover */
+    --ts-secondary: #0F3A62;       /* Dark blue - from "SKILLS" in logo */
+    --ts-secondary-dark: #0c2d4a;  /* Darker blue on hover */
+    --ts-text-main: #366854;       /* Dark green - main text (from logo) */
+    --ts-text-muted: #64748B;      /* Muted gray - secondary text */
+    --ts-bg-primary: #FFFFFF;      /* White background */
+    --ts-bg-card: #FFFFFF;         /* White card background */
+    --ts-bg-light: #F9FAFB;        /* Soft section background */
+    --ts-border: #E5E7EB;          /* Light border */
+    --ts-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --ts-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --ts-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --ts-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--ts-bg-primary);
+    color: var(--ts-text-main);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* ============================================
+   NAVBAR
+   ============================================ */
+
+.portal-navbar {
+    background: var(--ts-bg-card);
+    border-bottom: 1px solid var(--ts-border);
+    padding: 1rem 2rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    box-shadow: var(--ts-shadow-sm);
+}
+
+.navbar-brand {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s ease;
+}
+
+.navbar-brand:hover {
+    transform: scale(1.05);
+}
+
+.navbar-brand img {
+    height: 40px;
+    width: auto;
+    max-width: 200px;
+    object-fit: contain;
+}
+
+.user-info {
+    color: var(--ts-text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.btn-logout {
+    background: var(--ts-secondary);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.btn-logout:hover {
+    background: #d14a25;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: var(--ts-shadow-md);
+}
+
+/* ============================================
+   CONTAINER LAYOUT
+   ============================================ */
+
+.portal-container {
+    display: flex;
+    margin-top: 70px;
+    min-height: calc(100vh - 70px);
+}
+
+/* ============================================
+   SIDEBAR
+   ============================================ */
+
+.portal-sidebar {
+    width: 280px;
+    background: var(--ts-bg-card);
+    border-right: 1px solid var(--ts-border);
+    padding: 2rem 0;
+    position: fixed;
+    left: 0;
+    top: 70px;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+    z-index: 100;
+}
+
+.sidebar-header {
+    padding: 0 1.5rem 2rem;
+    border-bottom: 1px solid var(--ts-border);
+    margin-bottom: 1.5rem;
+}
+
+.sidebar-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--ts-text-main);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-subtitle {
+    font-size: 0.875rem;
+    color: var(--ts-text-muted);
+    margin: 0;
+}
+
+.sidebar-nav {
+    padding: 0 1rem;
+}
+
+.nav-item {
+    margin-bottom: 0.5rem;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    border-radius: 12px;
+    color: var(--ts-text-main);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.nav-link:hover {
+    background: rgba(54, 104, 84, 0.08);
+    color: var(--ts-primary);
+    transform: translateX(4px);
+}
+
+.nav-link.active {
+    background: var(--ts-primary);
+    color: white;
+    box-shadow: 0 4px 12px rgba(54, 104, 84, 0.3);
+}
+
+.nav-link.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 60%;
+    background: white;
+    border-radius: 0 4px 4px 0;
+}
+
+.nav-link i {
+    width: 20px;
+    text-align: center;
+}
+
+/* ============================================
+   MAIN CONTENT
+   ============================================ */
+
+.portal-main {
+    flex: 1;
+    margin-left: 280px;
+    padding: 2rem;
+    background: var(--ts-bg-primary);
+    min-height: calc(100vh - 70px);
+}
+
+.messages-container {
+    margin-bottom: 1.5rem;
+}
+
+/* ============================================
+   CARDS
+   ============================================ */
+
+.portal-card {
+    background: var(--ts-bg-card);
+    border-radius: 16px;
+    border: 1px solid var(--ts-border);
+    box-shadow: var(--ts-shadow-lg);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.2s ease;
+}
+
+.portal-card:hover {
+    box-shadow: var(--ts-shadow-xl);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--ts-border);
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--ts-text-main);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ============================================
+   STATS CARDS
+   ============================================ */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--ts-bg-card);
+    border-radius: 16px;
+    border: 1px solid var(--ts-border);
+    box-shadow: var(--ts-shadow-md);
+    padding: 1.5rem;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--ts-primary);
+}
+
+.stat-card:hover {
+    box-shadow: var(--ts-shadow-xl);
+    transform: translateY(-4px);
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--ts-text-muted);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--ts-primary);
+    margin: 0;
+}
+
+.stat-icon {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-size: 2.5rem;
+    opacity: 0.1;
+    color: var(--ts-primary);
+}
+
+/* ============================================
+   TABLES
+   ============================================ */
+
+.portal-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.portal-table thead th {
+    background: linear-gradient(to bottom, #ffffff, #f8fafc);
+    font-weight: 700;
+    color: var(--ts-text-main);
+    padding: 1rem;
+    border-bottom: 2px solid var(--ts-border);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-align: left;
+}
+
+.portal-table tbody tr {
+    transition: all 0.2s ease;
+    border-bottom: 1px solid #f3f4f6;
+    background: #ffffff;
+}
+
+.portal-table tbody tr:hover {
+    background: rgba(54, 104, 84, 0.05);
+    transform: translateX(4px);
+    box-shadow: -4px 0 0 0 var(--ts-primary), 0 2px 8px rgba(54, 104, 84, 0.1);
+}
+
+.portal-table tbody td {
+    padding: 1rem;
+    color: var(--ts-text-main);
+    font-size: 0.9rem;
+    vertical-align: middle;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
+.btn-primary-portal {
+    background: linear-gradient(135deg, var(--ts-primary) 0%, var(--ts-primary-dark) 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(54, 104, 84, 0.3);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary-portal:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(54, 104, 84, 0.4);
+    color: white;
+}
+
+.btn-secondary-portal {
+    background: white;
+    color: var(--ts-text-main);
+    border: 2px solid var(--ts-border);
+    border-radius: 10px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-secondary-portal:hover {
+    background: #f8fafc;
+    border-color: var(--ts-primary);
+    color: var(--ts-primary);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+/* ============================================
+   BOOTSTRAP OVERRIDES - Logo Colors
+   ============================================ */
+
+/* Badge Colors - Logo Colors */
+.badge.bg-info {
+    background-color: var(--ts-secondary) !important;
+    color: white;
+}
+
+.badge.bg-success {
+    background-color: var(--ts-primary) !important;
+    color: white;
+}
+
+.badge.bg-secondary {
+    background-color: var(--ts-text-muted) !important;
+    color: white;
+}
+
+.badge.bg-danger {
+    background-color: #EF4444 !important;
+    color: white;
+}
+
+/* Button Outline Colors - Logo Colors */
+.btn-outline-primary {
+    border-color: var(--ts-primary) !important;
+    color: var(--ts-primary) !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--ts-primary) !important;
+    border-color: var(--ts-primary) !important;
+    color: white !important;
+}
+
+.btn-outline-secondary {
+    border-color: var(--ts-border) !important;
+    color: var(--ts-text-main) !important;
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--ts-bg-light) !important;
+    border-color: var(--ts-primary) !important;
+    color: var(--ts-primary) !important;
+}
+
+.btn-outline-danger {
+    border-color: #EF4444 !important;
+    color: #EF4444 !important;
+}
+
+.btn-outline-danger:hover {
+    background-color: #EF4444 !important;
+    border-color: #EF4444 !important;
+    color: white !important;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .portal-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    
+    .portal-sidebar.open {
+        transform: translateX(0);
+    }
+    
+    .portal-main {
+        margin-left: 0;
+        padding: 1rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+

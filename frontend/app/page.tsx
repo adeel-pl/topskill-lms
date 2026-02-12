@@ -245,7 +245,7 @@ export default function HomePage() {
       <PureLogicsNavbar />
 
       {/* Hero Section */}
-      <section className="section-after-header relative pb-16 md:pb-20 lg:pb-24 overflow-hidden" style={{ backgroundColor: '#366854' }}>
+      <section className="section-after-header relative pb-16 md:pb-20 lg:pb-24 overflow-hidden" style={{ backgroundColor: '#048181' }}>
         {/* Animated Background Effects */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <motion.div
@@ -479,6 +479,377 @@ export default function HomePage() {
                     >
                       10+
                     </motion.div>
+                    <div className="text-sm md:text-base font-semibold text-white">YEARS EXPERIENCES</div>
+                  </div>
+                </motion.div>
+              </motion.div>
+
+              {/* Certification Logos - Rotating Carousel */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.8 }}
+                className="mt-8 md:mt-12 w-full"
+              >
+                <div className="text-center mb-4 md:mb-6">
+                  <h3 className="text-lg md:text-xl font-semibold text-white whitespace-nowrap">
+                    Our Experienced Trainers are <span className="font-bold" style={{ color: colors.primaryLight }}>Certified from</span>
+                  </h3>
+                </div>
+                
+                {/* Logos Carousel */}
+                <div className="relative overflow-hidden rounded-xl py-4 w-full">
+                  <div className="flex items-center gap-4 md:gap-6 lg:gap-8 animate-scroll-hero">
+                    {/* Render logos 3 times for seamless infinite loop */}
+                    {/* When animation moves by 33.33% (one set), it resets seamlessly */}
+                    {[...certificationLogos, ...certificationLogos, ...certificationLogos].map((logo, index) => (
+                      <div key={`${logo.name}-${index}`} className="flex-shrink-0 flex items-center justify-center h-12 md:h-16 w-24 md:w-32">
+                        <img 
+                          src={logo.url} 
+                          alt={logo.name} 
+                          className="h-full w-auto max-w-full object-contain opacity-100"
+                          loading="eager"
+                          onError={(e) => {
+                            // Silently handle image load errors - don't spam console in production
+                            if (process.env.NODE_ENV === 'development') {
+                              
+                            }
+                            // Hide broken image
+                            const target = e.target as HTMLImageElement;
+                            if (target) {
+                              target.style.display = 'none';
+                            }
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Right Side - Image/Illustration */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="relative hidden lg:flex items-center justify-center"
+            >
+              <div className="relative w-full max-w-lg">
+                {/* Decorative shapes */}
+                <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full blur-2xl" style={{ backgroundColor: `${colors.primaryLight}30` }}></div>
+                <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full blur-3xl" style={{ backgroundColor: `${colors.secondary}30` }}></div>
+                
+                {/* Main illustration area with Glassmorphism */}
+                <motion.div 
+                  className="relative backdrop-blur-xl rounded-3xl p-8 border-2"
+                  style={{ 
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    borderColor: 'rgba(255, 255, 255, 0.2)',
+                    boxShadow: `0 8px 32px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.1) inset`
+                  }}
+                  whileHover={{ 
+                    scale: 1.02,
+                    boxShadow: `0 20px 60px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.2) inset`
+                  }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                >
+                  <motion.div 
+                    className="rounded-2xl overflow-hidden relative"
+                    style={{ 
+                      backgroundColor: 'transparent',
+                    }}
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  >
+                    {/* Homepage Image */}
+                    <motion.img
+                      src="https://topskills.pk/wp-content/uploads/2023/05/Homepage-Image-1-725x536.png"
+                      alt="TopSkill Learning Platform"
+                      className="w-full h-auto object-contain"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.8, delay: 0.5 }}
+                      whileHover={{ scale: 1.05 }}
+                    />
+                  </motion.div>
+                </motion.div>
+              </div>
+            </motion.div>
+          </div>
+        </Container>
+      </section>
+
+      <style jsx>{`
+        @keyframes scroll-hero {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            /* Move by exactly 33.33% (one full set since we have 3 identical sets) */
+            /* When animation resets to 0%, it's seamless because set 2 looks identical to set 1 */
+            transform: translateX(calc(-100% / 3));
+          }
+        }
+        .animate-scroll-hero {
+          display: flex;
+          width: max-content;
+          animation: scroll-hero 35s linear infinite;
+          will-change: transform;
+        }
+        .animate-scroll-hero:hover {
+          animation-play-state: paused;
+        }
+        
+      `}</style>
+
+      {/* Trending Courses Section */}
+      <Section variant="default" padding="default">
+        <Container>
+          <div className="mb-12">
+            {/* Header with Title and View Toggle */}
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8">
+              <div className="text-center md:text-left">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <Heading as="h2" size="h1" className="mb-4">
+                    Trending Courses
+                  </Heading>
+                  <Text size="lg" variant="muted" className="max-w-3xl">
+                    Discover the most popular courses loved by thousands of learners
+                  </Text>
+                </motion.div>
+              </div>
+              
+              {/* View Toggle Buttons */}
+              <div className="flex items-center justify-center md:justify-end">
+                <div className="flex items-center gap-1 bg-white rounded-xl px-1 py-1 shadow-sm" style={{ borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
+                  <button
+                    onClick={() => setViewMode('grid')}
+                    className="p-2.5 md:p-3 rounded-lg transition-all duration-300"
+                    style={viewMode === 'grid' ? { backgroundColor: colors.primary, color: colors.text.white } : { color: colors.text.muted }}
+                    onMouseEnter={(e) => {
+                      if (viewMode !== 'grid') {
+                        e.currentTarget.style.backgroundColor = colors.background.soft;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (viewMode !== 'grid') {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                      }
+                    }}
+                    title="Grid View"
+                  >
+                    <Grid3x3 className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => setViewMode('list')}
+                    className="p-2.5 md:p-3 rounded-lg transition-all duration-300"
+                    style={viewMode === 'list' ? { backgroundColor: colors.primary, color: colors.text.white } : { color: colors.text.muted }}
+                    onMouseEnter={(e) => {
+                      if (viewMode !== 'list') {
+                        e.currentTarget.style.backgroundColor = colors.background.soft;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (viewMode !== 'list') {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                      }
+                    }}
+                    title="List View"
+                  >
+                    <List className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            {/* Tab Buttons */}
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <Button
+                variant={activeTab === 'online' ? 'default' : 'light'}
+                onClick={() => setActiveTab('online')}
+                className="min-w-[140px]"
+              >
+                Online Courses
+              </Button>
+              <Button
+                variant={activeTab === 'physical' ? 'default' : 'light'}
+                onClick={() => setActiveTab('physical')}
+                className="min-w-[140px]"
+              >
+                Physical Courses
+              </Button>
+            </div>
+          </div>
+
+          {loading ? (
+            <div className="text-center py-20">
+              <div className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4" style={{ borderColor: colors.border.primary, borderTopColor: colors.primary }}></div>
+              <Text size="lg">Loading courses...</Text>
+            </div>
+          ) : displayedTrendingCourses.length === 0 ? (
+            <div className="text-center py-20">
+              <Text size="lg">
+                No {activeTab === 'online' ? 'online' : 'physical'} courses available
+              </Text>
+            </div>
+          ) : viewMode === 'grid' ? (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7">
+                {Array.isArray(displayedTrendingCourses) && displayedTrendingCourses.length > 0 ? (
+                  displayedTrendingCourses.map((course, index) => {
+                    // Defensive: Ensure course has required fields
+                    if (!course || !course.id) {
+                      return null;
+                    }
+                    return (
+                      <CourseCardNew key={course.id} course={course} index={index} />
+                    );
+                  })
+                ) : (
+                  <div className="col-span-full text-center py-12">
+                    <Text variant="muted">No courses available to display</Text>
+                  </div>
+                )}
+              </div>
+              
+              {/* Infinite Scroll Trigger */}
+              <div ref={observerTarget} className="h-10 flex items-center justify-center mt-8">
+                {loadingMore && (
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: colors.border.primary, borderTopColor: colors.primary }}></div>
+                    <Text size="sm">Loading more courses...</Text>
+                  </div>
+                )}
+                {!hasMore && displayedTrendingCourses.length > 0 && (
+                  <Text size="sm" style={{ color: colors.primary }}>No more courses to load</Text>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="space-y-4">
+                {Array.isArray(displayedTrendingCourses) && displayedTrendingCourses.length > 0 ? (
+                  displayedTrendingCourses.map((course, index) => {
+                    // Defensive: Ensure course has required fields
+                    if (!course || !course.id) {
+                      return null;
+                    }
+                    const courseSlug = course.slug || `course-${course.id}`;
+                    return (
+                      <Link
+                        key={course.id}
+                        href={`/courses/${courseSlug}`}
+                        className="block group"
+                      >
+                    <Card variant="default" hover={true} className="p-5">
+                      <div className="flex items-start gap-5">
+                        <div className="relative w-32 md:w-40 h-24 md:h-28 rounded-xl overflow-hidden flex-shrink-0" style={{ backgroundColor: colors.primary }}>
+                          {(course.featured_image || course.thumbnail) ? (
+                            <img
+                              src={course.featured_image || course.thumbnail}
+                              alt={course.title || 'Course'}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                if (target) {
+                                  target.style.display = 'none';
+                                }
+                              }}
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <span className="text-white text-2xl font-extrabold">
+                                {(course.title && course.title.length > 0) ? course.title.charAt(0).toUpperCase() : '?'}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <Heading as="h3" size="h4" className="mb-2 transition-colors group-hover:text-[#366854]">
+                            {course.title || 'Untitled Course'}
+                          </Heading>
+                          {course.description && (
+                            <Text variant="muted" size="sm" className="mb-3 line-clamp-2">
+                              {course.description}
+                            </Text>
+                          )}
+                          {course.instructor_name && (
+                            <Text variant="muted" size="sm" className="mb-4 font-semibold" style={{ color: colors.primary }}>
+                              {course.instructor_name}
+                            </Text>
+                          )}
+                          <div className="flex items-center gap-4 text-sm flex-wrap">
+                            {course.average_rating && course.average_rating > 0 ? (
+                              <div className="flex items-center gap-1">
+                                <Star className="w-4 h-4" style={{ color: colors.status.warning, fill: colors.status.warning }} />
+                                <Text size="sm" className="font-semibold">
+                                  {typeof course.average_rating === 'number' ? course.average_rating.toFixed(1) : '0.0'}
+                                </Text>
+                                {course.rating_count && course.rating_count > 0 && (
+                                  <Text variant="muted" size="xs">({course.rating_count})</Text>
+                                )}
+                              </div>
+                            ) : (
+                              <Text variant="muted" size="xs">No ratings yet</Text>
+                            )}
+                            <Text variant="muted" size="sm" className="font-semibold" style={{ color: colors.primary }}>
+                              {formatPrice(course.price)}
+                            </Text>
+                          </div>
+                        </div>
+                        {course.modality && typeof course.modality === 'string' && (
+                          <div className="flex-shrink-0">
+                            <span 
+                              className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white"
+                              style={{ 
+                                backgroundColor: course.modality.toLowerCase() === 'online' ? colors.primary : colors.secondary,
+                              }}
+                            >
+                              {course.modality.toUpperCase()}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </Card>
+                  </Link>
+                    );
+                  })
+                ) : (
+                  <div className="text-center py-12">
+                    <Text variant="muted">No courses available to display</Text>
+                  </div>
+                )}
+              </div>
+              
+              {/* Infinite Scroll Trigger */}
+              <div ref={observerTarget} className="h-10 flex items-center justify-center mt-8">
+                {loadingMore && (
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: colors.border.primary, borderTopColor: colors.primary }}></div>
+                    <Text size="sm">Loading more courses...</Text>
+                  </div>
+                )}
+                {!hasMore && displayedTrendingCourses.length > 0 && (
+                  <Text size="sm" style={{ color: colors.primary }}>No more courses to load</Text>
+                )}
+              </div>
+            </>
+          )}
+        </Container>
+      </Section>
+
+      {/* Footer - Premium Layout */}
+      <Footer />
+    </div>
+  );
+}
+
                     <div className="text-sm md:text-base font-semibold text-white">YEARS EXPERIENCES</div>
                   </div>
                 </motion.div>

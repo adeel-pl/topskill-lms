@@ -646,3 +646,7 @@ class NoteSerializer(serializers.ModelSerializer):
     def get_lecture_title(self, obj):
         return obj.lecture.title if obj.lecture else None
 
+
+    def get_lecture_title(self, obj):
+        return obj.lecture.title if obj.lecture else None
+

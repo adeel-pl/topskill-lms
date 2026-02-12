@@ -165,3 +165,169 @@
 
 
 
+
+
+{% block title %}{% if form_type == 'create' %}Create{% else %}Edit{% endif %} Course - Instructor Portal{% endblock %}
+
+{% block sidebar_subtitle %}Manage your courses and students{% endblock %}
+
+{% block sidebar_nav %}
+<a href="{% url 'portal:instructor_dashboard' %}" class="nav-link">
+    <i class="fas fa-tachometer-alt"></i>
+    Dashboard
+</a>
+<a href="{% url 'portal:instructor_courses' %}" class="nav-link active">
+    <i class="fas fa-book"></i>
+    My Courses
+</a>
+<a href="{% url 'portal:instructor_students' %}" class="nav-link">
+    <i class="fas fa-users"></i>
+    Students
+</a>
+<a href="{% url 'portal:instructor_assignments' %}" class="nav-link">
+    <i class="fas fa-tasks"></i>
+    Assignments
+</a>
+<a href="{% url 'portal:instructor_quizzes' %}" class="nav-link">
+    <i class="fas fa-question-circle"></i>
+    Quizzes
+</a>
+<a href="{% url 'portal:instructor_attendance' %}" class="nav-link">
+    <i class="fas fa-calendar-check"></i>
+    Attendance
+</a>
+<a href="{% url 'portal:instructor_analytics' %}" class="nav-link">
+    <i class="fas fa-chart-line"></i>
+    Analytics
+</a>
+<a href="{% url 'portal:instructor_reviews' %}" class="nav-link">
+    <i class="fas fa-star"></i>
+    Reviews
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="portal-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-{% if form_type == 'create' %}plus{% else %}edit{% endif %}"></i>
+            {% if form_type == 'create' %}Create New Course{% else %}Edit Course{% endif %}
+        </h3>
+        <a href="{% url 'portal:instructor_courses' %}" class="btn-secondary-portal">
+            <i class="fas fa-arrow-left"></i>
+            Back to Courses
+        </a>
+    </div>
+    
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+            <input type="text" name="title" id="title" class="form-control" required 
+                   value="{% if course %}{{ course.title }}{% endif %}" 
+                   placeholder="e.g., Full Stack Development - Hybrid">
+        </div>
+        
+        <div class="mb-3">
+            <label for="short_description" class="form-label">Short Description</label>
+            <textarea name="short_description" id="short_description" class="form-control" rows="2" 
+                      placeholder="Brief description for course cards (max 500 chars)...">{% if course %}{{ course.short_description }}{% endif %}</textarea>
+        </div>
+        
+        <div class="mb-3">
+            <label for="description" class="form-label">Full Description</label>
+            <textarea name="description" id="description" class="form-control" rows="6" 
+                      placeholder="Full course description...">{% if course %}{{ course.description }}{% endif %}</textarea>
+        </div>
+        
+        <div class="mb-3">
+            <label for="thumbnail" class="form-label">Course Thumbnail Image URL</label>
+            <input type="url" name="thumbnail" id="thumbnail" class="form-control" 
+                   value="{% if course %}{{ course.thumbnail }}{% endif %}" 
+                   placeholder="https://images.unsplash.com/photo-...">
+            <small class="form-text text-muted">
+                Enter a URL to an image (e.g., from Unsplash, your CDN, etc.). This image will be displayed on course cards.
+            </small>
+            {% if course and course.thumbnail %}
+            <div class="mt-2">
+                <img src="{{ course.thumbnail }}" alt="Current thumbnail" class="img-thumbnail" style="max-width: 200px; max-height: 150px;">
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="mb-3">
+            <label for="featured_image" class="form-label">Featured Image URL (Preferred)</label>
+            <input type="url" name="featured_image" id="featured_image" class="form-control" 
+                   value="{% if course %}{{ course.featured_image }}{% endif %}" 
+                   placeholder="https://images.unsplash.com/photo-...">
+            <small class="form-text text-muted">
+                Featured image takes priority over thumbnail on course cards. Enter a URL to an image (e.g., from Unsplash, your CDN, etc.).
+            </small>
+            {% if course and course.featured_image %}
+            <div class="mt-2">
+                <img src="{{ course.featured_image }}" alt="Current featured image" class="img-thumbnail" style="max-width: 200px; max-height: 150px;">
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="modality" class="form-label">Modality <span class="text-danger">*</span></label>
+                <select name="modality" id="modality" class="form-control" required>
+                    <option value="online" {% if course and course.modality == 'online' %}selected{% endif %}>Online</option>
+                    <option value="physical" {% if course and course.modality == 'physical' %}selected{% endif %}>Physical</option>
+                    <option value="hybrid" {% if course and course.modality == 'hybrid' %}selected{% endif %}>Hybrid</option>
+                </select>
+            </div>
+            
+            <div class="col-md-4 mb-3">
+                <label for="price" class="form-label">Price ($)</label>
+                <input type="number" name="price" id="price" class="form-control" 
+                       value="{% if course %}{{ course.price }}{% else %}0{% endif %}" 
+                       min="0" step="0.01" required>
+            </div>
+            
+            <div class="col-md-4 mb-3">
+                <label for="level" class="form-label">Level</label>
+                <select name="level" id="level" class="form-control">
+                    <option value="beginner" {% if course and course.level == 'beginner' %}selected{% endif %}>Beginner</option>
+                    <option value="intermediate" {% if course and course.level == 'intermediate' %}selected{% endif %}>Intermediate</option>
+                    <option value="advanced" {% if course and course.level == 'advanced' %}selected{% endif %}>Advanced</option>
+                    <option value="all" {% if not course or course.level == 'all' %}selected{% endif %}>All Levels</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="language" class="form-label">Language</label>
+                <input type="text" name="language" id="language" class="form-control" 
+                       value="{% if course %}{{ course.language }}{% else %}English{% endif %}" 
+                       placeholder="English">
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <div class="form-check">
+                <input type="checkbox" name="is_active" id="is_active" class="form-check-input" 
+                       {% if not course or course.is_active %}checked{% endif %}>
+                <label for="is_active" class="form-check-label">Active</label>
+            </div>
+        </div>
+        
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn-primary-portal">
+                <i class="fas fa-save"></i>
+                {% if form_type == 'create' %}Create Course{% else %}Update Course{% endif %}
+            </button>
+            <a href="{% url 'portal:instructor_courses' %}" class="btn-secondary-portal">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+
+

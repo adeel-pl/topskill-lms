@@ -52,7 +52,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #FFFFFF;
-  color: #366854;
+  color: #1F2937;
   line-height: 1.6;
   margin: 0;
   padding: 0;
@@ -237,7 +237,7 @@ button:disabled, .btn:disabled {
 .btn-primary,
 button[class*="bg-green"]:not([class*="tailwind"]),
 .btn-primary-purelogics {
-  background: #366854 !important;
+  background: #048181 !important;
   color: #FFFFFF !important;
   font-weight: 700 !important;
   box-shadow: 0 4px 15px rgba(4, 129, 129, 0.3) !important;
@@ -246,22 +246,22 @@ button[class*="bg-green"]:not([class*="tailwind"]),
 .btn-primary:hover:not(:disabled),
 button[class*="bg-green"]:hover:not(:disabled):not([class*="tailwind"]),
 .btn-primary-purelogics:hover:not(:disabled) {
-  background: #0F3A62 !important;
+  background: #036969 !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 8px 25px rgba(15, 58, 98, 0.5) !important;
+  box-shadow: 0 8px 25px rgba(4, 129, 129, 0.5) !important;
 }
 
 /* Secondary Button - Premium */
 .btn-secondary {
   background: #FFFFFF;
-  color: #366854;
+  color: #1F2937;
   border: 1.5px solid #CBD5E1;
   backdrop-filter: blur(10px);
 }
 
 .btn-secondary:hover:not(:disabled) {
   background: #FFFFFF;
-  border-color: #366854;
+  border-color: #048181;
   transform: translateY(-2px);
 }
 
@@ -280,7 +280,7 @@ select {
   line-height: 1.25rem;
   background: #FFFFFF;
   backdrop-filter: blur(10px);
-  color: #366854;
+  color: #1F2937;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
 }
@@ -295,15 +295,15 @@ input:focus,
 textarea:focus,
 select:focus {
   outline: none;
-  border-color: #366854;
-  box-shadow: 0 0 0 3px rgba(54, 104, 84, 0.2);
+  border-color: #048181;
+  box-shadow: 0 0 0 3px rgba(4, 129, 129, 0.2);
   background: #FFFFFF;
   transform: translateY(-1px);
 }
 
 /* Premium Link Styles - Updated to use new color palette */
 a {
-  color: #366854;
+  color: #1F2937;
   text-decoration: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -316,7 +316,7 @@ a::after {
   left: 0;
   width: 0;
   height: 2px;
-  background: #366854;
+  background: #048181;
   transition: width 0.3s ease;
 }
 
@@ -325,7 +325,7 @@ a:hover::after {
 }
 
 a:hover {
-  color: #366854;
+  color: #048181;
 }
 
 /* Premium Scrollbar - Updated to use new color palette */
@@ -340,13 +340,13 @@ a:hover {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #366854;
+  background: #048181;
   border-radius: 10px;
   border: 2px solid #FFFFFF;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #366854;
+  background: #036969;
 }
 
 /* Premium Loading Spinner - Updated to use new color palette */
@@ -355,7 +355,7 @@ a:hover {
   animation: spin 1s linear infinite;
   border-radius: 50%;
   border: 4px solid #CBD5E1;
-  border-top-color: #366854;
+  border-top-color: #048181;
   box-shadow: 0 0 20px rgba(4, 129, 129, 0.3);
 }
 
@@ -367,11 +367,11 @@ a:hover {
 
 /* Premium Text Utilities - Updated to use new color palette */
 .text-primary {
-  color: #366854;
+  color: #1F2937;
 }
 
 .text-secondary {
-  color: #366854;
+  color: #1F2937;
 }
 
 .text-tertiary {
@@ -384,7 +384,7 @@ a:hover {
 
 /* Premium Text - Updated */
 .gradient-text {
-  color: #366854;
+  color: #1F2937;
 }
 
 /* Premium Background Utilities - Updated */
@@ -414,19 +414,19 @@ a:hover {
 }
 
 .border-accent {
-  border-color: #366854;
+  border-color: #048181;
 }
 
 /* Premium Focus Styles - Updated */
 *:focus-visible {
-  outline: 2px solid #366854;
+  outline: 2px solid #048181;
   outline-offset: 2px;
   border-radius: 4px;
 }
 
 /* Premium Selection - Updated */
 ::selection {
-  background-color: #366854;
+  background-color: #048181;
   color: #FFFFFF;
 }
 
@@ -548,7 +548,7 @@ a:hover {
   /* Ensure our custom styles override Tailwind */
   body {
   background-color: #FFFFFF !important;
-  color: #366854 !important;
+  color: #1F2937 !important;
   }
 }
 

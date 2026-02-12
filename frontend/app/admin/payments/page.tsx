@@ -288,3 +288,23 @@ export default function AdminPaymentsPage() {
 }
 
 
+
+                      size="icon"
+                      onClick={() => setPage(page + 1)}
+                      disabled={page >= Math.ceil(total / pageSize)}
+                      className="text-white border-white/20 hover:border-white/40"
+                    >
+                      <FiChevronRight className="w-5 h-5" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </AdminLayout>
+  );
+}
+
+

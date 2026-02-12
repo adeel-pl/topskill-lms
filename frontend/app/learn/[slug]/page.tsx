@@ -2069,3 +2069,461 @@ export default function CoursePlayerPage() {
     </div>
   );
 }
+
+                                  <div 
+                                    key={attempt.id} 
+                                    className="text-xs p-2 rounded border"
+                                    style={{
+                                      backgroundColor: colors.background.secondary,
+                                      borderColor: colors.border.primary
+                                    }}
+                                  >
+                                    <div className="flex items-center justify-between">
+                                      <span style={{ color: colors.text.dark }}>Attempt {attempt.attempt_number || idx + 1}</span>
+                                      <span 
+                                        className="font-semibold"
+                                        style={{ color: attempt.passed ? colors.accent.secondary : colors.accent.secondary }}
+                                      >
+                                        {attempt.score !== null ? `${attempt.score.toFixed(1)}%` : 'N/A'}
+                                      </span>
+                                    </div>
+                                    <div className="mt-1" style={{ color: colors.text.muted }}>
+                                      {new Date(attempt.completed_at).toLocaleString()}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                            
+                            <div className="flex items-center gap-2">
+                              {hasCompletedAttempts && bestPassed && canRetake ? (
+                                <button 
+                                  onClick={() => router.push(`/courses/${params.slug}/quizzes/${quiz.id}`)}
+                                  className="px-4 py-2 text-white rounded-sm font-semibold text-sm transition-all duration-300 hover:scale-105"
+                                  style={{ backgroundColor: colors.accent.secondary }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.accent.primary;
+                                    e.currentTarget.style.boxShadow = `0 4px 12px ${colors.accent.primary}40`;
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.accent.secondary;
+                                    e.currentTarget.style.boxShadow = 'none';
+                                  }}
+                                >
+                                  Retake Quiz
+                                </button>
+                              ) : hasCompletedAttempts && !bestPassed && canRetake ? (
+                                <button 
+                                  onClick={() => router.push(`/courses/${params.slug}/quizzes/${quiz.id}`)}
+                                  className="px-4 py-2 text-white rounded-sm font-semibold text-sm transition-all duration-300 hover:scale-105"
+                                  style={{ backgroundColor: colors.accent.primary }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.accent.secondary;
+                                    e.currentTarget.style.boxShadow = `0 4px 12px ${colors.accent.secondary}40`;
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.accent.primary;
+                                    e.currentTarget.style.boxShadow = 'none';
+                                  }}
+                                >
+                                  Retake Quiz
+                                </button>
+                              ) : !hasCompletedAttempts ? (
+                                <button 
+                                  onClick={() => router.push(`/courses/${params.slug}/quizzes/${quiz.id}`)}
+                                  className="px-4 py-2 text-white rounded-sm font-semibold text-sm transition-all duration-300 hover:scale-105"
+                                  style={{ backgroundColor: colors.accent.primary }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.accent.secondary;
+                                    e.currentTarget.style.boxShadow = `0 4px 12px ${colors.accent.secondary}40`;
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.accent.primary;
+                                    e.currentTarget.style.boxShadow = 'none';
+                                  }}
+                                >
+                                  Start Quiz
+                                </button>
+                              ) : (
+                                <span className="text-sm" style={{ color: colors.text.muted }}>Maximum attempts reached</span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <p style={{ color: colors.text.muted }}>No quizzes available for this course.</p>
+                  )}
+                </div>
+              )}
+
+              {activeTab === 'assignments' && (
+                <div>
+                  <h3 className="text-lg font-semibold mb-4" style={{ color: colors.text.dark }}>Course Assignments</h3>
+                  {assignments && assignments.length > 0 ? (
+                    <div className="space-y-4">
+                      {assignments.map((assignment: any) => {
+                        const submission = assignment.submission;
+                        const isSubmitted = submission !== null;
+                        const isGraded = submission && submission.status === 'graded';
+                        const isLate = assignment.due_date && submission && new Date(submission.submitted_at) > new Date(assignment.due_date);
+                        
+                        return (
+                        <div 
+                          key={assignment.id} 
+                          className="border rounded-sm p-4"
+                          style={{ borderColor: colors.border.primary }}
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <h4 className="font-semibold" style={{ color: colors.text.dark }}>{assignment.title}</h4>
+                            <div className="flex items-center gap-3">
+                              {assignment.due_date && (
+                                <span 
+                                  className="text-sm"
+                                  style={{ color: isLate ? colors.accent.secondary : colors.text.muted }}
+                                >
+                                  Due: {new Date(assignment.due_date).toLocaleDateString()}
+                                </span>
+                              )}
+                              {isSubmitted && (
+                                <span 
+                                  className="px-2 py-1 text-xs font-semibold rounded"
+                                  style={{
+                                    backgroundColor: submission.status === 'graded' 
+                                      ? colors.accent.secondary + '20'
+                                      : submission.status === 'returned'
+                                      ? colors.accent.primary + '20'
+                                      : colors.accent.primary + '20',
+                                    color: submission.status === 'graded'
+                                      ? colors.accent.secondary
+                                      : submission.status === 'returned'
+                                      ? colors.accent.primary
+                                      : colors.accent.primary
+                                  }}
+                                >
+                                  {submission.status === 'graded' ? 'Graded' :
+                                   submission.status === 'returned' ? 'Returned' : 'Submitted'}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <p className="text-sm mb-3" style={{ color: colors.text.muted }}>{assignment.description}</p>
+                          
+                          {/* Show submission status and grades */}
+                          {isSubmitted && (
+                              <div 
+                                className="mb-3 p-3 border rounded-sm"
+                                style={{
+                                  backgroundColor: colors.background.secondary,
+                                  borderColor: colors.border.primary
+                                }}
+                              >
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-sm font-medium" style={{ color: colors.text.dark }}>Submission Status:</span>
+                                  <span 
+                                    className="text-sm font-semibold"
+                                    style={{
+                                      color: submission.status === 'graded'
+                                        ? colors.accent.secondary
+                                        : submission.status === 'returned'
+                                        ? colors.accent.primary
+                                        : colors.accent.primary
+                                    }}
+                                  >
+                                    {submission.status.charAt(0).toUpperCase() + submission.status.slice(1)}
+                                  </span>
+                                </div>
+                                <div className="text-xs" style={{ color: colors.text.muted }}>
+                                  Submitted: {new Date(submission.submitted_at).toLocaleString()}
+                                </div>
+                                {isGraded && submission.score !== null && (
+                                  <div className="flex items-center justify-between pt-2 border-t" style={{ borderTopColor: colors.border.primary }}>
+                                    <span className="text-sm font-medium" style={{ color: colors.text.dark }}>Score:</span>
+                                    <span className="text-lg font-bold" style={{ color: colors.accent.primary }}>
+                                      {submission.score} / {assignment.max_score}
+                                    </span>
+                                  </div>
+                                )}
+                                {isGraded && submission.feedback && (
+                                  <div className="pt-2 border-t" style={{ borderTopColor: colors.border.primary }}>
+                                    <span className="text-sm font-medium block mb-1" style={{ color: colors.text.dark }}>Feedback:</span>
+                                    <p className="text-sm whitespace-pre-wrap" style={{ color: colors.text.muted }}>{submission.feedback}</p>
+                                  </div>
+                                )}
+                                {submission.submission_file && (
+                                  <div className="pt-2 border-t borderColor: colors.border.primary">
+                                    <a 
+                                      href={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || ''}${submission.submission_file}`}
+                                      target="_blank" 
+                                      rel="noopener noreferrer"
+                                      className="text-sm hover:underline"
+                                      style={{ color: colors.accent.primary }}
+                                    >
+                                      View Submitted File →
+                                    </a>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {submittingAssignment === assignment.id ? (
+                            <div className="space-y-3 mt-3">
+                              <textarea
+                                value={assignmentSubmissionText}
+                                onChange={(e) => setAssignmentSubmissionText(e.target.value)}
+                                placeholder="Enter your submission text here..."
+                                rows={4}
+                                className="w-full px-3 py-2 rounded-sm focus:outline-none focus:ring-2 resize-none"
+                                style={{
+                                  backgroundColor: colors.background.secondary,
+                                  borderColor: colors.border.primary,
+                                  color: colors.text.dark
+                                }}
+                                onFocus={(e) => {
+                                  e.currentTarget.style.borderColor = colors.accent.primary;
+                                  e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.accent.primary}40`;
+                                }}
+                                onBlur={(e) => {
+                                  e.currentTarget.style.borderColor = colors.border.primary;
+                                  e.currentTarget.style.boxShadow = 'none';
+                                }}
+                              />
+                              <input
+                                type="file"
+                                onChange={(e) => setAssignmentSubmissionFile(e.target.files?.[0] || null)}
+                                className="w-full px-3 py-2 border rounded-sm text-sm"
+                                style={{ borderColor: colors.border.primary }}
+                              />
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={async () => {
+                                    if (!enrollmentId) {
+                                      showError('Enrollment not found');
+                                      return;
+                                    }
+                                    try {
+                                      setSubmittingAssignment(assignment.id);
+                                      
+                                      // If submission exists, update it; otherwise create new
+                                      if (submission && submission.id) {
+                                        const formData = new FormData();
+                                        if (assignmentSubmissionText) formData.append('submission_text', assignmentSubmissionText);
+                                        if (assignmentSubmissionFile) formData.append('submission_file', assignmentSubmissionFile);
+                                        
+                                        await assignmentSubmissionsAPI.update(submission.id, formData);
+                                        showSuccess('Assignment updated successfully!');
+                                      } else {
+                                        await assignmentSubmissionsAPI.create({
+                                          enrollment: enrollmentId,
+                                          assignment: assignment.id,
+                                          submission_text: assignmentSubmissionText || undefined,
+                                          submission_file: assignmentSubmissionFile || undefined,
+                                        });
+                                        showSuccess('Assignment submitted successfully!');
+                                      }
+                                      
+                                      setSubmittingAssignment(null);
+                                      setAssignmentSubmissionText('');
+                                      setAssignmentSubmissionFile(null);
+                                      // Reload course content to show updated submission status
+                                      loadCourseContent();
+                                    } catch (error: any) {
+                                      const errorMsg = error.response?.data?.error || 
+                                                      error.response?.data?.detail || 
+                                                      error.response?.data?.non_field_errors?.[0] ||
+                                                      error.message || 
+                                                      'Failed to submit assignment';
+                                      showError(errorMsg);
+                                      setSubmittingAssignment(null);
+                                    }
+                                  }}
+                                  disabled={!assignmentSubmissionText && !assignmentSubmissionFile}
+                                  className="px-4 py-2 disabled:cursor-not-allowed text-white rounded-sm font-semibold text-sm transition-all duration-300 hover:scale-105"
+                                  style={{ backgroundColor: colors.accent.primary }}
+                                  onMouseEnter={(e) => {
+                                    if (!e.currentTarget.disabled) {
+                                      e.currentTarget.style.backgroundColor = colors.accent.secondary;
+                                      e.currentTarget.style.boxShadow = `0 4px 12px ${colors.accent.secondary}40`;
+                                    }
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    if (!e.currentTarget.disabled) {
+                                      e.currentTarget.style.backgroundColor = colors.accent.primary;
+                                      e.currentTarget.style.boxShadow = 'none';
+                                    }
+                                  }}
+                                >
+                                  {submission && submission.id ? 'Update' : 'Submit'}
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    setSubmittingAssignment(null);
+                                    setAssignmentSubmissionText('');
+                                    setAssignmentSubmissionFile(null);
+                                  }}
+                                  className="px-4 py-2 rounded-sm font-semibold text-sm transition-all duration-300"
+                                  style={{ 
+                                    backgroundColor: colors.border.primary,
+                                    color: colors.text.dark
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.border.dark;
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.border.primary;
+                                  }}
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2">
+                              {!isSubmitted ? (
+                                <button 
+                                  onClick={() => {
+                                    if (!enrollmentId) {
+                                      showError('You must be enrolled to submit assignments');
+                                      return;
+                                    }
+                                    setSubmittingAssignment(assignment.id);
+                                  }}
+                                  className="px-4 py-2 text-white rounded-sm font-semibold text-sm transition-all duration-300 hover:scale-105"
+                                  style={{ backgroundColor: colors.accent.primary }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.accent.secondary;
+                                    e.currentTarget.style.boxShadow = `0 4px 12px ${colors.accent.secondary}40`;
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.accent.primary;
+                                    e.currentTarget.style.boxShadow = 'none';
+                                  }}
+                                >
+                                  Submit Assignment
+                                </button>
+                              ) : (
+                                <button 
+                                  onClick={() => {
+                                    if (!enrollmentId) {
+                                      showError('You must be enrolled to submit assignments');
+                                      return;
+                                    }
+                                    // Pre-fill with existing submission
+                                    if (submission.submission_text) {
+                                      setAssignmentSubmissionText(submission.submission_text);
+                                    }
+                                    setSubmittingAssignment(assignment.id);
+                                  }}
+                                  className="px-4 py-2 text-white rounded-sm font-semibold text-sm transition-all duration-300 hover:scale-105"
+                                  style={{ backgroundColor: colors.accent.primary }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.accent.secondary;
+                                    e.currentTarget.style.boxShadow = `0 4px 12px ${colors.accent.secondary}40`;
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.accent.primary;
+                                    e.currentTarget.style.boxShadow = 'none';
+                                  }}
+                                >
+                                  Update Submission
+                                </button>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      );
+                      })}
+                    </div>
+                  ) : (
+                    <p style={{ color: colors.text.muted }}>No assignments available for this course.</p>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Note Modal */}
+      {showNoteModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+          <div className="rounded-xl p-6 max-w-md w-full shadow-2xl" style={{ backgroundColor: colors.background.card, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
+            <h3 className="text-xl font-bold mb-4" style={{ color: colors.text.dark }}>{editingNote ? 'Edit Note' : 'Add Note'}</h3>
+            <textarea
+              value={noteText}
+              onChange={(e) => setNoteText(e.target.value)}
+              placeholder="Enter your note here..."
+              className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 resize-none transition-colors"
+              style={{
+                borderColor: colors.border.primary,
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                backgroundColor: colors.background.secondary,
+                color: colors.text.dark
+              }}
+              rows={6}
+              autoFocus
+              onFocus={(e) => {
+                e.target.style.borderColor = colors.accent.primary;
+                e.target.style.boxShadow = `0 0 0 2px ${colors.accent.primary}20`;
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = colors.border.primary;
+                e.target.style.boxShadow = '';
+              }}
+            />
+            <div className="flex gap-3 mt-4">
+              <button
+                onClick={() => {
+                  if (noteText.trim()) {
+                    handleAddNote(noteText.trim());
+                    setNoteText('');
+                    setShowNoteModal(false);
+                  }
+                }}
+                className="flex-1 px-4 py-2 rounded-lg font-semibold transition-all duration-300 hover:scale-105"
+                style={{ 
+                  backgroundColor: colors.button.primary, 
+                  color: colors.text.white,
+                  boxShadow: `0 10px 25px -5px ${colors.primary}30`
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = `0 20px 25px -5px ${colors.primary}50`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = `0 10px 25px -5px ${colors.primary}30`;
+                }}
+              >
+                {editingNote ? 'Update Note' : 'Save Note'}
+              </button>
+              <button
+                onClick={() => {
+                  setNoteText('');
+                  setEditingNote(null);
+                  setShowNoteModal(false);
+                }}
+                className="flex-1 px-4 py-2 rounded-lg font-semibold transition-all duration-300 hover:scale-105"
+                style={{ 
+                  backgroundColor: colors.button.primary, 
+                  color: colors.text.white,
+                  boxShadow: `0 10px 25px -5px ${colors.primary}30`
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = `0 20px 25px -5px ${colors.primary}50`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = `0 10px 25px -5px ${colors.primary}30`;
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

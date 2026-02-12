@@ -578,3 +578,11 @@ export default function CourseDetailPage() {
     </div>
   );
 }
+
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
