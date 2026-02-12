@@ -158,20 +158,38 @@ export default function MyCoursesPage() {
 
                   {/* Course Content */}
                   <div className="flex-1 flex flex-col p-5">
-                    <div className="flex items-start justify-between mb-3">
-                      <Heading as="h3" size="h5" className="flex-1 line-clamp-2">
-                        {enrollment.course.title || 'Untitled Course'}
-                      </Heading>
-                    </div>
-                    <div className="flex items-center gap-2 flex-wrap mb-3">
-                      <span className="px-3 py-1 rounded-lg text-xs font-semibold text-white" style={{ backgroundColor: colors.primary }}>
-                        {enrollment.status?.toUpperCase() || 'ACTIVE'}
-                      </span>
-                      {enrollment.course.modality && (
-                        <span className="px-3 py-1 rounded-lg text-xs font-semibold text-white" style={{ backgroundColor: colors.secondary }}>
-                          {enrollment.course.modality.toUpperCase()}
+                    {/* Title and Badges Row - Match design exactly */}
+                    <div className="flex items-start justify-between gap-3 mb-4">
+                      <div className="flex-1 min-w-0">
+                        {(() => {
+                          const title = enrollment.course.title || 'Untitled Course';
+                          const words = title.split(' ');
+                          const firstLine = words[0] || title;
+                          const secondLine = words.slice(1).join(' ') || '';
+                          return (
+                            <div>
+                              <Heading as="h3" size="h5" className="mb-0 leading-tight" style={{ color: colors.text.dark }}>
+                                {firstLine}
+                              </Heading>
+                              {secondLine && (
+                                <Heading as="h3" size="h5" className="mb-0 leading-tight" style={{ color: colors.text.dark }}>
+                                  {secondLine}
+                                </Heading>
+                              )}
+                            </div>
+                          );
+                        })()}
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <span className="px-3 py-1 rounded-lg text-xs font-semibold text-white whitespace-nowrap" style={{ backgroundColor: colors.primary }}>
+                          {enrollment.status?.toUpperCase() || 'ACTIVE'}
                         </span>
-                      )}
+                        {enrollment.course.modality && (
+                          <span className="px-3 py-1 rounded-lg text-xs font-semibold text-white whitespace-nowrap" style={{ backgroundColor: colors.secondary }}>
+                            {enrollment.course.modality.toUpperCase()}
+                          </span>
+                        )}
+                      </div>
                     </div>
 
                     {/* Batch Information */}
@@ -186,14 +204,14 @@ export default function MyCoursesPage() {
                       </Card>
                     )}
 
-                    {/* Progress Section */}
+                    {/* Progress Section - Match design exactly */}
                     <div className="mb-4">
                       <div className="flex items-center justify-between mb-2">
-                        <Text size="sm" className="font-semibold flex items-center gap-1.5">
-                          <FiZap className="text-sm" style={{ color: colors.primary }} />
+                        <Text size="sm" className="font-semibold flex items-center gap-1.5" style={{ color: colors.text.dark }}>
+                          <FiZap className="text-base" style={{ color: colors.primary }} />
                           Progress
                         </Text>
-                        <Text size="lg" className="font-bold" style={{ color: colors.primary }}>
+                        <Text size="lg" className="font-bold" style={{ color: colors.text.dark }}>
                           {(() => {
                             if (progress === null || progress === undefined) return '0.0';
                             const num = typeof progress === 'number' ? progress : parseFloat(String(progress));
@@ -201,7 +219,7 @@ export default function MyCoursesPage() {
                           })()}%
                         </Text>
                       </div>
-                      <div className="w-full rounded-full h-3 overflow-hidden" style={{ backgroundColor: colors.background.soft }}>
+                      <div className="w-full rounded-full h-2 overflow-hidden" style={{ backgroundColor: colors.border.primary }}>
                         <div
                           className="h-full rounded-full transition-all duration-1000"
                           style={{ width: `${displayProgress}%`, backgroundColor: colors.primary }}
@@ -209,7 +227,7 @@ export default function MyCoursesPage() {
                       </div>
                     </div>
 
-                    {/* Action Button */}
+                    {/* Action Button - Match design exactly */}
                     <div className="mt-auto">
                       <Link 
                         href={`/learn/${enrollment.course.slug}`}
@@ -228,7 +246,7 @@ export default function MyCoursesPage() {
                         }}
                       >
                         <FiPlay className="text-lg flex-shrink-0" />
-                        <span>Continue Learning</span>
+                        <span className="text-center">Continue Learning</span>
                       </Link>
                     </div>
                   </div>
