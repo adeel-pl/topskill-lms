@@ -1,5 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import { colors } from "@/lib/colors"
 
 interface TextProps extends React.HTMLAttributes<HTMLParagraphElement> {
   variant?: 'default' | 'muted' | 'light' | 'secondary'
@@ -8,12 +9,12 @@ interface TextProps extends React.HTMLAttributes<HTMLParagraphElement> {
 }
 
 const Text = React.forwardRef<HTMLParagraphElement, TextProps>(
-  ({ className, variant = 'default', size = 'default', as: Component = 'p', children, ...props }, ref) => {
-    const variantClasses: Record<string, string> = {
-      default: 'text-[#00d084]',
-      muted: 'text-[#64748B]',
-      light: 'text-[#9CA3AF]',
-      secondary: 'text-[#4B5563]',
+  ({ className, variant = 'default', size = 'default', as: Component = 'p', style, children, ...props }, ref) => {
+    const variantStyles: Record<string, React.CSSProperties> = {
+      default: { color: colors.text.primary },  // Dark blue - uses global settings
+      muted: { color: colors.text.muted },
+      light: { color: colors.text.light },
+      secondary: { color: colors.text.secondary },
     }
     
     const sizeClasses: Record<string, string> = {
@@ -24,7 +25,7 @@ const Text = React.forwardRef<HTMLParagraphElement, TextProps>(
     }
     
     // Safe fallbacks
-    const safeVariant = variantClasses[variant] || variantClasses.default;
+    const safeVariantStyle = variantStyles[variant] || variantStyles.default;
     const safeSize = sizeClasses[size] || sizeClasses.default;
     
     return (
@@ -32,10 +33,10 @@ const Text = React.forwardRef<HTMLParagraphElement, TextProps>(
         ref={ref}
         className={cn(
           "leading-[1.6]",
-          safeVariant,
           safeSize,
           className
         )}
+        style={{ ...safeVariantStyle, ...style }}
         {...props}
       >
         {children || ''}

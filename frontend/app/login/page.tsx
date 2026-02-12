@@ -90,7 +90,7 @@ export default function LoginPage() {
           {/* Header */}
           <div className="text-center mb-8">
             <Heading as="h1" size="h1" className="mb-2">Welcome back</Heading>
-            <Text variant="muted" size="base">Sign in to continue learning</Text>
+            <Text variant="muted" size="sm">Sign in to continue learning</Text>
           </div>
 
           {/* Form Card */}
@@ -159,7 +159,7 @@ export default function LoginPage() {
                     onError={handleGoogleError}
                     useOneTap={false}
                     shape="rectangular"
-                    theme="filled_black"
+                    theme="outline"
                     size="large"
                     text="signin_with"
                   />

@@ -1,5 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import { colors } from "@/lib/colors"
 
 interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
   as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
@@ -7,7 +8,7 @@ interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
 }
 
 const Heading = React.forwardRef<HTMLHeadingElement, HeadingProps>(
-  ({ className, as, size, children, ...props }, ref) => {
+  ({ className, as, size, style, children, ...props }, ref) => {
     // Safe fallbacks
     const safeSize = size || 'h2';
     const Component = as || (safeSize === 'display' || safeSize === 'display-sm' ? 'h1' : safeSize === 'h1' ? 'h1' : safeSize === 'h3' ? 'h3' : safeSize === 'h4' ? 'h4' : safeSize === 'h5' ? 'h5' : safeSize === 'h6' ? 'h6' : 'h2');
@@ -25,14 +26,20 @@ const Heading = React.forwardRef<HTMLHeadingElement, HeadingProps>(
     
     const safeSizeClass = sizeClasses[safeSize] || sizeClasses.h2;
     
+    // Default color from global settings (can be overridden by className like text-white)
+    const defaultStyle: React.CSSProperties = {
+      color: colors.text.primary,  // Dark blue - uses global settings
+    }
+    
     return (
       <Component
         ref={ref}
         className={cn(
-          "text-[#00d084] leading-tight",
+          "leading-tight",
           safeSizeClass,
           className
         )}
+        style={{ ...defaultStyle, ...style }}
         {...props}
       >
         {children || ''}

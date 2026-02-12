@@ -10,22 +10,35 @@ export interface FormInputProps
 }
 
 const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
-  ({ className, label, error, icon, type = "text", ...props }, ref) => {
+  ({ className, label, error, icon, type = "text", id, ...props }, ref) => {
+    // Generate unique ID if not provided
+    const inputId = id || React.useMemo(() => `input-${Math.random().toString(36).substr(2, 9)}`, []);
+    const errorId = error ? `${inputId}-error` : undefined;
+    
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-semibold mb-2" style={{ color: colors.text.dark }}>
+          <label 
+            htmlFor={inputId}
+            className="block text-sm font-semibold mb-2" 
+            style={{ color: colors.text.dark }}
+          >
             {label}
           </label>
         )}
         <div className="relative">
           {icon && (
-            <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10" style={{ color: colors.text.muted }}>
+            <div 
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 pointer-events-none" 
+              style={{ color: colors.text.muted }}
+              aria-hidden="true"
+            >
               {icon}
             </div>
           )}
           <input
             type={type}
+            id={inputId}
             className={cn(
               "w-full px-4 py-3 rounded-xl border bg-white",
               "focus:outline-none focus:ring-2 focus:ring-offset-2",
@@ -39,6 +52,8 @@ const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
               borderStyle: 'solid',
               color: colors.text.dark,
             }}
+            aria-invalid={error ? "true" : "false"}
+            aria-describedby={errorId}
             onFocus={(e) => {
               e.currentTarget.style.borderColor = error ? colors.status.error : colors.primary;
               e.currentTarget.style.boxShadow = `0 0 0 2px ${error ? colors.status.error : colors.primary}30`;
@@ -53,7 +68,14 @@ const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
           />
         </div>
         {error && (
-          <p className="mt-1 text-sm" style={{ color: colors.status.error }}>{error}</p>
+          <p 
+            id={errorId}
+            className="mt-1 text-sm" 
+            style={{ color: colors.status.error }}
+            role="alert"
+          >
+            {error}
+          </p>
         )}
       </div>
     )

@@ -132,6 +132,10 @@ export default function SearchBar({
               type="text"
               placeholder={placeholder}
               value={searchQuery}
+              aria-label="Search courses by title, instructor, or topic"
+              aria-expanded={showSuggestions}
+              aria-controls="search-suggestions"
+              aria-autocomplete="list"
               onChange={(e) => {
                 setSearchQuery(e.target.value);
                 if (e.target.value.trim().length >= 2) {

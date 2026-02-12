@@ -35,9 +35,15 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={`${font.variable} w-full overflow-x-hidden`}>
       <body className="antialiased w-full overflow-x-hidden font-sans" suppressHydrationWarning>
+        {/* Skip to Content Link - Accessibility */}
+        <a href="#main-content" className="skip-link">
+          Skip to main content
+        </a>
         <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
           <AuthProvider>
-            <ToastProvider>{children}</ToastProvider>
+            <ToastProvider>
+              <main id="main-content">{children}</main>
+            </ToastProvider>
           </AuthProvider>
         </GoogleOAuthProvider>
       </body>

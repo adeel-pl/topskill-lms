@@ -77,6 +77,7 @@ export default function PureLogicsNavbar() {
               href="/cart" 
               className="p-2 sm:p-2.5 rounded-lg transition-colors relative flex-shrink-0"
               style={{ color: colors.text.dark }}
+              aria-label="View shopping cart"
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = colors.background.soft;
                 e.currentTarget.style.color = colors.primary;
@@ -86,7 +87,7 @@ export default function PureLogicsNavbar() {
                 e.currentTarget.style.color = colors.text.dark;
               }}
             >
-              <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
+              <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
             </Link>
             {isAuthenticated ? (
               <>
@@ -158,9 +159,11 @@ export default function PureLogicsNavbar() {
               style={{ color: colors.text.dark }}
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background.soft}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-              aria-label="Toggle mobile menu"
+              aria-label={mobileMenuOpen ? "Close mobile menu" : "Open mobile menu"}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-menu"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />}
             </button>
           </div>
         </div>
@@ -169,12 +172,14 @@ export default function PureLogicsNavbar() {
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
+              id="mobile-menu"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2 }}
               className="lg:hidden py-4 overflow-hidden bg-white"
               style={{ borderTopColor: colors.border.primary, borderTopWidth: '1px', borderTopStyle: 'solid' }}
+              role="menu"
             >
               <div className="flex flex-col gap-2">
                 <Link 

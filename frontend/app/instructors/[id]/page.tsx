@@ -141,9 +141,9 @@ export default function InstructorDetailPage() {
         </Link>
 
         {/* Instructor Header */}
-        <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200 mb-8">
+        <div className="bg-white rounded-2xl p-8 shadow-lg border mb-8 transition-all duration-300 hover:shadow-xl" style={{ borderColor: colors.border.primary }}>
           <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-            <div className="w-24 h-24 rounded-full flex items-center justify-center text-white text-4xl font-bold" style={{ background: `linear-gradient(to bottom right, ${colors.primary}, ${colors.primaryHover})` }}>
+            <div className="w-24 h-24 rounded-full flex items-center justify-center text-white text-4xl font-bold shadow-lg" style={{ background: `linear-gradient(135deg, ${colors.primary}, ${colors.accent.green})` }}>
               {instructor.full_name.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1">
@@ -218,7 +218,7 @@ export default function InstructorDetailPage() {
                   description: course.short_description || course.description,
                   price: course.price,
                   thumbnail: course.thumbnail,
-                  featured_image: course.featured_image,
+                  featured_image: (course as any).featured_image,
                   instructor_name: instructor.full_name,
                   enrolled_count: course.enrolled_count,
                   average_rating: course.avg_rating,

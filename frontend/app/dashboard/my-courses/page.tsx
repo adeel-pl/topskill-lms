@@ -115,7 +115,7 @@ export default function MyCoursesPage() {
                 <FiBookOpen className="text-4xl md:text-5xl" style={{ color: colors.primary }} />
               </div>
               <Heading as="h2" size="h2" className="mb-3 md:mb-4">No courses yet</Heading>
-              <Text variant="muted" size="base" className="mb-5 md:mb-6 lg:mb-8">Start learning by enrolling in a course!</Text>
+              <Text variant="muted" size="sm" className="mb-5 md:mb-6 lg:mb-8">Start learning by enrolling in a course!</Text>
               <Button asChild variant="default" size="lg">
                 <Link href="/">Browse Courses</Link>
               </Button>
@@ -213,7 +213,19 @@ export default function MyCoursesPage() {
                     <div className="mt-auto">
                       <Link 
                         href={`/learn/${enrollment.course.slug}`}
-                        className="inline-flex items-center justify-center gap-2 w-full px-6 py-3 text-base font-semibold text-white bg-[#00d084] hover:bg-[#2a5242] rounded-[0.875rem] transition-all duration-300 shadow-md hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00d084] focus-visible:ring-offset-2"
+                        className="inline-flex items-center justify-center gap-2 w-full px-6 py-3 text-base font-semibold text-white rounded-xl transition-all duration-300 shadow-md hover:shadow-lg hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                        style={{ 
+                          backgroundColor: colors.accent.green,
+                          focusVisibleRingColor: colors.accent.green
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = colors.hover.accent;
+                          e.currentTarget.style.boxShadow = `0 10px 25px -5px ${colors.accent.green}40`;
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = colors.accent.green;
+                          e.currentTarget.style.boxShadow = '';
+                        }}
                       >
                         <FiPlay className="text-lg flex-shrink-0" />
                         <span>Continue Learning</span>

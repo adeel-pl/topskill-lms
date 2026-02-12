@@ -7,6 +7,11 @@ import { GoogleLogin } from '@react-oauth/google';
 import { useAuthStore } from '@/lib/store';
 import PureLogicsNavbar from '@/app/components/PureLogicsNavbar';
 import { FiUser, FiMail, FiLock, FiArrowRight } from 'react-icons/fi';
+import { Button } from '@/app/components/ui/button';
+import { Card } from '@/app/components/ui/card';
+import { Heading } from '@/app/components/ui/heading';
+import { Text } from '@/app/components/ui/text';
+import { FormInput } from '@/app/components/ui/form-input';
 import { colors } from '@/lib/colors';
 
 export default function RegisterPage() {
@@ -50,229 +55,126 @@ export default function RegisterPage() {
     }
   };
 
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    setGoogleLoading(true);
+    setError('');
+    
+    try {
+      const user = await googleLogin(credentialResponse.credential);
+      
+      if (user?.is_staff || user?.role === 'admin') {
+        router.push('/admin');
+      } else if (user?.is_instructor || user?.role === 'instructor') {
+        router.push('/admin');
+      } else {
+        router.push('/dashboard/my-courses');
+      }
+    } catch (err: any) {
+      const errorMessage = err.message || err.response?.data?.error || err.response?.data?.detail || 'Google registration failed. Please try again.';
+      setError(errorMessage);
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setError('Google registration failed. Please try again.');
+    setGoogleLoading(false);
+  };
+
   return (
-    <div className="min-h-screen" style={{ backgroundColor: colors.background.primary, color: colors.text.dark }}>
+    <div className="min-h-screen bg-white">
       <PureLogicsNavbar />
 
-      <div className="section-after-header flex items-center justify-center min-h-[calc(100vh-80px)] px-4 sm:px-6 pb-12 md:pb-16 relative z-10">
-        <div className="max-w-[500px] xl:max-w-[600px] 2xl:max-w-[700px] mx-auto w-full px-4 sm:px-6">
-          {/* Enhanced Header */}
-          <div className="text-center mb-12">
-            <div className="inline-block mb-8">
-              <div className="relative">
-                <div className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto shadow-2xl transform hover:scale-110 transition-transform duration-300" style={{ backgroundColor: colors.primary, boxShadow: `0 25px 50px -12px ${colors.primary}50` }}>
-                  <div className="w-10 h-10 rounded-xl" style={{ backgroundColor: colors.background.dark }}></div>
-                </div>
-                <div className="absolute inset-0 rounded-3xl opacity-20 blur-2xl animate-pulse" style={{ backgroundColor: colors.primary }}></div>
-              </div>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 leading-tight" style={{ color: colors.text.dark }}>
-              Create an account
-            </h2>
-            <p className="text-base md:text-lg" style={{ color: colors.text.muted }}>Start your learning journey today</p>
+      <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4 sm:px-6 pb-12 md:pb-16 relative z-10 pt-20">
+        <div className="max-w-[500px] w-full">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <Heading as="h1" size="h1" className="mb-2">Create an account</Heading>
+            <Text variant="muted" size="sm">Start your learning journey today</Text>
           </div>
 
-          {/* Premium Form Card */}
-          <div className="rounded-3xl p-8 md:p-10 shadow-2xl transition-all duration-500" style={{ backgroundColor: colors.background.card, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}>
+          {/* Form Card */}
+          <Card variant="default" className="p-8 md:p-10">
             <form className="space-y-6" onSubmit={handleSubmit}>
               {error && (
                 <div className="px-6 py-4 rounded-xl text-sm font-medium" style={{ backgroundColor: `${colors.status.error}15`, borderColor: colors.status.error, borderWidth: '1px', borderStyle: 'solid', color: colors.status.error }}>
-                  {error}
+                  <div className="flex items-start gap-3">
+                    <span className="text-lg">⚠️</span>
+                    <div>
+                      <p className="font-bold mb-1">Registration Failed</p>
+                      <p>{error}</p>
+                    </div>
+                  </div>
                 </div>
               )}
 
+              {/* First Name and Last Name in a row */}
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-bold mb-2" style={{ color: colors.text.dark }}>First Name</label>
-                  <input
-                    type="text"
-                    className="w-full px-5 py-4 rounded-xl focus:outline-none focus:ring-2 transition-all"
-                    style={{ 
-                      backgroundColor: colors.background.secondary, 
-                      borderColor: colors.border.primary, 
-                      borderWidth: '2px', 
-                      borderStyle: 'solid',
-                      color: colors.text.dark
-                    }}
-                    onFocus={(e) => {
-                      e.currentTarget.style.borderColor = colors.accent.primary;
-                      e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.accent.primary}50`;
-                    }}
-                    onBlur={(e) => {
-                      e.currentTarget.style.borderColor = colors.border.primary;
-                      e.currentTarget.style.boxShadow = '';
-                    }}
-                    placeholder="John"
-                    value={formData.first_name}
-                    onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-bold mb-2" style={{ color: colors.text.dark }}>Last Name</label>
-                  <input
-                    type="text"
-                    className="w-full px-5 py-4 rounded-xl focus:outline-none focus:ring-2 transition-all"
-                    style={{ 
-                      backgroundColor: colors.background.secondary, 
-                      borderColor: colors.border.primary, 
-                      borderWidth: '2px', 
-                      borderStyle: 'solid',
-                      color: colors.text.dark
-                    }}
-                    onFocus={(e) => {
-                      e.currentTarget.style.borderColor = colors.accent.primary;
-                      e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.accent.primary}50`;
-                    }}
-                    onBlur={(e) => {
-                      e.currentTarget.style.borderColor = colors.border.primary;
-                      e.currentTarget.style.boxShadow = '';
-                    }}
-                    placeholder="Doe"
-                    value={formData.last_name}
-                    onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
-                  />
-                </div>
+                <FormInput
+                  label="First Name"
+                  type="text"
+                  placeholder="John"
+                  value={formData.first_name}
+                  onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+                  required
+                />
+                <FormInput
+                  label="Last Name"
+                  type="text"
+                  placeholder="Doe"
+                  value={formData.last_name}
+                  onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
+                  required
+                />
               </div>
 
-              <div>
-                <label className="block text-sm font-bold mb-3" style={{ color: colors.text.dark }}>Username</label>
-                <div className="relative group">
-                  <div className="absolute inset-0 rounded-xl transition-all duration-300 group-focus-within:opacity-100 opacity-0" style={{ backgroundColor: `${colors.primary}10` }}></div>
-                  <FiUser className="absolute left-5 top-1/2 transform -translate-y-1/2 transition-colors z-10 group-focus-within:text-[#00d084]" style={{ color: colors.text.light }} />
-                  <input
-                    type="text"
-                    required
-                    className="relative w-full pl-14 pr-5 py-4 rounded-xl focus:outline-none focus:ring-2 transition-all"
-                    style={{ 
-                      backgroundColor: colors.background.secondary, 
-                      borderColor: colors.border.primary, 
-                      borderWidth: '2px', 
-                      borderStyle: 'solid',
-                      color: colors.text.dark
-                    }}
-                    placeholder="johndoe"
-                    value={formData.username}
-                    onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                    onFocus={(e) => {
-                      e.currentTarget.style.borderColor = colors.accent.primary;
-                      e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.accent.primary}50`;
-                    }}
-                    onBlur={(e) => {
-                      e.currentTarget.style.borderColor = colors.border.primary;
-                      e.currentTarget.style.boxShadow = '';
-                    }}
-                  />
-                </div>
-              </div>
+              <FormInput
+                label="Username"
+                type="text"
+                placeholder="johndoe"
+                value={formData.username}
+                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                icon={<FiUser className="w-5 h-5" />}
+                required
+              />
 
-              <div>
-                <label className="block text-sm font-bold mb-3" style={{ color: colors.text.dark }}>Email</label>
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-[#00d084]/0 rounded-xl group-focus-within:bg-[#00d084]/10 transition-all duration-300"></div>
-                  <FiMail className="absolute left-5 top-1/2 transform -translate-y-1/2 transition-colors z-10" style={{ color: colors.text.light }} />
-                  <input
-                    type="email"
-                    required
-                    className="relative w-full pl-14 pr-5 py-4 rounded-xl focus:outline-none focus:ring-2 transition-all"
-                    style={{ 
-                      backgroundColor: colors.background.secondary, 
-                      borderColor: colors.border.primary, 
-                      borderWidth: '2px', 
-                      borderStyle: 'solid',
-                      color: colors.text.dark
-                    }}
-                    placeholder="john@example.com"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    onFocus={(e) => {
-                      e.currentTarget.style.borderColor = colors.accent.primary;
-                      e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.accent.primary}50`;
-                    }}
-                    onBlur={(e) => {
-                      e.currentTarget.style.borderColor = colors.border.primary;
-                      e.currentTarget.style.boxShadow = '';
-                    }}
-                  />
-                </div>
-              </div>
+              <FormInput
+                label="Email"
+                type="email"
+                placeholder="john@example.com"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                icon={<FiMail className="w-5 h-5" />}
+                required
+              />
 
-              <div>
-                <label className="block text-sm font-bold mb-3" style={{ color: colors.text.dark }}>Password</label>
-                <div className="relative group">
-                  <div className="absolute inset-0 rounded-xl transition-all duration-300 group-focus-within:opacity-100 opacity-0" style={{ backgroundColor: `${colors.primary}10` }}></div>
-                  <FiLock className="absolute left-5 top-1/2 transform -translate-y-1/2 transition-colors z-10 group-focus-within:text-[#00d084]" style={{ color: colors.text.light }} />
-                  <input
-                    type="password"
-                    required
-                    className="relative w-full pl-14 pr-5 py-4 rounded-xl focus:outline-none focus:ring-2 transition-all"
-                    style={{ 
-                      backgroundColor: colors.background.secondary, 
-                      borderColor: colors.border.primary, 
-                      borderWidth: '2px', 
-                      borderStyle: 'solid',
-                      color: colors.text.dark
-                    }}
-                    placeholder="At least 8 characters"
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    onFocus={(e) => {
-                      e.currentTarget.style.borderColor = colors.accent.primary;
-                      e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.accent.primary}50`;
-                    }}
-                    onBlur={(e) => {
-                      e.currentTarget.style.borderColor = colors.border.primary;
-                      e.currentTarget.style.boxShadow = '';
-                    }}
-                  />
-                </div>
-              </div>
+              <FormInput
+                label="Password"
+                type="password"
+                placeholder="At least 8 characters"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                icon={<FiLock className="w-5 h-5" />}
+                required
+              />
 
-              <div>
-                <label className="block text-sm font-bold mb-3" style={{ color: colors.text.dark }}>Confirm Password</label>
-                <div className="relative group">
-                  <div className="absolute inset-0 rounded-xl transition-all duration-300 group-focus-within:opacity-100 opacity-0" style={{ backgroundColor: `${colors.primary}10` }}></div>
-                  <FiLock className="absolute left-5 top-1/2 transform -translate-y-1/2 transition-colors z-10 group-focus-within:text-[#00d084]" style={{ color: colors.text.light }} />
-                  <input
-                    type="password"
-                    required
-                    className="relative w-full pl-14 pr-5 py-4 rounded-xl focus:outline-none focus:ring-2 transition-all"
-                    style={{ 
-                      backgroundColor: colors.background.secondary, 
-                      borderColor: colors.border.primary, 
-                      borderWidth: '2px', 
-                      borderStyle: 'solid',
-                      color: colors.text.dark
-                    }}
-                    placeholder="Confirm your password"
-                    value={formData.password2}
-                    onChange={(e) => setFormData({ ...formData, password2: e.target.value })}
-                    onFocus={(e) => {
-                      e.currentTarget.style.borderColor = colors.accent.primary;
-                      e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.accent.primary}50`;
-                    }}
-                    onBlur={(e) => {
-                      e.currentTarget.style.borderColor = colors.border.primary;
-                      e.currentTarget.style.boxShadow = '';
-                    }}
-                  />
-                </div>
-              </div>
+              <FormInput
+                label="Confirm Password"
+                type="password"
+                placeholder="Confirm your password"
+                value={formData.password2}
+                onChange={(e) => setFormData({ ...formData, password2: e.target.value })}
+                icon={<FiLock className="w-5 h-5" />}
+                required
+              />
 
-              <button
+              <Button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 md:py-5 rounded-xl font-black text-base md:text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-2xl flex items-center justify-center gap-2 group"
-                style={{ 
-                  backgroundColor: colors.button.primary, 
-                  color: colors.text.white,
-                  boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(16, 185, 129, 0.5)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(16, 185, 129, 0.3)';
-                }}
+                variant="default"
+                size="lg"
+                className="w-full"
               >
                 {loading ? (
                   <>
@@ -282,45 +184,23 @@ export default function RegisterPage() {
                 ) : (
                   <>
                     Sign up
-                    <FiArrowRight className="text-xl group-hover:translate-x-1 transition-transform" />
+                    <FiArrowRight className="text-xl" />
                   </>
                 )}
-              </button>
+              </Button>
             </form>
 
-            {/* Enhanced Social Login */}
+            {/* Social Login */}
             <div className="mt-8 pt-8" style={{ borderTopColor: colors.border.primary, borderTopWidth: '1px', borderTopStyle: 'solid' }}>
-              <p className="text-center text-sm mb-6 font-medium" style={{ color: colors.text.muted }}>Or continue with</p>
+              <Text size="sm" variant="muted" className="text-center mb-6">Or continue with</Text>
               <div className="flex gap-4 justify-center items-center">
                 <div className="relative">
                   <GoogleLogin
-                    onSuccess={async (credentialResponse: any) => {
-                      setGoogleLoading(true);
-                      setError('');
-                      try {
-                        const user = await googleLogin(credentialResponse.credential);
-                        if (user?.is_staff || user?.role === 'admin') {
-                          router.push('/admin');
-                        } else if (user?.is_instructor || user?.role === 'instructor') {
-                          router.push('/admin');
-                        } else {
-                          router.push('/dashboard/my-courses');
-                        }
-                      } catch (err: any) {
-                        const errorMessage = err.message || err.response?.data?.error || err.response?.data?.detail || 'Google registration failed. Please try again.';
-                        setError(errorMessage);
-                        
-                      } finally {
-                        setGoogleLoading(false);
-                      }
-                    }}
-                    onError={() => {
-                      setError('Google registration failed. Please try again.');
-                      setGoogleLoading(false);
-                    }}
+                    onSuccess={handleGoogleSuccess}
+                    onError={handleGoogleError}
                     useOneTap={false}
                     shape="rectangular"
-                    theme="filled_black"
+                    theme="outline"
                     size="large"
                     text="signup_with"
                   />
@@ -333,14 +213,16 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Enhanced Footer Link */}
+            {/* Footer Links */}
             <div className="mt-8 text-center">
-              <span className="text-sm" style={{ color: colors.text.muted }}>Already have an account? </span>
-              <Link href="/login" className="font-bold transition-colors hover:underline" style={{ color: colors.accent.primary }}>
-                Log in
-              </Link>
+              <Text size="sm" variant="muted">
+                Already have an account?{' '}
+                <Link href="/login" className="font-semibold hover:underline" style={{ color: colors.primary }}>
+                  Log in
+                </Link>
+              </Text>
             </div>
-          </div>
+          </Card>
         </div>
       </div>
     </div>

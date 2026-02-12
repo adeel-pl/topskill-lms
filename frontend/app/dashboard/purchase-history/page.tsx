@@ -155,7 +155,7 @@ export default function PurchaseHistoryPage() {
               <Text size="sm" variant="muted" className="font-medium">Total Enrolled</Text>
               <BookOpen className="w-5 h-5" style={{ color: colors.primary }} />
             </div>
-            <Heading as="p" size="h1" className="text-3xl">{enrollments.length}</Heading>
+            <Heading as="h2" size="h1" className="text-3xl">{enrollments.length}</Heading>
             <Text size="xs" variant="muted" className="mt-1">Active courses</Text>
           </Card>
           <Card variant="default" className="p-6">
@@ -163,7 +163,7 @@ export default function PurchaseHistoryPage() {
               <Text size="sm" variant="muted" className="font-medium">Average Progress</Text>
               <Play className="w-5 h-5" style={{ color: colors.primary }} />
             </div>
-            <Heading as="p" size="h1" className="text-3xl">{calculateAverageProgress()}%</Heading>
+            <Heading as="h2" size="h1" className="text-3xl">{calculateAverageProgress()}%</Heading>
             <Text size="xs" variant="muted" className="mt-1">Across all courses</Text>
           </Card>
         </div>
@@ -199,9 +199,9 @@ export default function PurchaseHistoryPage() {
                   >
                     {/* Course Image - Use featured_image first, then thumbnail */}
                     <div className="relative w-full aspect-video overflow-hidden" style={{ backgroundColor: colors.primary }}>
-                      {(enrollment.course.featured_image || enrollment.course.thumbnail) ? (
+                      {((enrollment.course as any).featured_image || enrollment.course.thumbnail) ? (
                         <img
-                          src={enrollment.course.featured_image || enrollment.course.thumbnail}
+                          src={(enrollment.course as any).featured_image || enrollment.course.thumbnail}
                           alt={enrollment.course.title}
                           className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                           onError={(e) => {
@@ -315,9 +315,9 @@ export default function PurchaseHistoryPage() {
                   <Card variant="default" hover={true} className="overflow-hidden">
                     <Link href={`/courses/${item.course.slug}`}>
                       <div className="relative aspect-video" style={{ backgroundColor: colors.primary }}>
-                        {(item.course.featured_image || item.course.thumbnail) ? (
+                        {((item.course as any).featured_image || item.course.thumbnail) ? (
                           <img
-                            src={item.course.featured_image || item.course.thumbnail}
+                            src={(item.course as any).featured_image || item.course.thumbnail}
                             alt={item.course.title}
                             className="w-full h-full object-cover"
                             onError={(e) => {
@@ -343,7 +343,7 @@ export default function PurchaseHistoryPage() {
                       </Link>
                       
                       <div className="flex items-center justify-between">
-                        <Text size="xl" className="font-bold">
+                        <Text size="lg" className="font-bold">
                           {formatPrice(item.course.price || 0)}
                         </Text>
                         <Button asChild variant="default" size="sm">

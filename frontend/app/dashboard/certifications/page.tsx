@@ -137,7 +137,7 @@ export default function CertificationsPage() {
                 <FiAward className="text-4xl md:text-5xl" style={{ color: colors.secondary }} />
               </div>
               <Heading as="h2" size="h2" className="mb-4">No certificates yet</Heading>
-              <Text variant="muted" size="base" className="mb-6 md:mb-8">Complete courses to earn certificates and showcase your achievements!</Text>
+              <Text variant="muted" size="sm" className="mb-6 md:mb-8">Complete courses to earn certificates and showcase your achievements!</Text>
               <Button asChild variant="default" size="lg">
                 <Link href="/">
                   <FiBookOpen />
@@ -170,7 +170,7 @@ export default function CertificationsPage() {
                   <Text size="sm" variant="muted" className="font-semibold mb-1">
                     Certificate Number
                   </Text>
-                  <Text size="base" className="font-mono">
+                  <Text size="sm" className="font-mono">
                     {certificate.certificate_number}
                   </Text>
                 </div>

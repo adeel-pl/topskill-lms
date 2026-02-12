@@ -7,13 +7,14 @@ import PureLogicsNavbar from '@/app/components/PureLogicsNavbar';
 import SearchBar from '@/app/components/SearchBar';
 import CourseCardNew from '@/app/components/CourseCardNew';
 import Footer from '@/app/components/Footer';
-import { ArrowRight, Grid3x3, List } from 'lucide-react';
+import { ArrowRight, Grid3x3, List, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Container } from '@/app/components/ui/container';
 import { Section } from '@/app/components/ui/section';
 import { Heading } from '@/app/components/ui/heading';
 import { Text } from '@/app/components/ui/text';
 import { Button, buttonVariants } from '@/app/components/ui/button';
+import { Card } from '@/app/components/ui/card';
 import { cn } from '@/lib/utils';
 import { colors } from '@/lib/colors';
 
@@ -244,8 +245,8 @@ export default function HomePage() {
     <div className="min-h-screen w-full bg-white">
       <PureLogicsNavbar />
 
-      {/* Hero Section */}
-      <section className="section-after-header relative pb-16 md:pb-20 lg:pb-24 overflow-hidden" style={{ backgroundColor: '#00d084' }}>
+      {/* Hero Section - Blue Background with White Text */}
+      <section className="section-after-header relative pb-16 md:pb-20 lg:pb-24 overflow-hidden" style={{ backgroundColor: colors.primary }}>
         {/* Animated Background Effects */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <motion.div
@@ -273,7 +274,7 @@ export default function HomePage() {
             style={{ 
               width: '300px', 
               height: '300px',
-              backgroundColor: colors.secondary,
+              backgroundColor: colors.accent.mint,
               bottom: '20%',
               right: '15%',
             }}
@@ -293,7 +294,7 @@ export default function HomePage() {
             style={{ 
               width: '250px', 
               height: '250px',
-              backgroundColor: colors.primaryLight,
+              backgroundColor: colors.accent.light,
               top: '50%',
               right: '30%',
             }}
@@ -356,12 +357,12 @@ export default function HomePage() {
                     transition={{ duration: 0.4, delay: 0.4 + idx * 0.1 }}
                     className="flex items-center gap-3 text-white"
                   >
-                    <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: colors.primaryLight }}>
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: colors.accent.green }}>
                       <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
-                    <Text size="base" className="text-white">{feature}</Text>
+                    <Text size="sm" className="text-white">{feature}</Text>
                   </motion.li>
                 ))}
               </motion.ul>
@@ -373,11 +374,40 @@ export default function HomePage() {
                 transition={{ duration: 0.6, delay: 0.6 }}
                 className="flex flex-wrap gap-4 mb-8 md:mb-10"
               >
-                <Link href="/register" className={cn(buttonVariants({ variant: "default", size: "lg" }), "text-white")}>
+                <Link 
+                  href="/register" 
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-bold text-white transition-all duration-300 hover:scale-105"
+                  style={{ 
+                    backgroundColor: colors.accent.green,
+                    boxShadow: `0 4px 15px rgba(74, 186, 106, 0.3)`
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = colors.hover.accent;
+                    e.currentTarget.style.boxShadow = `0 8px 25px rgba(74, 186, 106, 0.5)`;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = colors.accent.green;
+                    e.currentTarget.style.boxShadow = `0 4px 15px rgba(74, 186, 106, 0.3)`;
+                  }}
+                >
                   Learn With Us
                   <ArrowRight className="w-5 h-5" />
                 </Link>
-                <Link href="#" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "text-white border-white/30 hover:bg-white/10")}>
+                <Link 
+                  href="#" 
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-semibold text-white border-2 transition-all duration-300 hover:bg-white/10"
+                  style={{ 
+                    borderColor: 'rgba(255, 255, 255, 0.3)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                    e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }}
+                >
                   Watch Demo
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
@@ -603,8 +633,8 @@ export default function HomePage() {
         
       `}</style>
 
-      {/* Trending Courses Section */}
-      <Section variant="default" padding="default">
+      {/* Trending Courses Section - Enhanced Visual Grouping */}
+      <Section variant="default" padding="default" className="section-group">
         <Container>
           <div className="mb-12">
             {/* Header with Title and View Toggle */}
@@ -642,9 +672,11 @@ export default function HomePage() {
                         e.currentTarget.style.backgroundColor = 'transparent';
                       }
                     }}
+                    aria-label="Switch to grid view"
+                    aria-pressed={viewMode === 'grid'}
                     title="Grid View"
                   >
-                    <Grid3x3 className="w-5 h-5" />
+                    <Grid3x3 className="w-5 h-5" aria-hidden="true" />
                   </button>
                   <button
                     onClick={() => setViewMode('list')}
@@ -660,9 +692,11 @@ export default function HomePage() {
                         e.currentTarget.style.backgroundColor = 'transparent';
                       }
                     }}
+                    aria-label="Switch to list view"
+                    aria-pressed={viewMode === 'list'}
                     title="List View"
                   >
-                    <List className="w-5 h-5" />
+                    <List className="w-5 h-5" aria-hidden="true" />
                   </button>
                 </div>
               </div>
@@ -674,6 +708,8 @@ export default function HomePage() {
                 variant={activeTab === 'online' ? 'default' : 'light'}
                 onClick={() => setActiveTab('online')}
                 className="min-w-[140px]"
+                aria-label="Filter online courses"
+                aria-pressed={activeTab === 'online'}
               >
                 Online Courses
               </Button>
@@ -681,6 +717,8 @@ export default function HomePage() {
                 variant={activeTab === 'physical' ? 'default' : 'light'}
                 onClick={() => setActiveTab('physical')}
                 className="min-w-[140px]"
+                aria-label="Filter physical courses"
+                aria-pressed={activeTab === 'physical'}
               >
                 Physical Courses
               </Button>
@@ -700,7 +738,7 @@ export default function HomePage() {
             </div>
           ) : viewMode === 'grid' ? (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 card-group">
                 {Array.isArray(displayedTrendingCourses) && displayedTrendingCourses.length > 0 ? (
                   displayedTrendingCourses.map((course, index) => {
                     // Defensive: Ensure course has required fields

@@ -85,12 +85,16 @@ export default function InstructorsPage() {
       <PureLogicsNavbar />
       
       <div className="section-after-header max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Hero Section */}
-        <div className="relative mb-16 rounded-2xl overflow-hidden" style={{ backgroundColor: colors.secondary, minHeight: '400px' }}>
-          <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200")', backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
+        {/* Hero Section - Blue Background to Match Main Hero */}
+        <div className="relative mb-16 rounded-2xl overflow-hidden" style={{ backgroundColor: colors.primary, minHeight: '400px' }}>
+          {/* Animated Background Effects */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute rounded-full opacity-5 blur-3xl" style={{ width: '400px', height: '400px', backgroundColor: colors.accent.cyan, top: '10%', left: '10%' }}></div>
+            <div className="absolute rounded-full opacity-5 blur-3xl" style={{ width: '300px', height: '300px', backgroundColor: colors.accent.mint, bottom: '20%', right: '15%' }}></div>
+          </div>
           <div className="relative z-10 flex items-center justify-center min-h-[400px] px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl">
-              <div className="inline-block px-4 py-2 rounded-full mb-6" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(10px)' }}>
+              <div className="inline-block px-4 py-2 rounded-full mb-6" style={{ backgroundColor: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(10px)' }}>
                 <span className="text-sm font-semibold text-white">Our Experts</span>
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white">
@@ -157,7 +161,16 @@ export default function InstructorsPage() {
             {instructors.map((instructor) => (
               <div
                 key={instructor.id}
-                className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow border border-gray-200"
+                className="bg-white rounded-2xl p-6 shadow-lg transition-all duration-300 border border-gray-200 hover:shadow-xl hover:-translate-y-1"
+                style={{ borderColor: colors.border.primary }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = colors.accent.green;
+                  e.currentTarget.style.boxShadow = `0 20px 25px -5px ${colors.accent.green}20`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = colors.border.primary;
+                  e.currentTarget.style.boxShadow = '';
+                }}
               >
                 {/* Instructor Header */}
                 <div className="flex items-start gap-4 mb-4">
@@ -252,19 +265,21 @@ export default function InstructorsPage() {
                 {instructor.courses && instructor.courses.length > 0 && (
                   <Link
                     href={`/instructors/${instructor.id}`}
-                    className="block w-full text-center py-2 rounded-lg font-semibold text-sm transition-colors"
+                    className="block w-full text-center py-3 rounded-xl font-semibold text-sm transition-all duration-300 hover:scale-[1.02] shadow-md hover:shadow-lg"
                     style={{
-                      backgroundColor: colors.primary,
+                      backgroundColor: colors.accent.green,
                       color: colors.text.white,
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = colors.primaryHover;
+                      e.currentTarget.style.backgroundColor = colors.hover.accent;
+                      e.currentTarget.style.boxShadow = `0 10px 25px -5px ${colors.accent.green}40`;
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = colors.primary;
+                      e.currentTarget.style.backgroundColor = colors.accent.green;
+                      e.currentTarget.style.boxShadow = '';
                     }}
                   >
-                    View All Courses
+                    View Profile
                   </Link>
                 )}
               </div>

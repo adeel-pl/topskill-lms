@@ -96,7 +96,7 @@ export default function WishlistPage() {
                 <FiHeart className="text-4xl md:text-5xl" style={{ color: colors.secondary }} />
               </div>
               <Heading as="h2" size="h2" className="mb-4">Your wishlist is empty</Heading>
-              <Text variant="muted" size="base" className="mb-6 md:mb-8">Add courses to your wishlist to save them for later!</Text>
+              <Text variant="muted" size="sm" className="mb-6 md:mb-8">Add courses to your wishlist to save them for later!</Text>
               <Button asChild variant="default" size="lg">
                 <Link href="/">
                   <FiBookOpen />
@@ -141,7 +141,7 @@ export default function WishlistPage() {
                   </Text>
                 )}
                 <div className="flex items-center justify-between pt-5 md:pt-6" style={{ borderTopColor: colors.border.primary, borderTopWidth: '1px', borderTopStyle: 'solid' }}>
-                  <Text size="xl" className="font-bold" style={{ color: colors.primary }}>
+                  <Text size="lg" className="font-bold" style={{ color: colors.primary }}>
                     {formatPrice(item.course?.price)}
                   </Text>
                   <Button asChild variant="default" size="sm">
