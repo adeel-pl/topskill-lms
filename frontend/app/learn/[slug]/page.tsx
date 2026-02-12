@@ -609,21 +609,23 @@ export default function CoursePlayerPage() {
     <div className="flex flex-col h-screen bg-white">
       <PureLogicsNavbar />
 
-      <div className="flex flex-1 overflow-hidden" style={{ height: 'calc(100vh - 64px)', paddingTop: '5rem' }}>
+      <div className="flex flex-1 overflow-hidden" style={{ height: 'calc(100vh - 64px)', paddingTop: '4rem' }}>
         {/* Left Sidebar - Course Content */}
         <div 
-          className={`${sidebarOpen ? 'w-80' : 'w-0'} overflow-y-auto border-r transition-all duration-300 flex-shrink-0`} 
+          className={`${sidebarOpen ? 'w-80 md:w-96' : 'w-0'} overflow-y-auto border-r transition-all duration-300 flex-shrink-0 shadow-lg`} 
           style={{ 
             height: 'calc(100vh - 64px)', 
             overflowY: 'auto',
-            backgroundColor: colors.accent.primary,
-            borderRightColor: colors.border.primary
+            backgroundColor: colors.accent.green,
+            borderRightColor: colors.border.primary,
+            scrollbarWidth: 'thin',
+            scrollbarColor: `${colors.accent.mint} ${colors.accent.green}`
           }}
         >
           <div 
-            className="p-4 sticky top-0 z-10 backdrop-blur-sm border-b"
+            className="p-4 md:p-5 sticky top-0 z-10 backdrop-blur-sm border-b shadow-sm"
             style={{
-              backgroundColor: colors.accent.primary,
+              backgroundColor: colors.accent.green,
               borderBottomColor: 'rgba(255, 255, 255, 0.2)'
             }}
           >
@@ -640,7 +642,7 @@ export default function CoursePlayerPage() {
                 ×
               </button>
             </div>
-            <div className="text-xs" style={{ color: colors.accent.primary }}>{totalLectures} lectures</div>
+            <div className="text-xs font-medium" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>{totalLectures} lectures</div>
           </div>
 
           <div className="p-2 pb-4">
@@ -680,25 +682,28 @@ export default function CoursePlayerPage() {
                           ? { color: 'rgba(255, 255, 255, 0.5)' }
                           : selectedLecture?.id === lecture.id
                             ? { 
-                                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                                borderLeftColor: colors.accent.primary,
-                                borderLeftWidth: '3px',
-                                color: colors.text.white
+                                backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                                borderLeftColor: colors.primary,
+                                borderLeftWidth: '4px',
+                                color: colors.text.white,
+                                fontWeight: '600'
                               }
                             : { color: colors.text.white }
                       }
                       onMouseEnter={(e) => {
                         if (!isDisabled && selectedLecture?.id !== lecture.id) {
                           e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
-                          e.currentTarget.style.borderLeftColor = colors.accent.primary;
-                          e.currentTarget.style.borderLeftWidth = '3px';
+                          e.currentTarget.style.borderLeftColor = colors.primary;
+                          e.currentTarget.style.borderLeftWidth = '4px';
                           e.currentTarget.style.borderLeftStyle = 'solid';
+                          e.currentTarget.style.transform = 'translateX(2px)';
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (!isDisabled && selectedLecture?.id !== lecture.id) {
                           e.currentTarget.style.backgroundColor = 'transparent';
                           e.currentTarget.style.borderLeftWidth = '0';
+                          e.currentTarget.style.transform = 'translateX(0)';
                         }
                       }}
                       title={isDisabled ? 'Enroll to access this lecture' : ''}
@@ -803,7 +808,7 @@ export default function CoursePlayerPage() {
           </div>
 
           {/* Content Area */}
-          <div className="max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-6">
+          <div className="max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-4 md:py-6">
             <h1 className="text-2xl font-bold mb-4" style={{ color: colors.text.dark }}>{selectedLecture?.title || 'Loading...'}</h1>
 
             {/* Tabs - Dynamic based on course content */}

@@ -157,7 +157,7 @@ export default function InstructorsPage() {
             <p className="text-xl" style={{ color: colors.text.muted }}>No instructors found</p>
           </div>
         ) : instructors.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {instructors.map((instructor) => (
               <div
                 key={instructor.id}
