@@ -288,35 +288,3 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     </div>
   );
 }
-
-                style={{ color: colors.accent.secondary, backgroundColor: 'transparent' }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = colors.background.secondary;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                }}
-              >
-                <FiLogOut className="w-5 h-5" />
-                <span>Logout</span>
-              </button>
-            </div>
-          </div>
-        </aside>
-
-        {/* Main Content */}
-        <main className="flex-1 min-h-[calc(100vh-80px)]">
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setMobileMenuOpen(true)}
-            className="md:hidden fixed top-20 left-4 z-30 p-3 rounded-xl shadow-lg"
-            style={{ backgroundColor: colors.background.card, borderColor: colors.border.primary, borderWidth: '1px', borderStyle: 'solid' }}
-          >
-            <FiMenu className="w-6 h-6" style={{ color: colors.text.dark }} />
-          </button>
-          {children}
-        </main>
-      </div>
-    </div>
-  );
-}

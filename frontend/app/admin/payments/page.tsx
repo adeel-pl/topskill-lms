@@ -61,7 +61,7 @@ export default function AdminPaymentsPage() {
       setPayments(response.data.results);
       setTotal(response.data.count);
     } catch (error) {
-      
+      console.error('Error loading payments:', error);
     } finally {
       setLoading(false);
     }
@@ -281,30 +281,8 @@ export default function AdminPaymentsPage() {
               )}
             </>
           )}
-        </div>
+        </Card>
       </div>
     </AdminLayout>
   );
 }
-
-
-
-                      size="icon"
-                      onClick={() => setPage(page + 1)}
-                      disabled={page >= Math.ceil(total / pageSize)}
-                      className="text-white border-white/20 hover:border-white/40"
-                    >
-                      <FiChevronRight className="w-5 h-5" />
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-        </div>
-      </div>
-    </AdminLayout>
-  );
-}
-
-

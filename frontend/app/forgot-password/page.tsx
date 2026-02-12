@@ -37,6 +37,7 @@ export default function ForgotPasswordPage() {
         showSuccess('Password reset link sent to your email!');
       }
     } catch (err: any) {
+      console.error('Password reset error:', {
         error: err,
         response: err.response,
         data: err.response?.data,
@@ -72,7 +73,7 @@ export default function ForgotPasswordPage() {
       <PureLogicsNavbar />
 
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-20 left-10 w-96 h-96 bg-[#366854] opacity-[0.08] rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-20 left-10 w-96 h-96 bg-[#00d084] opacity-[0.08] rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-20 right-10 w-80 h-80 bg-[#3B82F6] opacity-[0.06] rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
 
@@ -80,7 +81,7 @@ export default function ForgotPasswordPage() {
         <div className="max-w-[500px] xl:max-w-[600px] mx-auto w-full px-4 sm:px-6">
           <div className="text-center mb-12">
             <div className="inline-block mb-8">
-              <div className="w-20 h-20 bg-[#366854] rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-[#366854]/50">
+              <div className="w-20 h-20 bg-[#00d084] rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-[#00d084]/50">
                 <FiMail className="text-white text-3xl" />
               </div>
             </div>
@@ -97,8 +98,8 @@ export default function ForgotPasswordPage() {
           {sent ? (
             <div className="bg-[#1E293B]/90 backdrop-blur-xl border border-[#334155] rounded-3xl p-8 md:p-10 shadow-2xl">
               <div className="text-center">
-                <div className="w-16 h-16 bg-[#366854]/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <FiCheckCircle className="text-[#366854] text-4xl" />
+                <div className="w-16 h-16 bg-[#00d084]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <FiCheckCircle className="text-[#00d084] text-4xl" />
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-4">Email Sent!</h3>
                 <p className="text-[#9CA3AF] mb-6">
@@ -110,13 +111,13 @@ export default function ForgotPasswordPage() {
                 <div className="space-y-4">
                   <Link
                     href="/login"
-                    className="block w-full bg-[#366854] hover:bg-[#366854] text-white py-4 rounded-xl font-black transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-[#366854]/50"
+                    className="block w-full bg-[#00d084] hover:bg-[#00d084] text-white py-4 rounded-xl font-black transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-[#00d084]/50"
                   >
                     Back to Login
                   </Link>
                   <button
                     onClick={() => setSent(false)}
-                    className="block w-full border-2 border-[#334155] bg-[#0F172A]/50 text-white py-4 rounded-xl font-bold hover:border-[#366854] transition-all"
+                    className="block w-full border-2 border-[#334155] bg-[#0F172A]/50 text-white py-4 rounded-xl font-bold hover:border-[#00d084] transition-all"
                   >
                     Send Another Email
                   </button>
@@ -149,11 +150,11 @@ export default function ForgotPasswordPage() {
                 <div>
                   <label className="block text-sm font-bold text-white mb-3">Email Address</label>
                   <div className="relative group">
-                    <FiMail className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#366854] transition-colors z-10" />
+                    <FiMail className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#00d084] transition-colors z-10" />
                     <input
                       type="email"
                       required
-                      className="relative w-full pl-14 pr-5 py-4 bg-[#0F172A] border-2 border-[#334155] rounded-xl text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#366854]/50 focus:border-[#366854] transition-all hover:bg-[#1E293B] hover:border-[#475569]"
+                      className="relative w-full pl-14 pr-5 py-4 bg-[#0F172A] border-2 border-[#334155] rounded-xl text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#00d084]/50 focus:border-[#00d084] transition-all hover:bg-[#1E293B] hover:border-[#475569]"
                       placeholder="Enter your email address"
                       value={email}
                       onChange={(e) => {
@@ -167,7 +168,7 @@ export default function ForgotPasswordPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-[#366854] hover:bg-[#366854] text-white py-4 md:py-5 rounded-xl font-black text-base md:text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-2xl hover:shadow-[#366854]/50 flex items-center justify-center gap-2 group"
+                  className="w-full bg-[#00d084] hover:bg-[#00d084] text-white py-4 md:py-5 rounded-xl font-black text-base md:text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-2xl hover:shadow-[#00d084]/50 flex items-center justify-center gap-2 group"
                 >
                   {loading ? (
                     <>
@@ -184,7 +185,7 @@ export default function ForgotPasswordPage() {
               </form>
 
               <div className="mt-8 text-center">
-                <Link href="/login" className="text-sm text-[#366854] hover:text-[#34D399] font-semibold transition-colors hover:underline">
+                <Link href="/login" className="text-sm text-[#00d084] hover:text-[#34D399] font-semibold transition-colors hover:underline">
                   Back to Login
                 </Link>
               </div>

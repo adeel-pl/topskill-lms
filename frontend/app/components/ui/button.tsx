@@ -7,11 +7,11 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-[#048181] text-white hover:bg-[#036969] shadow-md hover:shadow-lg focus-visible:ring-[#048181]",
-        secondary: "bg-[#f45c2c] text-white hover:bg-[#d94a1f] shadow-md hover:shadow-lg focus-visible:ring-[#f45c2c]",
-        outline: "border-2 border-[#048181] bg-transparent text-[#048181] hover:bg-[#048181] hover:text-white focus-visible:ring-[#048181]",
-        ghost: "text-[#1F2937] hover:bg-[#F9FAFB] focus-visible:ring-[#048181]",
-        light: "bg-white border-2 border-[#E5E7EB] text-[#1F2937] hover:border-[#048181] hover:text-[#048181] focus-visible:ring-[#048181]",
+        default: "bg-[#00d084] text-white hover:bg-[#00b875] shadow-md hover:shadow-lg focus-visible:ring-[#00d084]",
+        secondary: "bg-[#3B82F6] text-white hover:bg-[#2563eb] shadow-md hover:shadow-lg focus-visible:ring-[#3B82F6]",
+        outline: "border-2 border-[#00d084] bg-transparent text-[#00d084] hover:bg-[#00d084] hover:text-white focus-visible:ring-[#00d084]",
+        ghost: "text-[#1F2937] hover:bg-[#F9FAFB] focus-visible:ring-[#00d084]",
+        light: "bg-white border-2 border-[#E5E7EB] text-[#1F2937] hover:border-[#00d084] hover:text-[#00d084] focus-visible:ring-[#00d084]",
       },
       size: {
         default: "px-6 py-3 text-base",

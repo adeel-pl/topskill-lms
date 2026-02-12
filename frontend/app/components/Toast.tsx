@@ -35,8 +35,8 @@ const ToastComponent = ({ toast, onClose }: ToastProps) => {
 
   const colors = {
     success: {
-      bg: 'bg-[#366854]',
-      border: 'border-[#366854]',
+      bg: 'bg-[#00d084]',
+      border: 'border-[#00d084]',
       icon: 'text-white',
     },
     error: {
@@ -50,7 +50,7 @@ const ToastComponent = ({ toast, onClose }: ToastProps) => {
       icon: 'text-white',
     },
     info: {
-      bg: 'bg-[#366854]',
+      bg: 'bg-[#00d084]',
       border: 'border-[#3B82F6]',
       icon: 'text-white',
     },

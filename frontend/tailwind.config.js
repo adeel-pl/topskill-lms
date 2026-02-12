@@ -9,22 +9,22 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Primary Brand Colors (EXACT from reference site)
+        // Primary Brand Colors (EXACT from PureLogics website)
         primary: {
-          DEFAULT: '#048181',      // Deep teal - hero bg, primary buttons
-          hover: '#036969',        // Darker teal on hover
-          light: '#5a9c7d',        // Sage green - accent
-          50: '#f0fdfa',
-          100: '#ccfbf1',
-          500: '#048181',
-          600: '#036969',
-          700: '#024d4d',
+          DEFAULT: '#00d084',      // PureLogics green - hero bg, primary buttons
+          hover: '#00b875',        // Darker green on hover
+          light: '#34d399',        // Lighter green - accent
+          50: '#f0fdf4',
+          100: '#dcfce7',
+          500: '#00d084',
+          600: '#00b875',
+          700: '#059669',
         },
-        // Secondary/Accent Colors (EXACT from reference site)
+        // Secondary/Accent Colors (EXACT from PureLogics website)
         secondary: {
-          DEFAULT: '#f45c2c',      // Reddish-orange - logo accent, secondary CTAs
-          hover: '#d94a1f',
-          light: '#ff7a5c',
+          DEFAULT: '#3B82F6',      // Blue accent - secondary CTAs
+          hover: '#2563eb',
+          light: '#60a5fa',
         },
         // Background Colors
         background: {
@@ -41,17 +41,17 @@ module.exports = {
           light: '#9CA3AF',        // Light gray - captions
           white: '#FFFFFF',        // White text
         },
-        // Border Colors (EXACT from reference site)
+        // Border Colors (EXACT from PureLogics website)
         border: {
           DEFAULT: '#E5E7EB',       // Light border
           muted: '#F3F4F6',        // Very light border
-          accent: '#048181',       // Accent border (deep teal)
+          accent: '#00d084',       // Accent border (PureLogics green)
         },
-        // Legacy support (EXACT from reference site)
-        'topskill-primary': '#048181',      // Deep teal from reference
-        'topskill-secondary': '#f45c2c',    // Reddish-orange from reference
-        'topskill-accent': '#5a9c7d',       // Sage green from reference
-        'topskill-highlight': '#ecca72',    // Pale gold from reference
+        // Legacy support (EXACT from PureLogics website)
+        'topskill-primary': '#00d084',      // PureLogics green
+        'topskill-secondary': '#3B82F6',    // Blue accent
+        'topskill-accent': '#10B981',       // Emerald green
+        'topskill-highlight': '#00d084',    // PureLogics green
         'topskill-dark': '#1F2937',         // Dark gray
         'topskill-light': '#6B7280',        // Muted gray
       },

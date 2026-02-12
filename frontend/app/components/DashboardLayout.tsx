@@ -44,7 +44,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="p-6 relative">
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#366854] shadow-[0_4px_6px_-1px_rgba(4,129,129,0.1)]">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#00d084] shadow-[0_4px_6px_-1px_rgba(4,129,129,0.1)]">
                   <FiZap className="text-xl text-white" />
                 </div>
                 <Heading as="h2" size="h4">My Courses</Heading>
@@ -60,7 +60,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     key={item.href}
                     href={item.href}
                     className={`group flex items-center gap-4 px-5 py-4 rounded-[0.875rem] font-semibold transition-all duration-300 text-sm ${
-                      active ? 'bg-[#366854] text-white shadow-md' : 'text-[#366854] hover:bg-[#F9FAFB]'
+                      active ? 'bg-[#00d084] text-white shadow-md' : 'text-[#00d084] hover:bg-[#F9FAFB]'
                     }`}
                   >
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${

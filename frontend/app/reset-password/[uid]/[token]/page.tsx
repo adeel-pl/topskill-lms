@@ -65,8 +65,8 @@ export default function ResetPasswordPage() {
         <PureLogicsNavbar />
         <div className="section-after-header flex items-center justify-center min-h-[calc(100vh-80px)] px-4">
           <div className="max-w-[500px] mx-auto text-center">
-            <div className="w-16 h-16 bg-[#366854]/20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <FiCheckCircle className="text-[#366854] text-4xl" />
+            <div className="w-16 h-16 bg-[#00d084]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <FiCheckCircle className="text-[#00d084] text-4xl" />
             </div>
             <h2 className="text-4xl font-black mb-4">Password Reset Successful!</h2>
             <p className="text-[#9CA3AF] mb-8">Redirecting to login...</p>
@@ -81,7 +81,7 @@ export default function ResetPasswordPage() {
       <PureLogicsNavbar />
 
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-20 left-10 w-96 h-96 bg-[#366854] opacity-[0.08] rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-20 left-10 w-96 h-96 bg-[#00d084] opacity-[0.08] rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-20 right-10 w-80 h-80 bg-[#3B82F6] opacity-[0.06] rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
 
@@ -89,7 +89,7 @@ export default function ResetPasswordPage() {
         <div className="max-w-[500px] xl:max-w-[600px] mx-auto w-full px-4 sm:px-6">
           <div className="text-center mb-12">
             <div className="inline-block mb-8">
-              <div className="w-20 h-20 bg-[#366854] rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-[#366854]/50">
+              <div className="w-20 h-20 bg-[#00d084] rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-[#00d084]/50">
                 <FiLock className="text-white text-3xl" />
               </div>
             </div>
@@ -106,12 +106,12 @@ export default function ResetPasswordPage() {
               <div>
                 <label className="block text-sm font-bold text-white mb-3">New Password</label>
                 <div className="relative group">
-                  <FiLock className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#366854] transition-colors z-10" />
+                  <FiLock className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#00d084] transition-colors z-10" />
                   <input
                     type="password"
                     required
                     minLength={8}
-                    className="relative w-full pl-14 pr-5 py-4 bg-[#0F172A] border-2 border-[#334155] rounded-xl text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#366854]/50 focus:border-[#366854] transition-all hover:bg-[#1E293B] hover:border-[#475569]"
+                    className="relative w-full pl-14 pr-5 py-4 bg-[#0F172A] border-2 border-[#334155] rounded-xl text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#00d084]/50 focus:border-[#00d084] transition-all hover:bg-[#1E293B] hover:border-[#475569]"
                     placeholder="Enter new password (min 8 characters)"
                     value={formData.new_password}
                     onChange={(e) => setFormData({ ...formData, new_password: e.target.value })}
@@ -122,12 +122,12 @@ export default function ResetPasswordPage() {
               <div>
                 <label className="block text-sm font-bold text-white mb-3">Confirm New Password</label>
                 <div className="relative group">
-                  <FiLock className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#366854] transition-colors z-10" />
+                  <FiLock className="absolute left-5 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#00d084] transition-colors z-10" />
                   <input
                     type="password"
                     required
                     minLength={8}
-                    className="relative w-full pl-14 pr-5 py-4 bg-[#0F172A] border-2 border-[#334155] rounded-xl text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#366854]/50 focus:border-[#366854] transition-all hover:bg-[#1E293B] hover:border-[#475569]"
+                    className="relative w-full pl-14 pr-5 py-4 bg-[#0F172A] border-2 border-[#334155] rounded-xl text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#00d084]/50 focus:border-[#00d084] transition-all hover:bg-[#1E293B] hover:border-[#475569]"
                     placeholder="Confirm new password"
                     value={formData.new_password2}
                     onChange={(e) => setFormData({ ...formData, new_password2: e.target.value })}
@@ -138,7 +138,7 @@ export default function ResetPasswordPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#366854] hover:bg-[#366854] text-white py-4 md:py-5 rounded-xl font-black text-base md:text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-2xl hover:shadow-[#366854]/50 flex items-center justify-center gap-2 group"
+                className="w-full bg-[#00d084] hover:bg-[#00d084] text-white py-4 md:py-5 rounded-xl font-black text-base md:text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-2xl hover:shadow-[#00d084]/50 flex items-center justify-center gap-2 group"
               >
                 {loading ? (
                   <>
@@ -155,7 +155,7 @@ export default function ResetPasswordPage() {
             </form>
 
             <div className="mt-8 text-center">
-              <Link href="/login" className="text-sm text-[#366854] hover:text-[#4a7a66] font-semibold transition-colors hover:underline">
+              <Link href="/login" className="text-sm text-[#00d084] hover:text-[#4a7a66] font-semibold transition-colors hover:underline">
                 Back to Login
               </Link>
             </div>
@@ -165,29 +165,3 @@ export default function ResetPasswordPage() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

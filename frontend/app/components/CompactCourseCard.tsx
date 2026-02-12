@@ -36,10 +36,10 @@ export default function CompactCourseCard({ course, index = 0 }: CompactCourseCa
 
   // Color palette for WOW effects
   const wowColors = {
-    primary: '#366854',
-    secondary: '#0F3A62',
-    accent: '#366854',
-    highlight: '#0F3A62',
+    primary: '#00d084',
+    secondary: '#3B82F6',
+    accent: '#00d084',
+    highlight: '#3B82F6',
   };
 
   return (

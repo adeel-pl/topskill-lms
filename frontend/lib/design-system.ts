@@ -5,25 +5,25 @@
  */
 
 export const designTokens = {
-  // Color System - EXACT from LOGO ONLY
+  // Color System - EXACT from PureLogics website
   colors: {
-    // Primary Brand Colors (EXACT from logo - "TOP" green)
+    // Primary Brand Colors (EXACT from PureLogics website)
     primary: {
-      DEFAULT: '#366854',      // Dark green - from "TOP" in logo
-      hover: '#2a5242',        // Darker green on hover
-      light: '#4a7a66',        // Lighter green variant
-      '50': '#f0f7f4',
-      '100': '#d4e8de',
-      '500': '#366854',
-      '600': '#2a5242',
-      '700': '#1e3a2e',
+      DEFAULT: '#00d084',      // PureLogics green - hero bg, primary buttons
+      hover: '#00b875',        // Darker green on hover
+      light: '#34d399',        // Lighter green - accent
+      '50': '#f0fdf4',
+      '100': '#dcfce7',
+      '500': '#00d084',
+      '600': '#00b875',
+      '700': '#059669',
     },
     
-    // Secondary/Accent Colors (EXACT from logo - "SKILLS" blue)
+    // Secondary/Accent Colors (EXACT from PureLogics website)
     secondary: {
-      DEFAULT: '#0F3A62',      // Dark blue - from "SKILLS" in logo
-      hover: '#0c2d4a',
-      light: '#1a4d7a',
+      DEFAULT: '#3B82F6',      // Blue accent - secondary CTAs
+      hover: '#2563eb',
+      light: '#60a5fa',
     },
     
     // Background Colors
@@ -43,11 +43,11 @@ export const designTokens = {
       white: '#FFFFFF',        // White text
     },
     
-    // Border Colors
+    // Border Colors (EXACT from PureLogics website)
     border: {
       DEFAULT: '#E5E7EB',       // Light border
       muted: '#F3F4F6',        // Very light border
-      accent: '#366854',       // Accent border (dark green from logo)
+      accent: '#00d084',       // Accent border (PureLogics green)
     },
     
     // Status Colors

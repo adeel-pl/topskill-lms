@@ -218,15 +218,3 @@ export default function AdminStudentsPage() {
     </AdminLayout>
   );
 }
-
-
-
-            </>
-          )}
-        </div>
-      </div>
-    </AdminLayout>
-  );
-}
-
-

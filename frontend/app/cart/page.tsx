@@ -113,7 +113,7 @@ export default function CartPage() {
                 <FiShoppingCart className="text-4xl md:text-5xl" style={{ color: colors.primary }} />
               </div>
               <Heading as="h2" size="h2" className="mb-3 md:mb-4">Your cart is empty</Heading>
-              <Text variant="muted" size="base" className="mb-5 md:mb-6 lg:mb-8">Keep shopping to find a course!</Text>
+              <Text variant="muted" size="sm" className="mb-5 md:mb-6 lg:mb-8">Keep shopping to find a course!</Text>
               <Link href="/">
                 <Button variant="default" size="lg">Keep shopping</Button>
               </Link>
@@ -179,7 +179,7 @@ export default function CartPage() {
             <div className="lg:col-span-1">
               <Card variant="default" className="sticky top-20 md:top-24 p-5 md:p-6 lg:p-8">
                 <Heading as="h2" size="h3" className="mb-4 md:mb-5 lg:mb-6">Total</Heading>
-                <Text size="3xl" className="font-bold mb-5 md:mb-6 lg:mb-8" style={{ color: colors.primary }}>${cart.total || 0}</Text>
+                <Text size="lg" className="font-bold mb-5 md:mb-6 lg:mb-8 text-3xl" style={{ color: colors.primary }}>${cart.total || 0}</Text>
                 <Button
                   onClick={handleCheckout}
                   disabled={checkingOut || itemCount === 0}

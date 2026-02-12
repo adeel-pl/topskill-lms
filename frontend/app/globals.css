@@ -76,11 +76,11 @@ html {
 @keyframes glow {
   0%, 100% {
     opacity: 0.6;
-    box-shadow: 0 0 20px rgba(54, 104, 84, 0.3);
+    box-shadow: 0 0 20px rgba(0, 208, 132, 0.3);
   }
   50% {
     opacity: 1;
-    box-shadow: 0 0 40px rgba(54, 104, 84, 0.6);
+    box-shadow: 0 0 40px rgba(0, 208, 132, 0.6);
   }
 }
 
@@ -173,7 +173,7 @@ html {
   inset: 0;
   border-radius: 1.125rem;
   padding: 2px;
-  background: rgba(4, 129, 129, 0.15);
+  background: rgba(0, 208, 132, 0.15);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -233,22 +233,22 @@ button:disabled, .btn:disabled {
   cursor: not-allowed;
 }
 
-/* Primary Button - Premium - Updated to use new color palette */
+/* Primary Button - Premium - Updated to use PureLogics colors */
 .btn-primary,
 button[class*="bg-green"]:not([class*="tailwind"]),
 .btn-primary-purelogics {
-  background: #048181 !important;
+  background: #00d084 !important;
   color: #FFFFFF !important;
   font-weight: 700 !important;
-  box-shadow: 0 4px 15px rgba(4, 129, 129, 0.3) !important;
+  box-shadow: 0 4px 15px rgba(0, 208, 132, 0.3) !important;
 }
 
 .btn-primary:hover:not(:disabled),
 button[class*="bg-green"]:hover:not(:disabled):not([class*="tailwind"]),
 .btn-primary-purelogics:hover:not(:disabled) {
-  background: #036969 !important;
+  background: #00b875 !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 8px 25px rgba(4, 129, 129, 0.5) !important;
+  box-shadow: 0 8px 25px rgba(0, 208, 132, 0.5) !important;
 }
 
 /* Secondary Button - Premium */
@@ -261,7 +261,7 @@ button[class*="bg-green"]:hover:not(:disabled):not([class*="tailwind"]),
 
 .btn-secondary:hover:not(:disabled) {
   background: #FFFFFF;
-  border-color: #048181;
+  border-color: #00d084;
   transform: translateY(-2px);
 }
 
@@ -295,8 +295,8 @@ input:focus,
 textarea:focus,
 select:focus {
   outline: none;
-  border-color: #048181;
-  box-shadow: 0 0 0 3px rgba(4, 129, 129, 0.2);
+  border-color: #00d084;
+  box-shadow: 0 0 0 3px rgba(0, 208, 132, 0.2);
   background: #FFFFFF;
   transform: translateY(-1px);
 }
@@ -316,7 +316,7 @@ a::after {
   left: 0;
   width: 0;
   height: 2px;
-  background: #048181;
+  background: #00d084;
   transition: width 0.3s ease;
 }
 
@@ -325,7 +325,7 @@ a:hover::after {
 }
 
 a:hover {
-  color: #048181;
+  color: #00d084;
 }
 
 /* Premium Scrollbar - Updated to use new color palette */
@@ -340,23 +340,23 @@ a:hover {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #048181;
+  background: #00d084;
   border-radius: 10px;
   border: 2px solid #FFFFFF;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #036969;
+  background: #00b875;
 }
 
-/* Premium Loading Spinner - Updated to use new color palette */
+/* Premium Loading Spinner - Updated to use PureLogics colors */
 .spinner {
   display: inline-block;
   animation: spin 1s linear infinite;
   border-radius: 50%;
   border: 4px solid #CBD5E1;
-  border-top-color: #048181;
-  box-shadow: 0 0 20px rgba(4, 129, 129, 0.3);
+  border-top-color: #00d084;
+  box-shadow: 0 0 20px rgba(0, 208, 132, 0.3);
 }
 
 @keyframes spin {
@@ -414,19 +414,19 @@ a:hover {
 }
 
 .border-accent {
-  border-color: #048181;
+  border-color: #00d084;
 }
 
 /* Premium Focus Styles - Updated */
 *:focus-visible {
-  outline: 2px solid #048181;
+  outline: 2px solid #00d084;
   outline-offset: 2px;
   border-radius: 4px;
 }
 
 /* Premium Selection - Updated */
 ::selection {
-  background-color: #048181;
+  background-color: #00d084;
   color: #FFFFFF;
 }
 
@@ -527,12 +527,12 @@ a:hover {
 }
 
 .hover-glow:hover {
-  box-shadow: 0 0 30px rgba(4, 129, 129, 0.4);
+  box-shadow: 0 0 30px rgba(0, 208, 132, 0.4);
 }
 
 /* Premium Gradient Overlays - Updated */
 .gradient-overlay-green {
-  background: linear-gradient(135deg, rgba(4, 129, 129, 0.1) 0%, rgba(4, 129, 129, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(0, 208, 132, 0.1) 0%, rgba(0, 208, 132, 0.05) 100%);
 }
 
 .gradient-overlay-blue {

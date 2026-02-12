@@ -1,27 +1,27 @@
 /**
  * Global Color Configuration
- * EXACT colors from reference site: https://topskillspk.lovable.app/
- * Extracted directly from the reference site design
+ * EXACT colors from PureLogics website: https://purelogics.com/
+ * Extracted directly from PureLogics brand design
  */
 
 export const colors = {
-  // Primary Brand Colors (EXACT from reference site)
-  primary: '#048181',        // Deep teal - hero background, primary buttons
-  primaryHover: '#036969',   // Darker teal on hover
-  primaryLight: '#5a9c7d',   // Sage green - accent/highlights
+  // Primary Brand Colors (EXACT from PureLogics website)
+  primary: '#00d084',        // PureLogics green - primary buttons, hero background
+  primaryHover: '#00b875',   // Darker green on hover
+  primaryLight: '#34d399',   // Lighter green - accent/highlights
   
-  // Secondary/Accent Colors (EXACT from reference site)
-  secondary: '#f45c2c',      // Reddish-orange - logo accent, secondary CTAs
-  secondaryHover: '#d94a1f', // Darker orange on hover
-  accentColor: '#5a9c7d',    // Sage green - "No.1" highlight, secondary buttons
-  highlight: '#ecca72',      // Pale gold - checkmark circles, badges
+  // Secondary/Accent Colors (EXACT from PureLogics website)
+  secondary: '#3B82F6',      // Blue accent - secondary CTAs
+  secondaryHover: '#2563eb', // Darker blue on hover
+  accentColor: '#10B981',    // Emerald green - highlights, secondary buttons
+  highlight: '#00d084',      // PureLogics green - badges, icons
   
   // Legacy support (for backward compatibility)
   accent: {
-    primary: '#048181',      // Deep teal from reference
-    secondary: '#f45c2c',    // Reddish-orange from reference
-    accent: '#5a9c7d',       // Sage green from reference
-    highlight: '#ecca72',    // Pale gold from reference
+    primary: '#00d084',      // PureLogics green
+    secondary: '#3B82F6',    // Blue accent
+    accent: '#10B981',       // Emerald green
+    highlight: '#00d084',    // PureLogics green
   },
   
   // Background Colors
@@ -45,20 +45,20 @@ export const colors = {
     white: '#FFFFFF',        // White text
   },
   
-  // Border Colors (EXACT from reference site)
+  // Border Colors (EXACT from PureLogics website)
   border: {
     primary: '#E5E7EB',      // Light border
     muted: '#F3F4F6',        // Very light border
-    accent: '#048181',       // Accent border (deep teal from reference)
+    accent: '#00d084',       // Accent border (PureLogics green)
     light: '#E5E7EB',        // Light border (same as primary)
     dark: '#334155',         // Dark border (if needed)
   },
   
-  // Button Colors (EXACT from reference site)
+  // Button Colors (EXACT from PureLogics website)
   button: {
-    primary: '#048181',      // Deep teal button (from reference)
-    secondary: '#f45c2c',    // Reddish-orange button (from reference)
-    accent: '#5a9c7d',       // Sage green button
+    primary: '#00d084',      // PureLogics green button
+    secondary: '#3B82F6',    // Blue button
+    accent: '#10B981',       // Emerald green button
     dark: '#1F2937',         // Dark button
   },
   
@@ -70,10 +70,10 @@ export const colors = {
     info: '#3B82F6',
   },
   
-  // Hover colors (EXACT from reference site)
+  // Hover colors (EXACT from PureLogics website)
   hover: {
-    primary: '#036969',       // Darker teal on hover
-    secondary: '#d94a1f',     // Darker orange on hover
+    primary: '#00b875',       // Darker green on hover
+    secondary: '#2563eb',     // Darker blue on hover
   },
 } as const;
 

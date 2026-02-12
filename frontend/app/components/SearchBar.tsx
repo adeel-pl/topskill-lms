@@ -9,14 +9,14 @@ import Link from 'next/link';
 
 // Color Palette (EXACT from LOGO ONLY)
 const searchColors = {
-  primary: '#366854',      // Dark green - from "TOP" in logo
-  secondary: '#0F3A62',    // Dark blue - from "SKILLS" in logo
-  accent: '#366854',       // Dark green - from logo
-  dark: '#366854',         // Dark green - text (from logo)
+  primary: '#00d084',      // Dark green - from "TOP" in logo
+  secondary: '#3B82F6',    // Dark blue - from "SKILLS" in logo
+  accent: '#00d084',       // Dark green - from logo
+  dark: '#00d084',         // Dark green - text (from logo)
   light: '#E5E7EB',        // Light border
-  highlight: '#0F3A62',    // Dark blue - highlights (from logo)
+  highlight: '#3B82F6',    // Dark blue - highlights (from logo)
   white: '#FFFFFF',
-  textDark: '#366854',     // Dark green (from logo)
+  textDark: '#00d084',     // Dark green (from logo)
   textMuted: '#64748B',    // Muted gray
   background: '#FFFFFF',
   backgroundHover: '#F9FAFB',
@@ -278,48 +278,6 @@ export default function SearchBar({
             <div className="py-2">
               {searchSuggestions.map((course) => (
                 <Link
-                  key={course.id}
-                  href={`/courses/${course.slug}`}
-                  onClick={() => {
-                    setShowSuggestions(false);
-                    setSearchQuery('');
-                  }}
-                  className="flex items-center gap-3 px-4 py-3 transition-colors group"
-                  style={{ backgroundColor: 'transparent' }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = searchColors.backgroundHover}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                >
-                  <div className="flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden flex items-center justify-center" style={{ backgroundColor: searchColors.primary }}>
-                    {course.thumbnail ? (
-                      <img
-                        src={course.thumbnail}
-                        alt={course.title}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <BookOpen className="w-6 h-6 text-white" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm transition-colors truncate" style={{ color: searchColors.dark }} onMouseEnter={(e) => e.currentTarget.style.color = searchColors.primary} onMouseLeave={(e) => e.currentTarget.style.color = searchColors.dark}>
-                      {course.title}
-                    </p>
-                    <p className="text-xs truncate" style={{ color: searchColors.textMuted }}>
-                      {course.instructor_name}
-                    </p>
-                  </div>
-                  <Search className="w-4 h-4 transition-colors flex-shrink-0" style={{ color: searchColors.textMuted }} onMouseEnter={(e) => e.currentTarget.style.color = searchColors.primary} onMouseLeave={(e) => e.currentTarget.style.color = searchColors.textMuted} />
-                </Link>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
-
-
                   key={course.id}
                   href={`/courses/${course.slug}`}
                   onClick={() => {

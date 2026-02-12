@@ -3,13 +3,22 @@ import "./globals.css";
 import AuthProvider from "./components/AuthProvider";
 import { ToastProvider } from "./contexts/ToastContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { Plus_Jakarta_Sans } from "next/font/google";
-
-const font = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-  variable: "--font-jakarta",
-});
+// Font loading - using system fonts as fallback if Google Fonts fails
+// The site uses CameraPlainVariable from globals.css as primary font
+let font = { variable: "" };
+try {
+  const { Plus_Jakarta_Sans } = require("next/font/google");
+  font = Plus_Jakarta_Sans({
+    subsets: ["latin"],
+    weight: ["300", "400", "500", "600", "700", "800"],
+    variable: "--font-jakarta",
+    display: "swap",
+    fallback: ["system-ui", "arial"],
+  });
+} catch (error) {
+  // Fallback if font loading fails
+  console.warn("Google Fonts not available, using system fonts");
+}
 
 export const metadata: Metadata = {
   title: "TopSkill LMS - Learn Without Limits",
